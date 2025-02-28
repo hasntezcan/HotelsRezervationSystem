@@ -8,6 +8,7 @@ import SearchResultList from '../pages/SearchResultList';
 import TourDetails from '../pages/TourDetails';
 import Tours from '../pages/Tours';
 import AdminDashboard from '../pages/AdminDashboard';
+import Manager from '../pages/Manager';
 
 const Routers = () => {
    return (
@@ -21,6 +22,7 @@ const Routers = () => {
          <Route path="/thank-you" element={<ThankYou />} />
          <Route path="/tours/search" element={<SearchResultList />} />
          <Route path="/admin" element={<AdminDashboard />} />
+         <Route path="/manager" element={<Manager />} />
       </Routes>
    );
 }
