@@ -1,4 +1,3 @@
-/*
 import React from 'react'
 import '../styles/home.css'
 import { Container, Row, Col, CardSubtitle } from 'reactstrap'
@@ -148,10 +147,10 @@ const Home = () => {
 }
 
 export default Home
-*/
+
 
 // src/HomePage.jsx
-
+/*
 import React, { useState } from 'react';
 import {
   AppBar,
@@ -177,7 +176,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import StarIcon from '@mui/icons-material/Star';
 
-/* Example placeholder data for featured hotels */
+
 const featuredHotels = [
   {
     id: 1,
@@ -202,7 +201,7 @@ const featuredHotels = [
   },
 ];
 
-/* Example placeholder data for popular destinations */
+
 const popularDestinations = [
   {
     id: 1,
@@ -241,7 +240,7 @@ const HomePage = () => {
 
   return (
     <Box sx={{ backgroundColor: 'background.default' }}>
-      {/* =================== APP BAR (Üst Menü) =================== */}
+    
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -255,13 +254,13 @@ const HomePage = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Hotel Reservation
           </Typography>
-          {/* Örnek butonlar */}
+         
           <Button color="inherit">Login</Button>
           <Button color="inherit">Sign Up</Button>
         </Toolbar>
       </AppBar>
 
-      {/* ================= HERO SECTION ================== */}
+     
       <Box
         sx={{
           position: 'relative',
@@ -298,7 +297,7 @@ const HomePage = () => {
             Explore top-rated hotels, resorts, and destinations around the world!
           </Typography>
 
-          {/* Search widget */}
+ 
           <Box
             sx={{
               p: 2,
@@ -359,7 +358,7 @@ const HomePage = () => {
         </Container>
       </Box>
 
-      {/* ============ FEATURED HOTELS SECTION ============ */}
+     
       <Container sx={{ py: 5 }}>
         <Typography variant="h4" sx={{ fontWeight: 600, mb: 3 }}>
           Featured Hotels
@@ -408,7 +407,7 @@ const HomePage = () => {
         </Grid>
       </Container>
 
-      {/* ============ POPULAR DESTINATIONS SECTION ============ */}
+     
       <Box sx={{ backgroundColor: '#fff', py: 5 }}>
         <Container>
           <Typography variant="h4" sx={{ fontWeight: 600, mb: 3 }}>
@@ -456,7 +455,7 @@ const HomePage = () => {
         </Container>
       </Box>
 
-      {/* ============ WHY CHOOSE US SECTION ============ */}
+    
       <Container sx={{ py: 5 }}>
         <Typography variant="h4" sx={{ fontWeight: 600, mb: 3 }}>
           Why Choose Our Service
@@ -483,7 +482,7 @@ const HomePage = () => {
         </Grid>
       </Container>
 
-      {/* ============ TESTIMONIALS SECTION ============ */}
+    
       <Box sx={{ backgroundColor: '#F7FAFC', py: 5 }}>
         <Container>
           <Typography variant="h4" sx={{ fontWeight: 600, mb: 3 }}>
@@ -491,7 +490,7 @@ const HomePage = () => {
           </Typography>
 
           <Grid container spacing={3}>
-            {/* Example testimonial */}
+          
             <Grid item xs={12} sm={6} md={4}>
               <Card sx={{ boxShadow: 2, borderRadius: 2 }}>
                 <CardContent>
@@ -511,12 +510,12 @@ const HomePage = () => {
               </Card>
             </Grid>
 
-            {/* More testimonials can go here... */}
+           
           </Grid>
         </Container>
       </Box>
 
-      {/* ============ FOOTER SECTION ============ */}
+
       <Box sx={{ backgroundColor: '#333', color: '#fff', py: 4 }}>
         <Container>
           <Grid container spacing={2}>
@@ -573,3 +572,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
+*/

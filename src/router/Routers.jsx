@@ -11,7 +11,9 @@ import AdminDashboard from '../pages/AdminDashboard';
 import Manager from '../pages/Manager';
 import ManagerAbout from '../pages/ManagerAbout';
 import ManagerStaff from '../pages/ManagerStaff';
-import ManagerDashboard from '../pages/ManagerDashboard'; // Varsayılan dashboard sayfası
+import ManagerDashboard from '../pages/ManagerDashboard';
+import About from '../pages/About'
+import Contact from '../pages/Contact'
 
 const Routers = () => {
    return (
@@ -19,6 +21,8 @@ const Routers = () => {
          {/* Ana Sayfalar */}
          <Route path="/" element={<Home />} />
          <Route path="/home" element={<Home />} />
+         <Route path="/about" element={<About />} />
+         <Route path="/contact" element={<Contact />} />
          <Route path="/tours" element={<Tours />} />
          <Route path="/tours/:id" element={<TourDetails />} />
          <Route path="/login" element={<Login />} />

@@ -1,4 +1,4 @@
-// src/theme.js
+/*// src/theme.js
 import { createTheme } from '@mui/material/styles';
 
 // İstediğiniz renk kodlarını, font ayarlarını, vb. burada tanımlayın
@@ -54,3 +54,4 @@ const theme = createTheme({
 });
 
 export default theme;
+*/

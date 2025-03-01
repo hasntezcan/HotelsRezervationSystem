@@ -1,0 +1,69 @@
+.about__section {
+    padding: 60px 0;
+    background-color: #e9ecf1; /* Example gray background */
+  }
+  
+  .about__header {
+    max-width: 800px;
+    margin: 0 auto 40px;
+    text-align: center;
+  }
+  
+  .about__header h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .about__header p {
+    line-height: 1.6;
+    color: #555;
+  }
+  
+  /* Takım üyeleri - kartı sadeleştirdik */
+  .team__member {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .team__member-img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 15px;
+    transition: transform 0.2s;
+  }
+  
+  .team__member:hover .team__member-img {
+    transform: scale(1.05);
+  }
+  
+  .team__member-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  .team__member-role {
+    font-style: italic;
+    color: #777;
+    margin-bottom: 8px;
+  }
+  
+  .team__member-links {
+    margin-top: 5px;
+  }
+  
+  .social-link {
+    margin: 0 4px;
+    font-size: 1.3rem;
+    color: #666;
+    transition: color 0.2s;
+  }
+  
+  .social-link:hover {
+    color: #0d6efd;
+  }
+  

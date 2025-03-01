@@ -1,9 +1,9 @@
 import React from 'react';
-import Routers from './router/Routers'; // Doğru import yolu
+import Layout from './components/Layout/Layout'; // Doğru import yolu
 
 function App() {
   return (
-    <Routers />
+    <Layout />
   );
 }
 

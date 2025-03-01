@@ -1,0 +1,43 @@
+/* src/styles/contact.css */
+
+.contact__section {
+    padding: 60px 0;
+    background-color: #f8f9fa; 
+  }
+  
+  .map__container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden; 
+  }
+  
+  .contact__form h2 {
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  
+  .contact__form label {
+    font-weight: 500;
+  }
+  
+  .contact__form .primary__btn {
+    background-color: #0d6efd; 
+    border-color: #0d6efd;
+  }
+  
+  .social__links {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .social__icon {
+    font-size: 2.1rem;
+    color: #333;
+    transition: color 0.2s ease;
+  }
+  
+  .social__icon:hover {
+    color: #0d6efd;
+  }
+  
