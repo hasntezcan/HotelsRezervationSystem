@@ -1,15 +1,14 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import ManagerAbout from "./ManagerAbout";
-import ManagerDashboard from "./ManagerDashboard";
-import ManagerStaff from "./ManagerStaff";
+import ManagerStaff from "./ManagerStaff"; // Sadece gerekli importları bırak
+
 const Manager = () => {
   return (
     <div className="main-container">
       <Sidebar />
       <div className="content">
-        <Outlet /> {/* Yalnızca <Outlet /> kullanılmalı */}
+        <Outlet /> {/* Burada children bileşenler dinamik olarak yüklenecek */}
       </div>
     </div>
   );

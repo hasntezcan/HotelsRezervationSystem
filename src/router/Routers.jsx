@@ -10,12 +10,13 @@ import Tours from '../pages/Tours';
 import AdminDashboard from '../pages/AdminDashboard';
 import Manager from '../pages/Manager';
 import ManagerAbout from '../pages/ManagerAbout';
-import ManagerDashboard from '../pages/ManagerDashboard';
 import ManagerStaff from '../pages/ManagerStaff';
+import ManagerDashboard from '../pages/ManagerDashboard'; // Varsayılan dashboard sayfası
 
 const Routers = () => {
    return (
       <Routes>
+         {/* Ana Sayfalar */}
          <Route path="/" element={<Home />} />
          <Route path="/home" element={<Home />} />
          <Route path="/tours" element={<Tours />} />
@@ -25,12 +26,13 @@ const Routers = () => {
          <Route path="/thank-you" element={<ThankYou />} />
          <Route path="/tours/search" element={<SearchResultList />} />
          <Route path="/admin" element={<AdminDashboard />} />
-         <Route path="/manager" element={<Manager />} />
-         <Route path="/manager/about" element={<ManagerAbout />} />
-         <Route path="/manager/dashboard" element={<ManagerDashboard />} />
-         <Route path="/manager/staff" element={<ManagerStaff />} />
 
-
+         {/* Manager Sayfası (Nested Routes ile Sidebar her zaman kalacak) */}
+         <Route path="/manager/*" element={<Manager />}>
+            <Route index element={<ManagerDashboard />} /> {/* Varsayılan olarak Dashboard açılsın */}
+            <Route path="about" element={<ManagerAbout />} />
+            <Route path="staff" element={<ManagerStaff />} />
+         </Route>
       </Routes>
    );
 }

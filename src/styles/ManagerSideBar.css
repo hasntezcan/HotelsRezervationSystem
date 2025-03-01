@@ -1,0 +1,103 @@
+/* Sidebar Genel */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background: #000;
+  color: white;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease-in-out; /* Geçiş efekti */
+}
+
+/* Sidebar Kapalıyken */
+.sidebar.closed {
+  width: 60px;  /* Sidebar küçülecek */
+}
+
+.sidebar.closed .link_text {
+  display: none;  /* Menü yazıları gizlenecek */
+}
+
+/* Hamburger Menü */
+.bars {
+  position: absolute;
+  top: 10px;
+  right: -40px;
+  background: #000;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.bars:hover {
+  background: #222;
+}
+
+/* Sidebar Linkleri */
+.link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  padding: 12px 20px;
+  transition: 0.3s;
+}
+
+.link:hover {
+  background: #444;
+}
+
+.active {
+  background: #1abc9c;
+  font-weight: bold;
+}
+
+.icon {
+  margin-right: 10px;
+}
+
+.link_text {
+  font-size: 16px;
+}
+
+/* İçerik Alanı */
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  margin-left: 250px;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+/* Sidebar Kapalıyken İçerik */
+.sidebar.closed + .content {
+  margin-left: 60px;
+}
+
+/* Mobil Görünüm */
+@media screen and (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+  }
+
+  .sidebar.open {
+    width: 250px;
+  }
+
+  .sidebar.closed .link_text {
+    display: none;
+  }
+
+  .bars {
+    left: 70px;  /* Mobilde hamburger menü daha ortalanmış olacak */
+  }
+
+  .sidebar.closed + .content {
+    margin-left: 60px;
+  }
+}
