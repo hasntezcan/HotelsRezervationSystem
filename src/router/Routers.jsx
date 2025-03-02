@@ -15,7 +15,7 @@ import ManagerStaff from '../pages/ManagerStaff';
 import ManagerDashboard from '../pages/ManagerDashboard';
 import About from '../pages/About';
 import Contact from '../pages/Contact';
-
+import SearchResults from "../pages/SearchResults";
 const Routers = () => {
    return (
       <Routes>
@@ -30,6 +30,7 @@ const Routers = () => {
          <Route path="/register" element={<Register />} />
          <Route path="/thank-you" element={<ThankYou />} />
          <Route path="/tours/search" element={<SearchResultList />} />
+         <Route path="/search-results" element={<SearchResults />} />
 
          {/* ✅ Admin Sayfaları */}
          <Route path="/admin" element={<Admin />} /> {/* Dashboard */}

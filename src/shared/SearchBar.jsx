@@ -1,64 +1,68 @@
-import React, { useRef } from 'react'
-import './search-bar.css'
-import { Col, Form, FormGroup } from 'reactstrap'
-import { BASE_URL } from '../utils/config'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "../shared/search-bar.css";
 
 const SearchBar = () => {
-   const locationRef = useRef('')
-   const distanceRef = useRef(0)
-   const maxGroupSizeRef = useRef(0)
-   const navigate = useNavigate()
+  const [city, setCity] = useState("");
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [people, setPeople] = useState(1);
+  const navigate = useNavigate();
 
-   const searchHandler = async() => {
-      const location = locationRef.current.value
-      const distance = distanceRef.current.value
-      const maxGroupSize = maxGroupSizeRef.current.value
+  const handleSearch = () => {
+    if (!city || !people || !startDate || !endDate) {
+      alert("Lütfen tüm alanları doldurun!");
+      return;
+    }
 
-      if (location === '' || distance === '' || maxGroupSize === '') {
-         return alert('All fields are required!')
-      }
+    // Arama kriterlerini URL'ye parametre olarak ekleyerek yönlendirme yapıyoruz
+    navigate(`/search-results?city=${city}&startDate=${startDate?.toISOString()}&endDate=${endDate?.toISOString()}&people=${people}`);
+  };
 
-      const res = await fetch(`${BASE_URL}/tours/search/getTourBySearch?city=${location}&distance=${distance}&maxGroupSize=${maxGroupSize}`)
-      
-      if(!res.ok) alert('Something went wrong')
+  return (
+    <div className="search-bar">
+      <input
+        type="text"
+        placeholder="Şehir Seçin"
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+      />
 
-      const result = await res.json()
+      <DatePicker
+        selected={startDate}
+        onChange={(date) => setStartDate(date)}
+        selectsStart
+        startDate={startDate}
+        endDate={endDate}
+        minDate={new Date()}
+        placeholderText="Başlangıç Tarihi"
+        className="date-picker"
+      />
 
-      navigate(`/tours/search?city=${location}&distance=${distance}&maxGroupSize=${maxGroupSize}`, {state: result.data})
-   }
+      <DatePicker
+        selected={endDate}
+        onChange={(date) => setEndDate(date)}
+        selectsEnd
+        startDate={startDate}
+        endDate={endDate}
+        minDate={startDate || new Date()}
+        placeholderText="Bitiş Tarihi"
+        className="date-picker"
+      />
 
-   return <Col lg="12">
-      <div className="search__bar">
-         <Form className='d-flex align-items-center gap-4'>
-            <FormGroup className='d-flex gap-3 form__group form__group-fast'>
-               <span><i class='ri-map-pin-line'></i></span>
-               <div>
-                  <h6>Location</h6>
-                  <input type="text" placeholder='Where are you going?' ref={locationRef} />
-               </div>
-            </FormGroup>
-            <FormGroup className='d-flex gap-3 form__group form__group-fast'>
-               <span><i class='ri-map-pin-time-line'></i></span>
-               <div>
-                  <h6>Distance</h6>
-                  <input type="number" placeholder='Distance k/m' ref={distanceRef} />
-               </div>
-            </FormGroup>
-            <FormGroup className='d-flex gap-3 form__group form__group-last'>
-               <span><i class='ri-group-line'></i></span>
-               <div>
-                  <h6>Max People</h6>
-                  <input type="number" placeholder='0' ref={maxGroupSizeRef} />
-               </div>
-            </FormGroup>
+      <input
+        type="number"
+        placeholder="Kişi Sayısı"
+        value={people}
+        onChange={(e) => setPeople(e.target.value)}
+        min="1"
+      />
 
-            <span className='search__icon' type='submit' onClick={searchHandler}>
-               <i class='ri-search-line'></i>
-            </span>
-         </Form>
-      </div>
-   </Col>
-}
+      <button onClick={handleSearch}>Ara</button>
+    </div>
+  );
+};
 
-export default SearchBar
+export default SearchBar;
