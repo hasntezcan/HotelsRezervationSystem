@@ -1,53 +1,103 @@
 .footer {
-   padding-top   : 70px;
-   padding-bottom: 30px;
-}
-
-.footer .logo img {
-   width        : 60%;
+   padding: 40px 0;
+   background-color: #f9f9f9; /* or var(--secondary-color), etc. */
+   /* If your text is large, set a smaller base font-size for the footer */
+   font-size: 0.9rem;
+ }
+ 
+ .footer__logo img {
+   display: block;    /* removes any inline spacing issues */
+   max-width: 150px;  /* or whatever size you want */
+   margin: 0;         /* remove default margin if any */
+ }
+ 
+ .footer__text {
+   color: var(--text-color);
    margin-bottom: 1rem;
-}
-
-.footer .logo p {
-   color    : var(--text-color);
-   font-size: 1rem;
-}
-
-.social__link span a {
-   text-decoration: none;
-   color          : var(--heading-color);
-   font-size      : 1.5rem;
-}
-
-.footer__link-title {
-   color        : var(--heading-color);
-   margin-bottom: 1rem;
-}
-
-.footer__quick-links li a {
-   text-decoration: none;
-   color          : var(--text-color);
-   font-size      : 1.2rem;
-}
-
-.footer__quick-links a:hover {
+   line-height: 1.5;
+ }
+ .footer__logo {
+   margin: 0;         /* ensure no extra top margin here */
+   padding: 0;        /* remove if there's unneeded padding */
+ }
+ 
+ .social__links span a {
+   color: var(--heading-color);
+   font-size: 1.2rem;
+   transition: color 0.3s ease;
+ }
+ 
+ .social__links span a:hover {
    color: var(--secondary-color);
-}
-
-.footer__quick-links h6 span i {
-   color    : var(--secondary-color);
-   font-size: 1.4rem;
-}
-
-.footer__quick-links h6 {
+ }
+ 
+ /* Footer Titles (Discover, Quick Links, Contact) */
+ .footer__title {
+   font-size: 1rem;
+   font-weight: 600;
+   color: var(--heading-color);
    margin-bottom: 1rem;
-}
-
-.footer__quick-links p {
-   font-size: 1.2rem;
-}
-
-.copyright {
-   color    : var(--text-color);
-   font-size: 1.2rem;
-}
+   text-transform: uppercase; /* optional */
+ }
+ 
+ .footer__list {
+   padding-left: 0;
+ }
+ 
+ .footer__list .list-group-item {
+   background: transparent;
+   padding-left: 0;
+   padding-right: 0;
+   margin-bottom: 0.4rem;
+ }
+ 
+ .footer__list .list-group-item a {
+   text-decoration: none;
+   color: var(--text-color);
+   transition: color 0.3s;
+ }
+ 
+ .footer__list .list-group-item a:hover {
+   color: var(--secondary-color);
+ }
+ 
+ /* Contact Info */
+ .footer__contact i {
+   color: var(--secondary-color);
+   font-size: 1.1rem;
+ }
+ 
+ .footer__contact span {
+   color: var(--text-color);
+   font-size: 0.9rem;
+ }
+ 
+ /* Bottom Row */
+ .footer__bottom {
+   border-top: 1px solid #ddd;
+   margin-top: 1.5rem;
+   padding-top: 1rem;
+ }
+ 
+ .footer__bottom p {
+   color: var(--text-color);
+   font-size: 0.9rem;
+   margin: 0;
+   line-height: 1.4;
+ }
+ 
+ /* Responsive Tweaks */
+ @media (max-width: 768px) {
+   .footer {
+     font-size: 0.85rem; /* or keep as 0.9rem if you prefer */
+   }
+   
+   .footer__title {
+     font-size: 0.95rem;
+   }
+   
+   .footer__logo img {
+     max-width: 110px;
+   }
+ }
+ 

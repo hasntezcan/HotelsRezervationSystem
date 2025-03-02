@@ -1,105 +1,129 @@
+/* Variables (preferably move these into a global variables.css) */
 :root {
-   --primary-color     : #ff7e01;
-   --secondary-color   : #faa935;
-   --heading-color     : #0b2727;
-   --text-color        : #6e7074;
-   --font-name         : "Montserrat", sans-serif;
+   --primary-color: #1b1a6ea4;
+   --secondary-color: #23197c;
+   --heading-color: #0b2727;
+   --text-color: #6e7074;
+   --font-name: "Montserrat", sans-serif;
    --subtitle-font-name: "Island Moments", cursive;
-}
-
-.header {
-   width      : 100%;
-   height     : 80px;
-   line-height: 80px;
-}
-
-.logo img {
-   width: 30%;
-}
-
-.menu {
-   margin-bottom: 0;
-}
-
-.nav__item a {
+ }
+ 
+ /* HEADER WRAPPER */
+ .header {
+   width: 100%;
+   background-color: #fff; /* Optional: remove if you want transparent until scroll */
+   /* Remove fixed height & line-height here.
+      Let the inner container control spacing. */
+ }
+ 
+ .sticky__header {
+   position: sticky;
+   top: 0;
+   left: 0;
+   width: 100%;
+   background: #fff;
+   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+   z-index: 999;
+ }
+ 
+ /* NAV WRAPPER */
+ .nav__wrapper {
+   /* This automatically centers everything vertically. */
+   padding: 0; /* Some horizontal padding if desired */
+   max-width: 150px;
+ }
+ 
+ /* LOGO */
+ .logo img {
+   /* Use max-height or a fixed height so it doesn’t get tiny or huge. */
+   max-height: 100px;
+   /* If you want a bit of breathing room for larger screens, you could also:
+      width: auto; */
+ }
+ 
+ /* MENU */
+ .navigation {
+   max-width: 200px;
+   /* Show as flex by default on desktop (just remove "display: none") */
+ }
+ 
+ .menu {
+   list-style: none;
+   margin: 0;
+   padding: 0;
+   /* The .menu is already a d-flex from your JSX; 
+      to ensure it doesn't break we can add: */
+   align-items: center;
+ }
+ 
+ .nav__item a {
    text-decoration: none;
-   color          : var(--heading-color);
-   font-weight    : 500;
-   font-size      : 1.5rem;
-}
-
-.nav__item a:hover {
-   color: inherit;
-}
-
-.nav__item a.active__link {
+   color: var(--heading-color);
+   font-weight: 500;
+   font-size: 1rem; /* Slightly smaller for easier fitting */
+   transition: color 0.3s;
+ }
+ 
+ .nav__item a:hover {
    color: var(--secondary-color);
-}
+ }
+ 
+ .nav__item a.active__link {
+   color: var(--primary-color);
+ }
+ 
+ /* MOBILE MENU ICON */
+ .mobile__menu {
+   font-size: 1.5rem;
+   color: var(--heading-color);
+   display: none; /* Hidden by default on desktop */
+   cursor: pointer;
+ }
+ 
+ /* NAV RIGHT */
+ .nav__right .nav__btns h6.user__name {
+   margin-bottom: 0;
+   font-size: 0.9rem;
+   color: var(--heading-color);
+ }
 
-.mobile__menu {
-   font-size: 1.3rem;
-   color    : var(--heading-color);
-   display  : none;
-}
-
-.sticky__header {
-   width      : 100%;
-   height     : 80px;
-   line-height: 80px;
-   background : #fff;
-   position   : sticky;
-   top        : 0;
-   left       : 0;
-   box-shadow : 3px 3px 8px -3px #ddd;
-   z-index    : 999;
-}
-
-/* =============== RESPONSIVE ================ */
-@media only screen and (max-width:992px) {
-   .logo img {
-      width: 20%;
-   }
-
+ 
+ 
+ /* ========== RESPONSIVE ========== */
+ @media (max-width: 992px) {
+   /* Hide the main menu by default, show hamburger */
    .navigation {
-      width     : 100%;
-      height    : 100%;
-      position  : fixed;
-      top       : 0;
-      left      : 0;
-      background: rgba(0, 0, 0, 0.4);
-      z-index   : 999;
-      display   : none;
+     display: none; 
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: rgba(0,0,0,0.4);
+     z-index: 999;
    }
-
+   
    .menu {
-      position       : absolute;
-      top            : 0;
-      right          : 0;
-      width          : calc(100% - 75%);
-      height         : 100%;
-      background     : #fff;
-      flex-direction : column;
-      line-height    : 0.5rem;
-      justify-content: center;
-      z-index        : 9999;
+     position: absolute;
+     top: 0;
+     right: 0;
+     width: 280px; /* A fixed sidebar width for mobile */
+     height: 100%;
+     background: #fff;
+     flex-direction: column;
+     gap: 2rem;
+     padding: 2rem;
+     align-items: flex-start;
+     /* By default hidden (display: none) from .navigation above */
    }
-
+ 
+   /* When .show__menu is toggled, the nav opens */
    .show__menu {
-      display: block;
+     display: block; 
    }
-
+ 
    .mobile__menu {
-      display: block;
+     display: block; /* Show the hamburger icon on mobile */
    }
-}
-
-/* =============== RESPONSIVE ================ */
-@media only screen and (max-width: 768px) {
-   .logo img {
-      width: 45%;
-   }
-
-   .menu {
-      width: calc(100% - 50%);
-   }
-}
+ }
+ 

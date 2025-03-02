@@ -1,9 +1,14 @@
+// src/pages/Login.jsx
+
 import React, { useContext, useState } from 'react'
 import { Container, Row, Col, Form, FormGroup, Button } from 'reactstrap'
-import '../styles/login.css'
 import { Link, useNavigate } from 'react-router-dom'
+import '../styles/login.css'
 import loginImg from '../assets/images/login.png'
-import userIcon from '../assets/images/user.png'
+
+// Yeni illüstrasyon veya görsel (PNG/SVG)
+import hotelImage from '../assets/images/hotelIllustration.png'
+
 import { AuthContext } from '../context/AuthContext'
 
 const Login = () => {
@@ -19,50 +24,47 @@ const Login = () => {
     e.preventDefault()
     dispatch({ type: 'LOGIN_START' })
 
-    // 1) Local Storage'dan kullanıcıları çek
     let users = JSON.parse(localStorage.getItem('localUsers')) || []
-
-    console.log("Tüm users:", users);
-console.log("Gelen email:", credentials.email, " password:", credentials.password);
-    // 2) E-mail / Password eşleşen kullanıcıyı bul
     const foundUser = users.find(
       u => u.email === credentials.email && u.password === credentials.password
     )
-    console.log("Bulunan foundUser:", foundUser);
-    if(!foundUser) {
-      // Eşleşme yoksa hata
+    if (!foundUser) {
       alert('Invalid email or password')
       dispatch({ type: 'LOGIN_FAILURE', payload: 'Wrong credentials' })
       return
     }
-
-    // 3) Eşleşme varsa AuthContext'e kaydet
     dispatch({ type: 'LOGIN_SUCCESS', payload: foundUser })
+    alert(`Welcome, ${foundUser.username}!`)
     navigate('/')
   }
 
   return (
-    <section>
+    <section className="auth-section">
       <Container>
-        <Row>
-          <Col lg="8" className="m-auto">
-            <div className="login__container d-flex justify-content-between">
-              <div className="login__img">
-                <img src={loginImg} alt="login" />
-              </div>
-
-              <div className="login__form">
-                <div className="user">
-                  <img src={userIcon} alt="user icon" />
+        <Row className="justify-content-center">
+          <Col lg="10">
+            
+            {/* Kart benzeri wrap */}
+            <div className="auth-card d-flex flex-wrap">
+              
+              {/* Sol kısım (görsel + dalgalı arkaplan) */}
+              <div className="auth-left">
+                <div className="image-wrapper">
+                  <img src={loginImg} alt="hotel" className="hotel-img" />
                 </div>
-                <h2>Login</h2>
+              </div>
+              
+              {/* Sağ kısım (form) */}
+              <div className="auth-right">
+                <h2 className="auth-title">Hello Place2Stay User</h2>
+                <p className="auth-subtitle">Welcome back! Please log in.</p>
 
                 <Form onSubmit={handleClick}>
                   <FormGroup>
                     <input
                       type="email"
-                      placeholder="Email"
                       id="email"
+                      placeholder="Email"
                       value={credentials.email}
                       onChange={handleChange}
                       required
@@ -71,22 +73,23 @@ console.log("Gelen email:", credentials.email, " password:", credentials.passwor
                   <FormGroup>
                     <input
                       type="password"
-                      placeholder="Password"
                       id="password"
+                      placeholder="Password"
                       value={credentials.password}
                       onChange={handleChange}
                       required
                     />
                   </FormGroup>
-                  <Button className="btn secondary__btn auth__btn" type="submit">
-                    Login
+                  <Button type="submit" className="btn auth-btn w-100">
+                    LOGIN
                   </Button>
                 </Form>
 
-                <p>
-                  Don't have an account? <Link to="/register">Create</Link>
+                <p className="auth-footer">
+                Don't have an account? <Link to="/register">Create now</Link>
                 </p>
               </div>
+
             </div>
           </Col>
         </Row>
@@ -96,6 +99,7 @@ console.log("Gelen email:", credentials.email, " password:", credentials.passwor
 }
 
 export default Login
+
 
 /*
 import React, { useContext, useState } from 'react'
