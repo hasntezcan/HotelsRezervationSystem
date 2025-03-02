@@ -16,9 +16,9 @@ const SearchBar = () => {
       alert("Lütfen tüm alanları doldurun!");
       return;
     }
-
-    // Arama kriterlerini URL'ye parametre olarak ekleyerek yönlendirme yapıyoruz
-    navigate(`/search-results?city=${city}&startDate=${startDate?.toISOString()}&endDate=${endDate?.toISOString()}&people=${people}`);
+    navigate(
+      `/search-results?city=${city}&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}&people=${people}`
+    );
   };
 
   return (
