@@ -9,7 +9,7 @@ import TourDetails from '../pages/TourDetails';
 import Tours from '../pages/Tours';
 import AdminDashboard from '../pages/AdminDashboard';
 import Manager from '../pages/Manager';
-import ManagerAbout from '../pages/ManagerAbout';
+import ManagerContact from '../pages/ManagerContact';
 import ManagerStaff from '../pages/ManagerStaff';
 import ManagerDashboard from '../pages/ManagerDashboard';
 import About from '../pages/About'
@@ -34,7 +34,7 @@ const Routers = () => {
          {/* Manager Sayfası (Nested Routes ile Sidebar her zaman kalacak) */}
          <Route path="/manager/*" element={<Manager />}>
             <Route index element={<ManagerDashboard />} /> {/* Varsayılan olarak Dashboard açılsın */}
-            <Route path="about" element={<ManagerAbout />} />
+            <Route path="contactUs" element={<ManagerContact />} />
             <Route path="staff" element={<ManagerStaff />} />
          </Route>
       </Routes>

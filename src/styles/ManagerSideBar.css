@@ -1,8 +1,8 @@
 /* Sidebar Genel */
 .sidebar {
-  width: 250px;
+  width: 260px;
   height: 100vh;
-  background: #000;
+  background: linear-gradient(to bottom, #0a0f14, #141a21); /* Daha koyu bir arka plan */
   color: white;
   position: fixed;
   left: 0;
@@ -10,33 +10,52 @@
   padding-top: 20px;
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease-in-out; /* Geçiş efekti */
+  transition: all 0.4s ease-in-out;
+  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5); /* Daha koyu ve net gölge */
 }
 
 /* Sidebar Kapalıyken */
 .sidebar.closed {
-  width: 60px;  /* Sidebar küçülecek */
+  width: 70px;
 }
 
-.sidebar.closed .link_text {
-  display: none;  /* Menü yazıları gizlenecek */
+/* Üst Bölüm (Logo + Hamburger Menü) */
+.top_section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Logo */
+.logo {
+  width: 140px;  /* Daha büyük görünmesi için */
+  height: auto;
+  padding: 5px;
+  filter: brightness(200%); /* Logoyu daha parlak hale getir */
+  transition: opacity 0.3s ease-in-out;
+}
+
+.sidebar.closed .logo {
+  width: 50px;
+  opacity: 0;
 }
 
 /* Hamburger Menü */
 .bars {
-  position: absolute;
-  top: 10px;
-  right: -40px;
-  background: #000;
-  color: white;
-  padding: 10px;
   cursor: pointer;
-  border-radius: 5px;
-  transition: 0.3s;
+  font-size: 22px;
+  color: white;
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.3s ease-in-out;
 }
 
 .bars:hover {
-  background: #222;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* Sidebar Linkleri */
@@ -46,58 +65,71 @@
   text-decoration: none;
   color: white;
   padding: 12px 20px;
-  transition: 0.3s;
+  transition: all 0.3s ease-in-out;
+  border-radius: 8px;
+  margin: 5px;
+  font-weight: 500;
 }
 
 .link:hover {
-  background: #444;
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.03);
 }
 
+/* Aktif Link */
 .active {
-  background: #1abc9c;
+  background: rgba(255, 255, 255, 0.2);
   font-weight: bold;
+  border-left: 5px solid #00a896; /* Daha koyu yeşil tonunda vurgu */
 }
 
+/* Sidebar içindeki ikonlar */
 .icon {
-  margin-right: 10px;
+  margin-right: 15px;
+  font-size: 18px;
+  transition: transform 0.3s ease-in-out;
 }
 
-.link_text {
-  font-size: 16px;
-}
-
-/* İçerik Alanı */
+/* Sidebar Açılıp Kapanırken İçerik Kaydırma */
 .content {
   flex-grow: 1;
   padding: 20px;
-  margin-left: 250px;
-  transition: margin-left 0.3s ease-in-out;
+  margin-left: 260px;
+  transition: margin-left 0.4s ease-in-out;
 }
 
-/* Sidebar Kapalıyken İçerik */
 .sidebar.closed + .content {
-  margin-left: 60px;
+  margin-left: 70px;
 }
 
-/* Mobil Görünüm */
+/* Küçük Ekranlar İçin Responsive Ayarlar */
 @media screen and (max-width: 768px) {
   .sidebar {
-    width: 60px;
+    width: 70px;
   }
 
   .sidebar.open {
-    width: 250px;
+    width: 260px;
   }
 
   .sidebar.closed .link_text {
     display: none;
   }
 
+  .logo {
+    display: none;
+  }
+
+  .sidebar.open .logo {
+    display: block;
+  }
+
   .bars {
-    left: 70px;  /* Mobilde hamburger menü daha ortalanmış olacak */
+    position: relative;
+    right: 10px;
   }
 
   .sidebar.closed + .content {
-    margin-left: 60px;
+    margin-left: 70px;
   }
 }

@@ -1,28 +1,49 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { FaTh, FaUserAlt, FaRegChartBar, FaComment, FaShoppingBag, FaList, FaBars } from "react-icons/fa";
 import "../styles/ManagerSideBar.css";
+import React, { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
+import { FaTh, FaUserAlt, FaInfo, FaList, FaBars } from "react-icons/fa";
+import { BsFillPeopleFill } from "react-icons/bs";
+import { BiSolidHotel } from "react-icons/bi";
+import logo from "../assets/images/logo.png";
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(window.innerWidth > 768); // Ekran genişliği 768px üzerindeyse açık başlasın
+  const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
+  const [showLogo, setShowLogo] = useState(true);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+    setShowLogo(!isOpen);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setIsOpen(false);
+        setShowLogo(false);
+      } else {
+        setIsOpen(true);
+        setShowLogo(true);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const menuItems = [
     { path: "/manager", name: "Dashboard", icon: <FaTh /> },
-    { path: "/manager/about", name: "About", icon: <FaUserAlt /> },
-    { path: "/manager/staff", name: "Staff", icon: <FaRegChartBar /> },
-    { path: "/manager/rooms", name: "Rooms", icon: <FaComment /> },
-    { path: "/manager/profile", name: "Profile", icon: <FaShoppingBag /> },
+    { path: "/manager/contactus", name: "Contact Us", icon: <FaInfo /> },
+    { path: "/manager/staff", name: "Staff", icon: <BsFillPeopleFill /> },
+    { path: "/manager/rooms", name: "Rooms", icon: <BiSolidHotel /> },
+    { path: "/manager/profile", name: "Profile", icon: <FaUserAlt /> },
     { path: "/manager/productlist", name: "Product List", icon: <FaList /> },
   ];
 
   return (
     <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
       <div className="top_section">
-        <h2 className="logo">Logo</h2>
+        {showLogo && (
+          <img src={logo} alt="Logo" className="logo" />  
+        )}
         <div className="bars" onClick={toggleSidebar}>
           <FaBars />
         </div>
