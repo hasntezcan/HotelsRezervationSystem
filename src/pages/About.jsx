@@ -35,7 +35,7 @@ const About = () => {
 
               <div className="team__member-links">
                 <a 
-                  href="https://www.linkedin.com/in/hasntezcan" 
+                  href="https://www.linkedin.com/in/hasan-tezcan0/" 
                   target="_blank" 
                   rel="noreferrer"
                   className="social-link"
@@ -89,7 +89,7 @@ const About = () => {
 
               <div className="team__member-links">
                 <a 
-                  href="https://www.linkedin.com/in/sezaiaraplarli" 
+                  href="https://www.linkedin.com/in/sezowastaken" 
                   target="_blank" 
                   rel="noreferrer"
                   className="social-link"
@@ -117,7 +117,7 @@ const About = () => {
 
               <div className="team__member-links">
                 <a 
-                  href="https://www.linkedin.com/in/tunahantuze" 
+                  href="https://www.linkedin.com/in/tunahantuze/" 
                   target="_blank" 
                   rel="noreferrer"
                   className="social-link"
