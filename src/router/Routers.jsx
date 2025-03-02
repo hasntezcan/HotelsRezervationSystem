@@ -7,13 +7,14 @@ import Register from '../pages/Register';
 import SearchResultList from '../pages/SearchResultList';
 import TourDetails from '../pages/TourDetails';
 import Tours from '../pages/Tours';
-import AdminDashboard from '../pages/AdminDashboard';
+import AdminUser from '../pages/AdminUser';
+import Admin from '../pages/Admin';
 import Manager from '../pages/Manager';
 import ManagerContact from '../pages/ManagerContact';
 import ManagerStaff from '../pages/ManagerStaff';
 import ManagerDashboard from '../pages/ManagerDashboard';
-import About from '../pages/About'
-import Contact from '../pages/Contact'
+import About from '../pages/About';
+import Contact from '../pages/Contact';
 
 const Routers = () => {
    return (
@@ -29,7 +30,11 @@ const Routers = () => {
          <Route path="/register" element={<Register />} />
          <Route path="/thank-you" element={<ThankYou />} />
          <Route path="/tours/search" element={<SearchResultList />} />
-         <Route path="/admin" element={<AdminDashboard />} />
+
+         {/* ✅ Admin Sayfaları */}
+         <Route path="/admin" element={<Admin />} /> {/* Dashboard */}
+         <Route path="/admin/profile" element={<Admin />} /> {/* Profile */}
+         <Route path="/admin/users" element={<AdminUser />} /> {/* User List */}
 
          {/* Manager Sayfası (Nested Routes ile Sidebar her zaman kalacak) */}
          <Route path="/manager/*" element={<Manager />}>
@@ -39,6 +44,6 @@ const Routers = () => {
          </Route>
       </Routes>
    );
-}
+};
 
 export default Routers;

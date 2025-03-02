@@ -57,12 +57,12 @@ const About = () => {
           <Col lg="3" md="4" sm="6" xs="6">
             <div className="team__member">
               <img src={emirImg} alt="Emir" className="team__member-img" />
-              <h5 className="team__member-name">Emir Şahin</h5>
+              <h5 className="team__member-name">Emir Esad Şahin</h5>
               <p className="team__member-role">Frontend Developer</p>
 
               <div className="team__member-links">
                 <a 
-                  href="https://www.linkedin.com/in/emir" 
+                  href="https://www.linkedin.com/in/emir%C5%9Fahin/" 
                   target="_blank" 
                   rel="noreferrer"
                   className="social-link"
@@ -70,7 +70,7 @@ const About = () => {
                   <i className="ri-linkedin-box-fill"></i>
                 </a>
                 <a 
-                  href="https://github.com/şahinemir" 
+                  href="https://github.com/iamsahinemir" 
                   target="_blank" 
                   rel="noreferrer"
                   className="social-link"
