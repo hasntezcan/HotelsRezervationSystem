@@ -1,0 +1,124 @@
+/* Sayfa Genel Yapısı */
+.contact-page {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background: #f8f9fc; /* Daha açık bir arka plan */
+    min-height: 100vh;
+  }
+  
+  /* Sol Tarafta Contact Form */
+  .contact-form-container {
+    flex: 1;
+    max-width: 400px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form Input Alanları */
+  .contact-form-container label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .contact-form-container input,
+  .contact-form-container textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .contact-form-container textarea {
+    resize: none;
+    height: 100px;
+  }
+  
+  .contact-form-container button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .contact-form-container button:hover {
+    background: #0056b3;
+  }
+  
+  /* Durum Mesajı */
+  .status-message {
+    margin-top: 10px;
+    color: green;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  /* Gelen Mesajlar Bölümü */
+  .messages-container {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .messages-container h2 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  /* Gelen Mesaj Kartları */
+  .message-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .message-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .message-text {
+    font-size: 14px;
+    color: #555;
+    margin: 10px 0;
+  }
+  
+  /* Yanıtla Butonu */
+  .reply-btn {
+    background: #28a745;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    transition: 0.3s;
+    font-weight: bold;
+    width: fit-content;
+  }
+  
+  .reply-btn:hover {
+    background: #218838;
+    transform: scale(1.05);
+  }
+  
