@@ -1,0 +1,217 @@
+/* Genel Dashboard Tasarımı */
+.dashboard-container {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7fc;
+    padding: 10px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Dashboard Başlığı */
+.dashboard-container h1 {
+    text-align: center;
+    font-size: 30px;
+    color: #2c3e50;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Dashboard Kartları */
+.dashboard-cards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.card {
+    flex: 1;
+    min-width: 200px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    transition: 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Ana İçerik (Takvim, Hava Durumu, Mailbox) */
+.dashboard-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
+/* Takvim ve Hava Durumu */
+.calendar-widget, .weather-widget {
+    flex: 1;
+    max-width: 300px;
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+/* Mailbox (Sağa ve Sola Yapışık, Daha Geniş) */
+.mailbox-widget {
+    flex: 4;
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    margin: 0; /* Tam genişlik kaplaması için sıfır margin */
+}
+
+/* Mailbox Tablosu */
+.mailbox-widget table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mailbox-widget th, .mailbox-widget td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.mailbox-widget th {
+    background: #007bff;
+    color: white;
+}
+
+/* Reply Butonu */
+.reply-btn {
+    background: #28a745;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.reply-btn:hover {
+    background: #218838;
+}
+
+/* Recently Added & Latest Reservations Yan Yana */
+.tables-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+}
+
+/* Alt Bileşenler Tam Genişlikte */
+.recent-hotels, .recent-reservations {
+    flex: 1;
+    max-width: 100%;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+/* Gelir Gider Tablosu */
+.income-expense-container {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 1200px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Tablo Başlıkları */
+.income-expense-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Gelir Gider Tablo Hücreleri */
+.income-expense-container th, .income-expense-container td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;  /* Daha iyi hizalama için sola yaslı */
+    font-size: 16px;
+}
+
+/* Tablo Başlıkları */
+.income-expense-container th {
+    background: #007bff;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Gelir ve Gider Renkleri */
+.income {
+    color: green;
+    font-weight: bold;
+}
+
+.expense {
+    color: red;
+    font-weight: bold;
+}
+
+/* Özet Bilgileri */
+.summary {
+    margin-top: 15px;
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.summary .total-income {
+    color: green;
+}
+
+.summary .total-expense {
+    color: red;
+}
+
+.summary .net-profit {
+    color: #007bff;
+}
+
+
+/* Responsive Tasarım */
+@media (max-width: 1024px) {
+    .dashboard-main {
+        flex-wrap: wrap;
+    }
+
+    .mailbox-widget {
+        flex: 1;
+        max-width: 100%;
+    }
+
+    .tables-container {
+        flex-wrap: wrap;
+    }
+
+    .recent-hotels, .recent-reservations {
+        max-width: 100%;
+    }
+}
