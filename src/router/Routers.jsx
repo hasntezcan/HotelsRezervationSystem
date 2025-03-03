@@ -16,6 +16,7 @@ import ManagerDashboard from '../pages/ManagerDashboard';
 import About from '../pages/About';
 import Contact from '../pages/Contact';
 import SearchResults from "../pages/SearchResults";
+import ManagerProfile from '../pages/ManagerProfile';
 const Routers = () => {
    return (
       <Routes>
@@ -42,6 +43,7 @@ const Routers = () => {
             <Route index element={<ManagerDashboard />} /> {/* Varsayılan olarak Dashboard açılsın */}
             <Route path="contactUs" element={<ManagerContact />} />
             <Route path="staff" element={<ManagerStaff />} />
+            <Route path="profile" element={<ManagerProfile />} />
          </Route>
       </Routes>
    );
