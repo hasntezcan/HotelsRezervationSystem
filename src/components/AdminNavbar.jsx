@@ -1,10 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const AdminNavbar = () => {
+  const navigate = useNavigate();  // React Router hook'u ile yönlendirme
+
+  const handleLogout = () => {
+    // Burada çıkış yap işlemlerini ekleyebilirsiniz (örneğin, localStorage temizlemek)
+    // Ardından Home sayfasına yönlendirme
+    navigate("/home"); // Home.jsx sayfasına yönlendirme
+  };
+
   return (
     <nav style={styles.navbar}>
       <h2 style={styles.title}>Admin Paneli</h2>
-      <button style={styles.logoutButton}>Çıkış Yap</button>
+      <button style={styles.logoutButton} onClick={handleLogout}>
+        Çıkış Yap
+      </button>
     </nav>
   );
 };

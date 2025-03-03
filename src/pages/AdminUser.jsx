@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import SidebarAdmin from "../components/Sidebar_admin"; 
-import AdminNavbar from "../components/AdminNavbar"; 
+import SidebarAdmin from "../components/Sidebar_admin";
+import AdminNavbar from "../components/AdminNavbar";
 
 const roles = ["Admin", "Manager", "User"];
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -8,15 +8,27 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const AdminUser = () => {
   const [users, setUsers] = useState(() => {
     const storedUsers = localStorage.getItem("users");
-    return storedUsers ? JSON.parse(storedUsers) : [
-      { id: 1, firstName: "Ahmet", lastName: "Yılmaz", email: "ahmet@example.com", password: "1234", role: "User" },
-      { id: 2, firstName: "Ayşe", lastName: "Kaya", email: "ayse@example.com", password: "5678", role: "Manager" },
-    ];
+    return storedUsers
+      ? JSON.parse(storedUsers)
+      : [
+          { id: 1, firstName: "Ahmet", lastName: "Yılmaz", email: "ahmet@example.com", password: "1234", role: "User" },
+          { id: 2, firstName: "Ayşe", lastName: "Kaya", email: "ayse@example.com", password: "5678", role: "Manager" },
+          { id: 3, firstName: "Emir", lastName: "Emir", email: "emir@emir.com", password: "emir", role: "User" }
+        ];
   });
 
-  const [newUser, setNewUser] = useState({ firstName: "", lastName: "", email: "", password: "", role: "User" });
+  const [newUser, setNewUser] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    role: "User",
+  });
+
   const [errors, setErrors] = useState({});
   const [editingUserId, setEditingUserId] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("users", JSON.stringify(users));
@@ -24,18 +36,20 @@ const AdminUser = () => {
 
   const validateInputs = () => {
     let validationErrors = {};
-    
     if (!newUser.firstName) validationErrors.firstName = "İsim boş bırakılamaz!";
     if (!newUser.lastName) validationErrors.lastName = "Soyisim boş bırakılamaz!";
     if (!newUser.email) validationErrors.email = "E-posta boş bırakılamaz!";
-    if (!newUser.password) validationErrors.password = "Şifre boş bırakılamaz!";
-    
     if (newUser.email && !emailRegex.test(newUser.email)) {
       validationErrors.email = "Geçerli bir e-posta adresi girin!";
+      alert("E-posta geçerli değil!");
+      return false;
     }
+    if (!newUser.phoneNumber) validationErrors.phoneNumber = "Telefon numarası boş bırakılamaz!";
+    if (!newUser.password) validationErrors.password = "Şifre boş bırakılamaz!";
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      alert("Lütfen tüm alanları doldurun.");
       return false;
     }
 
@@ -45,7 +59,6 @@ const AdminUser = () => {
 
   const addOrUpdateUser = () => {
     if (!validateInputs()) return;
-
     if (editingUserId) {
       const updatedUsers = users.map((user) =>
         user.id === editingUserId ? { ...user, ...newUser } : user
@@ -55,20 +68,16 @@ const AdminUser = () => {
     } else {
       const newUserObj = {
         id: users.length + 1,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        email: newUser.email,
-        password: newUser.password,
-        role: newUser.role,
+        ...newUser,
       };
       setUsers([...users, newUserObj]);
     }
-
-    setNewUser({ firstName: "", lastName: "", email: "", password: "", role: "User" });
+    setNewUser({ firstName: "", lastName: "", email: "", phoneNumber: "", password: "", role: "User" });
   };
 
   const deleteUser = (id) => {
-    setUsers(users.filter((user) => user.id !== id));
+    const updatedUsers = users.filter((user) => user.id !== id);
+    setUsers(updatedUsers);
   };
 
   const editUser = (user) => {
@@ -76,69 +85,155 @@ const AdminUser = () => {
     setEditingUserId(user.id);
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div style={styles.pageContainer}>
       <SidebarAdmin />
       <div style={styles.mainContent}>
         <AdminNavbar />
-        
-        <div style={styles.content}>
-          <h1 style={styles.title}>Kullanıcı Yönetimi</h1>
+        <section className="vh-100 gradient-custom">
+          <div className="container py-5 h-100">
+            <div className="row justify-content-center align-items-center h-100">
+              <div className="col-12 col-lg-9 col-xl-7">
+                <div className="card shadow-2-strong card-registration" style={{ borderRadius: "15px" }}>
+                  <div className="card-body p-4 p-md-5">
+                    <h3 className="mb-4 pb-2 pb-md-0 mb-md-5">Kullanıcı Ekle</h3>
+                    <form onSubmit={(e) => { e.preventDefault(); addOrUpdateUser(); }}>
+                      <div className="row">
+                        <div className="col-md-6 mb-4">
+                          <div className="form-outline">
+                            <input
+                              type="text"
+                              id="firstName"
+                              className="form-control form-control-lg"
+                              value={newUser.firstName}
+                              onChange={(e) => setNewUser({ ...newUser, firstName: e.target.value })}
+                            />
+                            <label className="form-label" htmlFor="firstName">First Name</label>
+                          </div>
+                        </div>
+                        <div className="col-md-6 mb-4">
+                          <div className="form-outline">
+                            <input
+                              type="text"
+                              id="lastName"
+                              className="form-control form-control-lg"
+                              value={newUser.lastName}
+                              onChange={(e) => setNewUser({ ...newUser, lastName: e.target.value })}
+                            />
+                            <label className="form-label" htmlFor="lastName">Last Name</label>
+                          </div>
+                        </div>
+                      </div>
 
-          <div style={styles.formContainer}>
-            <h2>{editingUserId ? "Kullanıcıyı Güncelle" : "Yeni Kullanıcı Ekle"}</h2>
-            <input
-              type="text"
-              placeholder="İsim"
-              value={newUser.firstName}
-              onChange={(e) => setNewUser({ ...newUser, firstName: e.target.value })}
-              style={errors.firstName ? styles.inputError : styles.input}
-            />
-            {errors.firstName && <p style={styles.errorText}>{errors.firstName}</p>}
+                      <div className="row">
+                        <div className="col-md-6 mb-4">
+                          <div className="form-outline">
+                            <input
+                              type="email"
+                              id="email"
+                              className="form-control form-control-lg"
+                              value={newUser.email}
+                              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                            />
+                            <label className="form-label" htmlFor="email">Email</label>
+                          </div>
+                        </div>
+                        <div className="col-md-6 mb-4">
+                          <div className="form-outline">
+                            <input
+                              type="tel"
+                              id="phoneNumber"
+                              className="form-control form-control-lg"
+                              value={newUser.phoneNumber}
+                              onChange={(e) => setNewUser({ ...newUser, phoneNumber: e.target.value })}
+                            />
+                            <label className="form-label" htmlFor="phoneNumber">Phone Number</label>
+                          </div>
+                        </div>
+                      </div>
 
-            <input
-              type="text"
-              placeholder="Soyisim"
-              value={newUser.lastName}
-              onChange={(e) => setNewUser({ ...newUser, lastName: e.target.value })}
-              style={errors.lastName ? styles.inputError : styles.input}
-            />
-            {errors.lastName && <p style={styles.errorText}>{errors.lastName}</p>}
+                      <div className="row">
+                        <div className="col-md-6 mb-4">
+                          <div className="form-outline">
+                            <input
+                              type={showPassword ? "text" : "password"} // Şifreyi göster veya gizle
+                              id="password"
+                              className="form-control form-control-lg"
+                              value={newUser.password}
+                              onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                            />
+                            <label className="form-label" htmlFor="password">Password</label>
+                            <button type="button" className="btn btn-link" onClick={togglePasswordVisibility}>
+                              {showPassword ? "Hide" : "Show"}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
 
-            <input
-              type="email"
-              placeholder="E-posta"
-              value={newUser.email}
-              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-              style={errors.email ? styles.inputError : styles.input}
-            />
-            {errors.email && <p style={styles.errorText}>{errors.email}</p>}
+                      <div className="row">
+                        <div className="col-md-12 mb-4">
+                          <select
+                            className="form-select form-control-lg"
+                            value={newUser.role}
+                            onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                          >
+                            {roles.map((role) => (
+                              <option key={role} value={role}>
+                                {role}
+                              </option>
+                            ))}
+                          </select>
+                          <label className="form-label">Role</label>
+                        </div>
+                      </div>
 
-            <input
-              type="password"
-              placeholder="Şifre"
-              value={newUser.password}
-              onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-              style={errors.password ? styles.inputError : styles.input}
-            />
-            {errors.password && <p style={styles.errorText}>{errors.password}</p>}
-
-            <button 
-              onClick={addOrUpdateUser} 
-              style={styles.button(editingUserId ? "#ffc107" : "#28a745")}>
-              {editingUserId ? "Güncelle" : "Ekle"}
-            </button>
+                      <div className="mt-4 pt-2">
+                        <button type="submit" className="btn" style={styles.editButton}>Düzenle</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+        </section>
 
-          <h2 style={styles.listTitle}>Kullanıcılar</h2>
-          <ul style={styles.list}>
+        <div style={styles.userListContainer}>
+          <h2>Kullanıcılar</h2>
+          <ul>
             {users.map((user) => (
-              <li key={user.id} style={styles.listItem}>
-                <span><strong>{user.firstName} {user.lastName}</strong> - {user.email}</span>
-                <span><strong>Rol:</strong> {user.role}</span>
-                
-                <button onClick={() => editUser(user)} style={styles.actionButton("#007bff")}>Düzenle</button>
-                <button onClick={() => deleteUser(user.id)} style={styles.actionButton("#e74c3c")}>Sil</button>
+              <li key={user.id} style={styles.jobBox}>
+                <div className="job-left">
+                  <div className="img-holder">
+                    {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                  </div>
+                  <div className="job-content">
+                    <h5>{user.firstName} {user.lastName}</h5>
+                    <ul>
+                      <li><i className="zmdi zmdi-pin"></i> {user.email}</li>
+                      <li><i className="zmdi zmdi-lock"></i> Şifre: {user.password}</li>
+                      <li><i className="zmdi zmdi-account"></i> Rol: {user.role}</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="job-right">
+                  <button
+                    style={styles.editButton}
+                    onClick={() => editUser(user)}
+                  >
+                    Düzenle
+                  </button>
+                  <button
+                    style={styles.deleteButton}
+                    onClick={() => deleteUser(user.id)}
+                  >
+                    Sil
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
@@ -151,87 +246,64 @@ const AdminUser = () => {
 const styles = {
   pageContainer: {
     display: "flex",
-    height: "100vh",
   },
   mainContent: {
     flex: 1,
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
-  content: {
-    flex: 1,
+  contentWrapper: {
     display: "flex",
     flexDirection: "column",
+    gap: "20px",
+    padding: "20px",
+    width: "80%",
     alignItems: "center",
-    justifyContent: "center",
-    marginLeft: "auto",
-    marginRight: "auto",
-    maxWidth: "800px",
-  },
-  title: {
-    textAlign: "center",
-    color: "#333",
   },
   formContainer: {
-    width: "100%",
-    background: "#f9f9f9",
     padding: "20px",
+    backgroundColor: "#d3d3d3", // Gri arka plan
     borderRadius: "8px",
-    boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
-  },
-  input: {
     width: "100%",
-    padding: "10px",
-    margin: "5px 0",
-    borderRadius: "5px",
+    maxWidth: "500px",
+    color: "#333", // Siyah metin rengi
+  },
+  userListContainer: {
+    padding: "20px",
+    backgroundColor: "#f5f5f5",
+    borderRadius: "8px",
+    width: "100%",
+    maxWidth: "800px",
+  },
+  jobBox: {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "15px",
+    marginBottom: "15px",
     border: "1px solid #ccc",
+    borderRadius: "10px",
+    backgroundColor: "#fff",
+    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
   },
-  inputError: {
-    width: "100%",
-    padding: "10px",
-    margin: "5px 0",
+  deleteButton: {
+    backgroundColor: "#C70039", // Sil butonu rengi
+    color: "#fff",
+    border: "none",
+    padding: "10px 20px",
+    cursor: "pointer",
     borderRadius: "5px",
-    border: "1px solid red",
+    transition: "background-color 0.3s",
   },
-  errorText: {
-    color: "red",
-    fontSize: "14px",
-  },
-  button: (color) => ({
-    width: "100%",
-    padding: "12px",
-    background: color,
-    color: "white",
+  editButton: {
+    backgroundColor: "#6495ED", // Düzenle butonu rengi
+    color: "#fff",
+    padding: "10px 20px",
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
-  }),
-  listTitle: {
-    marginTop: "20px",
   },
-  list: {
-    width: "100%",
-    listStyleType: "none",
-    padding: 0,
-  },
-  listItem: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    background: "#fff",
-    padding: "10px",
-    borderRadius: "5px",
-    marginBottom: "8px",
-    boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
-  },
-  actionButton: (color) => ({
-    background: color,
-    color: "white",
-    padding: "8px",
-    borderRadius: "5px",
-    margin: "5px 5px 0 0",
-    cursor: "pointer",
-  }),
 };
 
 export default AdminUser;
