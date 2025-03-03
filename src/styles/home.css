@@ -18,10 +18,12 @@
    margin-top   : 1rem;
    margin-bottom: 2rem;
    color        : var(--heading-color);
+
 }
 
 .hero__content h1 .hightlight {
    color: var(--secondary-color);
+   
 }
 
 .hero__content p {
@@ -37,6 +39,7 @@
    border-radius: 20px;
    border       : 1px solid var(--secondary-color);
    object-fit   : cover;
+   margin-bottom: 50px;
 }
 
 .hero__content {

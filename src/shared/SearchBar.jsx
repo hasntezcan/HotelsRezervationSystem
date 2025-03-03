@@ -4,14 +4,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../shared/search-bar.css";
 import { startOfMonth } from "date-fns";
-import { tr } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { IoClose } from "react-icons/io5";
 
 const SearchBar = () => {
-  const [city, setCity] = useState("");
+  const [destination, setDestination] = useState("");
   const [dates, setDates] = useState([null, null]);
-  const [defaultViewDate, setDefaultViewDate] = useState(startOfMonth(new Date())); // Default month to current month
-  const [calendarKey, setCalendarKey] = useState(0); // Used to force re-render of DatePicker
+  const [defaultViewDate, setDefaultViewDate] = useState(startOfMonth(new Date()));
+  const [calendarKey, setCalendarKey] = useState(0);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [pets, setPets] = useState(false);
@@ -31,19 +31,19 @@ const SearchBar = () => {
   }, []);
 
   const handleSearch = () => {
-    if (!city || !dates[0] || !dates[1]) {
-      alert("Lütfen tüm alanları doldurun!");
+    if (!destination || !dates[0] || !dates[1]) {
+      alert("Please fill in all fields!");
       return;
     }
     navigate(
-      `/search-results?city=${city}&startDate=${dates[0].toISOString()}&endDate=${dates[1].toISOString()}&adults=${adults}&children=${children}&pets=${pets}`
+      `/search-results?destination=${destination}&startDate=${dates[0].toISOString()}&endDate=${dates[1].toISOString()}&adults=${adults}&children=${children}&pets=${pets}`
     );
   };
 
   const clearDates = () => {
-    setDates([null, null]); // Reset date selection
-    setDefaultViewDate(startOfMonth(new Date())); // Reset to current month
-    setCalendarKey(prevKey => prevKey + 1); // Force DatePicker to re-render
+    setDates([null, null]);
+    setDefaultViewDate(startOfMonth(new Date()));
+    setCalendarKey(prevKey => prevKey + 1);
   };
 
   return (
@@ -51,31 +51,31 @@ const SearchBar = () => {
       {calendarOpen || dropdownOpen ? <div className="blackout-overlay"></div> : null}
 
       <div className="search-bar">
-        {/* City Selection */}
+        {/* Destination Selection */}
         <input
           type="text"
-          placeholder="Nereye gitmek istersin?"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
+          placeholder="Where do you want to go?"
+          value={destination}
+          onChange={(e) => setDestination(e.target.value)}
           className="search-input"
         />
 
         {/* Date Selection */}
         <div className="date-picker-container">
           <DatePicker
-            key={calendarKey} // Forces DatePicker to re-render when reset
+            key={calendarKey}
             selected={dates[0]}
             onChange={(update) => setDates(update)}
             startDate={dates[0]}
             endDate={dates[1]}
             selectsRange
-            monthsShown={2} // Display two months side by side
+            monthsShown={2}
             minDate={new Date()}
-            placeholderText="Tarih Seçin"
+            placeholderText="Select dates"
             className="search-date-picker"
             dateFormat="dd MMMM yyyy"
-            locale={tr}
-            defaultViewDate={defaultViewDate} // Ensures calendar starts from current month
+            locale={enUS}
+            defaultViewDate={defaultViewDate}
             onCalendarOpen={() => setCalendarOpen(true)}
             onCalendarClose={() => setCalendarOpen(false)}
           />
@@ -89,12 +89,12 @@ const SearchBar = () => {
           className={`passenger-select ${dropdownOpen ? "active" : ""}`}
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
-          {adults} Yetişkin - {children} Çocuk {pets ? " - Evcil Hayvan Var" : ""}
+          {adults} Adults - {children} Children {pets ? " - With Pets" : ""}
         </div>
 
         {/* Search Button */}
         <button onClick={handleSearch} className="search-button">
-          Ara
+          Search
         </button>
       </div>
 
@@ -103,7 +103,7 @@ const SearchBar = () => {
         <div className="passenger-dropdown-container">
           <div className="passenger-dropdown" ref={dropdownRef}>
             <div className="guest-option">
-              <span>Yetişkin</span>
+              <span>Adults</span>
               <div className="counter">
                 <button onClick={() => setAdults(Math.max(1, adults - 1))}>-</button>
                 <span>{adults}</span>
@@ -112,7 +112,7 @@ const SearchBar = () => {
             </div>
 
             <div className="guest-option">
-              <span>Çocuk</span>
+              <span>Children</span>
               <div className="counter">
                 <button onClick={() => setChildren(Math.max(0, children - 1))}>-</button>
                 <span>{children}</span>
@@ -127,12 +127,12 @@ const SearchBar = () => {
                   checked={pets}
                   onChange={() => setPets(!pets)}
                 />
-                <span>Evcil Hayvan</span>
+                <span>With Pets</span>
               </label>
             </div>
 
             <button className="guest-close" onClick={() => setDropdownOpen(false)}>
-              Tamam
+              Done
             </button>
           </div>
         </div>

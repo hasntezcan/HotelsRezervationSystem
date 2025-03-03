@@ -4,7 +4,8 @@
    align-items: center;
    width: 100%;
    position: relative;
-   margin-bottom: 20px;
+   margin-top: 50px;
+   margin-bottom: 50px;
 }
 
 /* Light Blackout Effect */
@@ -22,30 +23,30 @@
 .search-bar {
    display: flex;
    align-items: center;
-   gap: 12px;
-   padding: 12px 16px;
+   gap: 15px;
+   padding: 16px 20px;
    border-radius: 50px;
    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-   width: 760px;
+   width: 1050px;
    background: white;
    position: relative;
    z-index: 1000;
 }
 
-/* Input Fields */
+/* Increased Input Fields */
 .search-input,
 .search-date-picker {
    border: none;
-   padding: 10px 14px;
-   font-size: 1rem;
+   padding: 12px 16px;
+   font-size: 1.2rem;
    border-radius: 8px;
    outline: none;
    font-weight: 500;
    background: #f5f5f5;
    flex: 1;
-   height: 40px;
+   height: 50px;
    transition: background 0.2s ease-in-out;
-   min-width: 160px;
+   min-width: 200px;
 }
 
 .search-input:focus,
@@ -79,16 +80,16 @@
 .passenger-select {
    position: relative;
    cursor: pointer;
-   padding: 10px 14px;
+   padding: 12px 16px;
    background: #f5f5f5;
    border-radius: 8px;
-   font-size: 1rem;
+   font-size: 1.2rem;
    font-weight: 500;
    display: flex;
    align-items: center;
    justify-content: center;
-   min-width: 220px;
-   height: 40px;
+   min-width: 250px;
+   height: 50px;
    transition: background 0.2s ease-in-out;
 }
 
@@ -104,7 +105,7 @@
    transform: translateX(-50%);
    margin-top: 10px;
    z-index: 1000;
-   width: 300px;
+   width: 320px;
 }
 
 .passenger-dropdown {
@@ -130,8 +131,8 @@
 }
 
 .counter button {
-   width: 24px;
-   height: 24px;
+   width: 28px;
+   height: 28px;
    border: none;
    background: var(--secondary-color);
    color: white;
@@ -148,13 +149,13 @@
    display: flex;
    align-items: center;
    gap: 8px;
-   font-size: 1rem;
+   font-size: 1.2rem;
    font-weight: 500;
 }
 
 .pet-option input {
-   width: 18px;
-   height: 18px;
+   width: 20px;
+   height: 20px;
    accent-color: var(--secondary-color);
 }
 
@@ -162,13 +163,14 @@
 .guest-close {
    width: 100%;
    margin-top: 12px;
-   padding: 10px;
+   padding: 12px;
    background: var(--secondary-color);
    color: white;
    border: none;
-   border-radius: 6px;
+   border-radius: 8px;
    cursor: pointer;
    font-weight: 600;
+   font-size: 1rem;
 }
 
 /* Search Button */
@@ -176,12 +178,12 @@
    background: var(--secondary-color);
    color: white;
    border: none;
-   padding: 12px 22px;
-   font-size: 1rem;
+   padding: 14px 26px;
+   font-size: 1.2rem;
    border-radius: 8px;
    cursor: pointer;
    transition: background 0.3s;
-   height: 40px;
+   height: 50px;
 }
 
 .search-button:hover {
@@ -221,7 +223,7 @@
 }
 
 .react-datepicker__day:hover {
-   background-color: #e0e0e0;
+   background: #e0e0e0;
 }
 
 .react-datepicker__navigation {
@@ -240,18 +242,22 @@
 @media only screen and (max-width: 992px) {
    .search-bar {
      flex-wrap: wrap;
-     padding: 12px;
+     padding: 14px;
      width: 100%;
    }
 
-   .search-bar input,
-   .search-bar .react-datepicker-wrapper,
-   .search-bar .passenger-select {
+   .search-input,
+   .search-date-picker,
+   .passenger-select {
      width: 100%;
+     font-size: 1rem;
+     height: 45px;
    }
 
-   .search-bar button {
+   .search-button {
      width: 100%;
+     font-size: 1rem;
+     height: 45px;
    }
 
    .passenger-dropdown-container {
