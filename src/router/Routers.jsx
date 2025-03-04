@@ -8,7 +8,9 @@ import SearchResultList from '../pages/SearchResultList';
 import TourDetails from '../pages/TourDetails';
 import Tours from '../pages/Tours';
 import Manager from '../pages/Manager';
-import ManagerHotels from '../pages/ManagerHotels';  // Yeni sayfa eklendi
+import ManagerHotels from '../pages/ManagerHotels';  // Otel Sayfası
+import ManagerReservations from '../pages/ManagerReservations';  // Yeni sayfa eklendi
+import ManagerProfile from '../pages/ManagerProfile';  // Yeni sayfa eklendi
 import Admin from '../pages/Admin';
 import AdminContact from '../pages/AdminContact';
 import AdminStaff from '../pages/AdminStaff';
@@ -37,6 +39,8 @@ const Routers = () => {
          {/* ✅ Manager Sayfaları */}
          <Route path="/manager" element={<Manager />} /> {/* Dashboard */}
          <Route path="/manager/hotel" element={<ManagerHotels />} /> {/* Oteller Sayfası */}
+         <Route path="/manager/reservations" element={<ManagerReservations />} /> {/* Rezervasyonlar Sayfası */}
+         <Route path="/manager/profile" element={<ManagerProfile />} /> {/* Yöneticinin Profili */}
 
          {/* Admin Sayfası (Nested Routes ile Sidebar her zaman kalacak) */}
          <Route path="/admin/*" element={<Admin />}>

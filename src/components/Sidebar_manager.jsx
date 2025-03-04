@@ -31,9 +31,9 @@ const SidebarManager = () => {
 
   const menuItems = [ 
     { path: "/manager", name: "Dashboard", icon: <FaTh /> }, 
-    { path: "/manager/status", name: "Status", icon: <FaInfo /> }, 
+    { path: "/manager/reservations", name: "Reservations", icon: <FaInfo /> }, 
     { path: "/manager/hotel", name: "Hotel", icon: <BiSolidHotel /> }, 
-    { path: "/manager/users", name: "User List", icon: <FaUserAlt /> } 
+    { path: "/manager/profile", name: "Profile", icon: <FaUserAlt /> } 
   ]; 
 
   return ( 
