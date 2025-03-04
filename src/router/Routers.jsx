@@ -7,9 +7,6 @@ import Register from '../pages/Register';
 import SearchResultList from '../pages/SearchResultList';
 import TourDetails from '../pages/TourDetails';
 import Hotels from '../pages/Hotels'; 
-
-
-
 import Manager from '../pages/Manager';
 import ManagerHotels from '../pages/ManagerHotels';  // Otel Sayfası
 import ManagerReservations from '../pages/ManagerReservations';  // Yeni sayfa eklendi
@@ -22,6 +19,10 @@ import About from '../pages/About';
 import Contact from '../pages/Contact';
 import SearchResults from "../pages/SearchResults";
 import AdminProfile from '../pages/AdminProfile';
+import Profile from '../pages/profile/Profile';
+import ProfileBookings from '../pages/profile/ProfileBookings.jsx';
+import ProfileSettings from '../pages/profile/ProfileSettings';
+import Overview from '../pages/profile/Overview';
 
 const Routers = () => {
   return (
@@ -34,6 +35,11 @@ const Routers = () => {
       <Route path="/hotels" element={<Hotels />} /> {/* Updated from /tours to /hotels */}
       <Route path="/hotels/:id" element={<TourDetails />} /> {/* Updated from /tours/:id to /hotels/:id */}
       <Route path="/login" element={<Login />} />
+      <Route path="/profile" element={<Profile />}>
+            <Route index element={<Overview />} />
+            <Route path="bookings" element={<ProfileBookings />} />
+            <Route path="settings" element={<ProfileSettings />} />
+      </Route>
       <Route path="/register" element={<Register />} />
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/hotels/search" element={<SearchResultList />} /> {/* Updated from /tours/search to /hotels/search */}
