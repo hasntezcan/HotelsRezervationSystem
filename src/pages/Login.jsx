@@ -56,7 +56,7 @@ const Login = () => {
               
               {/* Sağ kısım (form) */}
               <div className="auth-right">
-                <h2 className="auth-title">Hello Place2Stay User</h2>
+                <h2 className="auth-title">Hello Stay Inn User</h2>
                 <p className="auth-subtitle">Welcome back! Please log in.</p>
 
                 <Form onSubmit={handleClick}>
