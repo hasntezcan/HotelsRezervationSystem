@@ -7,9 +7,8 @@ import Register from '../pages/Register';
 import SearchResultList from '../pages/SearchResultList';
 import TourDetails from '../pages/TourDetails';
 import Hotels from '../pages/Hotels'; 
-import ManagerUser from '../pages/ManagerUser';
-import Manager from '../pages/Manager';
-import ManagerStatus from '../pages/ManagerStatus';
+
+
 
 import Manager from '../pages/Manager';
 import ManagerHotels from '../pages/ManagerHotels';  // Otel Sayfası
