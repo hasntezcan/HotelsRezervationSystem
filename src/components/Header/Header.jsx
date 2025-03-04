@@ -43,6 +43,16 @@ const Header = () => {
     menuRef.current.classList.toggle('show__menu');
   };
 
+  // Smooth scroll to top if already on the same page
+  const handleNavClick = (path) => {
+    if (window.location.pathname === path) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   return (
     <header className="header" ref={headerRef}>
       <Container>
@@ -58,7 +68,11 @@ const Header = () => {
               <ul className="menu d-flex align-items-center gap-4">
                 {nav__links.map((item, index) => (
                   <li className="nav__item" key={index}>
-                    <NavLink to={item.path} className={(navClass) => (navClass.isActive ? 'active__link' : '')}>
+                    <NavLink
+                      to={item.path}
+                      className={(navClass) => (navClass.isActive ? 'active__link' : '')}
+                      onClick={() => handleNavClick(item.path)}
+                    >
                       {item.display}
                     </NavLink>
                   </li>
