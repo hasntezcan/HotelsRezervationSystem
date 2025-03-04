@@ -22,13 +22,13 @@ const Home = () => {
                <Row className="align-items-center text-center">
                   <Col lg="12">
                      <div className="hero__content">
-                        <Subtitle subtitle={'Discover the Future of Travel'} />
+                        
                         <h1 className="hero__title">
                            Your Next Adventure <span className="highlight">Awaits</span>
                         </h1>
-                        <p className="hero__text">
-                           Explore breathtaking destinations with ease and comfort. Your journey starts here.
-                        </p>
+                        {/*<p className="hero__text">*/}
+                       {/* Discover the Future of Travel. Your journey starts here.*/}
+                        {/*</p>*/}
                      </div>
                   </Col>
                   <Col lg="12">

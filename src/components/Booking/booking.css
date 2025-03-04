@@ -1,85 +1,111 @@
+/* Root Variables for Color Palette */
+:root {
+   --primary-color: #264653; /* Dark teal for primary elements */
+   --secondary-color: #2A9D8F; /* Light teal for secondary elements */
+   --background-color: #FFFFFF; /* White background */
+   --text-color: #264653; /* Dark teal for text */
+   --accent-color: #E07A5F; /* Coral for accents and interactive elements */
+   --hover-color: #d65f5f; /* Hover color */
+}
+
+/* Updated booking.css */
 .booking {
-   padding      : 2rem;
-   border-radius: 0.5rem;
-   border       : 1px solid var(--secondary-color);
-   position     : sticky;
-   top          : 80px;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--secondary-color);
+  position: sticky;
+  top: 80px;
+  background: var(--background-color);
+  color: var(--text-color);
 }
 
 .booking__top h3 {
-   font-size  : 1.2rem;
-   font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-color);
 }
 
 .booking__top h3 span {
-   font-size  : 1rem;
-   font-weight: 400;
-   color      : var(--text-color);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-color);
 }
 
 .booking__top span {
-   font-size  : 1rem;
-   font-weight: 600;
-   color      : var(--text-color);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
 }
 
 .booking__top span i {
-   color: var(--secondary-color);
+  color: var(--secondary-color);
 }
 
 .booking__top {
-   padding-bottom: 1rem;
-   border-bottom : 1px solid rgb(229, 231, 235);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--secondary-color);
 }
 
 .booking__form {
-   padding-top: 1rem;
+  padding-top: 1rem;
 }
 
 .booking__form h5 {
-   margin-bottom: 1rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
 }
 
 .booking__form input {
-   width        : 100%;
-   padding      : 0.4rem;
-   border-radius: 0.5rem;
-   color        : var(--heading-color);
-   font-size    : 0.7rem;
-   border-bottom: 1px solid rgb(229, 231, 235);
-   border       : none;
+  width: 100%;
+  padding: 0.4rem;
+  border-radius: 0.5rem;
+  color: var(--text-color);
+  font-size: 0.7rem;
+  border-bottom: 1px solid var(--secondary-color);
+  border: none;
+  background: var(--background-color);
 }
 
 .booking__form input:focus {
-   outline: none;
+  outline: none;
 }
 
 .booking__info-form {
-   padding: 0.2rem;
-   border : 1px solid rgb(229, 231, 235);
+  padding: 0.2rem;
+  border: 1px solid var(--secondary-color);
+  background: var(--background-color);
 }
 
 .booking__bottom li {
-   display: flex;
-   align-items: center;
-   justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .booking__bottom li h5,
 .booking__bottom li span {
-   font-size: 0.7rem;
-   font-weight: 500;
-   color: var(--text-color);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-color);
 }
 
 .total h5,
 .total span {
-   font-size: 1rem !important;
-   font-weight: 700 !important;
-   color: var(--heading-color) !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  color: var(--primary-color) !important;
+}
+
+.booking__bottom Button {
+  background: var(--accent-color);
+  color: white;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
 }
 
 .booking__bottom Button:hover {
-   transform: scale(1.1);
-   transition: 0.5s;
+  transform: scale(1.1);
+  transition: 0.5s;
+  background: var(--hover-color);
 }
