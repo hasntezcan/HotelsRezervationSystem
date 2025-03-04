@@ -6,32 +6,32 @@ import { Container, Row, Col } from "reactstrap";
 import CommonSection from "../shared/CommonSection";
 import TourCard from "../shared/TourCard";
 import Newsletter from "../shared/Newsletter";
-import SearchBar from "../shared/SearchBar"; // ✅ SearchBar'ı ekledik
+import SearchBar from "../shared/SearchBar";
 
 const SearchResults = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
 
-  const city = params.get("city");
+  const destination = params.get("destination");
   const startDate = params.get("startDate");
   const endDate = params.get("endDate");
-  const people = params.get("people");
+  const adults = parseInt(params.get("adults")) || 1;
+  const children = parseInt(params.get("children")) || 0;
 
   let filteredHotels = hotels.filter(
-    (hotel) => hotel.city.toLowerCase() === city.toLowerCase()
+    (hotel) => hotel.city.toLowerCase() === destination.toLowerCase()
   );
 
-  if (people) {
+  if (adults + children) {
     filteredHotels = filteredHotels.filter(
-      (hotel) => hotel.maxGroupSize >= parseInt(people)
+      (hotel) => hotel.maxGroupSize >= adults + children
     );
   }
 
   return (
     <>
-      <CommonSection title="Arama Sonuçları" />
+      <CommonSection title="Search Results" />
       
-      {/* ✅ Arama Çubuğunu Buraya Ekledik */}
       <section>
         <Container>
           <Row>
@@ -47,16 +47,16 @@ const SearchResults = () => {
           <Row>
             <Col lg="12" className="mb-4">
               <p>
-                <strong>Şehir:</strong> {city} |{" "}
-                <strong>Tarih:</strong>{" "}
+                <strong>Destination:</strong> {destination} | 
+                <strong> Dates:</strong>{" "}
                 {startDate
                   ? new Date(startDate).toLocaleDateString()
-                  : "Belirtilmedi"}{" "}
+                  : "Not Specified"}{" "}
                 -{" "}
                 {endDate
                   ? new Date(endDate).toLocaleDateString()
-                  : "Belirtilmedi"}{" "}
-                | <strong>Kişi Sayısı:</strong> {people}
+                  : "Not Specified"}{" "}
+                | <strong>Guests:</strong> {adults + children}
               </p>
             </Col>
 
@@ -68,7 +68,7 @@ const SearchResults = () => {
               ))
             ) : (
               <Col lg="12">
-                <h4 className="text-center">Sonuç bulunamadı.</h4>
+                <h4 className="text-center">No results found.</h4>
               </Col>
             )}
           </Row>
