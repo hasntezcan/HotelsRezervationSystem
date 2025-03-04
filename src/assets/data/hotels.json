@@ -1,5 +1,6 @@
 [
   {
+    "_id": "01",
     "hotelName": "The Grand London Hotel",
     "city": "London",
     "address": "123 Oxford Street, London",
@@ -12,6 +13,7 @@
     "featured": true
   },
   {
+    "_id": "02",
     "hotelName": "Royal Palace London",
     "city": "London",
     "address": "10 Downing Street, London",
@@ -24,6 +26,7 @@
     "featured": true
   },
   {
+    "_id": "03",
     "hotelName": "London River Hotel",
     "city": "London",
     "address": "567 River Road, London",
@@ -36,6 +39,7 @@
     "featured": false
   },
   {
+    "_id": "04",
     "hotelName": "Skyline Tower London",
     "city": "London",
     "address": "321 Skyline Avenue, London",
@@ -48,6 +52,7 @@
     "featured": false
   },
   {
+    "_id": "05",
     "hotelName": "Bali Beach Resort",
     "city": "Bali",
     "address": "456 Sunset Road, Bali",
@@ -60,6 +65,7 @@
     "featured": true
   },
   {
+    "_id": "06",
     "hotelName": "Tropical Paradise Bali",
     "city": "Bali",
     "address": "789 Island Street, Bali",
@@ -72,6 +78,7 @@
     "featured": true
   },
   {
+    "_id": "07",
     "hotelName": "Golden Sands Resort",
     "city": "Bali",
     "address": "999 Ocean Drive, Bali",
@@ -84,6 +91,7 @@
     "featured": false
   },
   {
+    "_id": "08",
     "hotelName": "Island Escape Hotel",
     "city": "Bali",
     "address": "222 Paradise Lane, Bali",
@@ -96,6 +104,7 @@
     "featured": false
   },
   {
+    "_id": "09",
     "hotelName": "Tokyo Sky Hotel",
     "city": "Tokyo",
     "address": "789 Shibuya, Tokyo",
@@ -108,6 +117,7 @@
     "featured": true
   },
   {
+    "_id": "10",
     "hotelName": "Shinjuku Business Hotel",
     "city": "Tokyo",
     "address": "45 Business Street, Tokyo",
@@ -120,6 +130,7 @@
     "featured": true
   },
   {
+    "_id": "11",
     "hotelName": "Cherry Blossom Resort",
     "city": "Tokyo",
     "address": "22 Sakura Avenue, Tokyo",
@@ -132,6 +143,7 @@
     "featured": false
   },
   {
+    "_id": "12",
     "hotelName": "Luxury Tower Tokyo",
     "city": "Tokyo",
     "address": "567 Ginza Road, Tokyo",
@@ -144,6 +156,7 @@
     "featured": false
   },
   {
+    "_id": "13",
     "hotelName": "Eiffel Grand Hotel",
     "city": "Paris",
     "address": "123 Champs Elysees, Paris",
@@ -156,6 +169,7 @@
     "featured": true
   },
   {
+    "_id": "14",
     "hotelName": "Louvre Palace Hotel",
     "city": "Paris",
     "address": "89 Louvre Street, Paris",
@@ -168,6 +182,7 @@
     "featured": true
   },
   {
+    "_id": "15",
     "hotelName": "Seine River Hotel",
     "city": "Paris",
     "address": "456 Riverfront, Paris",
@@ -180,6 +195,7 @@
     "featured": false
   },
   {
+    "_id": "16",
     "hotelName": "Parisian Royal Suites",
     "city": "Paris",
     "address": "777 Palace Road, Paris",

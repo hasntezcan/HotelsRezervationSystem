@@ -1,4 +1,4 @@
-import "../styles/AdminSideBar.css";
+import "../styles/ManagerSideBar.css";
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { FaTh, FaUserAlt, FaInfo, FaList, FaBars } from "react-icons/fa";
