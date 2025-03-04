@@ -1,115 +1,88 @@
+/* 🌌 Genel Dashboard Stili */
 #root {
-    --primary-color: #264653; /* Dark teal for primary elements */
-    --secondary-color: #2A9D8F; /* Light teal for secondary elements */
-    --background-color: #FFFFFF; /* White background */
-    --text-color: #264653; /* Dark teal for text */
-    --accent-color: #E07A5F; /* Coral for accents and interactive elements */
-    --hover-color: #d65f5f; /* Hover color */
-    --font-name         : "Montserrat", sans-serif;
+    --primary-color: #264653;
+    --secondary-color: #2A9D8F;
+    --heading-color: #264653;
+    --background-color: #ffffff;
+    --text-color: #264653;
+    --accent-color: #E07A5F;
+    --hover-color: #d65f5f;
+    --font-name: "Montserrat", sans-serif;
     --subtitle-font-name: "Island Moments", cursive;
- }
- 
-/* Dashboard Genel */
+}
+
+html, body {
+    background-color: var(--secondary-color) !important; /* Tüm sayfayı kapsayan renk */
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Yatay kaydırmayı kaldır */
+}
+
 .dashboard-container {
-    background: #ff7e01 !important;
-    background-color: #faa935 !important;
     color: #fff;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-name);
     margin: auto;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 
-/* Üst Kısımdaki Kartlar */
+/* 📊 Üst Kısımdaki Kartlar */
 .stats-container {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 15px;
     margin-bottom: 20px;
     width: 100%;
 }
 
 .stat-card {
-    background: #22263a;
+    background: var(--primary-color);
     padding: 20px;
     border-radius: 10px;
     flex: 1;
     text-align: center;
-    min-width: 200px;
-}
-
-.stat-card h3 {
-    font-size: 24px;
-    color: #00C49F;
-}
-
-.stat-card p {
-    font-size: 14px;
-    opacity: 0.7;
-}
-
-.stat-card span {
-    font-size: 12px;
-    color: #8884d8;
+    min-width: 220px;
+    max-width: 300px;
 }
 
 /* 📌 Takvim - Mailbox - Hava Durumu */
 .middle-container {
     display: flex;
-    justify-content: space-between;
-    align-items: stretch;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 15px;
     width: 100%;
     margin-bottom: 20px;
 }
 
-/* 📅 Takvim Genel Stil */
+/* 📅 Takvim Widget */
+.calendar-widget {
+    flex: 1;
+    max-width: 350px;
+    background:var(--primary-color);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 🔵 Takvim İç Arka Plan Rengi */
 .react-calendar {
-    background-color: #0037ff;  /* İç arka plan rengi */
-    color: white;               /* Yazı rengi */
-    border-radius: 10px;        /* Köşeleri yuvarlat */
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 10px;
     padding: 15px;
 }
 
-/* 🔵 Seçili Gün Arkaplan Rengi */
-.react-calendar__tile--active {
-    background: #007bff !important;  /* Seçili gün arkaplan rengi */
-    color: white !important;         /* Seçili gün yazı rengi */
-}
-
-/* 🗓️ Takvim Başlık (Ay ve Yıl) */
-.react-calendar__navigation {
-    background-color: #1a1d2b; /* Başlık kısmının arka planı */
-    color: white;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-/* 📆 Günlerin Bulunduğu Alan */
-.react-calendar__month-view {
-    background-color: #1a1d2b;
-}
-
-/* 🔳 Gün Kutularının Rengi */
-.react-calendar__tile {
-    background-color: #22263a; /* Gün kutuları için arka plan */
-    color: white;
-    border-radius: 5px;
-}
-
-/* 🔳 Günlerin Hover Efekti */
-.react-calendar__tile:hover {
-    background-color: #007bff !important;
-    color: white !important;
-}
-
-/* Mailbox */
+/* 📬 Mailbox */
 .mailbox-widget {
-    background: #22263a;
+    background: var(--primary-color);
     padding: 20px;
     border-radius: 10px;
     flex: 2;
@@ -130,14 +103,14 @@
 }
 
 .mailbox-widget th {
-    background: #007bff;
+    background: var(--accent-color);
     color: white;
 }
 
-/* Yanıt Butonu */
+/* 📧 Yanıt Butonu */
 .reply-btn {
-    background: #28a745;
-    color: white;
+    background: var(--background-color);
+    color: var(--heading-color);
     padding: 5px 10px;
     border-radius: 5px;
     text-decoration: none;
@@ -146,12 +119,13 @@
 }
 
 .reply-btn:hover {
-    background: #218838;
+    background: var(--accent-color);
+    color: white;
 }
 
-/* 🌤️ Hava Durumu Widget */
+/* 🌦️ Hava Durumu Widget */
 .weather-widget {
-    background: #22263a;
+    background: var(--primary-color);
     padding: 20px;
     border-radius: 10px;
     flex: 1;
@@ -165,7 +139,7 @@
     justify-content: center;
 }
 
-
+/* 🌤️ Hava Durumu Icon */
 .weather-widget img {
     width: 80px;
     margin-top: 10px;
@@ -173,7 +147,7 @@
 
 /* 📈 Çizgi Grafiği */
 .chart-container {
-    background: #22263a;
+    background: var(--primary-color);
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
@@ -189,18 +163,36 @@
     flex-wrap: wrap;
 }
 
-.pie-chart, .bar-chart {
-    background: #22263a;
+.pie-chart{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px; 
+    background:var(--primary-color);
+    padding: 20px;
+    border-radius: 10px;
+    flex: 1;
+    text-align: center;
+    min-width: 300px;
+    
+} .bar-chart {
+    background:var(--primary-color);
     padding: 20px;
     border-radius: 10px;
     flex: 1;
     text-align: center;
     min-width: 300px;
 }
+.manager-list {
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    color: white;
+}
 
 /* 💳 Transactions */
 .transactions-container {
-    background: #22263a;
+    background:var(--primary-color);
     padding: 20px;
     border-radius: 10px;
     margin-top: 20px;
@@ -218,24 +210,57 @@
     border-bottom: none;
 }
 
-/* 📌 Responsive Tasarım */
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
     .middle-container {
-        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .calendar-widget {
+        width: 90% !important;
+        max-width: 320px !important;
+        min-width: auto;
+        padding: 15px !important;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
     }
-    
-    .calendar-widget, .mailbox-widget, .weather-widget {
-        flex: none;
-        width: 100%;
-        margin-bottom: 15px;
+
+    /* 📆 Takvim içeriği taşmayı önlesin */
+    .react-calendar {
+        width: 100% !important;
+        max-width: 280px !important;
+        min-width: auto;
+        background-color: var(--primary-color) !important;
+        padding: 10px !important;
+        border-radius: 10px !important;
     }
 
-    .bottom-container {
-        flex-wrap: wrap;
+    /* 📅 Takvim Başlığı */
+    .react-calendar__navigation {
+        width: 100%;
+        text-align: center;
     }
 
-    .pie-chart, .bar-chart {
+    /* 📌 Widget'lar İçin Genel Mobil Ayar */
+    .mailbox-widget,
+    .weather-widget {
+        width: 90% !important;
+        max-width: 320px !important;
+        padding: 15px !important;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* 📌 Genel Sayfa Yapısını Düzelt */
+    .dashboard-container {
         width: 100%;
+        padding: 10px;
+        overflow-x: hidden !important;
     }
 }
