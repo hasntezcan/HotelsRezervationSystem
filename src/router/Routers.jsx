@@ -9,6 +9,7 @@ import TourDetails from '../pages/TourDetails';
 import Tours from '../pages/Tours';
 import AdminUser from '../pages/AdminUser';
 import Admin from '../pages/Admin';
+import AdminStatus from '../pages/AdminStatus'; // ✅ Eklendi
 import Manager from '../pages/Manager';
 import ManagerContact from '../pages/ManagerContact';
 import ManagerStaff from '../pages/ManagerStaff';
@@ -17,6 +18,7 @@ import About from '../pages/About';
 import Contact from '../pages/Contact';
 import SearchResults from "../pages/SearchResults";
 import ManagerProfile from '../pages/ManagerProfile';
+
 const Routers = () => {
    return (
       <Routes>
@@ -35,7 +37,7 @@ const Routers = () => {
 
          {/* ✅ Admin Sayfaları */}
          <Route path="/admin" element={<Admin />} /> {/* Dashboard */}
-         <Route path="/admin/profile" element={<Admin />} /> {/* Profile */}
+         <Route path="/admin/status" element={<AdminStatus />} /> {/* Status (Yeni eklendi) */}
          <Route path="/admin/users" element={<AdminUser />} /> {/* User List */}
 
          {/* Manager Sayfası (Nested Routes ile Sidebar her zaman kalacak) */}

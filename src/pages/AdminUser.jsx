@@ -7,10 +7,12 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const AdminUser = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [newUser, setNewUser] = useState({
     username: "",
     email: "",
     password: "",
+    role: "User"
   });
 
   useEffect(() => {
@@ -49,7 +51,7 @@ const AdminUser = () => {
 
     setUsers(updatedUsers);
     localStorage.setItem("localUsers", JSON.stringify(updatedUsers));
-    setNewUser({ username: "", email: "", password: "" });
+    setNewUser({ username: "", email: "", password: "", role: "User" });
   };
 
   const editUser = (user) => {
@@ -88,13 +90,31 @@ const AdminUser = () => {
               onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
               style={styles.input}
             />
-            <input
-              type="password"
-              placeholder="Şifre"
-              value={newUser.password}
-              onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+            <div style={styles.passwordContainer}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Şifre"
+                value={newUser.password}
+                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                style={styles.input}
+              />
+              <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={styles.showButton}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            <select
+              value={newUser.role}
+              onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
               style={styles.input}
-            />
+            >
+              <option value="User">User</option>
+              <option value="Admin">Admin</option>
+              <option value="Manager">Manager</option>
+            </select>
             <button 
               onClick={addOrUpdateUser} 
               style={styles.button}
@@ -111,7 +131,7 @@ const AdminUser = () => {
                 users.map((user) => (
                   <li key={user.id} style={styles.listItem}>
                     <div style={styles.userInfo}>
-                      <span><strong>{user.username}</strong> - {user.email}</span>
+                      <span><strong>{user.username}</strong> - {user.email} {user.role}</span>
                     </div>
                     <div style={styles.buttonGroup}>
                       <button onClick={() => editUser(user)} style={styles.updateButton}>
@@ -133,6 +153,9 @@ const AdminUser = () => {
     </div>
   );
 };
+
+
+
 
 const styles = {
   pageContainer: {
@@ -170,6 +193,18 @@ const styles = {
     borderRadius: "5px",
     border: "1px solid #ccc",
     background: "#eee",
+  },
+  passwordContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+  },
+  showButton: {
+    background: "#ddd",
+    border: "none",
+    padding: "8px 12px",
+    cursor: "pointer",
+    borderRadius: "5px",
   },
   button: {
     width: "100%",

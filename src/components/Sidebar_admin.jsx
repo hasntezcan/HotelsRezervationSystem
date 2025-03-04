@@ -29,7 +29,7 @@ const SidebarAdmin = () => {
 
   const menuItems = [
     { path: "/admin", name: "Dashboard", icon: <FaTh /> },
-    { path: "/admin/profile", name: "Profile", icon: <FaUserAlt /> },
+    { path: "/admin/status", name: "Status", icon: <FaUserAlt /> },
     { path: "/admin/users", name: "User List", icon: <FaList /> },
   ];
 
