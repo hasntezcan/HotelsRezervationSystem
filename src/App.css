@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Island+Moments&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
 
-:root {
+#root {
   --primary-color: #264653; /* Dark teal for primary elements */
   --secondary-color: #2A9D8F; /* Light teal for secondary elements */
   --heading-color: #264653; /* Dark teal for headings */

@@ -1,16 +1,18 @@
 #root {
-    --primary-color     : #ff7e01;
-    --secondary-color   : #faa935;
-    --heading-color     : #0b2727;
-    --text-color        : #6e7074;
+    --primary-color: #264653; /* Dark teal for primary elements */
+    --secondary-color: #2A9D8F; /* Light teal for secondary elements */
+    --background-color: #FFFFFF; /* White background */
+    --text-color: #264653; /* Dark teal for text */
+    --accent-color: #E07A5F; /* Coral for accents and interactive elements */
+    --hover-color: #d65f5f; /* Hover color */
     --font-name         : "Montserrat", sans-serif;
     --subtitle-font-name: "Island Moments", cursive;
  }
  
 /* Dashboard Genel */
 .dashboard-container {
-    background: var(--primary-color) !important;
-    background-color: var(--secondary-color) !important;
+    background: #ff7e01 !important;
+    background-color: #faa935 !important;
     color: #fff;
     font-family: 'Poppins', sans-serif;
     margin: auto;
