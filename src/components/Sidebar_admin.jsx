@@ -1,4 +1,4 @@
-import "../styles/ManagerSideBar.css";
+import "../styles/AdminSideBar.css";
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { FaTh, FaUserAlt, FaList, FaBars } from "react-icons/fa";
@@ -28,9 +28,9 @@ const SidebarAdmin = () => {
   }, []);
 
   const menuItems = [
-    { path: "/admin", name: "Dashboard", icon: <FaTh /> },
-    { path: "/admin/status", name: "Status", icon: <FaUserAlt /> },
-    { path: "/admin/users", name: "User List", icon: <FaList /> },
+    { path: "/manager", name: "Dashboard", icon: <FaTh /> },
+    { path: "/manager/status", name: "Status", icon: <FaUserAlt /> },
+    { path: "/manager/users", name: "User List", icon: <FaList /> },
   ];
 
   return (

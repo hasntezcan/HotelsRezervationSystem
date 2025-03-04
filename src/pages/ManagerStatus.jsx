@@ -4,7 +4,7 @@ import AdminNavbar from "../components/AdminNavbar";
 import { Container, Grid, Card, CardContent, Typography } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
-const AdminStatus = () => {
+const ManagerStatus = () => {
   const [userCount, setUserCount] = useState(0);
   const [userRoleData, setUserRoleData] = useState([]);
 
@@ -80,4 +80,4 @@ const AdminStatus = () => {
   );
 };
 
-export default AdminStatus;
+export default ManagerStatus;

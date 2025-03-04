@@ -4,7 +4,7 @@ import AdminNavbar from "../components/AdminNavbar";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const AdminUser = () => {
+const ManagerUser = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -260,4 +260,4 @@ const styles = {
   },
 };
 
-export default AdminUser;
+export default ManagerUser;

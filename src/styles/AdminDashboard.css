@@ -61,9 +61,10 @@
 .calendar-widget, .weather-widget {
     flex: 1;
     max-width: 300px;
+
     background: white;
     border-radius: 10px;
-    padding: 10px;
+    padding: 2p;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
     text-align: center;
 }

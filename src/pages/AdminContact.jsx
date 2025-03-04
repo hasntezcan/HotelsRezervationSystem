@@ -1,7 +1,7 @@
-import "../styles/ManagerContactUs.css";
+import "../styles/AdminContactUs.css";
 import React, { useState } from "react";
 
-const ManagerContact = () => {
+const AdminContact = () => {
   const [messages, setMessages] = useState([]);
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState(null);
@@ -25,26 +25,7 @@ const ManagerContact = () => {
   };
 
   return (
-    <div className="contact-page">
-      
-      {/* Contact Us Form - Left Side */}
-      <div className="contact-form-container">
-        <h2>Contact Us</h2>
-        <form onSubmit={handleSubmit}>
-          <label>Name</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} required />
-
-          <label>Email</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-
-          <label>Your Message</label>
-          <textarea name="message" value={formData.message} onChange={handleChange} required />
-
-          <button type="submit">Send</button>
-        </form>
-        {status && <p className="status-message">{status}</p>}
-      </div>
-
+    <div className="contact-container">
       {/* Incoming Messages - Right Side */}
       <div className="messages-container">
         <h2>Incoming Messages</h2>
@@ -70,4 +51,4 @@ const ManagerContact = () => {
   );
 };
 
-export default ManagerContact;
+export default AdminContact;

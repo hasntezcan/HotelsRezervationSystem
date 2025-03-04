@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "../styles/ManagerDashboard.css";
+import "../styles/AdminDashboard.css";
 import axios from "axios";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-const ManagerDashboard = () => {
+const AdminDashboard = () => {
   const [hotels, setHotels] = useState(120);
   const [reservations, setReservations] = useState({ daily: 45, weekly: 320, monthly: 1300 });
   const [revenue, setRevenue] = useState(25000);
@@ -53,7 +53,7 @@ const ManagerDashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <h1>Manager Dashboard</h1>
+      <h1>Admin Dashboard</h1>
 
       {/* Kartlar */}
       <div className="dashboard-cards">
@@ -179,4 +179,4 @@ const ManagerDashboard = () => {
   );
 };
 
-export default ManagerDashboard;
+export default AdminDashboard;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "../styles/ManagerProfile.css";
+import "../styles/AdminProfile.css";
 
-const ManagerProfile = () => {
+const AdminProfile = () => {
     const [manager, setManager] = useState({
         firstName: "John",
         lastName: "Doe",
@@ -29,7 +29,7 @@ const ManagerProfile = () => {
 
     return (
         <div className="profile-container">
-            <h2>Manager Profile</h2>
+            <h2>Your Profile</h2>
             <div className="profile-form">
                 <div className="form-group">
                     <label>First Name</label>
@@ -79,4 +79,4 @@ const ManagerProfile = () => {
     );
 };
 
-export default ManagerProfile;
+export default AdminProfile;

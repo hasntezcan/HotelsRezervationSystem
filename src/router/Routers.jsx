@@ -7,17 +7,17 @@ import Register from '../pages/Register';
 import SearchResultList from '../pages/SearchResultList';
 import TourDetails from '../pages/TourDetails';
 import Tours from '../pages/Tours';
-import AdminUser from '../pages/AdminUser';
-import Admin from '../pages/Admin';
-import AdminStatus from '../pages/AdminStatus'; // ✅ Eklendi
+import ManagerUser from '../pages/ManagerUser';
 import Manager from '../pages/Manager';
-import ManagerContact from '../pages/ManagerContact';
-import ManagerStaff from '../pages/ManagerStaff';
-import ManagerDashboard from '../pages/ManagerDashboard';
+import ManagerStatus from '../pages/ManagerStatus'; // ✅ Eklendi
+import Admin from '../pages/Admin';
+import AdminContact from '../pages/AdminContact';
+import AdminStaff from '../pages/AdminStaff';
+import AdminDashboard from '../pages/AdminDashboard';
 import About from '../pages/About';
 import Contact from '../pages/Contact';
 import SearchResults from "../pages/SearchResults";
-import ManagerProfile from '../pages/ManagerProfile';
+import AdminProfile from '../pages/AdminProfile';
 
 const Routers = () => {
    return (
@@ -36,16 +36,16 @@ const Routers = () => {
          <Route path="/search-results" element={<SearchResults />} />
 
          {/* ✅ Admin Sayfaları */}
-         <Route path="/admin" element={<Admin />} /> {/* Dashboard */}
-         <Route path="/admin/status" element={<AdminStatus />} /> {/* Status (Yeni eklendi) */}
-         <Route path="/admin/users" element={<AdminUser />} /> {/* User List */}
+         <Route path="/manager" element={<Manager />} /> {/* Dashboard */}
+         <Route path="/manager/status" element={<ManagerStatus />} /> {/* Status (Yeni eklendi) */}
+         <Route path="/manager/users" element={<ManagerUser />} /> {/* User List */}
 
          {/* Manager Sayfası (Nested Routes ile Sidebar her zaman kalacak) */}
-         <Route path="/manager/*" element={<Manager />}>
-            <Route index element={<ManagerDashboard />} /> {/* Varsayılan olarak Dashboard açılsın */}
-            <Route path="contactUs" element={<ManagerContact />} />
-            <Route path="staff" element={<ManagerStaff />} />
-            <Route path="profile" element={<ManagerProfile />} />
+         <Route path="/admin/*" element={<Admin />}>
+            <Route index element={<AdminDashboard />} /> {/* Varsayılan olarak Dashboard açılsın */}
+            <Route path="contactUs" element={<AdminContact />} />
+            <Route path="staff" element={<AdminStaff />} />
+            <Route path="profile" element={<AdminProfile />} />
          </Route>
       </Routes>
    );

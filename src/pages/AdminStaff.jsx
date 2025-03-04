@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "../styles/ManagerStaff.css"; 
+import "../styles/AdminStaff.css"; 
 
-const ManagerStaff = () => {
+const AdminStaff = () => {
   const [employees, setEmployees] = useState([
     { 
       id: 1, firstName: "John", lastName: "Doe", username: "jdoe",
@@ -132,4 +132,4 @@ const ManagerStaff = () => {
   );
 };
 
-export default ManagerStaff;
+export default AdminStaff;
