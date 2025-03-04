@@ -84,7 +84,7 @@ const Footer = () => {
           <Col lg="12">
             <div className="footer__bottom text-center">
               <p className="mb-0">
-                &copy; {year} Place2Stay. All rights reserved.
+                &copy; {year} Stay Inn. All rights reserved.
               </p>
             </div>
           </Col>

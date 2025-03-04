@@ -6,7 +6,11 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import SearchResultList from '../pages/SearchResultList';
 import TourDetails from '../pages/TourDetails';
-import Tours from '../pages/Tours';
+import Hotels from '../pages/Hotels'; 
+import ManagerUser from '../pages/ManagerUser';
+import Manager from '../pages/Manager';
+import ManagerStatus from '../pages/ManagerStatus';
+
 import Manager from '../pages/Manager';
 import ManagerHotels from '../pages/ManagerHotels';  // Otel Sayfası
 import ManagerReservations from '../pages/ManagerReservations';  // Yeni sayfa eklendi
@@ -21,20 +25,20 @@ import SearchResults from "../pages/SearchResults";
 import AdminProfile from '../pages/AdminProfile';
 
 const Routers = () => {
-   return (
-      <Routes>
-         {/* Ana Sayfalar */}
-         <Route path="/" element={<Home />} />
-         <Route path="/home" element={<Home />} />
-         <Route path="/about" element={<About />} />
-         <Route path="/contact" element={<Contact />} />
-         <Route path="/tours" element={<Tours />} />
-         <Route path="/tours/:id" element={<TourDetails />} />
-         <Route path="/login" element={<Login />} />
-         <Route path="/register" element={<Register />} />
-         <Route path="/thank-you" element={<ThankYou />} />
-         <Route path="/tours/search" element={<SearchResultList />} />
-         <Route path="/search-results" element={<SearchResults />} />
+  return (
+    <Routes>
+      {/* Main Pages */}
+      <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/hotels" element={<Hotels />} /> {/* Updated from /tours to /hotels */}
+      <Route path="/hotels/:id" element={<TourDetails />} /> {/* Updated from /tours/:id to /hotels/:id */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/thank-you" element={<ThankYou />} />
+      <Route path="/hotels/search" element={<SearchResultList />} /> {/* Updated from /tours/search to /hotels/search */}
+      <Route path="/search-results" element={<SearchResults />} />
 
          {/* ✅ Manager Sayfaları */}
          <Route path="/manager" element={<Manager />} /> {/* Dashboard */}

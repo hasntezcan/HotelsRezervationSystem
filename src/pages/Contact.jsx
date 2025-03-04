@@ -1,6 +1,4 @@
-// src/pages/Contact.jsx
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import '../styles/contact.css';
 
@@ -11,6 +9,11 @@ const Contact = () => {
     phone: '',
     message: ''
   });
+
+  // Scroll to top when the component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
@@ -27,7 +30,6 @@ const Contact = () => {
     <section className="contact__section">
       <Container>
         <Row className="gy-4">
-          {/* ========== MAP COLUMN ========== */}
           <Col lg="6">
             <div className="map__container">
               <iframe
@@ -43,7 +45,6 @@ const Contact = () => {
             </div>
           </Col>
 
-          {/* ========== FORM COLUMN ========== */}
           <Col lg="6">
             <div className="contact__form">
               <h2 className="mb-3">Get in Touch With Us</h2>
@@ -105,7 +106,6 @@ const Contact = () => {
                 </Button>
               </Form>
 
-              {/* Social Media Icons */}
               <div className="social__links mt-4">
                 <a href="https://twitter.com" target="_blank" rel="noreferrer" className="social__icon">
                   <i className="ri-twitter-line"></i>
