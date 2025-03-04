@@ -2,91 +2,65 @@ import React, { useState, useEffect } from "react";
 import SidebarAdmin from "../components/Sidebar_admin";
 import AdminNavbar from "../components/AdminNavbar";
 
-const roles = ["Admin", "Manager", "User"];
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const AdminUser = () => {
-  const [users, setUsers] = useState(() => {
-    const storedUsers = localStorage.getItem("users");
-    return storedUsers
-      ? JSON.parse(storedUsers)
-      : [
-          { id: 1, firstName: "Ahmet", lastName: "Yılmaz", email: "ahmet@example.com", password: "1234", role: "User" },
-          { id: 2, firstName: "Ayşe", lastName: "Kaya", email: "ayse@example.com", password: "5678", role: "Manager" },
-          { id: 3, firstName: "Emir", lastName: "Emir", email: "emir@emir.com", password: "emir", role: "User" }
-        ];
-  });
-
+  const [users, setUsers] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
   const [newUser, setNewUser] = useState({
-    firstName: "",
-    lastName: "",
+    username: "",
     email: "",
-    phoneNumber: "",
     password: "",
-    role: "User",
   });
-
-  const [errors, setErrors] = useState({});
-  const [editingUserId, setEditingUserId] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
+    const storedUsers = JSON.parse(localStorage.getItem("localUsers")) || [];
+    setUsers(storedUsers);
+  }, []);
 
   const validateInputs = () => {
-    let validationErrors = {};
-    if (!newUser.firstName) validationErrors.firstName = "İsim boş bırakılamaz!";
-    if (!newUser.lastName) validationErrors.lastName = "Soyisim boş bırakılamaz!";
-    if (!newUser.email) validationErrors.email = "E-posta boş bırakılamaz!";
-    if (newUser.email && !emailRegex.test(newUser.email)) {
-      validationErrors.email = "Geçerli bir e-posta adresi girin!";
-      alert("E-posta geçerli değil!");
+    if (!newUser.username || !newUser.email || !newUser.password) {
+      alert("Lütfen tüm alanları doldurun!");
       return false;
     }
-    if (!newUser.phoneNumber) validationErrors.phoneNumber = "Telefon numarası boş bırakılamaz!";
-    if (!newUser.password) validationErrors.password = "Şifre boş bırakılamaz!";
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      alert("Lütfen tüm alanları doldurun.");
+    if (!emailRegex.test(newUser.email)) {
+      alert("Geçerli bir e-posta adresi girin!");
       return false;
     }
-
-    setErrors({});
     return true;
   };
 
   const addOrUpdateUser = () => {
     if (!validateInputs()) return;
-    if (editingUserId) {
-      const updatedUsers = users.map((user) =>
-        user.id === editingUserId ? { ...user, ...newUser } : user
+
+    let updatedUsers;
+    if (editingUser) {
+      updatedUsers = users.map(user =>
+        user.id === editingUser.id ? { ...user, ...newUser } : user
       );
-      setUsers(updatedUsers);
-      setEditingUserId(null);
+      setEditingUser(null);
     } else {
       const newUserObj = {
-        id: users.length + 1,
+        id: Date.now(),
         ...newUser,
       };
-      setUsers([...users, newUserObj]);
+      updatedUsers = [...users, newUserObj];
     }
-    setNewUser({ firstName: "", lastName: "", email: "", phoneNumber: "", password: "", role: "User" });
-  };
 
-  const deleteUser = (id) => {
-    const updatedUsers = users.filter((user) => user.id !== id);
     setUsers(updatedUsers);
+    localStorage.setItem("localUsers", JSON.stringify(updatedUsers));
+    setNewUser({ username: "", email: "", password: "" });
   };
 
   const editUser = (user) => {
     setNewUser(user);
-    setEditingUserId(user.id);
+    setEditingUser(user);
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+  const deleteUser = (id) => {
+    const updatedUsers = users.filter(user => user.id !== id);
+    setUsers(updatedUsers);
+    localStorage.setItem("localUsers", JSON.stringify(updatedUsers));
   };
 
   return (
@@ -94,149 +68,66 @@ const AdminUser = () => {
       <SidebarAdmin />
       <div style={styles.mainContent}>
         <AdminNavbar />
-        <section className="vh-100 gradient-custom">
-          <div className="container py-5 h-100">
-            <div className="row justify-content-center align-items-center h-100">
-              <div className="col-12 col-lg-9 col-xl-7">
-                <div className="card shadow-2-strong card-registration" style={{ borderRadius: "15px" }}>
-                  <div className="card-body p-4 p-md-5">
-                    <h3 className="mb-4 pb-2 pb-md-0 mb-md-5">Kullanıcı Ekle</h3>
-                    <form onSubmit={(e) => { e.preventDefault(); addOrUpdateUser(); }}>
-                      <div className="row">
-                        <div className="col-md-6 mb-4">
-                          <div className="form-outline">
-                            <input
-                              type="text"
-                              id="firstName"
-                              className="form-control form-control-lg"
-                              value={newUser.firstName}
-                              onChange={(e) => setNewUser({ ...newUser, firstName: e.target.value })}
-                            />
-                            <label className="form-label" htmlFor="firstName">First Name</label>
-                          </div>
-                        </div>
-                        <div className="col-md-6 mb-4">
-                          <div className="form-outline">
-                            <input
-                              type="text"
-                              id="lastName"
-                              className="form-control form-control-lg"
-                              value={newUser.lastName}
-                              onChange={(e) => setNewUser({ ...newUser, lastName: e.target.value })}
-                            />
-                            <label className="form-label" htmlFor="lastName">Last Name</label>
-                          </div>
-                        </div>
-                      </div>
+        <div style={styles.content}>
+          <h1 style={styles.title}>Kullanıcı Yönetimi</h1>
 
-                      <div className="row">
-                        <div className="col-md-6 mb-4">
-                          <div className="form-outline">
-                            <input
-                              type="email"
-                              id="email"
-                              className="form-control form-control-lg"
-                              value={newUser.email}
-                              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                            />
-                            <label className="form-label" htmlFor="email">Email</label>
-                          </div>
-                        </div>
-                        <div className="col-md-6 mb-4">
-                          <div className="form-outline">
-                            <input
-                              type="tel"
-                              id="phoneNumber"
-                              className="form-control form-control-lg"
-                              value={newUser.phoneNumber}
-                              onChange={(e) => setNewUser({ ...newUser, phoneNumber: e.target.value })}
-                            />
-                            <label className="form-label" htmlFor="phoneNumber">Phone Number</label>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="row">
-                        <div className="col-md-6 mb-4">
-                          <div className="form-outline">
-                            <input
-                              type={showPassword ? "text" : "password"} // Şifreyi göster veya gizle
-                              id="password"
-                              className="form-control form-control-lg"
-                              value={newUser.password}
-                              onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                            />
-                            <label className="form-label" htmlFor="password">Password</label>
-                            <button type="button" className="btn btn-link" onClick={togglePasswordVisibility}>
-                              {showPassword ? "Hide" : "Show"}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="row">
-                        <div className="col-md-12 mb-4">
-                          <select
-                            className="form-select form-control-lg"
-                            value={newUser.role}
-                            onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                          >
-                            {roles.map((role) => (
-                              <option key={role} value={role}>
-                                {role}
-                              </option>
-                            ))}
-                          </select>
-                          <label className="form-label">Role</label>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 pt-2">
-                        <button type="submit" className="btn" style={styles.editButton}>Düzenle</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* Kullanıcı Ekleme Formu */}
+          <div style={styles.formContainer}>
+            <h2>{editingUser ? "Kullanıcıyı Güncelle" : "Yeni Kullanıcı Ekle"}</h2>
+            <input
+              type="text"
+              placeholder="Kullanıcı Adı"
+              value={newUser.username}
+              onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+              style={styles.input}
+            />
+            <input
+              type="email"
+              placeholder="E-posta"
+              value={newUser.email}
+              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+              style={styles.input}
+            />
+            <input
+              type="password"
+              placeholder="Şifre"
+              value={newUser.password}
+              onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+              style={styles.input}
+            />
+            <button 
+              onClick={addOrUpdateUser} 
+              style={styles.button}
+            >
+              {editingUser ? "Güncelle" : "Ekle"}
+            </button>
           </div>
-        </section>
 
-        <div style={styles.userListContainer}>
-          <h2>Kullanıcılar</h2>
-          <ul>
-            {users.map((user) => (
-              <li key={user.id} style={styles.jobBox}>
-                <div className="job-left">
-                  <div className="img-holder">
-                    {user.firstName.charAt(0)}{user.lastName.charAt(0)}
-                  </div>
-                  <div className="job-content">
-                    <h5>{user.firstName} {user.lastName}</h5>
-                    <ul>
-                      <li><i className="zmdi zmdi-pin"></i> {user.email}</li>
-                      <li><i className="zmdi zmdi-lock"></i> Şifre: {user.password}</li>
-                      <li><i className="zmdi zmdi-account"></i> Rol: {user.role}</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="job-right">
-                  <button
-                    style={styles.editButton}
-                    onClick={() => editUser(user)}
-                  >
-                    Düzenle
-                  </button>
-                  <button
-                    style={styles.deleteButton}
-                    onClick={() => deleteUser(user.id)}
-                  >
-                    Sil
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+          {/* Kullanıcı Listesi */}
+          <div style={styles.userListContainer}>
+            <h2>Kayıtlı Kullanıcılar</h2>
+            <ul style={styles.list}>
+              {users.length > 0 ? (
+                users.map((user) => (
+                  <li key={user.id} style={styles.listItem}>
+                    <div style={styles.userInfo}>
+                      <span><strong>{user.username}</strong> - {user.email}</span>
+                    </div>
+                    <div style={styles.buttonGroup}>
+                      <button onClick={() => editUser(user)} style={styles.updateButton}>
+                        Güncelle
+                      </button>
+                      <button onClick={() => deleteUser(user.id)} style={styles.deleteButton}>
+                        Sil
+                      </button>
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <p>Kayıtlı kullanıcı bulunamadı.</p>
+              )}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -246,29 +137,49 @@ const AdminUser = () => {
 const styles = {
   pageContainer: {
     display: "flex",
+    height: "100vh",
   },
   mainContent: {
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "flex-start",
   },
-  contentWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "20px",
+  content: {
+    flex: 1,
     padding: "20px",
-    width: "80%",
-    alignItems: "center",
+    marginLeft: "250px",
+  },
+  title: {
+    textAlign: "center",
+    color: "#333",
   },
   formContainer: {
     padding: "20px",
-    backgroundColor: "#d3d3d3", // Gri arka plan
+    background: "linear-gradient(135deg, #454545, #999999)",
     borderRadius: "8px",
     width: "100%",
     maxWidth: "500px",
-    color: "#333", // Siyah metin rengi
+    margin: "0 auto",
+    color: "#fff",
+    boxShadow: "0px 4px 10px rgba(0,0,0,0.3)",
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    margin: "10px 0",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+    background: "#eee",
+  },
+  button: {
+    width: "100%",
+    padding: "12px",
+    background: "#007bff",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    marginTop: "10px",
   },
   userListContainer: {
     padding: "20px",
@@ -276,32 +187,40 @@ const styles = {
     borderRadius: "8px",
     width: "100%",
     maxWidth: "800px",
+    margin: "20px auto",
   },
-  jobBox: {
+  list: {
+    listStyleType: "none",
+    padding: 0,
+  },
+  listItem: {
     display: "flex",
     justifyContent: "space-between",
-    padding: "15px",
-    marginBottom: "15px",
-    border: "1px solid #ccc",
-    borderRadius: "10px",
-    backgroundColor: "#fff",
-    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+    alignItems: "center",
+    background: "#fff",
+    padding: "10px",
+    borderRadius: "5px",
+    marginBottom: "8px",
+    boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
+  },
+  buttonGroup: {
+    display: "flex",
+    gap: "10px",
+  },
+  updateButton: {
+    backgroundColor: "#FFA500", // Güncelleme butonu (Turuncu)
+    color: "white",
+    padding: "8px 12px",
+    borderRadius: "5px",
+    border: "none",
+    cursor: "pointer",
   },
   deleteButton: {
-    backgroundColor: "#C70039", // Sil butonu rengi
-    color: "#fff",
-    border: "none",
-    padding: "10px 20px",
-    cursor: "pointer",
+    backgroundColor: "#C70039",
+    color: "white",
+    padding: "8px 12px",
     borderRadius: "5px",
-    transition: "background-color 0.3s",
-  },
-  editButton: {
-    backgroundColor: "#6495ED", // Düzenle butonu rengi
-    color: "#fff",
-    padding: "10px 20px",
     border: "none",
-    borderRadius: "5px",
     cursor: "pointer",
   },
 };
