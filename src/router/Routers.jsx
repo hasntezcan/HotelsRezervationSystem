@@ -6,10 +6,10 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import SearchResultList from '../pages/SearchResultList';
 import TourDetails from '../pages/TourDetails';
-import Tours from '../pages/Tours';
+import Hotels from '../pages/Hotels'; 
 import ManagerUser from '../pages/ManagerUser';
 import Manager from '../pages/Manager';
-import ManagerStatus from '../pages/ManagerStatus'; // ✅ Eklendi
+import ManagerStatus from '../pages/ManagerStatus';
 import Admin from '../pages/Admin';
 import AdminContact from '../pages/AdminContact';
 import AdminStaff from '../pages/AdminStaff';
@@ -20,35 +20,35 @@ import SearchResults from "../pages/SearchResults";
 import AdminProfile from '../pages/AdminProfile';
 
 const Routers = () => {
-   return (
-      <Routes>
-         {/* Ana Sayfalar */}
-         <Route path="/" element={<Home />} />
-         <Route path="/home" element={<Home />} />
-         <Route path="/about" element={<About />} />
-         <Route path="/contact" element={<Contact />} />
-         <Route path="/tours" element={<Tours />} />
-         <Route path="/tours/:id" element={<TourDetails />} />
-         <Route path="/login" element={<Login />} />
-         <Route path="/register" element={<Register />} />
-         <Route path="/thank-you" element={<ThankYou />} />
-         <Route path="/tours/search" element={<SearchResultList />} />
-         <Route path="/search-results" element={<SearchResults />} />
+  return (
+    <Routes>
+      {/* Main Pages */}
+      <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/hotels" element={<Hotels />} /> {/* Updated from /tours to /hotels */}
+      <Route path="/hotels/:id" element={<TourDetails />} /> {/* Updated from /tours/:id to /hotels/:id */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/thank-you" element={<ThankYou />} />
+      <Route path="/hotels/search" element={<SearchResultList />} /> {/* Updated from /tours/search to /hotels/search */}
+      <Route path="/search-results" element={<SearchResults />} />
 
-         {/* ✅ Admin Sayfaları */}
-         <Route path="/manager" element={<Manager />} /> {/* Dashboard */}
-         <Route path="/manager/status" element={<ManagerStatus />} /> {/* Status (Yeni eklendi) */}
-         <Route path="/manager/users" element={<ManagerUser />} /> {/* User List */}
+      {/* Admin Pages */}
+      <Route path="/manager" element={<Manager />} />
+      <Route path="/manager/status" element={<ManagerStatus />} />
+      <Route path="/manager/users" element={<ManagerUser />} />
 
-         {/* Manager Sayfası (Nested Routes ile Sidebar her zaman kalacak) */}
-         <Route path="/admin/*" element={<Admin />}>
-            <Route index element={<AdminDashboard />} /> {/* Varsayılan olarak Dashboard açılsın */}
-            <Route path="contactUs" element={<AdminContact />} />
-            <Route path="staff" element={<AdminStaff />} />
-            <Route path="profile" element={<AdminProfile />} />
-         </Route>
-      </Routes>
-   );
+      {/* Manager Page */}
+      <Route path="/admin/*" element={<Admin />}>
+        <Route index element={<AdminDashboard />} />
+        <Route path="contactUs" element={<AdminContact />} />
+        <Route path="staff" element={<AdminStaff />} />
+        <Route path="profile" element={<AdminProfile />} />
+      </Route>
+    </Routes>
+  );
 };
 
 export default Routers;

@@ -1,13 +1,18 @@
-import React from 'react'
-import { Container, Row, Col } from 'reactstrap'
-import '../styles/about.css'
+import React, { useEffect } from 'react';
+import { Container, Row, Col } from 'reactstrap';
+import '../styles/about.css';
 
-import hasanImg from '../assets/images/hasan.jpg'
-import emirImg from '../assets/images/emir.jpg'
-import sezaiImg from '../assets/images/sezai.jpg'
-import dedeImg from '../assets/images/dede.jpg'
+import hasanImg from '../assets/images/hasan.jpg';
+import emirImg from '../assets/images/emir.jpg';
+import sezaiImg from '../assets/images/sezai.jpg';
+import dedeImg from '../assets/images/dede.jpg';
 
 const About = () => {
+  // Scroll to top when the component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <section className="about__section">
       <Container>
@@ -26,13 +31,11 @@ const About = () => {
         </Row>
 
         <Row className="justify-content-center">
-
           <Col lg="3" md="4" sm="6" xs="6">
             <div className="team__member">
               <img src={hasanImg} alt="Hasan" className="team__member-img" />
               <h5 className="team__member-name">Hasan Tezcan</h5>
               <p className="team__member-role">Full Stack Developer</p>
-
               <div className="team__member-links">
                 <a 
                   href="https://www.linkedin.com/in/hasan-tezcan0/" 
@@ -59,7 +62,6 @@ const About = () => {
               <img src={emirImg} alt="Emir" className="team__member-img" />
               <h5 className="team__member-name">Emir Esad Şahin</h5>
               <p className="team__member-role">Frontend Developer</p>
-
               <div className="team__member-links">
                 <a 
                   href="https://www.linkedin.com/in/emir%C5%9Fahin/" 
@@ -86,7 +88,6 @@ const About = () => {
               <img src={sezaiImg} alt="Sezai" className="team__member-img" />
               <h5 className="team__member-name">Sezai Araplarlı</h5>
               <p className="team__member-role">Backend Developer</p>
-
               <div className="team__member-links">
                 <a 
                   href="https://www.linkedin.com/in/sezowastaken" 
@@ -108,13 +109,11 @@ const About = () => {
             </div>
           </Col>
 
-          {/* 4) Dede */}
           <Col lg="3" md="4" sm="6" xs="6">
             <div className="team__member">
               <img src={dedeImg} alt="Dede" className="team__member-img" />
               <h5 className="team__member-name">Tunahan Tuze</h5>
               <p className="team__member-role">Design / UX</p>
-
               <div className="team__member-links">
                 <a 
                   href="https://www.linkedin.com/in/tunahantuze/" 
@@ -138,7 +137,7 @@ const About = () => {
         </Row>
       </Container>
     </section>
-  )
-}
+  );
+};
 
-export default About
+export default About;
