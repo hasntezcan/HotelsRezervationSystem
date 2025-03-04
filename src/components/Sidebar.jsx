@@ -1,10 +1,10 @@
-import "../styles/ManagerSideBar.css";
+import "../styles/AdminSideBar.css";
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { FaTh, FaUserAlt, FaInfo, FaList, FaBars } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { BiSolidHotel } from "react-icons/bi";
-import logo from "../assets/images/logo.png";
+import logo from "../assets/images/SidebarLogo.png";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
@@ -30,12 +30,12 @@ const Sidebar = () => {
   }, []);
 
   const menuItems = [
-    { path: "/manager", name: "Dashboard", icon: <FaTh /> },
-    { path: "/manager/contactus", name: "Contact Us", icon: <FaInfo /> },
-    { path: "/manager/staff", name: "Staff", icon: <BsFillPeopleFill /> },
-    { path: "/manager/rooms", name: "Rooms", icon: <BiSolidHotel /> },
-    { path: "/manager/profile", name: "Profile", icon: <FaUserAlt /> },
-    { path: "/manager/productlist", name: "Product List", icon: <FaList /> },
+    { path: "/admin", name: "Dashboard", icon: <FaTh /> },
+    { path: "/admin/contactus", name: "Contact Us", icon: <FaInfo /> },
+    { path: "/admin/staff", name: "Staff", icon: <BsFillPeopleFill /> },
+    { path: "/admin/rooms", name: "Rooms", icon: <BiSolidHotel /> },
+    { path: "/admin/profile", name: "Profile", icon: <FaUserAlt /> },
+    { path: "/admin/productlist", name: "Product List", icon: <FaList /> },
   ];
 
   return (
