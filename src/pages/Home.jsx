@@ -65,38 +65,11 @@ const Home = () => {
          </section>
 
 
-         {/* Gallery Section */}
-         <section className="gallery__section">
-            <Container>
-               <Row className="text-center">
-                  <Col lg="12">
-                     <Subtitle subtitle={'Gallery'} />
-                     <h2 className="gallery__title">Memories from Our Travelers</h2>
-                  </Col>
-                  <Col lg="12">
-                     <MasonryImagesGallery />
-                  </Col>
-               </Row>
-            </Container>
-         </section>
 
-         {/* Testimonials Section */}
-         <section className="testimonial__section">
-            <Container>
-               <Row className="text-center">
-                  <Col lg="12">
-                     <Subtitle subtitle={'Customer Stories'} />
-                     <h2 className="testimonial__title">What Our Travelers Say</h2>
-                  </Col>
-                  <Col lg="12">
-                     <Testimonials />
-                  </Col>
-               </Row>
-            </Container>
-         </section>
 
-         {/* Newsletter */}
-         <NewsLetter />
+
+
+
       </>
    );
 };
