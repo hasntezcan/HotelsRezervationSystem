@@ -1,268 +1,306 @@
-.search-bar-container {
+:root {
+   --primary-color: #264653; /* Dark teal for primary elements */
+   --secondary-color: #2A9D8F; /* Light teal for secondary elements */
+   --heading-color: #264653; /* Dark teal for headings */
+   --background-color: #ffffff; /* White background */
+   --text-color: #264653; /* Dark teal for text */
+   --accent-color: #E07A5F; /* Coral for accents and interactive elements */
+   --hover-color: #d65f5f; /* Hover color */
+   --font-name: "Montserrat", sans-serif;
+   --subtitle-font-name: "Island Moments", cursive;
+ }
+ 
+ /* ==================== SEARCH BAR CONTAINER ==================== */
+ .search-bar-container {
    display: flex;
    flex-direction: column;
    align-items: center;
    width: 100%;
    position: relative;
-   margin-top: 50px;
-   margin-bottom: 50px;
-}
-
-/* Light Blackout Effect */
-.blackout-overlay {
+   margin-top: 80px; /* Adjust top margin */
+   margin-bottom: 50px; /* Adjust bottom margin */
+ }
+ 
+ /* ==================== BLACKOUT OVERLAY ==================== */
+ .blackout-overlay {
    position: fixed;
    top: 0;
    left: 0;
    width: 100%;
    height: 100%;
-   background: rgba(0, 0, 0, 0.5);
+   background: rgba(0, 0, 0, 0.5); /* Adjust overlay color and opacity */
    z-index: 900;
-}
-
-/* Search Bar */
-.search-bar {
+ }
+ 
+ /* ==================== SEARCH BAR ==================== */
+ .search-bar {
    display: flex;
    align-items: center;
-   gap: 15px;
-   padding: 16px 20px;
-   border-radius: 50px;
-   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-   width: 1050px;
-   background: white;
+   gap: 16px; /* Adjust spacing between elements */
+   padding: 16px 24px; /* Adjust padding inside the search bar */
+   border-radius: 60px; /* Adjust corner radius */
+   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5); /* Adjust shadow */
+   width: 1100px; /* Adjust width of the search bar */
+   background: white; /* Change background color */
    position: relative;
    z-index: 1000;
-}
-
-/* Increased Input Fields */
-.search-input,
-.search-date-picker {
+ }
+ 
+ /* ==================== SEARCH INPUT FIELDS ==================== */
+ .search-input,
+ .search-date-picker {
    border: none;
-   padding: 12px 16px;
-   font-size: 1.2rem;
-   border-radius: 8px;
+   padding: 12px 8px; /* Adjust padding inside the input fields */
+   font-size: 1.2rem; /* Adjust font size */
+   border-radius: 12px; /* Adjust corner radius */
    outline: none;
-   font-weight: 500;
-   background: #f5f5f5;
+   font-weight: 300;
+   background: #f5f5f5; /* Change background color */
    flex: 1;
-   height: 50px;
+   height: 50px; /* Adjust height */
    transition: background 0.2s ease-in-out;
-   min-width: 200px;
-}
-
-.search-input:focus,
-.search-date-picker:focus {
-   background: #e0e0e0;
-}
-
-/* Date Picker */
-.date-picker-container {
+   min-width: 300px; /* Adjust minimum width */
+   color: var(--text-color); /* Change text color */
+ }
+ 
+ .search-input:focus,
+ .search-date-picker:focus {
+   background: #e0e0e0; /* Change background color on focus */
+ }
+ 
+ /* ==================== DATE PICKER ==================== */
+ .date-picker-container {
    position: relative;
    display: flex;
    align-items: center;
-}
-
-.clear-date-btn {
+ }
+ 
+ .clear-date-btn {
    position: absolute;
-   right: 8px;
+   right: 8px; /* Adjust position of the clear button */
    top: 50%;
    transform: translateY(-50%);
-   font-size: 1.2rem;
+   font-size: 1.2rem; /* Adjust font size */
    cursor: pointer;
-   color: gray;
+   color: gray; /* Change icon color */
    transition: color 0.3s ease-in-out;
-}
-
-.clear-date-btn:hover {
-   color: red;
-}
-
-/* Passenger Selection */
-.passenger-select {
+ }
+ 
+ .clear-date-btn:hover {
+   color: var(--accent-color); /* Change icon color on hover */
+ }
+ 
+ /* ==================== PASSENGER SELECTION ==================== */
+ .passenger-select {
    position: relative;
    cursor: pointer;
-   padding: 12px 16px;
-   background: #f5f5f5;
-   border-radius: 8px;
-   font-size: 1.2rem;
-   font-weight: 500;
+   padding: 12px 8px; /* Adjust padding */
+   background: #f5f5f5; /* Change background color */
+   color: var(--text-color); /* Change text color */
+   border-radius: 12px; /* Adjust corner radius */
+   font-size: 1.2rem; /* Adjust font size */
+   font-weight: 300;
    display: flex;
    align-items: center;
    justify-content: center;
-   min-width: 250px;
-   height: 50px;
+   min-width: 250px; /* Adjust minimum width */
+   height: 50px; /* Adjust height */
    transition: background 0.2s ease-in-out;
-}
-
-.passenger-select:hover {
-   background: #e0e0e0;
-}
-
-/* Passenger Dropdown */
-.passenger-dropdown-container {
+ }
+ 
+ .passenger-select:hover {
+   background: #e0e0e0; /* Change background color on hover */
+ }
+ 
+ /* ==================== PASSENGER DROPDOWN ==================== */
+ .passenger-dropdown-container {
    position: absolute;
    top: 110%;
-   left: 50%;
+   left: 71%;
    transform: translateX(-50%);
-   margin-top: 10px;
+   margin-top: 4px; /* Adjust margin */
    z-index: 1000;
-   width: 320px;
-}
-
-.passenger-dropdown {
-   background: white;
-   border-radius: 10px;
-   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-   padding: 15px;
+   width: 320px; /* Adjust width */
+ }
+ 
+ .passenger-dropdown {
+   background: white; /* Change background color */
+   border-radius: 10px; /* Adjust corner radius */
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Adjust shadow */
+   padding: 15px; /* Adjust padding */
    width: 100%;
-}
-
-/* Guest Options */
-.guest-option {
+   color: var(--text-color);
+ }
+ 
+ /* ==================== GUEST OPTIONS ==================== */
+ .guest-option {
    display: flex;
    justify-content: space-between;
    align-items: center;
-   padding: 6px 0;
-}
-
-.counter {
+   padding: 6px 0; /* Adjust padding */
+   color: var(--text-color); /* Change text color */
+   font-weight: 500;
+ }
+ 
+ .counter {
    display: flex;
    align-items: center;
-   gap: 6px;
-}
-
-.counter button {
-   width: 28px;
-   height: 28px;
+   gap: 6px; /* Adjust spacing between buttons */
+ }
+ 
+ .counter button {
+   width: 28px; /* Adjust button size */
+   height: 28px; /* Adjust button size */
    border: none;
-   background: var(--secondary-color);
-   color: white;
-   font-size: 1rem;
-   border-radius: 50%;
+   background: #E07A5F; /* Change button color */
+   color: white; /* Change text color */
+   font-size: 1rem; /* Adjust font size */
+   border-radius: 50%; /* Adjust corner radius */
    cursor: pointer;
    display: flex;
    align-items: center;
    justify-content: center;
+ }
+ 
+ .counter button:hover {
+   background: #d65f5f; /* Change button color on hover */
+ }
+ 
+ /* ==================== PET OPTION ==================== */
+ .pet-option {
+   display: flex;
+   justify-content: space-between; /* Pushes label left and checkbox right */
+   align-items: center;
+   width: 100%;
 }
 
-/* Pet Selection */
+
 .pet-option label {
    display: flex;
    align-items: center;
    gap: 8px;
-   font-size: 1.2rem;
-   font-weight: 500;
-}
-
-.pet-option input {
-   width: 20px;
-   height: 20px;
-   accent-color: var(--secondary-color);
-}
-
-/* Close Button */
-.guest-close {
-   width: 100%;
-   margin-top: 12px;
-   padding: 12px;
-   background: var(--secondary-color);
-   color: white;
-   border: none;
-   border-radius: 8px;
-   cursor: pointer;
-   font-weight: 600;
    font-size: 1rem;
+   font-weight: 500;
+   color: var(--text-color);
 }
 
-/* Search Button */
-.search-button {
-   background: var(--secondary-color);
-   color: white;
+ 
+ .pet-option input {
+   justify-content: flex-end;
+   right: 10%;
+   width: 20px; /* Adjust checkbox size */
+   height: 20px; /* Adjust checkbox size */
+   accent-color: var(--accent-color); /* Change checkbox color */
+ }
+ 
+ /* ==================== CLOSE BUTTON ==================== */
+ .guest-close {
+   width: 100%;
+   margin-top: 12px; /* Adjust margin */
+   padding: 12px; /* Adjust padding */
+   background: #E07A5F; /* Change background color */
+   color: white; /* Change text color */
    border: none;
-   padding: 14px 26px;
-   font-size: 1.2rem;
-   border-radius: 8px;
+   border-radius: 12px; /* Adjust corner radius */
+   cursor: pointer;
+   font-weight: 500;
+   font-size: 16px; /* Adjust font size */
+ }
+ 
+ .guest-close:hover {
+   background: #d65f5f; /* Change background color on hover */
+ }
+ 
+ /* ==================== SEARCH BUTTON ==================== */
+ .search-button {
+   background: var(--accent-color); /* Change background color */
+   color: white; /* Change text color */
+   border: none;
+   padding: 0px 10px; /* Adjust padding */
+   font-size: 1.2rem; /* Adjust font size */
+   border-radius: 12px; /* Adjust corner radius */
    cursor: pointer;
    transition: background 0.3s;
-   height: 50px;
-}
-
-.search-button:hover {
-   background: #d65f5f;
-}
-
-/* Calendar Customization */
-.react-datepicker {
+   height: 50px; /* Adjust height */
+ }
+ 
+ .search-button:hover {
+   background: #d65f5f; /* Change background color on hover */
+ }
+ 
+ /* ==================== CALENDAR CUSTOMIZATION ==================== */
+ .react-datepicker {
    font-family: inherit;
-   border: 1px solid #e0e0e0;
-   border-radius: 8px;
-   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+   border: 1px solid #e0e0e0; /* Adjust border */
+   border-radius: 8px; /* Adjust corner radius */
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Adjust shadow */
    display: flex;
    width: 100%;
-}
-
-.react-datepicker__month-container {
+ }
+ 
+ .react-datepicker__month-container {
    width: 50%;
-}
-
-.react-datepicker__header {
-   background-color: #f5f5f5;
-   border-bottom: 1px solid #e0e0e0;
-   border-radius: 8px 8px 0 0;
-}
-
-.react-datepicker__day--selected,
-.react-datepicker__day--in-selecting-range,
-.react-datepicker__day--in-range {
-   background-color: var(--secondary-color);
-   color: white;
-}
-
-.react-datepicker__day--keyboard-selected {
-   background-color: var(--secondary-color);
-   color: white;
-}
-
-.react-datepicker__day:hover {
-   background: #e0e0e0;
-}
-
-.react-datepicker__navigation {
+ }
+ 
+ .react-datepicker__header {
+   background-color: #f5f5f5; /* Change header background */
+   border-bottom: 1px solid #e0e0e0; /* Adjust border */
+   border-radius: 8px 8px 0 0; /* Adjust corner radius */
+ }
+ 
+ .react-datepicker__day--selected,
+ .react-datepicker__day--in-selecting-range,
+ .react-datepicker__day--in-range {
+   background-color: var(--accent-color); /* Change selected date color */
+   color: white; /* Change text color */
+ }
+ 
+ .react-datepicker__day--keyboard-selected {
+   background-color: var(--accent-color); /* Change keyboard-selected date color */
+   color: white; /* Change text color */
+ }
+ 
+ .react-datepicker__day:hover {
+   background: #e0e0e0; /* Change hover color */
+ }
+ 
+ .react-datepicker__navigation {
    top: 10px;
-}
-
-.react-datepicker__navigation--previous {
+ }
+ 
+ .react-datepicker__navigation--previous {
    left: 10px;
-}
-
-.react-datepicker__navigation--next {
+ }
+ 
+ .react-datepicker__navigation--next {
    right: 10px;
-}
-
-/* Responsive Design */
-@media only screen and (max-width: 992px) {
+ }
+ 
+ /* ==================== RESPONSIVE DESIGN ==================== */
+ @media only screen and (max-width: 992px) {
    .search-bar {
      flex-wrap: wrap;
-     padding: 14px;
+     padding: 14px; /* Adjust padding */
      width: 100%;
    }
-
+ 
    .search-input,
    .search-date-picker,
    .passenger-select {
      width: 100%;
-     font-size: 1rem;
-     height: 45px;
+     font-size: 1rem; /* Adjust font size */
+     height: 45px; /* Adjust height */
    }
-
+ 
    .search-button {
      width: 100%;
-     font-size: 1rem;
-     height: 45px;
+     font-size: 1rem; /* Adjust font size */
+     height: 45px; /* Adjust height */
    }
-
+ 
    .passenger-dropdown-container {
-      width: 100%;
-      left: 0;
-      transform: none;
+     width: 100%;
+     left: 0;
+     transform: none;
    }
-}
+ }

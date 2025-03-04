@@ -43,7 +43,7 @@ const SearchBar = () => {
   const clearDates = () => {
     setDates([null, null]);
     setDefaultViewDate(startOfMonth(new Date()));
-    setCalendarKey(prevKey => prevKey + 1);
+    setCalendarKey((prevKey) => prevKey + 1);
   };
 
   return (
@@ -76,7 +76,10 @@ const SearchBar = () => {
             dateFormat="dd MMMM yyyy"
             locale={enUS}
             defaultViewDate={defaultViewDate}
-            onCalendarOpen={() => setCalendarOpen(true)}
+            onCalendarOpen={() => {
+              setCalendarOpen(true);
+              setDefaultViewDate(startOfMonth(new Date())); // Reset to current month on open
+            }}
             onCalendarClose={() => setCalendarOpen(false)}
           />
           {dates[0] && dates[1] && (
@@ -122,14 +125,15 @@ const SearchBar = () => {
 
             <div className="guest-option pet-option">
               <label>
+                <span>With Pets</span>
                 <input
                   type="checkbox"
                   checked={pets}
                   onChange={() => setPets(!pets)}
                 />
-                <span>With Pets</span>
               </label>
             </div>
+
 
             <button className="guest-close" onClick={() => setDropdownOpen(false)}>
               Done
