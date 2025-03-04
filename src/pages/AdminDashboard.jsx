@@ -9,38 +9,48 @@ import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 
 const stats = [
-    { title: "Email Sent", value: "11,361", percentage: "+14%" },
+    { title: "Total Hotels", value: "11,361" },
     { title: "Sales Obtained", value: "431,225", percentage: "+21%" },
     { title: "New Clients", value: "32,441", percentage: "+5%" },
     { title: "Traffic Received", value: "1,325,134", percentage: "+43%" },
 ];
 
-const lineData = [
-    { name: "plane", us: 400, france: 240, japan: 100 },
-    { name: "helicopter", us: 300, france: 210, japan: 180 },
-    { name: "boat", us: 350, france: 260, japan: 150 },
-    { name: "train", us: 200, france: 140, japan: 250 },
-    { name: "bus", us: 450, france: 290, japan: 320 },
-    { name: "car", us: 500, france: 330, japan: 200 },
+// 📊 **Aylık Rezervasyon Sayıları ve Şehirler**
+const reservationData = [
+    { name: "January", Paris: 300, Bali: 200, Tokyo: 400, London: 350 },
+    { name: "February", Paris: 250, Bali: 180, Tokyo: 420, London: 370 },
+    { name: "March", Paris: 280, Bali: 210, Tokyo: 450, London: 400 },
+    { name: "April", Paris: 300, Bali: 230, Tokyo: 470, London: 420 },
+    { name: "May", Paris: 320, Bali: 250, Tokyo: 500, London: 450 },
+    { name: "June", Paris: 350, Bali: 280, Tokyo: 530, London: 480 },
+    { name: "July", Paris: 400, Bali: 300, Tokyo: 550, London: 500 },
+    { name: "August", Paris: 420, Bali: 310, Tokyo: 570, London: 520 },
+    { name: "September", Paris: 390, Bali: 290, Tokyo: 540, London: 500 },
+    { name: "October", Paris: 370, Bali: 270, Tokyo: 520, London: 480 },
+    { name: "November", Paris: 340, Bali: 250, Tokyo: 490, London: 450 },
+    { name: "December", Paris: 310, Bali: 220, Tokyo: 460, London: 420 },
 ];
 
-const barData = [
-    { name: "AD", donut: 400, fries: 150, kebab: 100 },
-    { name: "AE", donut: 300, fries: 120, kebab: 80 },
-    { name: "AF", donut: 350, fries: 180, kebab: 120 },
-    { name: "AG", donut: 200, fries: 90, kebab: 70 },
-    { name: "AL", donut: 450, fries: 220, kebab: 180 },
+// 🍩 **Şehir Bazlı Manager Sayısı**
+const managerData = [
+    { name: "Paris", value: 120 },
+    { name: "Bali", value: 95 },
+    { name: "Tokyo", value: 100 },
+    { name: "London", value: 110 },
 ];
-
-const pieData = [
-    { name: "Revenue", value: 70 },
-    { name: "Cost", value: 30 },
-];
-
 const mailData = [
     { from: "John Doe", email: "john@example.com", subject: "Meeting Request" },
     { from: "Jane Smith", email: "jane@example.com", subject: "Invoice Issue" },
     { from: "Hotel Manager", email: "manager@hotel.com", subject: "Reservation Question" },
+];
+
+// 📉 **Kar/Zarar Tablosu** (Vergi ve Otel Payı negatif olacak)
+const profitLossData = [
+    { name: "January", revenue: 50000, tax: -10000, hotelShare: -20000 },
+    { name: "February", revenue: 52000, tax: -11000, hotelShare: -21000 },
+    { name: "March", revenue: 53000, tax: -10500, hotelShare: -22000 },
+    { name: "April", revenue: 55000, tax: -12000, hotelShare: -23000 },
+    { name: "May", revenue: 60000, tax: -12500, hotelShare: -25000 },
 ];
 
 const AdminDashboard = () => {
@@ -50,7 +60,7 @@ const AdminDashboard = () => {
     useEffect(() => {
         const fetchWeather = async () => {
             try {
-                const apiKey = "d8979e0f88b7755b0afbcc390b89b16e"; // API Anahtarınızı ekleyin
+                const apiKey = "d8979e0f88b7755b0afbcc390b89b16e";
                 const response = await axios.get(
                     `https://api.openweathermap.org/data/2.5/weather?q=Istanbul&appid=${apiKey}&units=metric`
                 );
@@ -68,7 +78,7 @@ const AdminDashboard = () => {
 
     return (
         <div className="dashboard-container">
-            {/* Üst Kısımdaki Kartlar */}
+            {/* 📊 Üst Kısımdaki Kartlar */}
             <div className="stats-container">
                 {stats.map((stat, index) => (
                     <div className="stat-card" key={index}>
@@ -79,7 +89,7 @@ const AdminDashboard = () => {
                 ))}
             </div>
 
-            {/* Orta Kısım: Takvim - Mailbox - Hava Durumu */}
+            {/* 📅 Takvim - Mailbox - Hava Durumu */}
             <div className="middle-container">
                 <div className="calendar-widget">
                     <h3>Calendar</h3>
@@ -126,45 +136,60 @@ const AdminDashboard = () => {
                 </div>
             </div>
 
-            {/* Çizgi Grafiği */}
+            {/* 📈 Aylık Rezervasyon Sayıları */}
             <div className="chart-container">
-                <h3>Revenue Generated</h3>
+                <h3>Monthly Reservations by City</h3>
                 <ResponsiveContainer width="100%" height={250}>
-                    <LineChart data={lineData}>
+                    <LineChart data={reservationData}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" />
                         <YAxis />
                         <Tooltip />
-                        <Line type="monotone" dataKey="us" stroke="#8884d8" />
-                        <Line type="monotone" dataKey="france" stroke="#82ca9d" />
-                        <Line type="monotone" dataKey="japan" stroke="#ff7300" />
+                        <Line type="monotone" dataKey="Paris" stroke="#8884d8" />
+                        <Line type="monotone" dataKey="Bali" stroke="#82ca9d" />
+                        <Line type="monotone" dataKey="Tokyo" stroke="#ff7300" />
+                        <Line type="monotone" dataKey="London" stroke="#d62728" />
                     </LineChart>
                 </ResponsiveContainer>
             </div>
 
-            {/* Kampanya & Satış Verileri */}
+            {/* 🏨 Şehir Bazlı Manager Sayısı */}
             <div className="bottom-container">
                 <div className="pie-chart">
-                    <h3>Campaign</h3>
-                    <PieChart width={200} height={200}>
-                        <Pie data={pieData} cx="50%" cy="50%" outerRadius={60} fill="#8884d8" label>
-                            {pieData.map((_, index) => (
-                                <Cell key={`cell-${index}`} fill={index === 0 ? "#00C49F" : "#FF8042"} />
+                    <h3>Managers Per City</h3>
+                    <PieChart width={250} height={250}>
+                        <Pie data={managerData} cx="50%" cy="50%" outerRadius={60} fill="#8884d8" label>
+                            {managerData.map((_, index) => (
+                  <Cell 
+                  key={`cell-${index}`} 
+                  fill={
+                      index === 0 ? "var(--background-color)" : 
+                      index === 1 ? "var(--secondary-color)" : 
+                      index === 2 ? "var(--accent-color)" : 
+                      "var(--hover-color)" 
+                  } 
+              />
                             ))}
                         </Pie>
                     </PieChart>
+                    <ul>
+                        {managerData.map((city, index) => (
+                            <li key={index}>{city.name}: {city.value} Managers</li>
+                        ))}
+                    </ul>
                 </div>
 
+                {/* 📉 Kar/Zarar Tablosu */}
                 <div className="bar-chart">
-                    <h3>Sales Quantity</h3>
+                    <h3>Profit & Loss</h3>
                     <ResponsiveContainer width="100%" height={250}>
-                        <BarChart data={barData}>
+                        <BarChart data={profitLossData}>
                             <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip />
-                            <Bar dataKey="donut" stackId="a" fill="#8884d8" />
-                            <Bar dataKey="fries" stackId="a" fill="#82ca9d" />
-                            <Bar dataKey="kebab" stackId="a" fill="#ffc658" />
+                            <Bar dataKey="revenue" fill="#00C49F" />
+                            <Bar dataKey="tax" fill="red" />
+                            <Bar dataKey="hotelShare" fill="orange" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
