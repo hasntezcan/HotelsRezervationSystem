@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { FaTh, FaUserAlt, FaInfo, FaList, FaBars } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { BiSolidHotel } from "react-icons/bi";
-import logo from "../assets/images/logo.png";
+import logo from "../assets/images/SidebarLogo.png";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 768);

@@ -2,7 +2,7 @@
 .sidebar {
   width: 260px;
   height: 100vh;
-  background: linear-gradient(to bottom, #0a0f14, #141a21); /* Daha koyu bir arka plan */
+  background: linear-gradient(to bottom, #141a21, #141a21); /* Daha koyu bir arka plan */
   color: white;
   position: fixed;
   left: 0;
