@@ -69,11 +69,11 @@ const Footer = () => {
               </ListGroupItem>
               <ListGroupItem className="ps-0 border-0 d-flex align-items-center gap-2">
                 <i className="ri-mail-line"></i>
-                <span>esad.emir34@stu.khas.edu.tr</span>
+                <span>stayinn@contact.com</span>
               </ListGroupItem>
               <ListGroupItem className="ps-0 border-0 d-flex align-items-center gap-2">
                 <i className="ri-phone-fill"></i>
-                <span>+90 543 881 3007</span>
+                <span>+90 212 935 4427</span>
               </ListGroupItem>
             </ListGroup>
           </Col>

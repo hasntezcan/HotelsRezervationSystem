@@ -28,13 +28,13 @@ const TourCard = ({ tour }) => {
             </span>
             <span className="tour__rating d-flex align-items-center gap-1">
               <i className='ri-star-fill'></i> 
-              {avgRating ? avgRating.toFixed(1) : rating}
+              {avgRating === 0 ? 'Not rated' : avgRating}
               {reviews && reviews.length > 0 ? <span>({reviews.length})</span> : 'Not rated'}
             </span>
           </div>
 
           <h5 className='tour__title'>
-            <Link to={`/tours/${_id}`}>{title}</Link>
+            <Link to={`/hotels/${_id}`}>{title}</Link>
           </h5>
 
           <div className="card__bottom d-flex align-items-center justify-content-between mt-3">

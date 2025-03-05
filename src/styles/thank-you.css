@@ -1,9 +1,91 @@
-.thank__you span i {
-   font-size: 4rem;
-   color    : green;
-}
-
-.thank__you h1 {
-   font-size: 2.5rem;
-   font-family: var(--subtitle-font-name);
-}
+/* If you already have these variables in a global file, 
+   remove this :root block from here. 
+   Otherwise, ensure it's included once in your project. */
+   :root {
+      --primary-color: #264653;     /* Dark teal */
+      --secondary-color: #2A9D8F;   /* Light teal */
+      --heading-color: #264653;     /* Dark teal */
+      --background-color: #ffffff;  /* White */
+      --text-color: #264653;        /* Dark teal */
+      --accent-color: #E07A5F;      /* Coral */
+      --hover-color: #d65f5f;       /* Hover coral */
+      --font-name: "Montserrat", sans-serif;
+      --subtitle-font-name: "Island Moments", cursive;
+    }
+    
+    /* Main container for the Thank You page */
+    .thank-you-section {
+      padding: 60px 0;
+      background-color: #f9fafc; /* or var(--background-color) if you prefer pure white */
+    }
+    
+    /* Wrapper for the content */
+    .thank-you-content {
+      background: var(--background-color);
+      border: 1px solid var(--secondary-color);
+      border-radius: 8px;
+      padding: 40px 30px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    
+    /* Big check icon at the top */
+    .check-icon {
+      font-size: 4rem;
+      color: var(--secondary-color); /* Light teal for the icon */
+      margin-bottom: 20px;
+    }
+    .check-icon i {
+      vertical-align: middle;
+    }
+    
+    /* Main title (Thank You) */
+    .thank-you-title {
+      font-family: var(--subtitle-font-name);
+      font-size: 2.5rem;
+      color: var(--heading-color);
+      margin-bottom: 10px;
+    }
+    
+    /* Subtitle (Your Tour Is Booked) */
+    .thank-you-subtitle {
+      font-size: 1.5rem;
+      color: var(--heading-color);
+      margin-bottom: 20px;
+    }
+    
+    /* Informational text */
+    .thank-you-text {
+      color: var(--text-color);
+      font-size: 1rem;
+      margin-bottom: 30px;
+    }
+    
+    /* Button group container */
+    .btn-group-thank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+    
+    /* Buttons */
+    .see-details-btn,
+    .home-btn {
+      display: inline-block;
+      text-decoration: none;
+      background-color: var(--accent-color); /* Coral */
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    
+    .see-details-btn:hover,
+    .home-btn:hover {
+      background-color: var(--hover-color); /* Slightly darker coral */
+      transform: scale(1.03);
+    }
+    
