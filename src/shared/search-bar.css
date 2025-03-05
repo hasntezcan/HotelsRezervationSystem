@@ -92,8 +92,14 @@
     border-radius: 8px 8px 0 0; /* Adjust corner radius */
   }
   
+  
+  .react-datepicker__day--in-selecting-range {
+    background-color: #E07A5FAA !important; 
+    color: white !important; 
+    border-radius: 6px;
+  }
+
   .react-datepicker__day--selected,
-  .react-datepicker__day--in-selecting-range,
   .react-datepicker__day--in-range {
     background-color: var(--accent-color) !important; 
     color: white !important; 
@@ -107,7 +113,7 @@
 }
   
   .react-datepicker__day:hover {
-    color: var(--accent-color);
+    color: #E07A5F;
     background-color: #d65f5f;
     background: #d65f5f; /* Change hover color */
   }
