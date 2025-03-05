@@ -22,8 +22,8 @@ const ManagerDashboard = () => {
   ];
 
   const salesData = [
-    { name: "AD", uv: 400, pv: 240, amt: 240 },
-    { name: "AE", uv: 300, pv: 180, amt: 220 },
+    { name: "PARIS", uv: 400, pv: 240, amt: 240 },
+    { name: "A", uv: 300, pv: 180, amt: 220 },
     { name: "AF", uv: 500, pv: 320, amt: 260 },
     { name: "AG", uv: 400, pv: 250, amt: 280 },
     { name: "AL", uv: 600, pv: 400, amt: 300 },
