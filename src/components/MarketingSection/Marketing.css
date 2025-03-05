@@ -19,6 +19,7 @@
     margin: 50px auto; /* Center the section */
     border-radius: 12px; /* Rounded corners */
     text-align: center; /* Center-align text */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 /* Marketing Title */
@@ -28,6 +29,12 @@
     color: var(--background-color); /* White color for the title */
     max-width: 300px;
     margin-left: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Subtle shadow effect */
+    transition: transform 0.3s ease;
+}
+.marketing__title:hover {
+
+    transform: scale(1.10);
 }
 
 /* Highlighted Text */
@@ -57,12 +64,13 @@
     min-width: 150px; /* Minimum width for each item */
     max-height: 200px;
     max-width: 300px; /* Maximum width for each item */
-    transition: transform 0.3s ease; /* Smooth transform animation */
+    transition: transform 0.5s ease; /* Smooth transform animation */
 }
 
 /* Hover Effect for Marketing Item */
 .marketing__item:hover {
     transform: scale(1.10); /* Slightly scale up on hover */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Add shadow on hover */
 }
 
 /* Marketing Icon */
@@ -77,6 +85,7 @@
     margin-left: 15px;
     max-width: 100px;
     font-weight: bold; /* Bold text */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Subtle shadow effect */
 }
 
 

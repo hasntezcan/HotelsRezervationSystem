@@ -20,6 +20,7 @@
   margin-top: 80px; /* Adjust top margin */
   margin-bottom: 50px; /* Adjust bottom margin */
   z-index: 900; /* Lower z-index than header */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
  
  /* ==================== BLACKOUT OVERLAY ==================== */

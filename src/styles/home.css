@@ -115,16 +115,22 @@
  
  /* Featured Tours */
  .featured__tours {
-   padding: 80px 0;
-   background: var(--primary-color); /* Dark teal background */
+   padding: 40px 0;
+   margin-bottom: 20px;
+   background: var(--secondary-color); /* Dark teal background */
    color: var(--background-color); /* Off-white text for contrast */
  }
+ .featured__tours .text-center .featured__tour-title{
+    margin-bottom: 40px;
+
+}
  
  /* Experience Section */
  .experience__section {
    padding: 80px 0;
    background: var(--secondary-color); /* Light teal background */
    color: var(--background-color); /* Off-white text for contrast */
+   
  }
  
  .counter__box span {
@@ -133,19 +139,7 @@
    color: var(--accent-color); /* Coral for accent numbers */
  }
  
- /* Gallery Section */
- .gallery__section {
-   padding: 80px 0;
-   background: var(--primary-color); /* Dark teal background */
-   color: var(--background-color); /* Off-white text for contrast */
- }
- 
- /* Testimonials Section */
- .testimonial__section {
-   padding: 80px 0;
-   background: var(--secondary-color); /* Light teal background */
-   color: var(--background-color); /* Off-white text for contrast */
- }
+
  
  /* Responsive Design */
  @media only screen and (max-width: 992px) {

@@ -29,7 +29,7 @@ const MarketingSection = () => {
           {/* Left Side - Text */}
           <Col lg="4">
             <h2 className="marketing__title">
-              Find Your <span className="highlight">Perfect Stay</span> & Book Instantly!
+              Find Your Perfect Stay & Book Instantly!
             </h2>
           </Col>
 
