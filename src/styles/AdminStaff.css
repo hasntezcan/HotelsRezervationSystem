@@ -1,109 +1,97 @@
-
-.manager-staff-container {
-    font-family: 'Poppins', sans-serif;
-    background-color:var( --primary-color     );
-    padding: 20px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Dashboard Layout */
-.staff-dashboard {
-    display: flex;
-    justify-content: space-between;
+.user-management-container {
     width: 100%;
-    max-width: 1200px;
-    gap: 20px;
-}
-
-/* Form */
-.staff-form {
-    background: white;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: #1a1d2b;
+    color: white;
+    border-radius: 10px;
+  }
+  
+  .user-management-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .user-form {
+    background-color: #22263a;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    flex: 1;
-    max-width: 400px;
     text-align: center;
-}
-
-.staff-form input, .staff-form select {
+  }
+  
+  .input-field {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.staff-form button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
-    color: white;
     border: none;
+    font-size: 16px;
+  }
+  
+  .password-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .toggle-password-btn {
+    padding: 10px;
+    background-color: #e07a5f;
+    border: none;
+    color: white;
     border-radius: 5px;
     cursor: pointer;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    background-color: #2a9d8f;
+    padding: 10px;
+    border: none;
+    color: white;
+    border-radius: 5px;
     font-size: 16px;
-    font-weight: bold;
-}
-
-/* Staff List */
-.staff-list {
-    background: white;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .user-list {
+    margin-top: 20px;
+    background-color: #22263a;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    flex: 2;
-    text-align: center;
-}
-
-.staff-list table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.staff-list th, .staff-list td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-}
-
-.staff-list th {
-    background: #007bff;
-    color: white;
-}
-
-.edit-btn, .delete-btn {
-    width: 80px; /* Aynı genişlik */
-    height: 35px; /* Aynı yükseklik */
-    border-radius: 8px; /* Kenarları ovalleştir */
+  }
+  
+  .user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #333;
+  }
+  
+  .update-btn {
+    background-color: #007bff;
+    padding: 8px;
     border: none;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-/* Edit Butonu */
-.edit-btn {
-    background: #ffc107;
-    color: black;
-}
-
-/* Delete Butonu */
-.delete-btn {
-    background: #dc3545;
     color: white;
-}
-
-/* Hover Efektleri */
-.edit-btn:hover {
-    background: #e0a800;
-}
-
-.delete-btn:hover {
-    background: #c82333;
-}
-
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .delete-btn {
+    background-color: #ff4d4d;
+    padding: 8px;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
