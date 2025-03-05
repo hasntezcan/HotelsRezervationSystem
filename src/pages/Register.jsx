@@ -2,10 +2,9 @@
 
 import React, { useState, useContext } from 'react'
 import { Container, Row, Col, Form, FormGroup, Button } from 'reactstrap'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import '../styles/login.css'
 import registerImg from '../assets/images/login.png'
-import hotelImage from '../assets/images/hotelIllustration.png'
 import { AuthContext } from '../context/AuthContext'
 
 const Register = () => {
@@ -13,6 +12,7 @@ const Register = () => {
     username: '',
     email: '',
     password: ''
+    // role buraya da eklenebilir ama şimdilik sabit 'user' vereceğiz
   })
   const { dispatch } = useContext(AuthContext)
   const navigate = useNavigate()
@@ -31,15 +31,19 @@ const Register = () => {
       return
     }
 
+    // Yeni kullanıcı oluşturulurken role: 'user' veriyoruz
     const newUser = {
       id: Date.now(),
       username: credentials.username,
       email: credentials.email,
-      password: credentials.password
+      password: credentials.password,
+      role: 'user'
     }
+
     users.push(newUser)
     localStorage.setItem('localUsers', JSON.stringify(users))
-    
+
+    // Register başarılı
     dispatch({ type: 'REGISTER_SUCCESS' })
     alert('Your account has been created, you can now log in!')
     navigate('/login')
@@ -51,19 +55,18 @@ const Register = () => {
         <Row className="justify-content-center">
           <Col lg="10">
             <div className="auth-card d-flex flex-wrap">
-              
               {/* Sol kısım */}
               <div className="auth-left">
                 <div className="image-wrapper">
                   <img src={registerImg} alt="hotel" className="hotel-img" />
                 </div>
               </div>
-              
+
               {/* Sağ kısım */}
               <div className="auth-right">
                 <h2 className="auth-title">Join Us</h2>
                 <p className="auth-subtitle">
-                Start your booking adventure! All your travel needs in one place.
+                  Start your booking adventure! All your travel needs in one place.
                 </p>
 
                 <Form onSubmit={handleClick}>
@@ -99,11 +102,16 @@ const Register = () => {
                   </Button>
                 </Form>
 
-                <p className="auth-footer">
-                Already have an account? <Link to="/login">Login</Link>
+                <p className="auth-footer" style={{ marginTop: '1rem' }}>
+                  Already have an account?{' '}
+                  <span
+                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                    onClick={() => navigate('/login')}
+                  >
+                    Login
+                  </span>
                 </p>
               </div>
-
             </div>
           </Col>
         </Row>

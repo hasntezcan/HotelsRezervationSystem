@@ -38,7 +38,7 @@ const Footer = () => {
                 <Link to="/about">About</Link>
               </ListGroupItem>
               <ListGroupItem className="ps-0 border-0">
-                <Link to="/tours">Tours</Link>
+                <Link to="/hotels">Cities</Link>
               </ListGroupItem>
             </ListGroup>
           </Col>
