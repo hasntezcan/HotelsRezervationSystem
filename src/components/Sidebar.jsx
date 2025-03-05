@@ -32,8 +32,8 @@ const Sidebar = () => {
   const menuItems = [
     { path: "/admin", name: "Dashboard", icon: <FaTh /> },
     { path: "/admin/contactus", name: "Contact Us", icon: <FaInfo /> },
-    { path: "/admin/staff", name: "Staff", icon: <BsFillPeopleFill /> },
-    { path: "/admin/rooms", name: "Rooms", icon: <BiSolidHotel /> },
+    { path: "/admin/user", name: "User", icon: <BsFillPeopleFill /> },
+    { path: "/admin/hotels", name: "Hotels", icon: <BiSolidHotel /> },
     { path: "/admin/profile", name: "Profile", icon: <FaUserAlt /> },
     { path: "/admin/productlist", name: "Product List", icon: <FaList /> },
   ];

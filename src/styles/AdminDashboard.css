@@ -11,17 +11,8 @@
     --subtitle-font-name: "Island Moments", cursive;
 }
 
-/* html, body {
-    background-color: var(--secondary-color) !important; /* Tüm sayfayı kapsayan renk */
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden; /* Yatay kaydırmayı kaldır */
-} 
-*/
-
 .dashboard-container {
+    background: var(--secondary-color);
     color: #fff;
     font-family:var(--font-name);
     margin: auto;
