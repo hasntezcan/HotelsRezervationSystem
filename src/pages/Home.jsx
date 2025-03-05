@@ -5,7 +5,7 @@ import Subtitle from './../shared/subtitle';
 import SearchBar from './../shared/SearchBar';
 import ServiceList from '../services/ServiceList';
 import FeaturedTourList from '../components/Featured-tours/FeaturedTourList';
-
+import MarketingSection from '../components/MarketingSection/MarketingSection';
 
 const Home = () => {
   // Scroll to top when the component mounts
@@ -22,7 +22,7 @@ const Home = () => {
             <Col lg="12">
               <div className="hero__content">
                 <h1 className="hero__title">
-                  Your Next Adventure <span className="highlight">Awaits</span>
+                  Your Next Adventure Awaits
                 </h1>
               </div>
             </Col>
@@ -33,22 +33,8 @@ const Home = () => {
         </Container>
       </section>
 
-      {/* Services Section */}
-      <section className="services__section">
-        <Container>
-          <Row className="text-center">
-            <Col lg="12">
-              <h5 className="services__subtitle">Our Services</h5>
-              <h2 className="services__title">Premium Travel Experiences</h2>
-            </Col>
-          </Row>
-          <Row>
-            <Col lg="12" className="d-flex justify-content-center">
-              <ServiceList />
-            </Col>
-          </Row>
-        </Container>
-      </section>
+      {/* Marketing Section */}
+      <MarketingSection />
 
 
       {/* Featured Tours */}

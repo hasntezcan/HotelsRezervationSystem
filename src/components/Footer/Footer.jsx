@@ -17,7 +17,7 @@ const Footer = () => {
               <img src={logo} alt="Place2Stay" />
             </div>
             <p className="footer__text">
-            Your gateway to unforgettable travel experiences. Discover and book the perfect place to stay, anywhere in the world.”
+            Your gateway to unforgettable travel experiences. Discover and book the perfect place to stay, anywhere in the world.
             </p>
             <div className="social__links d-flex align-items-center gap-3">
               <span><Link to="#"><i className="ri-youtube-line"></i></Link></span>
