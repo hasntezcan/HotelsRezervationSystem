@@ -1,97 +1,175 @@
-.user-management-container {
+:root {
+    --admin-user-primary-color: #264653;
+    --admin-user-secondary-color: #2A9D8F;
+    --admin-user-text-color: #E9C46A;
+    --admin-user-accent-color: #E76F51;
+    --admin-user-hover-color: #D65F5F;
+    --admin-user-font-name: "Montserrat", sans-serif;
+}
+
+.admin-user-page-container {
     width: 100%;
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    background-color: #1a1d2b;
+    height: 96vh;
+    background-color: var(--admin-user-primary-color);
     color: white;
-    border-radius: 10px;
-  }
-  
-  .user-management-title {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  .user-form {
-    background-color: #22263a;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-  }
-  
-  .input-field {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: none;
-    font-size: 16px;
-  }
-  
-  .password-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
-  }
-  
-  .toggle-password-btn {
-    padding: 10px;
-    background-color: #e07a5f;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .submit-btn {
-    width: 100%;
-    background-color: #2a9d8f;
-    padding: 10px;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  
-  .user-list {
-    margin-top: 20px;
-    background-color: #22263a;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    font-family: var(--admin-user-font-name);
+    border-radius: 10px;
+    
+}
+
+.admin-user-management-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+    width: 90%;
+    height: 90%;    
+}
+
+
+.admin-user-section {
+    background-color: var(--admin-user-secondary-color);
     padding: 20px;
     border-radius: 10px;
-  }
-  
-  .user-item {
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+}
+
+.admin-user-section h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: white;
+}
+
+.admin-user-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    align-items: center;
+}
+
+.admin-user-input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid var(--admin-user-text-color);
+    font-size: 16px;
+    background: white;
+    color: var(--admin-user-primary-color);
+}
+
+.admin-user-button {
+    background: var(--admin-user-accent-color);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+    padding: 10px 15px;
+    margin-top: 10px;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 200px;
+}
+
+.admin-user-button:hover {
+    background: var(--admin-user-hover-color);
+}
+
+.admin-user-list {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    max-width: 400px;
+}
+
+.admin-user-list-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #333;
-  }
-  
-  .update-btn {
-    background-color: #007bff;
-    padding: 8px;
-    border: none;
+    padding: 10px;
+    border-bottom: 1px solid var(--admin-user-text-color);
+    color: var(--admin-user-text-color);
+    width: 100%;
+}
+
+.admin-user-delete-btn {
+    background: var(--admin-user-hover-color);
     color: white;
+    padding: 6px 12px;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
-  .delete-btn {
-    background-color: #ff4d4d;
-    padding: 8px;
-    border: none;
+    transition: 0.3s;
+}
+
+.admin-user-delete-btn:hover {
+    background: darkred;
+}
+
+.admin-user-edit-btn, .admin-user-delete-btn {
+    background: var(--admin-user-accent-color);
     color: white;
-    border-radius: 5px;
+    font-weight: bold;
     cursor: pointer;
-  }
-  
-  .action-buttons {
+    transition: 0.3s;
+    border: none;
+    padding: 8px 16px;
+    margin-left: 10px;
+    border-radius: 5px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.admin-user-delete-btn {
+    background: darkred;
+}
+
+.admin-user-edit-btn:hover {
+    background: var(--admin-user-hover-color);
+}
+
+.admin-user-delete-btn:hover {
+    background: #a83232;
+}
+
+.admin-user-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--admin-user-text-color);
+    color: var(--admin-user-text-color);
+    width: 100%;
+}
+
+.admin-user-button-group {
     display: flex;
     gap: 10px;
-  }
-  
+}
+
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .admin-user-management-section {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+    }
+
+    .admin-user-form {
+        max-width: 100%;
+    }
+}
