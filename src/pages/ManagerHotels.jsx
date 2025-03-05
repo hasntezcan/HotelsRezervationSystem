@@ -3,7 +3,6 @@ import { TextField, Button, Grid, Card, CardContent, Typography, Box } from "@mu
 import { FaEdit, FaSave } from "react-icons/fa";
 import hotelsData from "../assets/data/hotels.json"; // Hotel data imported from JSON
 import SidebarManager from "../components/Sidebar_manager"; // Sidebar component
-import ManagerNavbar from "../components/ManagerNavbar"; // Navbar component
 
 const ManagerHotels = () => {
   const [hotels, setHotels] = useState([]);
@@ -45,8 +44,6 @@ const ManagerHotels = () => {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <ManagerNavbar />
       <div style={{ display: "flex", flex: 1, marginTop: "60px" }}>
         <SidebarManager />
         <div
@@ -150,7 +147,6 @@ const ManagerHotels = () => {
           </Grid>
         </div>
       </div>
-    </div>
   );
 };
 

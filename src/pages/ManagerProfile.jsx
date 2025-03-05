@@ -1,7 +1,6 @@
 import React, { useState } from 'react'; // React import
 import { Card, CardContent, Typography, Button, Box, TextField } from '@mui/material'; // Material-UI components
 import SidebarManager from "../components/Sidebar_manager"; // Sidebar component for manager's page
-import ManagerNavbar from "../components/ManagerNavbar"; // Navbar component for manager's page
 
 const ManagerProfile = () => {
   const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
@@ -26,9 +25,6 @@ const ManagerProfile = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Navbar */}
-      <ManagerNavbar />
 
       <div style={{ display: 'flex', flex: 1 }}>
         {/* Sidebar */}
@@ -97,7 +93,6 @@ const ManagerProfile = () => {
           </Card>
         </div>
       </div>
-    </div>
   );
 };
 

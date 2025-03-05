@@ -1,13 +1,14 @@
 import "../styles/ManagerSideBar.css";
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
-import { FaTh, FaUserAlt, FaInfo, FaBars } from "react-icons/fa";  // Add FaBars here
+import { NavLink, useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { FaTh, FaUserAlt, FaInfo, FaBars } from "react-icons/fa"; 
 import { BiSolidHotel } from "react-icons/bi";
 import logo from "../assets/images/SidebarLogo.png";
 
 const SidebarManager = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
   const [showLogo, setShowLogo] = useState(true);
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -35,6 +36,12 @@ const SidebarManager = () => {
     { path: "/manager/profile", name: "Profile", icon: <FaUserAlt /> },
   ];
 
+  // Function to handle logout and redirect to the home page
+  const handleLogout = () => {
+    // Add logout functionality here (e.g., clearing local storage or token)
+    navigate("/"); // Redirect to the home page
+  };
+
   return (
     <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
       <div className="top_section">
@@ -54,6 +61,10 @@ const SidebarManager = () => {
           {isOpen && <div className="link_text">{item.name}</div>}
         </NavLink>
       ))}
+      {/* Logout Button */}
+      <div className="logout_button" onClick={handleLogout}>
+        <button className="logout-btn">Logout</button>
+      </div>
     </div>
   );
 };

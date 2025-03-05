@@ -1,6 +1,5 @@
 import React from "react";
 import SidebarManager from "../components/Sidebar_manager";
-import ManagerNavbar from "../components/ManagerNavbar";
 import { Container, Grid, Card, CardContent, Typography } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, BarChart, Bar } from "recharts";
 import { styled } from "@mui/system";
@@ -65,8 +64,6 @@ const ManagerDashboard = () => {
   ];
 
   return (
-    <DashboardContainer>
-      <ManagerNavbar />
       <DashboardContent>
         <SidebarManagerStyled />
         <DashboardMain>
@@ -126,7 +123,6 @@ const ManagerDashboard = () => {
           </Container>
         </DashboardMain>
       </DashboardContent>
-    </DashboardContainer>
   );
 };
 
