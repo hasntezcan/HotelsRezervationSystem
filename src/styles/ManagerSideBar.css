@@ -1,8 +1,8 @@
 /* Sidebar Genel */
 .sidebar {
-  width: 250px;
-  height: 150vh;
-  background: linear-gradient(to bottom, #141a21, #141a21); /* Daha koyu bir arka plan */
+  width: 250px; /* Başlangıç genişliği */
+  height: 100vh; /* Yükseklik */
+  background: linear-gradient(to bottom, #141a21, #141a21);
   color: white;
   position: fixed;
   left: 0;
@@ -11,15 +11,15 @@
   display: flex;
   flex-direction: column;
   transition: all 0.4s ease-in-out;
-  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5); /* Daha koyu ve net gölge */
+  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
 }
 
 /* Sidebar Kapalıyken */
 .sidebar.closed {
-  width: 70px;
+  width: 60px; /* Sidebar küçüldüğünde */
 }
 
-/* Üst Bölüm (Logo + Hamburger Menü) */
+/* Top Section (Logo + Hamburger Menu) */
 .top_section {
   display: flex;
   align-items: center;
@@ -30,19 +30,19 @@
 
 /* Logo */
 .logo {
-  width: 140px;  /* Daha büyük görünmesi için */
+  width: 120px; /* Logo başlangıç boyutu */
   height: auto;
   padding: 5px;
-  filter: brightness(200%); /* Logoyu daha parlak hale getir */
+  filter: brightness(200%);
   transition: opacity 0.3s ease-in-out;
 }
 
 .sidebar.closed .logo {
-  width: 50px;
+  width: 40px; /* Sidebar küçüldüğünde logo küçülür */
   opacity: 0;
 }
 
-/* Hamburger Menü */
+/* Hamburger Menu */
 .bars {
   cursor: pointer;
   font-size: 22px;
@@ -58,7 +58,7 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Sidebar Linkleri */
+/* Sidebar Links */
 .link {
   display: flex;
   align-items: center;
@@ -76,55 +76,143 @@
   transform: scale(1.03);
 }
 
-/* Aktif Link */
+/* Active Link */
 .active {
   background: rgba(255, 255, 255, 0.2);
   font-weight: bold;
-  border-left: 5px solid #00a896; /* Daha koyu yeşil tonunda vurgu */
+  border-left: 5px solid #00a896;
 }
 
-/* Sidebar içindeki ikonlar */
+/* Sidebar Icons */
 .icon {
   margin-right: 15px;
   font-size: 18px;
   transition: transform 0.3s ease-in-out;
 }
 
-/* Sidebar Açılıp Kapanırken İçerik Kaydırma */
+/* İçerik Alanı */
 .content {
   flex-grow: 1;
   padding: 20px;
-  margin-left: 260px; /* Sidebar açıkken margin-left */
+  margin-left: 270px; /* Sidebar açıkken */
   transition: margin-left 0.4s ease-in-out;
-  transition: all 0.4s ease-in-out;
+  width: 100%; /* İçeriğin genişliği %100 olmalı */
+  box-sizing: border-box; /* Padding ile box modelinin düzgün çalışmasını sağlar */
 }
 
-/* Sidebar kapalı olduğunda içerik genişlesin ve kaymasın */
+/* Sidebar kapalı olduğunda içerik alanı küçülür */
 .sidebar.closed + .content {
-  margin-left: 0; /* Sidebar kapalıyken içerik genişleyecek */
-  width: 100%; /* İçeriğin tam genişliği doldurması sağlanır */
+  margin-left: 60px;
+  width: calc(100% - 60px);
 }
 
-/* Küçük Ekranlar İçin Responsive Ayarlar */
-@media screen and (max-width: 768px) {
+/* Sidebar açıldığında, içerik alanı genişlemesi sağlandı */
+.sidebar.open + .content {
+  margin-left: 200px; /* Sidebar açıldığında içerik genişler */
+}
+
+/* Responsive İçerik Ayarları */
+@media screen and (max-width: 1024px) {
+  .content {
+    margin-left: 70px; /* Sidebar daraldığında içerik genişler */
+    padding: 15px; /* İçerik kenar boşlukları */
+  }
+
+  .sidebar.closed + .content {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+
+  .sidebar.open + .content {
+    margin-left: 200px;
+  }
+}
+
+@media screen and (max-width: 390px) {
+  .content {
+    margin-left: 60px;
+    padding: 10px; /* Daha küçük ekranlar için daha küçük padding */
+  }
+
+  .sidebar.closed + .content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+
+  .sidebar.open + .content {
+    margin-left: 200px;
+  }
+}
+
+@media screen and (max-width: 414px) {
+  .content {
+    margin-left: 60px;
+    padding: 10px; /* Daha küçük ekranlar için padding */
+  }
+
+  .sidebar.closed + .content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+
+  .sidebar.open + .content {
+    margin-left: 200px;
+  }
+}
+
+/* iPhone 7, 8, SE (375x667) için içerik düzenlemeleri */
+@media screen and (max-width: 375px) and (max-height: 667px) {
+  .content {
+    margin-left: 60px;
+    padding: 8px; /* İçeriğin daha dar ekranlarda küçülmesi için padding azaltıldı */
+  }
+
+  .sidebar.closed + .content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+
+  .sidebar.open + .content {
+    margin-left: 200px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .content {
+    margin-left: 50px;
+    padding: 5px; /* Daha da küçük ekranlar için padding */
+  }
+
+  .sidebar.closed + .content {
+    margin-left: 50px;
+    width: calc(100% - 50px);
+  }
+
+  .sidebar.open + .content {
+    margin-left: 200px;
+  }
+}
+
+/* Sidebar için responsive düzenlemeler */
+@media screen and (max-width: 1024px) {
   .sidebar {
-    width: 70px;
+    width: 70px; /* Küçük ekranlar için dar genişlik */
   }
 
   .sidebar.open {
-    width: 260px;
+    width: 200px; /* Küçük ekranlar için max genişlik */
   }
 
   .sidebar.closed .link_text {
-    display: none;
+    display: none; /* Küçük ekranlarda metin gizlenir */
   }
 
   .logo {
-    display: none;
+    display: none; /* Küçük ekranlarda logo gizlenir */
   }
 
   .sidebar.open .logo {
-    display: block;
+    display: block; /* Sidebar açıldığında logo tekrar görünür */
   }
 
   .bars {
@@ -134,6 +222,106 @@
 
   .sidebar.closed + .content {
     margin-left: 70px;
-    width: calc(100% - 70px); /* Sidebar kapalı olduğunda içerik genişlesin */
+    width: calc(100% - 70px); /* Sidebar daraldığında içerik genişler */
+  }
+}
+
+/* iPhone X, XS, 11 Pro (375x812) */
+@media screen and (max-width: 375px) {
+  .sidebar {
+    width: 60px; /* Daha küçük ekranlar için */
+  }
+
+  .sidebar.open {
+    width: 180px;
+  }
+
+  .sidebar.closed + .content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+
+  .bars {
+    font-size: 20px;
+  }
+}
+
+/* iPhone 12, 13, 14 Pro Max (390x844) */
+@media screen and (max-width: 390px) {
+  .sidebar {
+    width: 60px; /* Daraltılmış sidebar */
+  }
+
+  .sidebar.open {
+    width: 180px;
+  }
+
+  .sidebar.closed + .content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+
+  .bars {
+    font-size: 22px;
+  }
+}
+
+/* iPhone 12, 13, 14 Plus (414x896) */
+@media screen and (max-width: 414px) {
+  .sidebar {
+    width: 60px;
+  }
+
+  .sidebar.open {
+    width: 180px;
+  }
+
+  .sidebar.closed + .content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+
+  .bars {
+    font-size: 22px;
+  }
+}
+
+/* iPhone 7, 8, SE (375x667) */
+@media screen and (max-width: 375px) and (max-height: 667px) {
+  .sidebar {
+    width: 60px; /* Dar ekranlar için */
+  }
+
+  .sidebar.open {
+    width: 160px;
+  }
+
+  .sidebar.closed + .content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+
+  .bars {
+    font-size: 18px;
+  }
+}
+
+/* Diğer küçük ekranlar */
+@media screen and (max-width: 360px) {
+  .sidebar {
+    width: 50px;
+  }
+
+  .sidebar.open {
+    width: 150px;
+  }
+
+  .sidebar.closed + .content {
+    margin-left: 50px;
+    width: calc(100% - 50px);
+  }
+
+  .bars {
+    font-size: 18px;
   }
 }
