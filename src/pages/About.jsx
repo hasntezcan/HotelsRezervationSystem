@@ -61,7 +61,7 @@ const About = () => {
             <div className="team__member">
               <img src={emirImg} alt="Emir" className="team__member-img" />
               <h5 className="team__member-name">Emir Esad Şahin</h5>
-              <p className="team__member-role">Frontend Developer</p>
+              <p className="team__member-role">Backend Developer</p>
               <div className="team__member-links">
                 <a 
                   href="https://www.linkedin.com/in/emir%C5%9Fahin/" 
@@ -87,7 +87,7 @@ const About = () => {
             <div className="team__member">
               <img src={sezaiImg} alt="Sezai" className="team__member-img" />
               <h5 className="team__member-name">Sezai Araplarlı</h5>
-              <p className="team__member-role">Backend Developer</p>
+              <p className="team__member-role">Frontend Developer</p>
               <div className="team__member-links">
                 <a 
                   href="https://www.linkedin.com/in/sezowastaken" 
