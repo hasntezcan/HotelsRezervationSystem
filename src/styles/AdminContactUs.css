@@ -1,9 +1,19 @@
 /* Use the primary background color */
+#root {
+  --primary-color: #264653;
+  --secondary-color: #2A9D8F;
+  --heading-color: #264653;
+  --background-color: #ffffff;
+  --text-color: #264653;
+  --accent-color: #E07A5F;
+  --hover-color: #d65f5f;
+  --font-name: "Montserrat", sans-serif;
+}
 .admin-contact-container {
   border-radius: 10px;
   width: 100%;
   height: 95vh;
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
   color: var(--text-color);
   display: flex;
   flex-direction: column;
@@ -33,7 +43,7 @@
 .unread-messages,
 .read-messages {
   flex: 1;
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
   padding: 20px;
   border-radius: 10px;
   margin: 10px;
@@ -53,7 +63,7 @@
 
 /* Message Cards */
 .message-card {
-  background: var(--heading-color);
+  background: var(--secondary-color);
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 15px;

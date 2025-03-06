@@ -101,6 +101,31 @@
 .sidebar.closed + .content {
   margin-left: 70px;
 }
+.logout-btn {
+  width: 100%;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: 0.3s;
+  margin-top: auto;
+}
+
+.logout-btn:hover {
+  background: var(--hover-color);
+}
+
+.logout-icon {
+  font-size: 1.2rem;
+}
+
 
 /* Küçük Ekranlar İçin Responsive Ayarlar */
 @media screen and (max-width: 768px) {

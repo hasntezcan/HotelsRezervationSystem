@@ -23,6 +23,7 @@ import Profile from '../pages/profile/Profile';
 import ProfileBookings from '../pages/profile/ProfileBookings.jsx';
 import ProfileSettings from '../pages/profile/ProfileSettings';
 import Overview from '../pages/profile/Overview';
+import AdminHotel from '../pages/AdminHotels.jsx';
 
 const Routers = () => {
   return (
@@ -57,6 +58,8 @@ const Routers = () => {
             <Route path="contactUs" element={<AdminContact />} />
             <Route path="user" element={<AdminUser />} />
             <Route path="profile" element={<AdminProfile />} />
+            <Route path="hotels" element={<AdminHotel />} />
+
          </Route>
       </Routes>
    );

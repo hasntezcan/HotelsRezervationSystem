@@ -1,7 +1,7 @@
 import "../styles/ManagerSideBar.css";
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
-import { FaTh, FaUserAlt, FaInfo, FaList, FaBars } from "react-icons/fa";
+import { NavLink, useNavigate } from "react-router-dom";
+import { FaTh, FaUserAlt, FaInfo, FaBars, FaSignOutAlt } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { BiSolidHotel } from "react-icons/bi";
 import logo from "../assets/images/SidebarLogo.png";
@@ -9,6 +9,7 @@ import logo from "../assets/images/SidebarLogo.png";
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
   const [showLogo, setShowLogo] = useState(true);
+  const navigate = useNavigate(); // Sayfa yönlendirmesi için
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -29,21 +30,24 @@ const Sidebar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleLogout = () => {
+    // Çıkış işlemleri (örneğin token temizleme)
+    console.log("User logged out");
+    navigate("/login"); // Kullanıcıyı giriş sayfasına yönlendir
+  };
+
   const menuItems = [
     { path: "/admin", name: "Dashboard", icon: <FaTh /> },
     { path: "/admin/contactus", name: "Contact Us", icon: <FaInfo /> },
     { path: "/admin/user", name: "User", icon: <BsFillPeopleFill /> },
     { path: "/admin/hotels", name: "Hotels", icon: <BiSolidHotel /> },
     { path: "/admin/profile", name: "Profile", icon: <FaUserAlt /> },
-    { path: "/admin/productlist", name: "Product List", icon: <FaList /> },
   ];
 
   return (
     <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
       <div className="top_section">
-        {showLogo && (
-          <img src={logo} alt="Logo" className="logo" />  
-        )}
+        {showLogo && <img src={logo} alt="Logo" className="logo" />}
         <div className="bars" onClick={toggleSidebar}>
           <FaBars />
         </div>
@@ -59,6 +63,10 @@ const Sidebar = () => {
           {isOpen && <div className="link_text">{item.name}</div>}
         </NavLink>
       ))}
+      {/* Logout Butonu */}
+      <button className="logout-btn" onClick={handleLogout}>
+        <FaSignOutAlt className="logout-icon" /> {isOpen && "Logout"}
+      </button>
     </div>
   );
 };
