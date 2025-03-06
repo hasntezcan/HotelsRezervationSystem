@@ -13,7 +13,7 @@ import ManagerReservations from '../pages/ManagerReservations';  // Yeni sayfa e
 import ManagerProfile from '../pages/ManagerProfile';  // Yeni sayfa eklendi
 import Admin from '../pages/Admin';
 import AdminContact from '../pages/AdminContact';
-import AdminStaff from '../pages/AdminStaff';
+import AdminUser from '../pages/AdminUser.jsx';
 import AdminDashboard from '../pages/AdminDashboard';
 import About from '../pages/About';
 import Contact from '../pages/Contact';
@@ -23,6 +23,7 @@ import Profile from '../pages/profile/Profile';
 import ProfileBookings from '../pages/profile/ProfileBookings.jsx';
 import ProfileSettings from '../pages/profile/ProfileSettings';
 import Overview from '../pages/profile/Overview';
+import AdminHotel from '../pages/AdminHotels.jsx';
 
 const Routers = () => {
   return (
@@ -55,8 +56,10 @@ const Routers = () => {
          <Route path="/admin/*" element={<Admin />}>
             <Route index element={<AdminDashboard />} /> {/* Varsayılan olarak Dashboard açılsın */}
             <Route path="contactUs" element={<AdminContact />} />
-            <Route path="staff" element={<AdminStaff />} />
+            <Route path="user" element={<AdminUser />} />
             <Route path="profile" element={<AdminProfile />} />
+            <Route path="hotels" element={<AdminHotel />} />
+
          </Route>
       </Routes>
    );

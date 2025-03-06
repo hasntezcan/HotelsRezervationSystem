@@ -1,0 +1,181 @@
+:root {
+    --primary-color: #264653;
+    --secondary-color: #2A9D8F;
+    --heading-color: #264653;
+    --background-color: #ffffff;
+    --text-color: #264653;
+    --accent-color: #E07A5F;
+    --hover-color: #d65f5f;
+    --font-name: "Montserrat", sans-serif;
+}
+
+#admin-hotel-container {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    background: var(--secondary-color);
+    color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 10px;
+}
+
+#admin-hotel-management-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--background-color);
+    margin-bottom: 20px;
+}
+
+#admin-hotel-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+    padding: 20px;
+    background: var(--primary-color);
+    border-radius: 10px;
+    width: 90%;
+    max-width: 1400px;
+}
+
+#admin-hotel-form input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--background-color);
+    background: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--font-name);
+    -moz-appearance: textfield;
+}
+
+#admin-hotel-form input[name="amenities"] {
+    ime-mode: disabled;
+}
+
+#admin-hotel-form input::-webkit-outer-spin-button,
+#admin-hotel-form input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#admin-hotel-button {
+    background: var(--accent-color);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#admin-hotel-button:hover {
+    background: var(--hover-color);
+}
+
+#admin-hotel-list {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    justify-content: center;
+    width: 95%;
+    max-width: 1800px;
+}
+
+.admin-hotel-item {
+    background: var(--background-color);
+    color: var(--text-color);
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.admin-hotel-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.admin-hotel-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.admin-hotel-edit-btn,
+.admin-hotel-delete-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.admin-hotel-edit-btn {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.admin-hotel-edit-btn:hover {
+    background: #21867a;
+}
+
+.admin-hotel-delete-btn {
+    background: var(--hover-color);
+    color: white;
+}
+
+.admin-hotel-delete-btn:hover {
+    background: #b0483e;
+}
+
+.admin-hotel-full-width {
+    width: 100%;
+}
+
+/* Responsive Tasarım */
+@media screen and (max-width: 1024px) {
+    #admin-hotel-form {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    #admin-hotel-list {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #admin-hotel-form {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    #admin-hotel-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #admin-hotel-form {
+        grid-template-columns: 1fr;
+    }
+
+    #admin-hotel-list {
+        grid-template-columns: 1fr;
+    }
+}

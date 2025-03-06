@@ -1,109 +1,175 @@
+:root {
+    --admin-user-primary-color: #264653;
+    --admin-user-secondary-color: #2A9D8F;
+    --admin-user-text-color: #E9C46A;
+    --admin-user-accent-color: #E76F51;
+    --admin-user-hover-color: #D65F5F;
+    --admin-user-font-name: "Montserrat", sans-serif;
+}
 
-.manager-staff-container {
-    font-family: 'Poppins', sans-serif;
-    background-color:var( --primary-color     );
-    padding: 20px;
-    min-height: 100vh;
+.admin-user-page-container {
+    width: 100%;
+    height: 96vh;
+    background-color: var(--admin-user-primary-color);
+    color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    font-family: var(--admin-user-font-name);
+    border-radius: 10px;
+    
 }
 
-/* Dashboard Layout */
-.staff-dashboard {
+.admin-user-management-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+    width: 90%;
+    height: 90%;    
+}
+
+
+.admin-user-section {
+    background-color: var(--admin-user-secondary-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+}
+
+.admin-user-section h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: white;
+}
+
+.admin-user-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    align-items: center;
+}
+
+.admin-user-input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid var(--admin-user-text-color);
+    font-size: 16px;
+    background: white;
+    color: var(--admin-user-primary-color);
+}
+
+.admin-user-button {
+    background: var(--admin-user-accent-color);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+    padding: 10px 15px;
+    margin-top: 10px;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 200px;
+}
+
+.admin-user-button:hover {
+    background: var(--admin-user-hover-color);
+}
+
+.admin-user-list {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    max-width: 400px;
+}
+
+.admin-user-list-item {
     display: flex;
     justify-content: space-between;
-    width: 100%;
-    max-width: 1200px;
-    gap: 20px;
-}
-
-/* Form */
-.staff-form {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    flex: 1;
-    max-width: 400px;
-    text-align: center;
-}
-
-.staff-form input, .staff-form select {
-    width: 100%;
+    align-items: center;
     padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    border-bottom: 1px solid var(--admin-user-text-color);
+    color: var(--admin-user-text-color);
+    width: 100%;
 }
 
-.staff-form button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
+.admin-user-delete-btn {
+    background: var(--admin-user-hover-color);
     color: white;
-    border: none;
+    padding: 6px 12px;
     border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-/* Staff List */
-.staff-list {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    flex: 2;
-    text-align: center;
-}
-
-.staff-list table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.staff-list th, .staff-list td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-}
-
-.staff-list th {
-    background: #007bff;
-    color: white;
-}
-
-.edit-btn, .delete-btn {
-    width: 80px; /* Aynı genişlik */
-    height: 35px; /* Aynı yükseklik */
-    border-radius: 8px; /* Kenarları ovalleştir */
-    border: none;
-    font-size: 14px;
-    font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
 }
 
-/* Edit Butonu */
-.edit-btn {
-    background: #ffc107;
-    color: black;
+.admin-user-delete-btn:hover {
+    background: darkred;
 }
 
-/* Delete Butonu */
-.delete-btn {
-    background: #dc3545;
+.admin-user-edit-btn, .admin-user-delete-btn {
+    background: var(--admin-user-accent-color);
     color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+    padding: 8px 16px;
+    margin-left: 10px;
+    border-radius: 5px;
+    min-width: 80px;
+    text-align: center;
 }
 
-/* Hover Efektleri */
-.edit-btn:hover {
-    background: #e0a800;
+.admin-user-delete-btn {
+    background: darkred;
 }
 
-.delete-btn:hover {
-    background: #c82333;
+.admin-user-edit-btn:hover {
+    background: var(--admin-user-hover-color);
 }
 
+.admin-user-delete-btn:hover {
+    background: #a83232;
+}
+
+.admin-user-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--admin-user-text-color);
+    color: var(--admin-user-text-color);
+    width: 100%;
+}
+
+.admin-user-button-group {
+    display: flex;
+    gap: 10px;
+}
+
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .admin-user-management-section {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+    }
+
+    .admin-user-form {
+        max-width: 100%;
+    }
+}

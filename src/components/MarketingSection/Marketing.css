@@ -1,0 +1,98 @@
+:root {
+    --primary-color: #264653; /* Dark teal for primary elements */
+    --secondary-color: #2A9D8F; /* Light teal for secondary elements */
+    --heading-color: #264653; /* Dark teal for headings */
+    --background-color: #ffffff;
+    --text-color: #264653; /* Dark teal for text */
+    --accent-color: #E07A5F; /* Coral for accents and interactive elements */
+    --hover-color: #d65f5f; /* Hover color */
+    --font-name: "Montserrat", sans-serif;
+    --subtitle-font-name: "Island Moments", cursive;
+}
+
+/* Marketing Section */
+.marketing__section {
+    max-width: 1200px;
+    background: var(--secondary-color); /* Light teal background */
+    color: white; /* White text color */
+    padding: 60px 20px; /* Top and bottom padding, with horizontal padding */
+    margin: 50px auto; /* Center the section */
+    border-radius: 12px; /* Rounded corners */
+    text-align: center; /* Center-align text */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Marketing Title */
+.marketing__title {
+    font-size: 2rem; /* Large font size */
+    font-weight: 700; /* Bold text */
+    color: var(--background-color); /* White color for the title */
+    max-width: 300px;
+    margin-left: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Subtle shadow effect */
+    transition: transform 0.3s ease;
+}
+.marketing__title:hover {
+
+    transform: scale(1.10);
+}
+
+/* Highlighted Text */
+.highlight {
+    color: var(--background-color); /* Coral accent color for highlighted text */
+}
+
+/* Feature List Container */
+.marketing__features {
+    display: flex; /* Flexbox layout */
+    gap: 1.5rem; /* Space between items */
+    flex-wrap: wrap; /* Allow wrapping of items */
+    justify-content: center; /* Center-align items horizontally */
+    padding: 0 20px; /* Add padding to prevent overflow */
+}
+
+/* Individual Marketing Item */
+.marketing__item {
+    background: var(--primary-color); /* Dark teal background */
+    color: white; /* White text color */
+    padding: 20px; /* Padding inside each item */
+    border-radius: 12px; /* Rounded corners */
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center items vertically */
+    gap: 1rem; /* Space between icon and text */
+    flex: 1; /* Allow items to grow and fill space */
+    min-width: 150px; /* Minimum width for each item */
+    max-height: 200px;
+    max-width: 300px; /* Maximum width for each item */
+    transition: transform 0.5s ease; /* Smooth transform animation */
+}
+
+/* Hover Effect for Marketing Item */
+.marketing__item:hover {
+    transform: scale(1.10); /* Slightly scale up on hover */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Add shadow on hover */
+}
+
+/* Marketing Icon */
+.marketing__icon {
+    font-size: 4rem; /* Large icon size */
+    color: var(--background-color); /* Coral color for icons */
+}
+
+/* Marketing Subtitle */
+.marketing__subtitle {
+    font-size: 1.3rem; /* Medium font size */
+    margin-left: 15px;
+    max-width: 100px;
+    font-weight: bold; /* Bold text */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Subtle shadow effect */
+}
+
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .marketing__features {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center items horizontally */
+    }
+}
