@@ -71,14 +71,18 @@ const ManagerReservations = () => {
 
   return (
       <div style={{ display: "flex", flex: 1, marginTop: "60px" }}>
-        <SidebarManager />
+        <div style={{ position: "fixed", zIndex: 100 }}>
+          <SidebarManager />
+        </div>
         <div
           style={{
+            marginLeft: "250px", // Adjust this based on the width of your sidebar
             flex: 1,
             display: "flex",
             justifyContent: "center",
             alignItems: "flex-start",
             padding: "40px",
+            marginTop: "60px", // Ensure space for top navbar
           }}
         >
           <Grid container spacing={4} style={{ width: "100%", maxWidth: "1400px" }}>

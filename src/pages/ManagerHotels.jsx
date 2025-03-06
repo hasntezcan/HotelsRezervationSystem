@@ -45,20 +45,24 @@ const ManagerHotels = () => {
 
   return (
       <div style={{ display: "flex", flex: 1, marginTop: "60px" }}>
-        <SidebarManager />
+        <div style={{ position: "fixed", zIndex: 100 }}>
+          <SidebarManager />
+        </div>
         <div
           style={{
+            marginLeft: "250px", // Adjust this based on the width of your sidebar
             flex: 1,
             display: "flex",
             justifyContent: "center",
             alignItems: "flex-start",
             padding: "40px", // Increased padding for more space
+            marginTop: "60px", // Ensure space for top navbar
           }}
         >
-          <Grid container spacing={4} style={{ width: "100%", maxWidth: "1400px" }}> {/* Increased spacing */}
+          <Grid container spacing={4} style={{ width: "100%", maxWidth: "1400px" }}>
             {/* General Information Section */}
             <Grid item xs={12} sm={6} md={6}>
-              <Card style={{ borderRadius: "50px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)", padding: "20px" }}> {/* Added padding */}
+              <Card style={{ borderRadius: "50px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)", padding: "20px" }}>
                 <CardContent>
                   <Box display="flex" alignItems="center" marginBottom="20px">
                     <Typography variant="h5" style={{ fontWeight: "bold" }}>
