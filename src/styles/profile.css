@@ -168,12 +168,16 @@
   .featured-info {
     padding: 10px 15px 15px;
   }
-  .featured-info h6 {
+  .featured-info h6 a{
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 5px;
+    text-decoration: none;
     color: var(--heading-color);
+  }
+  .featured-info h6 a:hover {
+    color: var(--accent-color); /* Hoverda farklı renk */
   }
   .featured-info .city {
     font-size: 0.85rem;
