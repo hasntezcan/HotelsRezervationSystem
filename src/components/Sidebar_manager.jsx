@@ -1,7 +1,7 @@
 import "../styles/ManagerSideBar.css";
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom"; // Import useNavigate for redirection
-import { FaTh, FaUserAlt, FaInfo, FaBars } from "react-icons/fa"; 
+import { FaTh, FaUserAlt, FaInfo, FaBars, FaSignOutAlt } from "react-icons/fa"; 
 import { BiSolidHotel } from "react-icons/bi";
 import logo from "../assets/images/SidebarLogo.png";
 
@@ -36,10 +36,24 @@ const SidebarManager = () => {
     { path: "/manager/profile", name: "Profile", icon: <FaUserAlt /> },
   ];
 
-  // Function to handle logout and redirect to the home page
+  // Logout işlevselliği: localStorage, sessionStorage ve cookie'leri temizleyip, sunucuya logout isteği gönderir.
   const handleLogout = () => {
-    // Add logout functionality here (e.g., clearing local storage or token)
-    navigate("/"); // Redirect to the home page
+    // Local storage ve session storage temizle
+    localStorage.removeItem("admin");
+    localStorage.removeItem("token");
+    sessionStorage.clear();
+    // Tüm cookie'leri temizle
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+
+    // Gerekirse logout API çağrısı
+    fetch("/api/logout", { method: "POST", credentials: "include" })
+      .catch((err) => console.error("Logout API error:", err));
+
+    navigate("/login"); // Kullanıcıyı giriş sayfasına yönlendir
   };
 
   return (
@@ -47,7 +61,7 @@ const SidebarManager = () => {
       <div className="top_section">
         {showLogo && <img src={logo} alt="Logo" className="logo" />}
         <div className="bars" onClick={toggleSidebar}>
-          <FaBars /> {/* This is the hamburger menu */}
+          <FaBars /> {/* Hamburger menü */}
         </div>
       </div>
       {menuItems.map((item, index) => (
@@ -61,10 +75,10 @@ const SidebarManager = () => {
           {isOpen && <div className="link_text">{item.name}</div>}
         </NavLink>
       ))}
-      {/* Logout Button */}
-      <div className="logout_button" onClick={handleLogout}>
-        <button className="logout-btn">Logout</button>
-      </div>
+      {/* Logout Butonu */}
+      <button className="logout-btn" onClick={handleLogout}>
+        <FaSignOutAlt className="logout-icon" /> {isOpen && "Logout"}
+      </button>
     </div>
   );
 };
