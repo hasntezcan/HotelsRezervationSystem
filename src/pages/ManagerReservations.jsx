@@ -7,10 +7,10 @@ const ManagerReservations = () => {
   const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
-    // Attempt to load reservations from localStorage
+    // localStorage'dan rezervasyonları yükle
     const storedReservations = JSON.parse(localStorage.getItem("reservations"));
 
-    // If no reservations in localStorage, create 3 sample reservations
+    // localStorage boşsa örnek rezervasyonlar oluştur
     if (storedReservations && storedReservations.length > 0) {
       setReservations(storedReservations);
     } else {
@@ -41,114 +41,96 @@ const ManagerReservations = () => {
         },
       ];
       setReservations(sampleReservations);
-      localStorage.setItem("reservations", JSON.stringify(sampleReservations)); // Save sample data to localStorage
+      localStorage.setItem("reservations", JSON.stringify(sampleReservations));
     }
   }, []);
 
   const handleApprove = (reservationId) => {
-    const updatedReservations = reservations.map((reservation) => {
-      if (reservation.id === reservationId) {
-        return { ...reservation, status: "Approved" };
-      }
-      return reservation;
-    });
-
+    const updatedReservations = reservations.map((reservation) =>
+      reservation.id === reservationId ? { ...reservation, status: "Approved" } : reservation
+    );
     setReservations(updatedReservations);
     localStorage.setItem("reservations", JSON.stringify(updatedReservations));
   };
 
   const handleReject = (reservationId) => {
-    const updatedReservations = reservations.map((reservation) => {
-      if (reservation.id === reservationId) {
-        return { ...reservation, status: "Rejected" };
-      }
-      return reservation;
-    });
-
+    const updatedReservations = reservations.map((reservation) =>
+      reservation.id === reservationId ? { ...reservation, status: "Rejected" } : reservation
+    );
     setReservations(updatedReservations);
     localStorage.setItem("reservations", JSON.stringify(updatedReservations));
   };
 
   return (
-      <div style={{ display: "flex", flex: 1, marginTop: "60px" }}>
-        <div style={{ position: "fixed", zIndex: 100 }}>
-          <SidebarManager />
-        </div>
-        <div
-          style={{
-            marginLeft: "250px", // Adjust this based on the width of your sidebar
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            padding: "40px",
-            marginTop: "60px", // Ensure space for top navbar
-          }}
-        >
-          <Grid container spacing={4} style={{ width: "100%", maxWidth: "1400px" }}>
-            {/* Reservation List Section */}
-            <Grid item xs={12}>
-              <Typography variant="h4" gutterBottom>
-                Reservation Management
+    <div className="dashboard" style={{ display: "flex" }}>
+      {/* SidebarManager, ManagerSideBar.css’de tanımlı responsive stillerle çalışır */}
+      <SidebarManager />
+
+      {/* İçerik alanı; ManagerSideBar.css'deki .content sınıfındaki margin-left ayarları uygulanır */}
+      <div className="content" style={{ padding: "40px", width: "100%" }}>
+        <Grid container spacing={4} style={{ width: "100%", maxWidth: "1400px" }}>
+          <Grid item xs={12}>
+            <Typography variant="h4" gutterBottom>
+              Reservation Management
+            </Typography>
+
+            {reservations.length > 0 ? (
+              reservations.map((reservation) => (
+                <Card
+                  key={reservation.id}
+                  style={{
+                    borderRadius: "15px",
+                    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                    marginBottom: "20px",
+                    padding: "20px",
+                  }}
+                >
+                  <CardContent>
+                    <Typography variant="h6">{reservation.hotelName}</Typography>
+                    <Typography variant="body2" style={{ marginBottom: "10px" }}>
+                      <strong>Customer:</strong> {reservation.customerName}
+                    </Typography>
+                    <Typography variant="body2" style={{ marginBottom: "10px" }}>
+                      <strong>Check-in Date:</strong> {reservation.checkInDate}
+                    </Typography>
+                    <Typography variant="body2" style={{ marginBottom: "10px" }}>
+                      <strong>Check-out Date:</strong> {reservation.checkOutDate}
+                    </Typography>
+                    <Typography variant="body2" style={{ marginBottom: "20px" }}>
+                      <strong>Status:</strong> {reservation.status || "Pending"}
+                    </Typography>
+
+                    <Box display="flex" justifyContent="flex-start">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<FaCheck />}
+                        onClick={() => handleApprove(reservation.id)}
+                        style={{ marginRight: "10px" }}
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        startIcon={<FaTimes />}
+                        onClick={() => handleReject(reservation.id)}
+                      >
+                        Reject
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Typography variant="h6" color="textSecondary">
+                No reservations found.
               </Typography>
-
-              {reservations.length > 0 ? (
-                reservations.map((reservation) => (
-                  <Card
-                    key={reservation.id}
-                    style={{
-                      borderRadius: "15px",
-                      boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                      marginBottom: "20px",
-                      padding: "20px",
-                    }}
-                  >
-                    <CardContent>
-                      <Typography variant="h6">{reservation.hotelName}</Typography>
-                      <Typography variant="body2" style={{ marginBottom: "10px" }}>
-                        <strong>Customer:</strong> {reservation.customerName}
-                      </Typography>
-                      <Typography variant="body2" style={{ marginBottom: "10px" }}>
-                        <strong>Check-in Date:</strong> {reservation.checkInDate}
-                      </Typography>
-                      <Typography variant="body2" style={{ marginBottom: "10px" }}>
-                        <strong>Check-out Date:</strong> {reservation.checkOutDate}
-                      </Typography>
-                      <Typography variant="body2" style={{ marginBottom: "20px" }}>
-                        <strong>Status:</strong> {reservation.status || "Pending"}
-                      </Typography>
-
-                      <Box display="flex" justifyContent="flex-start">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          startIcon={<FaCheck />}
-                          onClick={() => handleApprove(reservation.id)}
-                          style={{ marginRight: "10px" }}
-                        >
-                          Approve
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="secondary"
-                          startIcon={<FaTimes />}
-                          onClick={() => handleReject(reservation.id)}
-                        >
-                          Reject
-                        </Button>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <Typography variant="h6" color="textSecondary">
-                  No reservations found.
-                </Typography>
-              )}
-            </Grid>
+            )}
           </Grid>
-        </div>
+        </Grid>
       </div>
+    </div>
   );
 };
 
