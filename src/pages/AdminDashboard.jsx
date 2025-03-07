@@ -10,9 +10,9 @@ import axios from "axios";
 
 const stats = [
     { title: "Total Hotels", value: "11,361" },
-    { title: "Sales Obtained", value: "431,225", percentage: "+21%" },
-    { title: "New Clients", value: "32,441", percentage: "+5%" },
-    { title: "Traffic Received", value: "1,325,134", percentage: "+43%" },
+    { title: "Total Rooms", value: "431,225"},
+    { title: "Managers", value: "32,441"},
+    { title: "Gain", value: "1,325,134" },
 ];
 
 // 📊 **Aylık Rezervasyon Sayıları ve Şehirler**
@@ -77,6 +77,7 @@ const AdminDashboard = () => {
     }, []);
 
     return (
+        
         <div className="dashboard-container">
             {/* 📊 Üst Kısımdaki Kartlar */}
             <div className="stats-container">

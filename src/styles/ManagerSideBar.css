@@ -2,7 +2,7 @@
 .sidebar {
   width: 260px;
   height: 100vh;
-  background: linear-gradient(to bottom, #0a0f14, #141a21); /* Daha koyu bir arka plan */
+  background: linear-gradient(to bottom, #264653, #2A9D8F); /* Daha koyu bir arka plan */
   color: white;
   position: fixed;
   left: 0;
@@ -13,6 +13,7 @@
   transition: all 0.4s ease-in-out;
   box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5); /* Daha koyu ve net gölge */
 }
+
 
 /* Sidebar Kapalıyken */
 .sidebar.closed {

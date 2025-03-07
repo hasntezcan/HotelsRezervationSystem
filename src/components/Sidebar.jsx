@@ -31,8 +31,20 @@ const Sidebar = () => {
   }, []);
 
   const handleLogout = () => {
-    // Çıkış işlemleri (örneğin token temizleme)
-    console.log("User logged out");
+    // Kullanıcı oturum bilgilerini temizle
+    localStorage.removeItem("admin"); // Eğer admin bilgileri LocalStorage'da tutuluyorsa
+    localStorage.removeItem("token"); // Eğer JWT token saklanıyorsa onu da kaldır
+    sessionStorage.clear(); // Tüm session'ı temizle
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+
+    // Sunucudan oturumu kapatma işlemi varsa çağır
+    fetch("/api/logout", { method: "POST", credentials: "include" })
+      .catch((err) => console.error("Logout API error:", err));
+
     navigate("/login"); // Kullanıcıyı giriş sayfasına yönlendir
   };
 

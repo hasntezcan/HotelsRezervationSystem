@@ -1,54 +1,189 @@
-.profile-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    background: white;
+:root {
+    --primary-color: #264653;
+    --secondary-color: #2A9D8F;
+    --background-color: #ffffff;
+    --text-color: #264653;
+    --accent-color: #E07A5F;
+    --hover-color: #d65f5f;
+    --font-name: "Montserrat", sans-serif;
+}
+
+
+
+.admin-profile-page {
+    background-image: url("../assets/images/adminProfile.jpg"); /* 📌 Arka plan resmi */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 96vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-name);
+}
+
+/* 📌 Opak Arka Plan Kutusu */
+.admin-profile-container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9); /* 📌 Saydam beyaz arka plan */
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     text-align: center;
 }
 
-.profile-container h2 {
-    color: #007bff;
+/* 📌 Başlık */
+.admin-profile-title {
+    color: var(--primary-color);
     margin-bottom: 20px;
 }
 
-.profile-form {
+/* 📌 Profil Avatar */
+.admin-profile-section {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.admin-profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid var(--primary-color);
+    margin-bottom: 10px;
+}
+
+/* 📌 Bilgi Alanları */
+.admin-profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-profile-row {
+    display: flex;
+    justify-content: space-between;
     gap: 15px;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
+.admin-profile-row div {
+    width: 100%;
 }
 
-.form-group label {
+.admin-profile-row label {
+    display: block;
     font-weight: bold;
     margin-bottom: 5px;
+    color: var(--primary-color);
 }
 
-.form-group input {
+.admin-profile-input {
+    width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--primary-color);
     border-radius: 5px;
-    font-size: 16px;
+    background: var(--background-color);
+    color: var(--text-color);
+    text-align: center;
 }
 
-.update-btn {
-    background: #007bff;
+/* 📌 Şifre Alanı */
+.admin-profile-password-section {
+    margin-top: 20px;
+}
+
+.admin-profile-password-title {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.admin-profile-password-input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+}
+
+/* 📌 Güncelle Butonu */
+.admin-profile-button {
+    width: 100%;
+    background: var(--accent-color);
     color: white;
     padding: 10px;
-    border: none;
     border-radius: 5px;
-    font-size: 16px;
+    border: none;
     cursor: pointer;
     transition: 0.3s;
+    font-weight: bold;
+    margin-top: 10px;
 }
 
-.update-btn:hover {
-    background: #0056b3;
+.admin-profile-button:hover {
+    background: var(--hover-color);
 }
+
+/* 📱 Mobil İçin Responsive Ayarlar */
+@media screen and (max-width: 480px) {
+    /* Sayfa İçeriğinin Taşmasını Önleme */
+    .profile-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        min-height: 100vh;
+        overflow-x: hidden; /* Yatay taşmayı engelle */
+    }
+
+    /* Profil Konteyner */
+    .admin-profile-container {
+        width: 90%;
+        min-width: 280px; /* Çok sıkışmasını önle */
+        max-width: 100%;
+        padding: 15px;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    /* Profil İçeriği */
+    .profile-content {
+        width: 100%;
+        min-width: 300px;
+        max-width: 100%;
+        padding: 10px;
+        overflow: hidden;
+    }
+
+    /* Şifre Güncelleme Alanı */
+    .admin-profile-password-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        min-width: 250px;
+        max-width: 100%;
+    }
+
+    /* Inputlar için Responsive Tasarım */
+    .admin-profile-password-input {
+        width: 100%;
+        margin: 10px auto; /* Üstten ve alttan boşluk, ortalamak için */
+        min-width: 250px;
+        max-width: 100%;
+        text-align: center;
+    }
+    .admin-profile-file-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+
+}
+
