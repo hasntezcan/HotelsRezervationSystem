@@ -216,7 +216,7 @@ const BookingCard = ({
             )}
 
             {/* Always allow Delete */}
-            <button onClick={() => onDelete(booking)}>Cancel/Delete</button>
+            <button onClick={() => onDelete(booking)}>Delete</button>
           </div>
         )}
       </div>

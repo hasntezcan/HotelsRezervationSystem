@@ -103,13 +103,13 @@ const Header = () => {
                     <h6 className="mb-0 user__name">{user.username}</h6>
                     <div className="dropdown-menu">
                       <Link to="/profile" className="dropdown-item">
-                        Profil
+                        Profile
                       </Link>
                       <button
                         className="dropdown-item logout-btn"
                         onClick={logout}
                       >
-                        Çıkış Yap
+                        Logout
                       </button>
                     </div>
                   </div>
