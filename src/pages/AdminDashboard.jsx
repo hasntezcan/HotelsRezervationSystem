@@ -96,6 +96,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="dashboard-container">
+      <h1 clasName="baslik">Admin Dashboard</h1>
       {/* Üst Kısımdaki Kartlar */}
       <div className="stats-container">
         {stats.map((stat, index) => (

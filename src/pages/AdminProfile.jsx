@@ -26,17 +26,6 @@ const AdminProfile = () => {
     }
   };
 
-  const handleAvatarChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAdmin((prev) => ({ ...prev, avatar: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleInputChange = (e) => {
     setAdmin({ ...admin, [e.target.name]: e.target.value });
   };
@@ -51,27 +40,51 @@ const AdminProfile = () => {
         <h2 className="admin-profile-title">Your Profile</h2>
         <div className="admin-profile-section">
           <img src={admin.avatar} alt="Profile" className="admin-profile-avatar" />
-          <input type="file" accept="image/*" onChange={handleAvatarChange} className="admin-profile-input-file" />
+          {/* Profil fotoğrafını değiştirme opsiyonu kaldırıldı */}
         </div>
         <div className="admin-profile-info">
           <div className="admin-profile-row">
             <div>
               <label>First Name</label>
-              <input type="text" name="firstName" value={admin.firstName} onChange={handleInputChange} className="admin-profile-input" />
+              <input
+                type="text"
+                name="firstName"
+                value={admin.firstName}
+                onChange={handleInputChange}
+                className="admin-profile-input"
+              />
             </div>
             <div>
               <label>Last Name</label>
-              <input type="text" name="lastName" value={admin.lastName} onChange={handleInputChange} className="admin-profile-input" />
+              <input
+                type="text"
+                name="lastName"
+                value={admin.lastName}
+                onChange={handleInputChange}
+                className="admin-profile-input"
+              />
             </div>
           </div>
           <div className="admin-profile-row">
             <div>
               <label>Username</label>
-              <input type="text" name="username" value={admin.username} onChange={handleInputChange} className="admin-profile-input" />
+              <input
+                type="text"
+                name="username"
+                value={admin.username}
+                onChange={handleInputChange}
+                className="admin-profile-input"
+              />
             </div>
             <div>
               <label>Email</label>
-              <input type="email" name="email" value={admin.email} onChange={handleInputChange} className="admin-profile-input" />
+              <input
+                type="email"
+                name="email"
+                value={admin.email}
+                onChange={handleInputChange}
+                className="admin-profile-input"
+              />
             </div>
           </div>
           <div className="admin-profile-password-wrapper">
@@ -84,13 +97,19 @@ const AdminProfile = () => {
                 className="admin-profile-password-input"
                 readOnly
               />
-              <button type="button" className="admin-profile-show-password" onClick={() => setShowPassword(!showPassword)}>
+              <button
+                type="button"
+                className="admin-profile-show-password"
+                onClick={() => setShowPassword(!showPassword)}
+              >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
           </div>
         </div>
-        <button onClick={handleSaveChanges} className="admin-profile-button">Save Changes</button>
+        <button onClick={handleSaveChanges} className="admin-profile-button">
+          Save Changes
+        </button>
         <div className="admin-profile-password-section">
           <h3 className="admin-profile-password-title">Change Password</h3>
           <input
@@ -107,7 +126,9 @@ const AdminProfile = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="admin-profile-password-input"
           />
-          <button onClick={handlePasswordChange} className="admin-profile-button">Update Password</button>
+          <button onClick={handlePasswordChange} className="admin-profile-button">
+            Update Password
+          </button>
         </div>
       </div>
     </div>

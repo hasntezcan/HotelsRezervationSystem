@@ -26,9 +26,10 @@
 #admin-hotel-management-title {
     text-align: center;
     font-size: 2rem;
-    font-weight: bold;
+    
     color: var(--background-color);
     margin-bottom: 20px;
+    font-family: var(--font-name);
 }
 
 #admin-hotel-form {

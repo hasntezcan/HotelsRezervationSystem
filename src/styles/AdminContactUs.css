@@ -29,6 +29,7 @@
   margin-bottom: 20px;
   text-align: center;
   color: var(--background-color);
+  font-family: var(--font-name);
 }
 
 /* Message Sections */
