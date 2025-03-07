@@ -3,12 +3,19 @@ import '../styles/home.css';
 import { Container, Row, Col } from 'reactstrap';
 import Subtitle from './../shared/subtitle';
 import SearchBar from './../shared/SearchBar';
-import ServiceList from '../services/ServiceList';
 import FeaturedTourList from '../components/Featured-tours/FeaturedTourList';
 import MarketingSection from '../components/MarketingSection/MarketingSection';
+import backGround from '../assets/images/bg.png'
 
-// Hotels data import
-import hotels from '../assets/data/hotels';
+// Import images from the folder
+import image1 from '../assets/images/homePage/image1.jpg';
+import image2 from '../assets/images/homePage/image2.jpg';
+import image3 from '../assets/images/homePage/image3.jpg';
+import image4 from '../assets/images/homePage/image4.jpg';
+import image5 from '../assets/images/homePage/image5.jpg';
+import image6 from '../assets/images/homePage/image6.jpg';
+import image7 from '../assets/images/homePage/image7.jpg';
+
 
 const Home = () => {
   // Scroll to top when the component mounts
@@ -16,13 +23,13 @@ const Home = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Slideshow için state
+  // Slideshow state
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Use the imported images
+  const images = [image1, image2, image3, image4, image5, image6, image7];
 
-  const images = hotels.map((hotel) => hotel.photo);
-
-  // Her 5 saniyede bir resmi değiştirelim
+  // Automatically change images every 5 seconds with a fade effect
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -34,12 +41,20 @@ const Home = () => {
   return (
     <>
       {/* Hero Section */}
-      <section
-        className="hero__section"
-        style={{
-          backgroundImage: `url(${images[currentIndex]})`,
-        }}
-      >
+      <section className="hero__section">
+        {/* Slideshow Container */}
+        <div className="hero__slideshow">
+          {images.map((image, index) => (
+            <img
+              key={index}
+              src={image}
+              alt={`Slide ${index + 1}`}
+              className={index === currentIndex ? 'active' : ''}
+            />
+          ))}
+        </div>
+
+        {/* Hero Content */}
         <Container>
           <Row className="align-items-center text-center">
             <Col lg="12">

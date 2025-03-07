@@ -12,8 +12,8 @@
 
 /* Marketing Section */
 .marketing__section {
+    background: var(--secondary-color);
     max-width: 1200px;
-    background: var(--secondary-color); /* Light teal background */
     color: white; /* White text color */
     padding: 60px 20px; /* Top and bottom padding, with horizontal padding */
     margin: 50px auto; /* Center the section */
