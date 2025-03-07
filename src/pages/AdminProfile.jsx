@@ -110,26 +110,7 @@ const AdminProfile = () => {
         <button onClick={handleSaveChanges} className="admin-profile-button">
           Save Changes
         </button>
-        <div className="admin-profile-password-section">
-          <h3 className="admin-profile-password-title">Change Password</h3>
-          <input
-            type="password"
-            placeholder="New Password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            className="admin-profile-password-input"
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="admin-profile-password-input"
-          />
-          <button onClick={handlePasswordChange} className="admin-profile-button">
-            Update Password
-          </button>
-        </div>
+
       </div>
     </div>
   );
