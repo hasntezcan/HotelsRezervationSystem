@@ -136,6 +136,7 @@
 
   .sidebar.open {
     width: 260px;
+
   }
 
   .sidebar.closed .link_text {

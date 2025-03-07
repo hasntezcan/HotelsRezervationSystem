@@ -5,11 +5,11 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const AdminProfile = () => {
   const [admin, setAdmin] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    username: "johndoe",
-    email: "admin@example.com",
-    password: "********",
+    firstName: "Tunahan",
+    lastName: "Tuze",
+    username: "Dede",
+    email: "admin@gmail.com",
+    password: "admin123",
     avatar: defaultAvatar,
   });
   const [newPassword, setNewPassword] = useState("");
