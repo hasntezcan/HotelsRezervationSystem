@@ -8,6 +8,9 @@ import loginImg from '../assets/images/login.png'
 import { AuthContext } from '../context/AuthContext'
 
 const Login = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [credentials, setCredentials] = useState({ email: '', password: '' })
   const { dispatch } = useContext(AuthContext)
   const navigate = useNavigate()

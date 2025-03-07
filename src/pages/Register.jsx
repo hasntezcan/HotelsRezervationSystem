@@ -1,6 +1,6 @@
 // src/pages/Register.jsx
 
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Container, Row, Col, Form, FormGroup, Button } from 'reactstrap'
 import { useNavigate } from 'react-router-dom'
 import '../styles/login.css'
@@ -8,6 +8,9 @@ import registerImg from '../assets/images/login.png'
 import { AuthContext } from '../context/AuthContext'
 
 const Register = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [credentials, setCredentials] = useState({
     username: '',
     email: '',

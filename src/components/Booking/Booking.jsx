@@ -1,5 +1,5 @@
 // src/components/Booking/Booking.jsx
-// src/components/Booking/Booking.jsx
+
 import React, { useState, useContext } from 'react'
 import './booking.css'
 import { Form, FormGroup, ListGroup, ListGroupItem, Button } from 'reactstrap'
@@ -43,7 +43,7 @@ const Booking = ({ tour, avgRating }) => {
       return
     }
 
-    // Validate required fields
+    // 1) Basic required field checks
     if (
       !booking.fullName.trim() ||
       !booking.phone.trim() ||
@@ -54,6 +54,22 @@ const Booking = ({ tour, avgRating }) => {
       return
     }
 
+    // 2) Regex validations
+    // Full name: letters + spaces only
+    const nameRegex = /^[A-Za-z\s]+$/
+    if (!nameRegex.test(booking.fullName)) {
+      alert('Full name can only contain letters and spaces.')
+      return
+    }
+
+    // Phone: optional +, then 7–15 digits
+    const phoneRegex = /^\+?\d{7,15}$/
+    if (!phoneRegex.test(booking.phone)) {
+      alert('Invalid phone format. Must be 7–15 digits, without spaces.')
+      return
+    }
+
+    // 3) Date validations
     const sDate = new Date(booking.startDate)
     const eDate = new Date(booking.endDate)
     if (sDate.toString() === 'Invalid Date' || eDate.toString() === 'Invalid Date') {
@@ -64,12 +80,14 @@ const Booking = ({ tour, avgRating }) => {
       alert('End date cannot be earlier than start date.')
       return
     }
+
+    // 4) Count validations
     if (Number(booking.adultCount) < 1 && Number(booking.childCount) < 1) {
       alert('At least 1 adult or child is required.')
       return
     }
 
-    // Save to localStorage
+    // 5) Save to localStorage
     let existingBookings = JSON.parse(localStorage.getItem('bookings')) || []
     existingBookings.push({
       ...booking,
@@ -82,8 +100,8 @@ const Booking = ({ tour, avgRating }) => {
     navigate('/thank-you')
   }
 
-  // Compute today's date in YYYY-MM-DD format.
-  const today = new Date().toISOString().split('T')[0];
+  // Compute today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0]
 
   return (
     <div className="booking">
@@ -93,7 +111,10 @@ const Booking = ({ tour, avgRating }) => {
           <span>/per person</span>
         </h3>
         <span className="tour__rating d-flex align-items-center">
-          <i className="ri-star-fill" style={{ color: 'var(--secondary-color)' }}></i>
+          <i
+            className="ri-star-fill"
+            style={{ color: 'var(--secondary-color)' }}
+          ></i>
           {avgRating === 0 ? null : avgRating} ({reviews?.length})
         </span>
       </div>

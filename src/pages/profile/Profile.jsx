@@ -1,6 +1,6 @@
 // src/pages/profile/Profile.jsx
 
-import React from 'react'
+import React, {useEffect} from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap'
 import '../../styles/profile.css'
@@ -11,6 +11,9 @@ import {
 } from 'react-icons/ri' // Örnek: react-icons
 
 const Profile = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <section className="profile-section">
       <Container>

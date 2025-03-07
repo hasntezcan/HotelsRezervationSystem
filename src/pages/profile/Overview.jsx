@@ -1,5 +1,5 @@
 // src/pages/profile/Overview.jsx
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
@@ -7,6 +7,9 @@ import hotelsData from '../../assets/data/hotels'
 import '../../styles/profile.css'
 
 const Overview = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const { user } = useContext(AuthContext)
   const navigate = useNavigate()
 
