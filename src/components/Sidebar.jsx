@@ -1,15 +1,17 @@
 import "../styles/ManagerSideBar.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaTh, FaUserAlt, FaInfo, FaBars, FaSignOutAlt } from "react-icons/fa";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { BiSolidHotel } from "react-icons/bi";
 import logo from "../assets/images/SidebarLogo.png";
+import { AuthContext } from "../../src/context/AuthContext";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
   const [showLogo, setShowLogo] = useState(true);
-  const navigate = useNavigate(); // Sayfa yönlendirmesi için
+  const navigate = useNavigate();
+  const { dispatch } = useContext(AuthContext);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -31,21 +33,20 @@ const Sidebar = () => {
   }, []);
 
   const handleLogout = () => {
-    // Kullanıcı oturum bilgilerini temizle
-    localStorage.removeItem("admin"); // Eğer admin bilgileri LocalStorage'da tutuluyorsa
-    localStorage.removeItem("token"); // Eğer JWT token saklanıyorsa onu da kaldır
-    sessionStorage.clear(); // Tüm session'ı temizle
+    dispatch({ type: "LOGOUT" });
+    localStorage.removeItem("admin");
+    localStorage.removeItem("token");
+    sessionStorage.clear();
     document.cookie.split(";").forEach((c) => {
       document.cookie = c
         .replace(/^ +/, "")
         .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
 
-    // Sunucudan oturumu kapatma işlemi varsa çağır
     fetch("/api/logout", { method: "POST", credentials: "include" })
       .catch((err) => console.error("Logout API error:", err));
 
-    navigate("/login"); // Kullanıcıyı giriş sayfasına yönlendir
+    navigate("/login");
   };
 
   const menuItems = [
@@ -75,7 +76,6 @@ const Sidebar = () => {
           {isOpen && <div className="link_text">{item.name}</div>}
         </NavLink>
       ))}
-      {/* Logout Butonu */}
       <button className="logout-btn" onClick={handleLogout}>
         <FaSignOutAlt className="logout-icon" /> {isOpen && "Logout"}
       </button>

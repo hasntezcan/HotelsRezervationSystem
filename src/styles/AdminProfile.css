@@ -144,7 +144,7 @@
     .admin-profile-container {
         width: 90%;
         min-width: 280px; /* Çok sıkışmasını önle */
-        max-width: 100%;
+        max-width: 100x;
         padding: 15px;
         box-sizing: border-box;
         overflow: hidden;

@@ -15,7 +15,7 @@
     border-radius: 10px;
     background: var(--secondary-color);
     color: #fff;
-    font-family:var(--font-name);
+    font-family: var(--font-name);
     margin: auto;
     padding: 20px;
     display: flex;
@@ -58,7 +58,7 @@
 .calendar-widget {
     flex: 1;
     max-width: 350px;
-    background:var(--primary-color);
+    background: var(--primary-color);
     padding: 20px;
     border-radius: 10px;
     text-align: center;
@@ -150,32 +150,36 @@
 /* 📊 Alt Kısım: Kampanya & Satış */
 .bottom-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    margin: 0 auto;
     gap: 20px;
     width: 100%;
     flex-wrap: wrap;
 }
 
-.pie-chart{
+.pie-content {
     display: flex;
+    flex-direction: row;   /* Yatayda yan yana */
     align-items: center;
     justify-content: center;
-    gap: 20px; 
-    background:var(--primary-color);
-    padding: 20px;
-    border-radius: 10px;
-    flex: 1;
-    text-align: center;
-    min-width: 300px;
+    gap: 20px;
+  }
 
-} .bar-chart {
-    background:var(--primary-color);
+.pie-chart,
+.bar-chart {
+    background: var(--primary-color);
     padding: 20px;
     border-radius: 10px;
-    flex: 1;
+    flex: 1;               /* Ekran geniş oldukça yanlara doğru büyüsün */
     text-align: center;
-    min-width: 300px;
+    min-width: 300px;      /* Çok daralmasını engeller */
+    /* max-width: 600px;  isterseniz üst limit koyabilirsiniz */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
+
 .manager-list {
     display: flex;
     flex-direction: column;
@@ -185,7 +189,7 @@
 
 /* 💳 Transactions */
 .transactions-container {
-    background:var(--primary-color);
+    background: var(--primary-color);
     padding: 20px;
     border-radius: 10px;
     margin-top: 20px;
@@ -203,57 +207,100 @@
     border-bottom: none;
 }
 
+/* 🌐 Mobil Uyumlu Düzenlemeler */
 @media (max-width: 768px) {
-    .middle-container {
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-    }
-
-    .calendar-widget {
-        width: 90% !important;
-        max-width: 320px !important;
-        min-width: auto;
-        padding: 15px !important;
-        margin: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* 📆 Takvim içeriği taşmayı önlesin */
-    .react-calendar {
-        width: 100% !important;
-        max-width: 280px !important;
-        min-width: auto;
-        background-color: var(--primary-color) !important;
-        padding: 10px !important;
-        border-radius: 10px !important;
-    }
-
-    /* 📅 Takvim Başlığı */
-    .react-calendar__navigation {
-        width: 100%;
-        text-align: center;
-    }
-
-    /* 📌 Widget'lar İçin Genel Mobil Ayar */
-    .mailbox-widget,
-    .weather-widget {
-        width: 90% !important;
-        max-width: 320px !important;
-        padding: 15px !important;
-        margin: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    /* 📌 Genel Sayfa Yapısını Düzelt */
+    /* Genel container düzenlemesi */
     .dashboard-container {
-        width: 100%;
-        padding: 10px;
-        overflow-x: hidden !important;
+      width: 100%;
+      padding: 10px;
+      overflow-x: hidden !important;
     }
-}
+  
+    /* Orta kısımdaki widget'lar için güncelleme */
+    .middle-container {
+        display: flex;
+        gap: 20px;               /* Aradaki boşluk */
+        justify-content: center; /* Yatayda ortala */
+        align-items: flex-start; /* Üstten hizala (isteğe bağlı) */
+        max-width: 1100px;       /* Orta konteyneri daraltmak için */
+        margin: 0 auto;          /
+    }
+  
+    /* Takvim widget'ı */
+    .calendar-widget {
+        flex: 1;                 /* Eşit şekilde dağılsın */
+        min-width: 250px;        /* Çok daralmasını engellemek için */
+        max-width: 320px;        /* İsteğe bağlı olarak daraltma */
+        padding: 15px;           /* İç boşluk */
+        box-sizing: border-box;  /* Padding dahil olsun */
+    }
+  
+    .react-calendar {
+      width: 100%;
+      max-width: 240px;  /* Takvime özel daha da düşük max genişlik */
+      padding: 8px;
+      border-radius: 10px;
+      background-color: var(--primary-color) !important;
+    }
+  
+    .react-calendar__navigation {
+      width: 100%;
+      text-align: center;
+    }
+  
+    /* Hava durumu widget'ı */
+    .weather-widget {
+      width: 95%;
+      flex: 1;                 /* Eşit şekilde dağılsın */
+      min-width: 250px;        /* Çok daralmasını engellemek için */
+      max-width: 320px;        /* İsteğe bağlı olarak daraltma */
+      padding: 15px;           /* İç boşluk */
+      box-sizing: border-box;  /* Padding dahil olsun */
+    }
+  
+    /* Posta kutusu ve grafik için benzer güncellemeler */
+    .mailbox-widget,
+    .chart-container {
+        flex: 1;                 /* Eşit şekilde dağılsın */
+        min-width: 250px;        /* Çok daralmasını engellemek için */
+        max-width: 320px;        /* İsteğe bağlı olarak daraltma */
+        padding: 15px;           /* İç boşluk */
+        box-sizing: border-box;  /* Padding dahil olsun */
+    }
+  
+    .bottom-container {
+        display: flex;
+        justify-content: center;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 1100px;
+      margin: 0 auto;
+      gap: 20px;
+    }
+    .bottom-container {
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+      }
+    
+    .pie-chart,
+    .bar-chart {
+        flex: 1; /* Eşit pay */
+        max-width: 280px; /* Daha dar */
+        margin: 0 auto;
+      }
+    
+    .pie-content {
+        flex-direction: column; /* Grafik ve liste üst üste */
+      }
+      .mailbox-widget th:nth-child(2),
+      .mailbox-widget td:nth-child(2),
+      .mailbox-widget th:nth-child(3),
+      .mailbox-widget td:nth-child(3) {
+        display: none;
+        }
+    .react-calendar {
+        background-color: #fff !important; /* Beyaz arka plan */
+        color: #000 !important;           /* Metin rengi siyah */
+        }
+    }

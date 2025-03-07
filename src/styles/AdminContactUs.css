@@ -134,14 +134,35 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .messages-section {
       flex-direction: column;
-      align-items: center;
+      width: 100%;
   }
 
   .unread-messages,
   .read-messages {
-      width: 90%;
+      width: 100%;
+  }
+
+  .message-card {
+      padding: 10px;
+      font-size: 0.9rem;
+  }
+
+  /* 📌 Sadece Gönderenin Adı Görünsün */
+  .message-card .email,
+  .message-card .phone,
+  .message-card .message {
+      display: none;
+  }
+
+  /* 📌 Butonları Küçült */
+  .message-actions .reply-btn,
+  .message-actions .mark-read-btn,
+  .message-actions .delete-btn,
+  .message-actions .unread-btn {
+      padding: 5px 8px;
+      font-size: 0.8rem;
   }
 }

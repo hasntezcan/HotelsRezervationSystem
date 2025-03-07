@@ -1,14 +1,16 @@
 import "../styles/ManagerSideBar.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 import { FaTh, FaUserAlt, FaInfo, FaBars, FaSignOutAlt } from "react-icons/fa"; 
 import { BiSolidHotel } from "react-icons/bi";
 import logo from "../assets/images/SidebarLogo.png";
+import { AuthContext } from "../../src/context/AuthContext";
 
 const SidebarManager = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
   const [showLogo, setShowLogo] = useState(true);
   const navigate = useNavigate(); // Initialize useNavigate hook
+  const { dispatch } = useContext(AuthContext); // AuthContext üzerinden dispatch'i ekledik
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -38,7 +40,7 @@ const SidebarManager = () => {
 
   // Logout işlevselliği: localStorage, sessionStorage ve cookie'leri temizleyip, sunucuya logout isteği gönderir.
   const handleLogout = () => {
-    // Local storage ve session storage temizle
+    dispatch({ type: "LOGOUT" });
     localStorage.removeItem("admin");
     localStorage.removeItem("token");
     sessionStorage.clear();
