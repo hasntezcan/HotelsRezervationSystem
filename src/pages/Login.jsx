@@ -19,22 +19,22 @@ const Login = () => {
     const defaultUsers = [
       {
         id: 1,
-        username: 'AdminUser',
-        email: 'admin@xyz.com',
+        username: 'Admin1',
+        email: 'admin@gmail.com',
         password: 'admin123',
         role: 'admin'
       },
       {
         id: 2,
-        username: 'ManagerUser',
-        email: 'manager@xyz.com',
+        username: 'Manager1',
+        email: 'manager@gmail.com',
         password: 'manager123',
         role: 'manager'
       },
       {
         id: 3,
-        username: 'NormalUser',
-        email: 'user@xyz.com',
+        username: 'User1',
+        email: 'user@gmail.com',
         password: 'user123',
         role: 'user'
       }
