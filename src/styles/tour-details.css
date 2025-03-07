@@ -115,6 +115,42 @@
    color: var(--secondary-color);
 }
 
+.tour__amenities {
+   margin: 20px 0;
+ }
+ 
+ .tour__amenities h5 {
+   font-size: 1.2rem;
+   margin-bottom: 10px;
+ }
+ 
+ .tour__amenities ul {
+   list-style: none;
+   padding: 0;
+ }
+ 
+ .tour__amenities ul li {
+   font-size: 1rem;
+   color: var(--text-color);
+   display: flex;
+   align-items: center;
+   gap: 8px;
+ }
+ 
+ .tour__amenities ul li i {
+   color: var(--secondary-color);
+   font-size: 1.2rem;
+ }
+.rating__group span {
+   font-size: 1.2rem;
+   cursor: pointer;
+   transition: color 0.3s ease;
+ }
+ 
+ .rating__group span.selected-rating {
+   color: var(--accent-color);
+   font-weight: bold;
+ }
 
 /* =============== RESPONSIVE ================ */
 @media only screen and (max-width: 768px) {
