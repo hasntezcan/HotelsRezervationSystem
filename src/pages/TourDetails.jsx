@@ -189,7 +189,7 @@ const TourDetails = () => {
             </div>
           </Col>
 
-          <Col lg="4">
+          <Col lg="4" className="mt-4 mt-lg-0">
             <Booking tour={{ ...tour, price: actualPrice }} avgRating={avgRating} />
           </Col>
         </Row>
