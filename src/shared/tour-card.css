@@ -61,6 +61,8 @@
   margin: 0.5rem 1rem 0;
   font-size: 1rem;
   cursor: pointer;
+  min-height: 2.4em; 
+  line-height: 1.2;
 }
 .tour__title a {
   text-decoration: none;
