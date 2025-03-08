@@ -16,3 +16,17 @@ HOW TO INSTALL AND RUN THE PROJECT (ReadMeXX.txt)
    npm run dev
 
 6. Open your browser and go to the link shown in the terminal.
+
+Login informations for different roles:
+
+-user-
+user@gmail.com
+user123
+--------
+-admin-
+admin@gmail.com
+admin123
+--------
+-manager-
+manager@gmail.com
+manager123
