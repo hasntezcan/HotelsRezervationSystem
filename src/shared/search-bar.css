@@ -17,10 +17,9 @@
   align-items: center;
   width: 100%;
   position: relative;
-  margin-top: 80px; /* Adjust top margin */
-  margin-bottom: 50px; /* Adjust bottom margin */
-  z-index: 900; /* Lower z-index than header */
-
+  margin-top: 80px !important; /* Adjust top margin */
+  margin-bottom: 50px !important; /* Adjust bottom margin */
+  z-index: 900 !important; /* Lower z-index than header */
 }
  
  /* ==================== BLACKOUT OVERLAY ==================== */
@@ -36,42 +35,51 @@
  
  /* ==================== SEARCH BAR ==================== */
  .search-bar {
-   display: flex;
-   align-items: center;
-   gap: 16px; /* Adjust spacing between elements */
-   padding: 16px 24px; /* Adjust padding inside the search bar */
-   border-radius: 60px; /* Adjust corner radius */
-   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5); /* Adjust shadow */
-   width: 1100px; /* Adjust width of the search bar */
-   background: white; /* Change background color */
-   position: relative;
-   z-index: 1000;
- }
+  display: flex;
+  align-items: center;
+  gap: 16px !important; /* Adjust spacing between elements */
+  padding: 16px 24px !important; /* Adjust padding inside the search bar */
+  border-radius: 60px !important; /* Adjust corner radius */
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5) !important; /* Adjust shadow */
+  width: 1100px !important; /* Adjust width of the search bar */
+  background: white !important; /* Change background color */
+  position: relative;
+  z-index: 1000 !important;
+}
  
  /* ==================== SEARCH INPUT FIELDS ==================== */
  .search-input,
-
  .search-date-picker {
-   border: none;
-   padding: 12px 8px; /* Adjust padding inside the input fields */
-   font-size: 1.2rem; /* Adjust font size */
-   border-radius: 12px; /* Adjust corner radius */
-   outline: none;
-   font-weight: 300;
-   background: #f5f5f5; /* Change background color */
-   flex: 1;
-   height: 50px; /* Adjust height */
-   transition: background 0.2s ease-in-out;
-   min-width: 300px; /* Adjust minimum width */
-   color: var(--text-color); /* Change text color */
+   border: none !important;
+   padding: 12px 8px !important; /* Adjust padding inside the input fields */
+   font-size: 1.2rem !important; /* Adjust font size */
+   border-radius: 12px !important; /* Adjust corner radius */
+   outline: none !important;
+   font-weight: 300 !important;
+   background: #f5f5f5 !important; /* Change background color */
+   flex: 1 !important;
+   height: 50px !important; /* Adjust height */
+   transition: background 0.2s ease-in-out !important;
+   min-width: 300px !important; /* Adjust minimum width */
+   color: var(--text-color) !important; /* Change text color */
  }
  
  .search-input:focus,
  .search-date-picker:focus {
-   background: #e0e0e0; /* Change background color on focus */
+   background: #e0e0e0 !important; /* Change background color on focus */
  }
  
  /* ==================== DATE PICKER ==================== */
+
+ .date-picker-container {
+  color: var(--accent-color) !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 !important;
+}
+
+
   /* ==================== CALENDAR CUSTOMIZATION ==================== */
   .react-datepicker {
     font-family: inherit;
@@ -155,21 +163,22 @@
  
  /* ==================== PASSENGER SELECTION ==================== */
  .passenger-select {
-   position: relative;
-   cursor: pointer;
-   padding: 12px 8px; /* Adjust padding */
-   background: #f5f5f5; /* Change background color */
-   color: var(--text-color); /* Change text color */
-   border-radius: 12px; /* Adjust corner radius */
-   font-size: 1.2rem; /* Adjust font size */
-   font-weight: 300;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   min-width: 250px; /* Adjust minimum width */
-   height: 50px; /* Adjust height */
-   transition: background 0.2s ease-in-out;
- }
+  position: relative !important;
+  cursor: pointer !important;
+  padding: 12px 8px !important; /* Adjust padding */
+  background: #f5f5f5 !important; /* Change background color */
+  color: var(--text-color) !important; /* Change text color */
+  border-radius: 12px !important; /* Adjust corner radius */
+  font-size: 1.2rem !important; /* Adjust font size */
+  font-weight: 300 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 250px !important; /* Adjust minimum width */
+  height: 50px !important; /* Adjust height */
+  transition: background 0.2s ease-in-out !important;
+  flex: 1 !important;
+}
  
  .passenger-select:hover {
    background: #e0e0e0; /* Change background color on hover */
@@ -293,30 +302,51 @@
  
 
  /* ==================== RESPONSIVE DESIGN ==================== */
- @media only screen and (max-width: 992px) {
-   .search-bar {
-     flex-wrap: wrap;
-     padding: 14px; /* Adjust padding */
-     width: 100%;
-   }
- 
-   .search-input,
-   .search-date-picker,
-   .passenger-select {
-     width: 100%;
-     font-size: 1rem; /* Adjust font size */
-     height: 45px; /* Adjust height */
-   }
- 
-   .search-button {
-     width: 100%;
-     font-size: 1rem; /* Adjust font size */
-     height: 45px; /* Adjust height */
-   }
- 
-   .passenger-dropdown-container {
-     width: 100%;
-     left: 0;
-     transform: none;
-   }
- }
+@media only screen and (max-width: 992px) {
+  .search-bar {
+    flex-direction: column !important; /* Stack elements vertically on mobile */
+    align-items: stretch !important; /* Stretch elements to full width */
+    width: 100% !important;
+    padding: 14px !important; /* Adjust padding */
+  }
+
+  .search-date-picker{
+    width: 100% !important;
+  }
+
+  .search-input,
+  .passenger-select {
+    width: 100% !important; /* Make all selection boxes the same width */
+    font-size: 1rem !important; /* Adjust font size */
+    height: 45px !important; /* Adjust height */
+    min-width: unset !important; /* Remove minimum width */
+  }
+
+  .search-button {
+    width: 100% !important;
+    font-size: 1rem !important; /* Adjust font size */
+    height: 45px !important; /* Adjust height */
+  }
+
+  .date-picker-container {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .react-datepicker {
+    font-family: inherit;
+    border: 1px solid #e0e0e0; /* Adjust border */
+    border-radius: 8px; /* Adjust corner radius */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Adjust shadow */
+    display: flex;
+    width: 100%;
+    scale: 0.85 !important;
+  }
+
+  .passenger-dropdown-container {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 90% !important;
+  }
+}
