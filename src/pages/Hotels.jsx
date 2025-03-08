@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import CommonSection from '../shared/CommonSection'
-import '../styles/tour.css'
+import '../styles/hotel.css'
 import TourCard from './../shared/TourCard'
 import SearchBar from './../shared/SearchBar'
 import Newsletter from './../shared/Newsletter'
 import { Col, Container, Row } from 'reactstrap'
 import hotels from '../assets/data/hotels'
-import '../styles/tour.css' // New CSS for city cards
+import '../styles/hotel.css' // New CSS for city cards
 
 const Hotels = () => {
   const [page, setPage] = useState(0)
