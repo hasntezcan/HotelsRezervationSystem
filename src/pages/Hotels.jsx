@@ -1,5 +1,3 @@
-// src/pages/Hotels.jsx
-// src/pages/Hotels.jsx
 import React, { useState, useEffect } from 'react'
 import CommonSection from '../shared/CommonSection'
 import '../styles/tour.css'
@@ -85,6 +83,11 @@ const Hotels = () => {
                     )
                   })}
                 </div>
+
+                {/* Add the line here */}
+                <div 
+                  className="hotels-bottom-line" 
+                ></div>
               </>
             )}
 
@@ -125,8 +128,6 @@ const Hotels = () => {
           </Row>
         </Container>
       </section>
-
-      <Newsletter />
     </>
   )
 }

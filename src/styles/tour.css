@@ -18,13 +18,13 @@
    color     : #fff !important;
 }
 
-/* src/styles/cities.css */
 
 .city-grid {
    display: grid;
    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
    gap: 20px;
    margin-top: 20px;
+   margin-bottom: 100px;
  }
  
  .city-card {
@@ -73,4 +73,12 @@
  .see-hotels:hover {
    color: var(--hover-color);
  }
+
+ 
+.hotels-bottom-line {
+  border-top: 1px solid var(--secondary-color);
+  margin-top: 100px;
+  margin-bottom: -10px;
+}
+
  
