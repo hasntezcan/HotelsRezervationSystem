@@ -1,35 +1,46 @@
 import React, { useState, useEffect } from 'react'
 import CommonSection from '../shared/CommonSection'
-import '../styles/hotel.css'
 import TourCard from './../shared/TourCard'
 import SearchBar from './../shared/SearchBar'
-import Newsletter from './../shared/Newsletter'
 import { Col, Container, Row } from 'reactstrap'
 import hotels from '../assets/data/hotels'
-import '../styles/hotel.css' // New CSS for city cards
+import '../styles/hotel.css'
+
+// Belirlediğin HD fotoğrafları import ediyoruz:
+import londonImg from '../assets/images/homePage/image6.jpg'
+import parisImg from '../assets/images/homePage/image3.jpg'
+import baliImg from '../assets/images/homePage/image2.jpg'
+import tokyoImg from '../assets/images/homePage/image5.jpg'
 
 const Hotels = () => {
   const [page, setPage] = useState(0)
   const [selectedCity, setSelectedCity] = useState(null)
   
-  // gather unique cities
+  // Otellerdeki şehir listesini oluşturuyoruz:
   const cities = [...new Set(hotels.map(h => h.city))]
 
-  // get city image from the first hotel for that city
+  // Her şehir için uygun arka plan fotoğrafını belirliyoruz:
   const cityImages = {}
   cities.forEach((city) => {
-    const hotelForCity = hotels.find((h) => h.city === city)
-    if (hotelForCity) {
-      cityImages[city] = hotelForCity.photo
+    const hotelsForCity = hotels.filter(h => h.city === city)
+    if (city.toLowerCase() === 'london') {
+      cityImages[city] = londonImg
+    } else if (city.toLowerCase() === 'paris') {
+      cityImages[city] = parisImg
+    } else if (city.toLowerCase() === 'bali') {
+      cityImages[city] = baliImg
+    } else if (city.toLowerCase() === 'tokyo') {
+      cityImages[city] = tokyoImg
+    } else {
+      // Diğer şehirler için, varsa ilk otelin fotoğrafı:
+      cityImages[city] = hotelsForCity[0]?.photo
     }
   })
 
-  // Filter
-  const filteredHotels = selectedCity
-    ? hotels.filter(h => h.city === selectedCity)
-    : []
+  // Seçili şehir varsa, ona ait otelleri filtreliyoruz:
+  const filteredHotels = selectedCity ? hotels.filter(h => h.city === selectedCity) : []
 
-  // Pagination
+  // Sayfalama:
   const toursPerPage = 8
   const start = page * toursPerPage
   const end = start + toursPerPage
@@ -43,7 +54,11 @@ const Hotels = () => {
 
   return (
     <>
-      <CommonSection title={selectedCity ? `${selectedCity} Hotels` : "All Cities"} />
+      <CommonSection
+        title={selectedCity ? `${selectedCity} Hotels` : 'All Cities'}
+        backgroundImage={selectedCity ? cityImages[selectedCity] : null}
+      />
+
       <section>
         <Container>
           <Row>
@@ -55,7 +70,7 @@ const Hotels = () => {
       <section className="pt-0">
         <Container>
           <Row>
-            {/* if no city selected => city cards */}
+            {/* Şehir seçilmediyse, şehir kartlarını göster */}
             {!selectedCity && (
               <>
                 <h4>Select a City</h4>
@@ -83,14 +98,11 @@ const Hotels = () => {
                     )
                   })}
                 </div>
-
-                {/* Add the line here */}
-                <div 
-                  className="hotels-bottom-line" 
-                ></div>
+                <div className="hotels-bottom-line"></div>
               </>
             )}
 
+            {/* Şehir seçildiğinde, o şehirdeki otelleri listeler */}
             {selectedCity && (
               <>
                 {currentTours.map(tour => (
@@ -98,7 +110,6 @@ const Hotels = () => {
                     <TourCard tour={tour} />
                   </Col>
                 ))}
-
                 <Col lg="12">
                   <div className="pagination d-flex align-items-center justify-content-center mt-4 gap-3">
                     {[...Array(pageCount).keys()].map(number => (
