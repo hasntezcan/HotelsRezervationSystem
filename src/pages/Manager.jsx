@@ -21,19 +21,17 @@ import {
   Bar
 } from "recharts";
 import { styled } from "@mui/system";
-
-// Genel dashboard container: Sidebar ve içerik alanını yan yana yerleştirir.
+{/*dashboard design*/}
 const DashboardContainer = styled("div")({
   display: "flex",
   minHeight: "100vh",
 });
-
-// İçerik alanı: SidebarManager.css'deki .content sınıfındaki margin-left ayarları uygulanacak.
+{/*content*/}
 const ContentContainer = styled("div")({
   flexGrow: 1,
   padding: "20px",
 });
-
+{/*managerdashboard*/}
 const ManagerDashboard = () => {
   const revenueData = [
     { name: "May", value: 150 },
@@ -44,28 +42,30 @@ const ManagerDashboard = () => {
     { name: "Oct", value: 350 },
   ];
 
-  const campaignData = [
-    { name: "Success", value: 70 },
-    { name: "Failure", value: 30 },
+  const reservationsData = [
+    { name: "Approved", value: 70 },
+    { name: "Rejected", value: 30 },
   ];
 
-  const resData = [
-    { name: "PARIS", uv: 400, pv: 240, amt: 240 },
-    { name: "LONDON", uv: 300, pv: 180, amt: 220 },
-    { name: "BALI", uv: 500, pv: 320, amt: 260 },
-    { name: "TOKYO", uv: 400, pv: 250, amt: 280 },
+  const ratingsData = [
+    { month: "May", rating: 4 },
+    { month: "June", rating: 3 },
+    { month: "July", rating: 5 },
+    { month: "August", rating: 2 },
+    { month: "Sept", rating: 4 },
+    { month: "Oct", rating: 3 },
   ];
 
   return (
     <DashboardContainer>
-      {/* SidebarManager bileşeni, ManagerSideBar.css'de tanımlı responsive ayarlarla çalışacaktır */}
+      
       <SidebarManager />
 
-      {/* İçerik alanı; CSS üzerinden margin-left: 260px veya 70px, sidebar durumuna göre ayarlanır */}
+      
       <ContentContainer className="content">
         <Container>
           <Grid container spacing={3}>
-            {/* Revenue Generated */}
+            {/* Revenue */}
             <Grid item xs={12} md={12} lg={8}>
               <Card>
                 <CardContent>
@@ -82,15 +82,15 @@ const ManagerDashboard = () => {
               </Card>
             </Grid>
 
-            {/* Campaign */}
+            {/* Reservations */}
             <Grid item xs={12} md={6} lg={4}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6">Campaign</Typography>
+                  <Typography variant="h6">Reservations</Typography>
                   <ResponsiveContainer width="100%" height={180}>
                     <PieChart>
                       <Pie
-                        data={campaignData}
+                        data={reservationsData}
                         dataKey="value"
                         outerRadius={70}
                         fill="#8884d8"
@@ -106,18 +106,17 @@ const ManagerDashboard = () => {
               </Card>
             </Grid>
 
-            {/* Reservations */}
+            {/* Ratings */}
             <Grid item xs={12} md={12} lg={8}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6">Reservations</Typography>
+                  <Typography variant="h6">Ratings</Typography>
                   <ResponsiveContainer width="100%" height={200}>
-                    <BarChart data={resData}>
-                      <XAxis dataKey="name" />
-                      <YAxis />
+                    <BarChart data={ratingsData}>
+                      <XAxis dataKey="month" />
+                      <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} />
                       <Tooltip />
-                      <Bar dataKey="uv" fill="#82ca9d" />
-                      <Bar dataKey="pv" fill="#8884d8" />
+                      <Bar dataKey="rating" fill="#8884d8" />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>

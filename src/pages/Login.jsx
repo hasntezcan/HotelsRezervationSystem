@@ -9,13 +9,18 @@ import { AuthContext } from '../context/AuthContext'
 
 const Login = () => {
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    window.scrollTo(0, 0)
+  }, [])
+
+  // Form fields
   const [credentials, setCredentials] = useState({ email: '', password: '' })
+  // Inline error messages
+  const [errors, setErrors] = useState({})
+
   const { dispatch } = useContext(AuthContext)
   const navigate = useNavigate()
 
-  // Uygulamayı ilk açtığımızda default 3 kullanıcıyı localStorage'a ekliyoruz
+  // 1) Add default users to localStorage on mount
   useEffect(() => {
     let users = JSON.parse(localStorage.getItem('localUsers')) || []
 
@@ -45,7 +50,7 @@ const Login = () => {
 
     let updated = false
     defaultUsers.forEach(defUser => {
-      // Aynı email'de bir user yoksa ekle
+      // If no user with the same email, add it
       if (!users.some(u => u.email === defUser.email)) {
         users.push(defUser)
         updated = true
@@ -59,15 +64,48 @@ const Login = () => {
 
   const handleChange = e => {
     setCredentials(prev => ({ ...prev, [e.target.id]: e.target.value }))
+    // Clear error for this field as user types
+    setErrors(prev => ({ ...prev, [e.target.id]: '' }))
+  }
+
+  // Inline field checks
+  const validateFields = () => {
+    const newErrors = {}
+    // Email
+    if (!credentials.email.trim()) {
+      newErrors.email = 'Email is required.'
+    } else {
+      const emailRegex = /^\S+@\S+\.\S+$/
+      if (!emailRegex.test(credentials.email.trim())) {
+        newErrors.email = 'Please enter a valid email.'
+      }
+    }
+    // Password
+    if (!credentials.password.trim()) {
+      newErrors.password = 'Password is required.'
+    }
+    return newErrors
   }
 
   const handleClick = e => {
     e.preventDefault()
     dispatch({ type: 'LOGIN_START' })
 
+    // 1) Validate fields
+    const newErrors = validateFields()
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      // Mark login as failure
+      dispatch({ type: 'LOGIN_FAILURE', payload: 'Validation errors' })
+      return
+    }
+
+    // 2) Check localStorage
     let users = JSON.parse(localStorage.getItem('localUsers')) || []
     const foundUser = users.find(
-      u => u.email === credentials.email && u.password === credentials.password
+      u =>
+        u.email.trim().toLowerCase() === credentials.email.trim().toLowerCase() &&
+        u.password === credentials.password
     )
 
     if (!foundUser) {
@@ -76,18 +114,18 @@ const Login = () => {
       return
     }
 
-    // Bulunan user'ı AuthContext'e gönderiyoruz
+    // 3) If found, dispatch login success
     dispatch({ type: 'LOGIN_SUCCESS', payload: foundUser })
     alert(`Welcome, ${foundUser.username}!`)
 
-    // Role bazında yönlendirme
+    // 4) Role-based redirect
     if (foundUser.role === 'admin') {
       navigate('/admin')
     } else if (foundUser.role === 'manager') {
       navigate('/manager')
     } else {
       // normal user
-      navigate('/') // veya anasayfa: navigate('/')
+      navigate('/')
     }
   }
 
@@ -101,19 +139,20 @@ const Login = () => {
         <Row className="justify-content-center">
           <Col lg="10">
             <div className="auth-card d-flex flex-wrap">
-              {/* Sol kısım (görsel) */}
+              {/* Left side (image) */}
               <div className="auth-left">
                 <div className="image-wrapper">
                   <img src={loginImg} alt="hotel" className="hotel-img" />
                 </div>
               </div>
 
-              {/* Sağ kısım (form) */}
+              {/* Right side (form) */}
               <div className="auth-right">
                 <h2 className="auth-title">Hello Stay Inn User</h2>
                 <p className="auth-subtitle">Welcome back! Please log in.</p>
 
-                <Form onSubmit={handleClick}>
+                {/* noValidate => bypass default HTML5 pop-ups */}
+                <Form noValidate onSubmit={handleClick}>
                   <FormGroup>
                     <input
                       type="email"
@@ -121,9 +160,12 @@ const Login = () => {
                       placeholder="Email"
                       value={credentials.email}
                       onChange={handleChange}
-                      required
                     />
+                    {errors.email && (
+                      <p className="error-text">{errors.email}</p>
+                    )}
                   </FormGroup>
+
                   <FormGroup>
                     <input
                       type="password"
@@ -131,9 +173,12 @@ const Login = () => {
                       placeholder="Password"
                       value={credentials.password}
                       onChange={handleChange}
-                      required
                     />
+                    {errors.password && (
+                      <p className="error-text">{errors.password}</p>
+                    )}
                   </FormGroup>
+
                   <Button type="submit" className="btn auth-btn w-100">
                     LOGIN
                   </Button>

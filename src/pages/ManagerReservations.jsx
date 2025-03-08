@@ -7,10 +7,10 @@ const ManagerReservations = () => {
   const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
-    // localStorage'dan rezervasyonları yükle
+    // import reservations from localStorage if available
     const storedReservations = JSON.parse(localStorage.getItem("reservations"));
 
-    // localStorage boşsa örnek rezervasyonlar oluştur
+    // if localStorage empty, make example reservations and save to localStorage
     if (storedReservations && storedReservations.length > 0) {
       setReservations(storedReservations);
     } else {
@@ -63,10 +63,10 @@ const ManagerReservations = () => {
 
   return (
     <div className="dashboard" style={{ display: "flex" }}>
-      {/* SidebarManager, ManagerSideBar.css’de tanımlı responsive stillerle çalışır */}
+      {/* Sidebar: ManagerSideBar.css responsive settings  */}
       <SidebarManager />
 
-      {/* İçerik alanı; ManagerSideBar.css'deki .content sınıfındaki margin-left ayarları uygulanır */}
+      {/* content area: css responsive */}
       <div className="content" style={{ padding: "40px", width: "100%" }}>
         <Grid container spacing={4} style={{ width: "100%", maxWidth: "1400px" }}>
           <Grid item xs={12}>

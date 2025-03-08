@@ -9,7 +9,7 @@ import {
   Box
 } from "@mui/material";
 import hotelsData from "../assets/data/hotels.json";
-import SidebarManager from "../components/Sidebar_manager"; // Sidebar bileşeni
+import SidebarManager from "../components/Sidebar_manager"; 
 
 const ManagerHotels = () => {
   const [hotels, setHotels] = useState([]);
@@ -24,7 +24,7 @@ const ManagerHotels = () => {
     }
   }, []);
 
-  // "The Grand London Hotel" adlı oteli bul
+  // "The Grand London Hotel" find the name
   const hotelToEdit = hotels.find(
     (hotel) => hotel.hotelName === "The Grand London Hotel"
   );
@@ -49,13 +49,13 @@ const ManagerHotels = () => {
 
   return (
     <div className="dashboard" style={{ display: "flex" }}>
-      {/* Sidebar Manager bileşeni */}
+      
       <SidebarManager />
 
-      {/* İçerik alanı: CSS'de .content olarak stillendirilmiş */}
+      
       <div className="content" style={{ padding: "40px", width: "100%" }}>
         <Grid container spacing={4} style={{ width: "100%", maxWidth: "1400px" }}>
-          {/* Genel Bilgi Bölümü */}
+          {/* Hotel information */}
           <Grid item xs={12} sm={6}>
             <Card
               style={{
@@ -86,7 +86,7 @@ const ManagerHotels = () => {
             </Card>
           </Grid>
 
-          {/* Düzenlenebilir Bilgiler Bölümü */}
+          {/* edit hotel information */}
           <Grid item xs={12} sm={6}>
             {editHotel && editHotel.hotelName === hotelToEdit?.hotelName ? (
               <Card
