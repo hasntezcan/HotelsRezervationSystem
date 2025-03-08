@@ -1,19 +1,19 @@
 import React from 'react'
 import './common-section.css'
-import { Container, Row, Col } from 'reactstrap'
 
-const CommonSection = ({ title }) => {
-   return (
-      <section className="common__section">
-         <Container>
-            <Row>
-               <Col lg='12'>
-                  <h1>{title}</h1>
-               </Col>
-            </Row>
-         </Container>
-      </section>
-   )
+const CommonSection = ({ title, backgroundImage }) => {
+  return (
+    <section
+      className="common__section"
+      style={{
+        background: backgroundImage
+          ? `url(${backgroundImage}) center center/cover no-repeat`
+          : undefined
+      }}
+    >
+      <h1>{title}</h1>
+    </section>
+  )
 }
 
 export default CommonSection
