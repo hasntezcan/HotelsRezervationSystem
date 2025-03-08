@@ -26,10 +26,10 @@ const ManagerProfile = () => {
 
   return (
     <div className="dashboard" style={{ display: 'flex' }}>
-      {/* Sidebar: ManagerSideBar.css’deki responsive ayarlar geçerli */}
+      {/* Sidebar: ManagerSideBar.css responsive settings  */}
       <SidebarManager />
 
-      {/* İçerik alanı: CSS’de tanımlı .content sınıfıyla margin-left otomatik ayarlanır */}
+      {/* Content area: css responsive */}
       <div className="content" style={{ padding: '40px', width: '100%' }}>
         <Card
           style={{
