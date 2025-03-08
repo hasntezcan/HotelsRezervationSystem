@@ -1,28 +1,23 @@
-// src/pages/Login.jsx
-
-import React, { useContext, useState, useEffect } from 'react'
-import { Container, Row, Col, Form, FormGroup, Button } from 'reactstrap'
-import { useNavigate } from 'react-router-dom'
-import '../styles/login.css'
-import loginImg from '../assets/images/login.png'
-import { AuthContext } from '../context/AuthContext'
+import React, { useContext, useState, useEffect } from 'react';
+import { Container, Row, Col, Form, FormGroup, Button } from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
+import '../styles/login.css';
+import loginImg from '../assets/images/login.png';
+import { AuthContext } from '../context/AuthContext';
 
 const Login = () => {
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
-  // Form fields
-  const [credentials, setCredentials] = useState({ email: '', password: '' })
-  // Inline error messages
-  const [errors, setErrors] = useState({})
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState({});
 
-  const { dispatch } = useContext(AuthContext)
-  const navigate = useNavigate()
+  const { dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  // 1) Add default users to localStorage on mount
   useEffect(() => {
-    let users = JSON.parse(localStorage.getItem('localUsers')) || []
+    let users = JSON.parse(localStorage.getItem('localUsers')) || [];
 
     const defaultUsers = [
       {
@@ -30,108 +25,97 @@ const Login = () => {
         username: 'Admin1',
         email: 'admin@gmail.com',
         password: 'admin123',
-        role: 'admin'
+        role: 'admin',
       },
       {
         id: 2,
         username: 'Manager1',
         email: 'manager@gmail.com',
         password: 'manager123',
-        role: 'manager'
+        role: 'manager',
       },
       {
         id: 3,
         username: 'User1',
         email: 'user@gmail.com',
         password: 'user123',
-        role: 'user'
-      }
-    ]
+        role: 'user',
+      },
+    ];
 
-    let updated = false
-    defaultUsers.forEach(defUser => {
-      // If no user with the same email, add it
-      if (!users.some(u => u.email === defUser.email)) {
-        users.push(defUser)
-        updated = true
+    let updated = false;
+    defaultUsers.forEach((defUser) => {
+      if (!users.some((u) => u.email === defUser.email)) {
+        users.push(defUser);
+        updated = true;
       }
-    })
+    });
 
     if (updated) {
-      localStorage.setItem('localUsers', JSON.stringify(users))
+      localStorage.setItem('localUsers', JSON.stringify(users));
     }
-  }, [])
+  }, []);
 
-  const handleChange = e => {
-    setCredentials(prev => ({ ...prev, [e.target.id]: e.target.value }))
-    // Clear error for this field as user types
-    setErrors(prev => ({ ...prev, [e.target.id]: '' }))
-  }
+  const handleChange = (e) => {
+    setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    setErrors((prev) => ({ ...prev, [e.target.id]: '' }));
+  };
 
-  // Inline field checks
   const validateFields = () => {
-    const newErrors = {}
-    // Email
+    const newErrors = {};
     if (!credentials.email.trim()) {
-      newErrors.email = 'Email is required.'
+      newErrors.email = 'Email is required.';
     } else {
-      const emailRegex = /^\S+@\S+\.\S+$/
+      const emailRegex = /^\S+@\S+\.\S+$/;
       if (!emailRegex.test(credentials.email.trim())) {
-        newErrors.email = 'Please enter a valid email.'
+        newErrors.email = 'Please enter a valid email.';
       }
     }
-    // Password
     if (!credentials.password.trim()) {
-      newErrors.password = 'Password is required.'
+      newErrors.password = 'Password is required.';
     }
-    return newErrors
-  }
+    return newErrors;
+  };
 
-  const handleClick = e => {
-    e.preventDefault()
-    dispatch({ type: 'LOGIN_START' })
+  const handleClick = (e) => {
+    e.preventDefault();
+    dispatch({ type: 'LOGIN_START' });
 
-    // 1) Validate fields
-    const newErrors = validateFields()
+    const newErrors = validateFields();
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      // Mark login as failure
-      dispatch({ type: 'LOGIN_FAILURE', payload: 'Validation errors' })
-      return
+      setErrors(newErrors);
+      dispatch({ type: 'LOGIN_FAILURE', payload: 'Validation errors' });
+      return;
     }
 
-    // 2) Check localStorage
-    let users = JSON.parse(localStorage.getItem('localUsers')) || []
+    let users = JSON.parse(localStorage.getItem('localUsers')) || [];
     const foundUser = users.find(
-      u =>
+      (u) =>
         u.email.trim().toLowerCase() === credentials.email.trim().toLowerCase() &&
         u.password === credentials.password
-    )
+    );
 
     if (!foundUser) {
-      alert('Invalid email or password')
-      dispatch({ type: 'LOGIN_FAILURE', payload: 'Wrong credentials' })
-      return
+      alert('Invalid email or password');
+      dispatch({ type: 'LOGIN_FAILURE', payload: 'Wrong credentials' });
+      return;
     }
 
-    // 3) If found, dispatch login success
-    dispatch({ type: 'LOGIN_SUCCESS', payload: foundUser })
-    alert(`Welcome, ${foundUser.username}!`)
+    dispatch({ type: 'LOGIN_SUCCESS', payload: foundUser });
+    alert(`Welcome, ${foundUser.username}!`);
 
-    // 4) Role-based redirect
     if (foundUser.role === 'admin') {
-      navigate('/admin')
+      navigate('/admin');
     } else if (foundUser.role === 'manager') {
-      navigate('/manager')
+      navigate('/manager');
     } else {
-      // normal user
-      navigate('/')
+      navigate('/');
     }
-  }
+  };
 
   const goRegister = () => {
-    navigate('/register')
-  }
+    navigate('/register');
+  };
 
   return (
     <section className="auth-section">
@@ -139,19 +123,16 @@ const Login = () => {
         <Row className="justify-content-center">
           <Col lg="10">
             <div className="auth-card d-flex flex-wrap">
-              {/* Left side (image) */}
               <div className="auth-left">
                 <div className="image-wrapper">
                   <img src={loginImg} alt="hotel" className="hotel-img" />
                 </div>
               </div>
 
-              {/* Right side (form) */}
               <div className="auth-right">
                 <h2 className="auth-title">Hello Stay Inn User</h2>
                 <p className="auth-subtitle">Welcome back! Please log in.</p>
 
-                {/* noValidate => bypass default HTML5 pop-ups */}
                 <Form noValidate onSubmit={handleClick}>
                   <FormGroup>
                     <input
@@ -161,9 +142,7 @@ const Login = () => {
                       value={credentials.email}
                       onChange={handleChange}
                     />
-                    {errors.email && (
-                      <p className="error-text">{errors.email}</p>
-                    )}
+                    {errors.email && <p className="error-text">{errors.email}</p>}
                   </FormGroup>
 
                   <FormGroup>
@@ -199,7 +178,7 @@ const Login = () => {
         </Row>
       </Container>
     </section>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

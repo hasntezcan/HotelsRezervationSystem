@@ -17,7 +17,7 @@ const Footer = () => {
               <img src={logo} alt="Place2Stay" />
             </div>
             <p className="footer__text">
-            Your gateway to unforgettable travel experiences. Discover and book the perfect place to stay, anywhere in the world.
+              Your gateway to unforgettable travel experiences. Discover and book the perfect place to stay, anywhere in the world.
             </p>
             <div className="social__links d-flex align-items-center gap-3">
               <span><Link to="#"><i className="ri-youtube-line"></i></Link></span>
@@ -27,36 +27,9 @@ const Footer = () => {
             </div>
           </Col>
 
-          {/* Discover */}
-          <Col lg="3" md="6" className="mb-4">
-            <h5 className="footer__title">Discover</h5>
-            <ListGroup className="footer__list">
-              <ListGroupItem className="ps-0 border-0">
-                <Link to="/home">Home</Link>
-              </ListGroupItem>
-              <ListGroupItem className="ps-0 border-0">
-                <Link to="/about">About</Link>
-              </ListGroupItem>
-              <ListGroupItem className="ps-0 border-0">
-                <Link to="/hotels">Cities</Link>
-              </ListGroupItem>
-            </ListGroup>
-          </Col>
-
-          {/* Quick Links */}
-          <Col lg="3" md="6" className="mb-4">
-            <h5 className="footer__title">Quick Links</h5>
-            <ListGroup className="footer__list">
-              <ListGroupItem className="ps-0 border-0">
-                <Link to="/contact">Contact Us</Link>
-              </ListGroupItem>
-              <ListGroupItem className="ps-0 border-0">
-                <Link to="/login">Login</Link>
-              </ListGroupItem>
-              <ListGroupItem className="ps-0 border-0">
-                <Link to="/register">Register</Link>
-              </ListGroupItem>
-            </ListGroup>
+          {/* Spacer Column (Replaces Discover and Quick Links) */}
+          <Col lg="6" md="6" className="mb-4">
+            {/* Empty column to maintain layout */}
           </Col>
 
           {/* Contact */}

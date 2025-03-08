@@ -1,16 +1,16 @@
 /* Variables */
 :root {
-  --primary-color: #264653; 
-  --secondary-color: #2A9D8F;
-  --background-color: #FFFFFF;
+  --primary-color: #264653;
+  --secondary-color: #2a9d8f;
+  --background-color: #ffffff;
   --text-color: #264653;
-  --accent-color: #E07A5F;
+  --accent-color: #e07a5f;
   --hover-color: #d65f5f;
-  --font-name: "Montserrat", sans-serif;
-  --subtitle-font-name: "Island Moments", cursive;
+  --font-name: 'Montserrat', sans-serif;
+  --subtitle-font-name: 'Island Moments', cursive;
 }
 
-/* HEADER WRAPPER */
+/* Header */
 .header {
   width: 100%;
   background-color: #fff;
@@ -22,11 +22,11 @@
   left: 0;
   width: 100%;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
 
-/* NAV WRAPPER */
+/* Nav Wrapper */
 .nav__wrapper {
   display: flex;
   align-items: center;
@@ -37,25 +37,23 @@
   padding: 0 20px;
 }
 
-/* LOGO */
+/* Logo */
 .logo img {
   max-height: 100px;
 }
 
-/* MENU (Desktop) */
+/* Navigation */
 .navigation {
   display: flex;
   justify-content: center;
   flex-grow: 1;
-  /* Mobilde overlay haline gelecek, 
-     desktopta normal gösterilecek. */
 }
 
 .menu {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex; 
+  display: flex;
   align-items: center;
   gap: 2rem;
 }
@@ -68,11 +66,10 @@
   transition: all 0.3s ease;
   padding: 8px 12px;
   border-radius: 4px;
-  display: inline-flex; /* ikon ve metni yanyana tutmak için */
+  display: inline-flex;
   align-items: center;
 }
 
-/* İkon ile metin arasında ufak boşluk */
 .nav__icon {
   font-size: 1.3rem;
   margin-right: 0.5rem;
@@ -88,7 +85,7 @@
   color: var(--primary-color);
 }
 
-/* NAV RIGHT */
+/* Nav Right */
 .nav__right {
   display: flex;
   align-items: center;
@@ -101,7 +98,25 @@
   gap: 0.5rem;
 }
 
-/* USER DROPDOWN */
+/* Login and Register Buttons */
+.secondary__btn,
+.primary__btn {
+  background-color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+}
+
+.secondary__btn:hover,
+.primary__btn:hover {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  transform: scale(1.1);
+}
+
+/* User Dropdown */
 .user-dropdown {
   position: relative;
   cursor: pointer;
@@ -167,17 +182,17 @@
   background: #f4f4f4;
 }
 
-/* MOBILE MENU ICON (hamburger) */
+/* Mobile Menu Icon */
 .mobile__menu {
   font-size: 1.5rem;
   color: var(--heading-color);
-  display: none; /* Desktopta gizli */
+  display: none;
   cursor: pointer;
 }
 
-/* Kapatma butonu (X) */
+/* Close Menu Icon */
 .close__menu {
-  display: none; /* Desktopta gizli */
+  display: none;
   font-size: 1.8rem;
   font-weight: bold;
   cursor: pointer;
@@ -187,31 +202,29 @@
   z-index: 9999;
 }
 
-/* ========== RESPONSIVE ========== */
+/* Responsive */
 @media (max-width: 992px) {
-
-  /* Masaüstü menüyü gizle, mobil menü devreye girsin */
   .navigation {
-    display: none; /* Başta gizli */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.4); /* Overlay */
+    background: rgba(0, 0, 0, 0.4);
     z-index: 999;
   }
 
   .show__menu {
-    display: block; /* Overlay'i görünür yapar */
+    display: block;
   }
 
   .menu {
     position: absolute;
     top: 0;
     right: 0;
-    width: 40%; /* narrower side menu */
-    max-width: 240px; /* if you want an absolute max */
+    width: 40%;
+    max-width: 240px;
     height: 100%;
     background: #fff;
     flex-direction: column;
@@ -221,12 +234,10 @@
     overflow-y: auto;
   }
 
-  /* Mobil menüde yazı boyutu biraz küçültüyoruz */
   .menu li a {
     font-size: 1rem;
   }
 
-  /* Kapatma butonu mobilde görünsün */
   .close__menu {
     display: block;
   }
