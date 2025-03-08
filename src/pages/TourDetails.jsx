@@ -22,7 +22,7 @@ const TourDetails = () => {
   // Tur verisini bulma
   const tour = hotels.find((item) => item._id === id);
   if (!tour) {
-    return <h4>Tour not found</h4>;
+    return <h4>Hotel not found</h4>;
   }
 
   const { 
@@ -194,7 +194,6 @@ const TourDetails = () => {
           </Col>
         </Row>
       </Container>
-      <Newsletter />
     </section>
   );
 };

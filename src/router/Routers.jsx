@@ -4,7 +4,6 @@ import ThankYou from '../pages/ThankYou';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
-import SearchResultList from '../pages/SearchResultList';
 import TourDetails from '../pages/TourDetails';
 import Hotels from '../pages/Hotels'; 
 import Manager from '../pages/Manager';
@@ -43,7 +42,6 @@ const Routers = () => {
       </Route>
       <Route path="/register" element={<Register />} />
       <Route path="/thank-you" element={<ThankYou />} />
-      <Route path="/hotels/search" element={<SearchResultList />} /> {/* Updated from /tours/search to /hotels/search */}
       <Route path="/search-results" element={<SearchResults />} />
 
          {/* ✅ Manager Sayfaları */}
