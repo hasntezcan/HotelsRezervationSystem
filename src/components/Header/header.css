@@ -161,7 +161,6 @@
   text-decoration: none;
   transition: background 0.2s;
   display: block;
-  font-size: 14px;
 }
 
 .dropdown-item:hover {
