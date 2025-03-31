@@ -1,4 +1,3 @@
-// src/pages/Register.jsx
 import React, { useState, useContext, useEffect } from 'react'
 import { Container, Row, Col, Form, FormGroup, Button } from 'reactstrap'
 import { useNavigate } from 'react-router-dom'
@@ -11,16 +10,16 @@ const Register = () => {
     window.scrollTo(0, 0)
   }, [])
 
-  // Form fields
   const [credentials, setCredentials] = useState({
     username: '',
     email: '',
-    password: ''
+    password: '',
+    first_name: '',
+    last_name: '',
+    phone: ''
   })
 
-  // For inline errors
   const [errors, setErrors] = useState({})
-
   const { dispatch } = useContext(AuthContext)
   const navigate = useNavigate()
 
@@ -29,7 +28,6 @@ const Register = () => {
       ...prev,
       [e.target.id]: e.target.value
     }))
-    // Clear error for this field as user types
     setErrors((prev) => ({
       ...prev,
       [e.target.id]: ''
@@ -39,67 +37,69 @@ const Register = () => {
   const validateFields = () => {
     const newErrors = {}
 
-    // Username checks
-    if (!credentials.username.trim()) {
-      newErrors.username = 'Username is required.'
-    } else if (credentials.username.trim().length < 3) {
-      newErrors.username = 'Username must be at least 3 characters.'
-    }
+    if (!credentials.username.trim()) newErrors.username = 'Username is required.'
+    if (!credentials.first_name.trim()) newErrors.first_name = 'First name is required.'
+    if (!credentials.last_name.trim()) newErrors.last_name = 'Last name is required.'
+    if (!credentials.phone.trim()) newErrors.phone = 'Phone number is required.'
 
-    // Email checks
     if (!credentials.email.trim()) {
       newErrors.email = 'Email is required.'
     } else {
-      // Basic regex for email
       const emailRegex = /^\S+@\S+\.\S+$/
       if (!emailRegex.test(credentials.email.trim())) {
-        newErrors.email = 'Please enter a valid email.'
+        newErrors.email = 'Invalid email address.'
       }
     }
 
-    // Password checks
     if (!credentials.password.trim()) {
       newErrors.password = 'Password is required.'
-    } else if (credentials.password.trim().length < 6) {
+    } else if (credentials.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters.'
     }
 
     return newErrors
   }
 
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault()
 
-    // 1) Validate form fields
     const newErrors = validateFields()
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return
     }
 
-    // 2) Check localUsers for existing email
-    let users = JSON.parse(localStorage.getItem('localUsers')) || []
-    const emailExists = users.some((user) => user.email === credentials.email)
-    if (emailExists) {
-      alert('This email is already registered!')
-      return
+    dispatch({ type: 'REGISTER_START' })
+
+    try {
+      const res = await fetch('http://localhost:8080/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...credentials,
+          role: 'user'
+        })
+      })
+
+      if (res.status === 409) {
+        alert('Email already exists.')
+        dispatch({ type: 'REGISTER_FAILURE', payload: 'Email already exists' })
+        return
+      }
+
+      if (!res.ok) {
+        throw new Error('Registration failed.')
+      }
+
+      dispatch({ type: 'REGISTER_SUCCESS' })
+      alert('Account created! You can now log in.')
+      navigate('/login')
+    } catch (err) {
+      dispatch({ type: 'REGISTER_FAILURE', payload: err.message })
+      alert('Something went wrong. Please try again.')
     }
-
-    // 3) Create new user
-    const newUser = {
-      id: Date.now(),
-      username: credentials.username.trim(),
-      email: credentials.email.trim(),
-      password: credentials.password.trim(),
-      role: 'user'
-    }
-
-    users.push(newUser)
-    localStorage.setItem('localUsers', JSON.stringify(users))
-
-    dispatch({ type: 'REGISTER_SUCCESS' })
-    alert('Your account has been created, you can now log in!')
-    navigate('/login')
   }
 
   return (
@@ -108,24 +108,16 @@ const Register = () => {
         <Row className="justify-content-center">
           <Col lg="10">
             <div className="auth-card d-flex flex-wrap">
-              {/* Left side: image */}
               <div className="auth-left">
                 <div className="image-wrapper">
                   <img src={registerImg} alt="hotel" className="hotel-img" />
                 </div>
               </div>
 
-              {/* Right side: form */}
               <div className="auth-right">
                 <h2 className="auth-title">Join Us</h2>
-                <p className="auth-subtitle">
-                  Start your booking adventure! All your travel needs in one place.
-                </p>
+                <p className="auth-subtitle">Start your booking adventure!</p>
 
-                {/*
-                  noValidate => disables default HTML5 pop-ups
-                  onSubmit => handleClick
-                */}
                 <Form noValidate onSubmit={handleClick}>
                   <FormGroup>
                     <input
@@ -135,10 +127,40 @@ const Register = () => {
                       value={credentials.username}
                       onChange={handleChange}
                     />
-                    {/* Inline error message if any */}
-                    {errors.username && (
-                      <p className="error-text">{errors.username}</p>
-                    )}
+                    {errors.username && <p className="error-text">{errors.username}</p>}
+                  </FormGroup>
+
+                  <FormGroup>
+                    <input
+                      type="text"
+                      id="first_name"
+                      placeholder="First Name"
+                      value={credentials.first_name}
+                      onChange={handleChange}
+                    />
+                    {errors.first_name && <p className="error-text">{errors.first_name}</p>}
+                  </FormGroup>
+
+                  <FormGroup>
+                    <input
+                      type="text"
+                      id="last_name"
+                      placeholder="Last Name"
+                      value={credentials.last_name}
+                      onChange={handleChange}
+                    />
+                    {errors.last_name && <p className="error-text">{errors.last_name}</p>}
+                  </FormGroup>
+
+                  <FormGroup>
+                    <input
+                      type="text"
+                      id="phone"
+                      placeholder="Phone Number"
+                      value={credentials.phone}
+                      onChange={handleChange}
+                    />
+                    {errors.phone && <p className="error-text">{errors.phone}</p>}
                   </FormGroup>
 
                   <FormGroup>
@@ -149,9 +171,7 @@ const Register = () => {
                       value={credentials.email}
                       onChange={handleChange}
                     />
-                    {errors.email && (
-                      <p className="error-text">{errors.email}</p>
-                    )}
+                    {errors.email && <p className="error-text">{errors.email}</p>}
                   </FormGroup>
 
                   <FormGroup>
@@ -162,9 +182,7 @@ const Register = () => {
                       value={credentials.password}
                       onChange={handleChange}
                     />
-                    {errors.password && (
-                      <p className="error-text">{errors.password}</p>
-                    )}
+                    {errors.password && <p className="error-text">{errors.password}</p>}
                   </FormGroup>
 
                   <Button type="submit" className="btn auth-btn w-100">

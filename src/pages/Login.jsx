@@ -12,49 +12,8 @@ const Login = () => {
 
   const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
-
   const { dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    let users = JSON.parse(localStorage.getItem('localUsers')) || [];
-
-    const defaultUsers = [
-      {
-        id: 1,
-        username: 'Admin1',
-        email: 'admin@gmail.com',
-        password: 'admin123',
-        role: 'admin',
-      },
-      {
-        id: 2,
-        username: 'Manager1',
-        email: 'manager@gmail.com',
-        password: 'manager123',
-        role: 'manager',
-      },
-      {
-        id: 3,
-        username: 'User1',
-        email: 'user@gmail.com',
-        password: 'user123',
-        role: 'user',
-      },
-    ];
-
-    let updated = false;
-    defaultUsers.forEach((defUser) => {
-      if (!users.some((u) => u.email === defUser.email)) {
-        users.push(defUser);
-        updated = true;
-      }
-    });
-
-    if (updated) {
-      localStorage.setItem('localUsers', JSON.stringify(users));
-    }
-  }, []);
 
   const handleChange = (e) => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -77,7 +36,7 @@ const Login = () => {
     return newErrors;
   };
 
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
     dispatch({ type: 'LOGIN_START' });
 
@@ -88,28 +47,37 @@ const Login = () => {
       return;
     }
 
-    let users = JSON.parse(localStorage.getItem('localUsers')) || [];
-    const foundUser = users.find(
-      (u) =>
-        u.email.trim().toLowerCase() === credentials.email.trim().toLowerCase() &&
-        u.password === credentials.password
-    );
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: credentials.email,
+          password: credentials.password,
+        }),
+      });
 
-    if (!foundUser) {
-      alert('Invalid email or password');
-      dispatch({ type: 'LOGIN_FAILURE', payload: 'Wrong credentials' });
-      return;
-    }
+      // Eğer yanıt başarılı değilse, hata mesajını text olarak alıp fırlatıyoruz.
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Something went wrong');
+      }
 
-    dispatch({ type: 'LOGIN_SUCCESS', payload: foundUser });
-    alert(`Welcome, ${foundUser.username}!`);
+      // Yanıt başarılıysa, JSON verisini parse ediyoruz.
+      const userData = await response.json();
+      dispatch({ type: 'LOGIN_SUCCESS', payload: userData });
+      alert(`Welcome, ${userData.username}!`);
 
-    if (foundUser.role === 'admin') {
-      navigate('/admin');
-    } else if (foundUser.role === 'manager') {
-      navigate('/manager');
-    } else {
-      navigate('/');
+      if (userData.role === 'admin') {
+        navigate('/admin');
+      } else if (userData.role === 'manager') {
+        navigate('/manager');
+      } else {
+        navigate('/');
+      }
+    } catch (err) {
+      alert(err.message);
+      dispatch({ type: 'LOGIN_FAILURE', payload: err.message });
     }
   };
 
@@ -128,11 +96,9 @@ const Login = () => {
                   <img src={loginImg} alt="hotel" className="hotel-img" />
                 </div>
               </div>
-
               <div className="auth-right">
                 <h2 className="auth-title">Hello Stay Inn User</h2>
                 <p className="auth-subtitle">Welcome back! Please log in.</p>
-
                 <Form noValidate onSubmit={handleClick}>
                   <FormGroup>
                     <input
@@ -144,7 +110,6 @@ const Login = () => {
                     />
                     {errors.email && <p className="error-text">{errors.email}</p>}
                   </FormGroup>
-
                   <FormGroup>
                     <input
                       type="password"
@@ -157,12 +122,10 @@ const Login = () => {
                       <p className="error-text">{errors.password}</p>
                     )}
                   </FormGroup>
-
                   <Button type="submit" className="btn auth-btn w-100">
                     LOGIN
                   </Button>
                 </Form>
-
                 <p className="auth-footer" style={{ marginTop: '1rem' }}>
                   Don&apos;t have an account?{' '}
                   <span

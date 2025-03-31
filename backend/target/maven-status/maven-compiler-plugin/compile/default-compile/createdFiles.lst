@@ -1,0 +1,5 @@
+com\example\hotelapp\repository\UserRepository.class
+com\example\hotelapp\config\SecurityConfig.class
+com\example\hotelapp\HotelReservationSystemApplication.class
+com\example\hotelapp\model\User.class
+com\example\hotelapp\controller\AuthController.class
