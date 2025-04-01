@@ -21,6 +21,7 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
+    // Register endpoint (daha önce tanımlanan hali)
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User userData) {
         if (userRepository.existsByEmail(userData.getEmail())) {
@@ -30,7 +31,7 @@ public class AuthController {
         User user = new User();
         user.setUsername(userData.getUsername());
         user.setEmail(userData.getEmail());
-        // Artık şifre hash'lenmeyecek, plain text olarak saklanacak.
+        // Plain text olarak şifre saklanıyor (sadece test amaçlı)
         user.setPassword(userData.getPassword());
         user.setRole(userData.getRole() != null ? userData.getRole() : "user");
         user.setFirstName(userData.getFirstName());
@@ -41,30 +42,28 @@ public class AuthController {
         return ResponseEntity.ok("User registered successfully.");
     }
 
+    // Login endpoint: Plain text şifre karşılaştırması
     @PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-    try {
-        Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
-        if (optionalUser.isEmpty()) {
-            logger.error("Login failed: username (email) incorrect - " + loginRequest.getEmail());
-            return ResponseEntity.status(401).body("Username is incorrect.");
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
+            if (optionalUser.isEmpty()) {
+                return ResponseEntity.status(401).body("Username is incorrect.");
+            }
+            User user = optionalUser.get();
+            
+            String incomingPassword = loginRequest.getPassword();
+            String dbPassword = user.getPassword();
+            
+            if (!incomingPassword.equals(dbPassword)) {
+                String debugMessage = "Password is incorrect. Debug Info: Incoming Password: " 
+                    + incomingPassword + ", DB Password: " + dbPassword;
+                return ResponseEntity.status(401).body(debugMessage);
+            }
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
         }
-        User user = optionalUser.get();
-        
-        // Debug loglarını ekleyin:
-        logger.debug("Gelen şifre: " + loginRequest.getPassword());
-        logger.debug("DB'deki şifre: " + user.getPassword());
-        
-        if (!loginRequest.getPassword().equals(user.getPassword())) {
-            logger.error("Login failed: password incorrect for user " + loginRequest.getEmail());
-            return ResponseEntity.status(401).body("Password is incorrect.");
-        }
-        return ResponseEntity.ok(user);
-    } catch (Exception e) {
-        logger.error("An error occurred during login: ", e);
-        return ResponseEntity.status(500).body(e.getMessage());
     }
-}
-
-
+    
 }

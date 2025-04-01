@@ -57,13 +57,11 @@ const Login = () => {
         }),
       });
 
-      // Eğer yanıt başarılı değilse, hata mesajını text olarak alıp fırlatıyoruz.
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText || 'Something went wrong');
       }
-
-      // Yanıt başarılıysa, JSON verisini parse ediyoruz.
+      
       const userData = await response.json();
       dispatch({ type: 'LOGIN_SUCCESS', payload: userData });
       alert(`Welcome, ${userData.username}!`);
