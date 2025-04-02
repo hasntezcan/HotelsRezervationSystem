@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 22 Mar 2025, 22:12:56
+-- Üretim Zamanı: 02 Nis 2025, 15:59:38
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `bookings` (
   `booking_id` char(36) NOT NULL,
-  `user_id` char(36) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
   `room_id` char(36) DEFAULT NULL,
   `check_in_date` date NOT NULL,
   `check_out_date` date NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE `hotelimages` (
 
 CREATE TABLE `hotels` (
   `hotel_id` char(36) NOT NULL,
-  `manager_id` char(36) DEFAULT NULL,
+  `manager_id` bigint(20) DEFAULT NULL,
   `name` varchar(100) NOT NULL,
   `address` text DEFAULT NULL,
   `city` varchar(50) DEFAULT NULL,
@@ -142,7 +142,7 @@ CREATE TABLE `promotions` (
 
 CREATE TABLE `reviews` (
   `review_id` char(36) NOT NULL,
-  `user_id` char(36) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
   `hotel_id` char(36) DEFAULT NULL,
   `rating` int(11) DEFAULT NULL CHECK (`rating` between 1 and 5),
   `comment` text DEFAULT NULL,
@@ -210,10 +210,11 @@ CREATE TABLE `rooms` (
 --
 
 CREATE TABLE `users` (
-  `user_id` char(36) NOT NULL,
-  `role` enum('user','admin','manager') NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `role` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `password_hash` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `first_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
@@ -221,6 +222,14 @@ CREATE TABLE `users` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_verified` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Tablo döküm verisi `users`
+--
+
+INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_name`, `last_name`, `phone`, `created_at`, `updated_at`, `is_verified`) VALUES
+(9, 'iamsahinemir', 'user', 'esad.emir34@gmail.com', '123456', 'emir esad', 'şahin', '05438813007', '2025-03-31 17:36:25', '2025-03-31 21:21:00', 1),
+(10, 'sezo', 'user', 'sezo@sezo.com', '123456', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-02 10:59:15', 0);
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -260,8 +269,8 @@ ALTER TABLE `hotelimages`
 --
 ALTER TABLE `hotels`
   ADD PRIMARY KEY (`hotel_id`),
-  ADD KEY `fk_hotels_manager` (`manager_id`),
-  ADD KEY `idx_hotels_city` (`city`);
+  ADD KEY `idx_hotels_city` (`city`),
+  ADD KEY `fk_hotels_manager` (`manager_id`);
 
 --
 -- Tablo için indeksler `payments`
@@ -283,8 +292,8 @@ ALTER TABLE `promotions`
 --
 ALTER TABLE `reviews`
   ADD PRIMARY KEY (`review_id`),
-  ADD KEY `fk_reviews_user` (`user_id`),
-  ADD KEY `idx_reviews_hotel` (`hotel_id`);
+  ADD KEY `idx_reviews_hotel` (`hotel_id`),
+  ADD KEY `fk_reviews_user` (`user_id`);
 
 --
 -- Tablo için indeksler `roomamenities`
@@ -319,76 +328,18 @@ ALTER TABLE `rooms`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `username` (`username`),
   ADD KEY `idx_users_email` (`email`);
 
 --
--- Dökümü yapılmış tablolar için kısıtlamalar
+-- Dökümü yapılmış tablolar için AUTO_INCREMENT değeri
 --
 
 --
--- Tablo kısıtlamaları `bookings`
+-- Tablo için AUTO_INCREMENT değeri `users`
 --
-ALTER TABLE `bookings`
-  ADD CONSTRAINT `fk_bookings_room` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_bookings_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
-
---
--- Tablo kısıtlamaları `hotelamenityjunction`
---
-ALTER TABLE `hotelamenityjunction`
-  ADD CONSTRAINT `fk_hotelamenityjunc_amenity` FOREIGN KEY (`amenity_id`) REFERENCES `hotelamenities` (`amenity_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_hotelamenityjunc_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`) ON DELETE CASCADE;
-
---
--- Tablo kısıtlamaları `hotelimages`
---
-ALTER TABLE `hotelimages`
-  ADD CONSTRAINT `fk_hotelimages_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`) ON DELETE CASCADE;
-
---
--- Tablo kısıtlamaları `hotels`
---
-ALTER TABLE `hotels`
-  ADD CONSTRAINT `fk_hotels_manager` FOREIGN KEY (`manager_id`) REFERENCES `users` (`user_id`);
-
---
--- Tablo kısıtlamaları `payments`
---
-ALTER TABLE `payments`
-  ADD CONSTRAINT `fk_payments_booking` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`) ON DELETE CASCADE;
-
---
--- Tablo kısıtlamaları `promotions`
---
-ALTER TABLE `promotions`
-  ADD CONSTRAINT `fk_promotions_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_promotions_room` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`) ON DELETE CASCADE;
-
---
--- Tablo kısıtlamaları `reviews`
---
-ALTER TABLE `reviews`
-  ADD CONSTRAINT `fk_reviews_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_reviews_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
-
---
--- Tablo kısıtlamaları `roomamenityjunction`
---
-ALTER TABLE `roomamenityjunction`
-  ADD CONSTRAINT `fk_roomamenityjunc_amenity` FOREIGN KEY (`amenity_id`) REFERENCES `roomamenities` (`amenity_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_roomamenityjunc_room` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`) ON DELETE CASCADE;
-
---
--- Tablo kısıtlamaları `roomimages`
---
-ALTER TABLE `roomimages`
-  ADD CONSTRAINT `fk_roomimages_room` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`) ON DELETE CASCADE;
-
---
--- Tablo kısıtlamaları `rooms`
---
-ALTER TABLE `rooms`
-  ADD CONSTRAINT `fk_rooms_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`) ON DELETE CASCADE;
+ALTER TABLE `users`
+  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

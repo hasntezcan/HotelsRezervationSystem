@@ -1,0 +1,4 @@
+ilk adım: cd "C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend"
+ikinzi adım: mvn spring-boot:run
+
+
