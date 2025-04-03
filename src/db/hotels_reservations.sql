@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 02 Nis 2025, 15:59:38
+-- Üretim Zamanı: 04 Nis 2025, 00:07:17
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -229,7 +229,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_name`, `last_name`, `phone`, `created_at`, `updated_at`, `is_verified`) VALUES
 (9, 'iamsahinemir', 'user', 'esad.emir34@gmail.com', '123456', 'emir esad', 'şahin', '05438813007', '2025-03-31 17:36:25', '2025-03-31 21:21:00', 1),
-(10, 'sezo', 'user', 'sezo@sezo.com', '123456', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-02 10:59:15', 0);
+(10, 'sezo', 'user', 'sezo@sezo.com', '123456', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-02 10:59:15', 0),
+(11, 'dede', 'user', 'dede@dede.com', '123456', 'dede', 'dede', '05313313131', '2025-04-03 17:57:28', '2025-04-03 17:57:28', 0),
+(12, 'anan', 'user', 'anan@anan.com', '123456', 'anan', 'anan', '05555555555', '2025-04-03 18:54:48', '2025-04-03 18:54:48', 0);
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -339,7 +341,7 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
