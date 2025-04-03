@@ -1,3 +1,5 @@
+com\example\hotelapp\config\JacksonConfig.class
+com\example\hotelapp\model\LoginRequest.class
 com\example\hotelapp\repository\UserRepository.class
 com\example\hotelapp\config\SecurityConfig.class
 com\example\hotelapp\HotelReservationSystemApplication.class
