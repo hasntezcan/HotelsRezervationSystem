@@ -1,34 +1,42 @@
 // src/pages/profile/Settings.jsx
 
-import React, { useState, useContext } from 'react'
-import { AuthContext } from '../../context/AuthContext'
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
 const Settings = () => {
-  const { user, dispatch } = useContext(AuthContext)
-  if (!user) return <p>Please login first.</p>
+  const { user, dispatch } = useContext(AuthContext);
+  if (!user) return <p>Please login first.</p>;
 
   const [formData, setFormData] = useState({
     username: user.username,
     email: user.email,
-    password: user.password || ''
-  })
+    password: user.password || '',
+    // Backend'den dönen JSON'da alan isimleri "first_name" ve "last_name" ise:
+    firstName: user.first_name || '',
+    lastName: user.last_name || '',
+    phone: user.phone || ''
+  });
 
   const handleChange = e => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
-  }
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
     try {
       const response = await fetch("http://localhost:8080/api/auth/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: user.userId, // AuthContext'teki kullanıcı nesnesinde userId'nin olduğundan emin olun
+          userId: user.userId, // Backend için userId gönderimi çok önemli!
           username: formData.username,
           email: formData.email,
-          password: formData.password
-          // Eğer firstName, lastName veya phone gibi alanlarınız varsa onları da ekleyebilirsiniz.
+          password: formData.password,
+          // Backend'in beklediği snake_case alan isimlerini gönderiyoruz:
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          phone: formData.phone
         })
       });
 
@@ -38,13 +46,12 @@ const Settings = () => {
       }
 
       const updatedUser = await response.json();
-      // AuthContext'i güncelliyoruz
-      dispatch({ type: 'LOGIN_SUCCESS', payload: updatedUser });
-      alert('Profile updated!');
+      dispatch({ type: "LOGIN_SUCCESS", payload: updatedUser });
+      alert("Profile updated!");
     } catch (err) {
       alert(err.message);
     }
-  }
+  };
 
   return (
     <div>
@@ -80,13 +87,39 @@ const Settings = () => {
             required
           />
         </div>
-
+        <div className="form-group">
+          <label>First Name</label>
+          <input 
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="form-group">
+          <label>Last Name</label>
+          <input 
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="form-group">
+          <label>Phone</label>
+          <input 
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+          />
+        </div>
         <button type="submit" className="btn btn-primary">
           Save Changes
         </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
 export default Settings;

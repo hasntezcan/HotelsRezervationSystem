@@ -82,10 +82,10 @@ public class AuthController {
         user.setUsername(updatedUser.getUsername());
         user.setEmail(updatedUser.getEmail());
         user.setPassword(updatedUser.getPassword());
-        // Diğer alanlar
-        //user.setFirstName(updatedUser.getFirstName());
-        //user.setLastName(updatedUser.getLastName());
-        //user.setPhone(updatedUser.getPhone());
+        // Ek alanlar: firstName, lastName, phone
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+        user.setPhone(updatedUser.getPhone());
         
         userRepository.save(user);
         return ResponseEntity.ok(user);
