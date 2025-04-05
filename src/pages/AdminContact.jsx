@@ -77,16 +77,16 @@ const AdminContactUs = () => {
           {unreadMessages.length > 0 ? (
             unreadMessages.map((msg) => (
               <div className="message-card" key={msg.messageId}>
-                <p><strong>Name:</strong> {msg.senderName}</p>
-                <p><strong>Email:</strong> {msg.senderEmail}</p>
-                <p><strong>Phone:</strong> {msg.phone}</p>
-                <p><strong>Message:</strong> {msg.message}</p>
-                <div className="message-actions">
-                  <button className="reply-btn" onClick={() => replyToEmail(msg.senderEmail)}>Reply</button>
-                  <button className="mark-read-btn" onClick={() => markAsRead(msg.messageId)}>Mark as Read</button>
-                  <button className="delete-btn" onClick={() => deleteMessage(msg.messageId, false)}>Delete</button>
-                </div>
-              </div>
+  <p><strong>Name:</strong> {msg.name}</p>  {/* msg.name kullanılmalı */}
+  <p><strong>Email:</strong> {msg.email}</p>  {/* msg.email kullanılmalı */}
+  <p><strong>Phone:</strong> {msg.phone}</p>
+  <p><strong>Message:</strong> {msg.message}</p>
+  <div className="message-actions">
+    <button className="reply-btn" onClick={() => replyToEmail(msg.email)}>Reply</button>
+    <button className="mark-read-btn" onClick={() => markAsRead(msg.messageId)}>Mark as Read</button>
+    <button className="delete-btn" onClick={() => deleteMessage(msg.messageId, false)}>Delete</button>
+  </div>
+</div>
             ))
           ) : (
             <p>📭 No new messages.</p>
@@ -98,8 +98,8 @@ const AdminContactUs = () => {
           {readMessages.length > 0 ? (
             readMessages.map((msg) => (
               <div className="message-card read" key={msg.messageId}>
-                <p><strong>Name:</strong> {msg.senderName}</p>
-                <p><strong>Email:</strong> {msg.senderEmail}</p>
+                <p><strong>Name:</strong> {msg.name}</p>
+                <p><strong>Email:</strong> {msg.email}</p>
                 <p><strong>Phone:</strong> {msg.phone}</p>
                 <p><strong>Message:</strong> {msg.message}</p>
                 <div className="message-actions">
