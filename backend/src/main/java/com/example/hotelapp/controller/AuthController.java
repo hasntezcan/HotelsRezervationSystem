@@ -56,8 +56,7 @@ public class AuthController {
             String dbPassword = user.getPassword();
             
             if (!incomingPassword.equals(dbPassword)) {
-                String debugMessage = "Password is incorrect. Debug Info: Incoming Password: " 
-                    + incomingPassword + ", DB Password: " + dbPassword;
+                String debugMessage = "Password is incorrect." ;
                 return ResponseEntity.status(401).body(debugMessage);
             }
             return ResponseEntity.ok(user);

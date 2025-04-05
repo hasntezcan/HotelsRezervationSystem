@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import '../styles/contact.css';
+import axios from 'axios';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -19,11 +20,17 @@ const Contact = () => {
     setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Submitted:', formData);
-    alert('Your message has been sent!');
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    try {
+      const response = await axios.post("http://localhost:8080/api/contact", formData);
+      console.log('Response:', response.data);
+      alert('Your message has been sent!');
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Error sending message. Please try again.');
+    }
   };
 
   return (
@@ -48,7 +55,10 @@ const Contact = () => {
           <Col lg="6">
             <div className="contact__form">
               <h2 className="mb-3">Get in Touch With Us</h2>
-              <p className="contact__text">Get in touch with us, ask your questions,or share your thoughts.<br/> We’ll get back to you as soon as possible!</p>
+              <p className="contact__text">
+                Get in touch with us, ask your questions, or share your thoughts.<br/>
+                We’ll get back to you as soon as possible!
+              </p>
               <Form onSubmit={handleSubmit}>
                 <FormGroup>
                   <Label for="name">Name</Label>
