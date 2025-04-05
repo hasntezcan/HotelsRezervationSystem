@@ -5,7 +5,7 @@ import { AuthContext } from '../../context/AuthContext'
 
 const Settings = () => {
   const { user, dispatch } = useContext(AuthContext)
-  if(!user) return <p>Please login first.</p>
+  if (!user) return <p>Please login first.</p>
 
   const [formData, setFormData] = useState({
     username: user.username,
@@ -17,34 +17,33 @@ const Settings = () => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-
-    let localUsers = JSON.parse(localStorage.getItem('localUsers')) || []
-    let updatedUsers = localUsers.map(u => {
-      if(u.email === user.email) {
-        return {
-          ...u,
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.userId, // AuthContext'teki kullanıcı nesnesinde userId'nin olduğundan emin olun
           username: formData.username,
           email: formData.email,
           password: formData.password
-        }
+          // Eğer firstName, lastName veya phone gibi alanlarınız varsa onları da ekleyebilirsiniz.
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Something went wrong");
       }
-      return u
-    })
 
-    localStorage.setItem('localUsers', JSON.stringify(updatedUsers))
-
-    // AuthContext user'ı da güncelle
-    let newUser = {
-      ...user,
-      username: formData.username,
-      email: formData.email,
-      password: formData.password
+      const updatedUser = await response.json();
+      // AuthContext'i güncelliyoruz
+      dispatch({ type: 'LOGIN_SUCCESS', payload: updatedUser });
+      alert('Profile updated!');
+    } catch (err) {
+      alert(err.message);
     }
-    dispatch({type: 'LOGIN_SUCCESS', payload: newUser})
-
-    alert('Profile updated!')
   }
 
   return (
@@ -90,4 +89,4 @@ const Settings = () => {
   )
 }
 
-export default Settings
+export default Settings;

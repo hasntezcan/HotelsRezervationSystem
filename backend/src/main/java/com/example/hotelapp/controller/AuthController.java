@@ -21,7 +21,7 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
-    // Register endpoint (daha önce tanımlanan hali)
+    // Register endpoint
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User userData) {
         if (userRepository.existsByEmail(userData.getEmail())) {
@@ -31,7 +31,7 @@ public class AuthController {
         User user = new User();
         user.setUsername(userData.getUsername());
         user.setEmail(userData.getEmail());
-        // Plain text olarak şifre saklanıyor (sadece test amaçlı)
+        // Plain text olarak şifre saklanıyor (test amaçlı, üretimde hash kullanılmalı)
         user.setPassword(userData.getPassword());
         user.setRole(userData.getRole() != null ? userData.getRole() : "user");
         user.setFirstName(userData.getFirstName());
@@ -65,5 +65,29 @@ public class AuthController {
             return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
         }
     }
-    
+
+    // Profile update endpoint
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile(@RequestBody User updatedUser) {
+        if (updatedUser.getUserId() == null) {
+            return ResponseEntity.badRequest().body("User ID is required.");
+        }
+        
+        Optional<User> optionalUser = userRepository.findById(updatedUser.getUserId());
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(404).body("User not found.");
+        }
+        
+        User user = optionalUser.get();
+        user.setUsername(updatedUser.getUsername());
+        user.setEmail(updatedUser.getEmail());
+        user.setPassword(updatedUser.getPassword());
+        // Diğer alanlar
+        //user.setFirstName(updatedUser.getFirstName());
+        //user.setLastName(updatedUser.getLastName());
+        //user.setPhone(updatedUser.getPhone());
+        
+        userRepository.save(user);
+        return ResponseEntity.ok(user);
+    }
 }
