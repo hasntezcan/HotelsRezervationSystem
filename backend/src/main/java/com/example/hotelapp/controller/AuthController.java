@@ -31,7 +31,7 @@ public class AuthController {
         User user = new User();
         user.setUsername(userData.getUsername());
         user.setEmail(userData.getEmail());
-        // Plain text olarak şifre saklanıyor (test amaçlı, üretimde hash kullanılmalı)
+        // Plain text password (test amaçlı)
         user.setPassword(userData.getPassword());
         user.setRole(userData.getRole() != null ? userData.getRole() : "user");
         user.setFirstName(userData.getFirstName());
@@ -82,12 +82,24 @@ public class AuthController {
         user.setUsername(updatedUser.getUsername());
         user.setEmail(updatedUser.getEmail());
         user.setPassword(updatedUser.getPassword());
-        // Ek alanlar: firstName, lastName, phone
         user.setFirstName(updatedUser.getFirstName());
         user.setLastName(updatedUser.getLastName());
         user.setPhone(updatedUser.getPhone());
         
         userRepository.save(user);
         return ResponseEntity.ok(user);
+    }
+    
+    // Admin profilini döndüren GET endpoint
+    @GetMapping("/profile/admin")
+    public ResponseEntity<?> getAdminProfile() {
+        Optional<User> adminOpt = userRepository.findAll()
+                .stream()
+                .filter(user -> "admin".equalsIgnoreCase(user.getRole()))
+                .findFirst();
+        if (adminOpt.isEmpty()) {
+            return ResponseEntity.status(404).body("Admin user not found.");
+        }
+        return ResponseEntity.ok(adminOpt.get());
     }
 }
