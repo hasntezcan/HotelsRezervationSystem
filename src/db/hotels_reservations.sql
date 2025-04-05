@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 04 Nis 2025, 00:07:17
+-- Üretim Zamanı: 05 Nis 2025, 16:32:17
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -40,6 +40,30 @@ CREATE TABLE `bookings` (
   `status` varchar(20) DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `contact_messages`
+--
+
+CREATE TABLE `contact_messages` (
+  `message_id` varchar(255) NOT NULL,
+  `sender_name` varchar(255) NOT NULL,
+  `sender_email` varchar(255) NOT NULL,
+  `phone` varchar(50) NOT NULL,
+  `message` text NOT NULL,
+  `sent_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_read` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Tablo döküm verisi `contact_messages`
+--
+
+INSERT INTO `contact_messages` (`message_id`, `sender_name`, `sender_email`, `phone`, `message`, `sent_at`, `is_read`) VALUES
+('5850c479-e734-461a-b7b6-28df3e35b895', 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'aa', '2025-04-05 11:20:24', 0),
+('7dae1e1d-8ce7-40c3-8459-fb19cefce8d2', 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'nabe sabo', '2025-04-05 10:59:17', 0);
 
 -- --------------------------------------------------------
 
@@ -99,6 +123,19 @@ CREATE TABLE `hotels` (
   `cancellation_policy` text DEFAULT NULL,
   `status` enum('pending','approved','rejected') DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `managers`
+--
+
+CREATE TABLE `managers` (
+  `manager_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `hotel_id` char(36) NOT NULL,
+  `assigned_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -231,7 +268,8 @@ INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_
 (9, 'iamsahinemir', 'user', 'esad.emir34@gmail.com', '123456', 'emir esad', 'şahin', '05438813007', '2025-03-31 17:36:25', '2025-03-31 21:21:00', 1),
 (10, 'sezo', 'user', 'sezo@sezo.com', '123456', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-02 10:59:15', 0),
 (11, 'dede', 'user', 'dede@dede.com', '123456', 'dede', 'dede', '05313313131', '2025-04-03 17:57:28', '2025-04-03 17:57:28', 0),
-(12, 'anan', 'user', 'anan@anan.com', '123456', 'anan', 'anan', '05555555555', '2025-04-03 18:54:48', '2025-04-03 18:54:48', 0);
+(12, 'admin', 'admin', 'admin@admin.com', '1234567', 'admin', 'admin', '05467897895', '2025-04-03 18:54:48', '2025-04-05 12:07:35', 0),
+(13, 'deneme', 'user', 'esad.emir34@stu.khas.edu.tr', '123456', 'emir', 'şahin', '05512024369', '2025-04-05 10:50:27', '2025-04-05 10:50:27', 0);
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -245,6 +283,12 @@ ALTER TABLE `bookings`
   ADD KEY `fk_bookings_user` (`user_id`),
   ADD KEY `fk_bookings_room` (`room_id`),
   ADD KEY `idx_bookings_check_in` (`check_in_date`);
+
+--
+-- Tablo için indeksler `contact_messages`
+--
+ALTER TABLE `contact_messages`
+  ADD PRIMARY KEY (`message_id`);
 
 --
 -- Tablo için indeksler `hotelamenities`
@@ -273,6 +317,14 @@ ALTER TABLE `hotels`
   ADD PRIMARY KEY (`hotel_id`),
   ADD KEY `idx_hotels_city` (`city`),
   ADD KEY `fk_hotels_manager` (`manager_id`);
+
+--
+-- Tablo için indeksler `managers`
+--
+ALTER TABLE `managers`
+  ADD PRIMARY KEY (`manager_id`),
+  ADD UNIQUE KEY `uk_manager_user` (`user_id`),
+  ADD UNIQUE KEY `uk_manager_hotel` (`hotel_id`);
 
 --
 -- Tablo için indeksler `payments`
@@ -338,10 +390,27 @@ ALTER TABLE `users`
 --
 
 --
+-- Tablo için AUTO_INCREMENT değeri `managers`
+--
+ALTER TABLE `managers`
+  MODIFY `manager_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- Dökümü yapılmış tablolar için kısıtlamalar
+--
+
+--
+-- Tablo kısıtlamaları `managers`
+--
+ALTER TABLE `managers`
+  ADD CONSTRAINT `fk_managers_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_managers_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

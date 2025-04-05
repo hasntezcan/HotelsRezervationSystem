@@ -1,62 +1,67 @@
 import React, { useState, useEffect } from "react";
-import "../styles/AdminContactUs.css"; // Updated CSS for full-page layout
+import "../styles/AdminContactUs.css";
+import axios from "axios";
 
 const AdminContactUs = () => {
-  const [messages, setMessages] = useState([]);
+  const [unreadMessages, setUnreadMessages] = useState([]);
   const [readMessages, setReadMessages] = useState([]);
 
+  // Fetch messages from the database on component mount
   useEffect(() => {
-    let storedMessages = JSON.parse(localStorage.getItem("contactMessages"));
-    let storedReadMessages = JSON.parse(localStorage.getItem("readMessages"));
-
-    if (!storedMessages || storedMessages.length === 0) {
-      storedMessages = [
-        { name: "Ahmet Yılmaz", email: "ahmet@example.com", phone: "555-1234", message: "Hello, I would like to get information about the cancellation of my reservation." },
-        { name: "Elif Demir", email: "elif@example.com", phone: "532-5678", message: "I would like to stay at your hotel, can I get a price quote?" },
-        { name: "Mehmet Kaya", email: "mehmet@example.com", phone: "535-9876", message: "Do you offer conference room rentals in your hotel?" }
-      ];
-      localStorage.setItem("contactMessages", JSON.stringify(storedMessages));
-    }
-
-    if (!storedReadMessages || storedReadMessages.length === 0) {
-      storedReadMessages = [
-        { name: "Zeynep Çelik", email: "zeynep@example.com", phone: "533-7654", message: "How can I complete my payment?" }
-      ];
-      localStorage.setItem("readMessages", JSON.stringify(storedReadMessages));
-    }
-
-    setMessages(storedMessages);
-    setReadMessages(storedReadMessages);
+    fetchMessages();
   }, []);
 
-  const markAsRead = (index) => {
-    const newReadMessages = [...readMessages, messages[index]];
-    const newMessages = messages.filter((_, i) => i !== index);
-    setMessages(newMessages);
-    setReadMessages(newReadMessages);
-    localStorage.setItem("contactMessages", JSON.stringify(newMessages));
-    localStorage.setItem("readMessages", JSON.stringify(newReadMessages));
-  };
+  const fetchMessages = async () => {
+    try {
+      // GET unread messages endpoint
+      const unreadResponse = await axios.get("http://localhost:8080/api/contact/unread");
+      setUnreadMessages(unreadResponse.data);
 
-  const deleteMessage = (index, isRead) => {
-    if (isRead) {
-      const newReadMessages = readMessages.filter((_, i) => i !== index);
-      setReadMessages(newReadMessages);
-      localStorage.setItem("readMessages", JSON.stringify(newReadMessages));
-    } else {
-      const newMessages = messages.filter((_, i) => i !== index);
-      setMessages(newMessages);
-      localStorage.setItem("contactMessages", JSON.stringify(newMessages));
+      // GET read messages endpoint
+      const readResponse = await axios.get("http://localhost:8080/api/contact/read");
+      setReadMessages(readResponse.data);
+    } catch (error) {
+      console.error("Error fetching messages", error);
     }
   };
 
-  const markAsUnread = (index) => {
-    const newMessages = [...messages, readMessages[index]];
-    const newReadMessages = readMessages.filter((_, i) => i !== index);
-    setMessages(newMessages);
-    setReadMessages(newReadMessages);
-    localStorage.setItem("contactMessages", JSON.stringify(newMessages));
-    localStorage.setItem("readMessages", JSON.stringify(newReadMessages));
+  const markAsRead = async (messageId) => {
+    try {
+      // PUT endpoint to mark message as read
+      const response = await axios.put(`http://localhost:8080/api/contact/markAsRead/${messageId}`);
+      // Update the state: remove from unread and add to read
+      const updatedMessage = response.data;
+      setUnreadMessages(prev => prev.filter(msg => msg.messageId !== messageId));
+      setReadMessages(prev => [...prev, updatedMessage]);
+    } catch (error) {
+      console.error("Error marking as read", error);
+    }
+  };
+
+  const markAsUnread = async (messageId) => {
+    try {
+      // PUT endpoint to mark message as unread
+      const response = await axios.put(`http://localhost:8080/api/contact/markAsUnread/${messageId}`);
+      const updatedMessage = response.data;
+      setReadMessages(prev => prev.filter(msg => msg.messageId !== messageId));
+      setUnreadMessages(prev => [...prev, updatedMessage]);
+    } catch (error) {
+      console.error("Error marking as unread", error);
+    }
+  };
+
+  const deleteMessage = async (messageId, isRead) => {
+    try {
+      // DELETE endpoint to remove the message
+      await axios.delete(`http://localhost:8080/api/contact/${messageId}`);
+      if (isRead) {
+        setReadMessages(prev => prev.filter(msg => msg.messageId !== messageId));
+      } else {
+        setUnreadMessages(prev => prev.filter(msg => msg.messageId !== messageId));
+      }
+    } catch (error) {
+      console.error("Error deleting message", error);
+    }
   };
 
   const replyToEmail = (email) => {
@@ -69,17 +74,17 @@ const AdminContactUs = () => {
       <div className="messages-section">
         <div className="unread-messages">
           <h2>📩 Unread Messages</h2>
-          {messages.length > 0 ? (
-            messages.map((msg, index) => (
-              <div className="message-card" key={index}>
-                <p><strong>Name:</strong> {msg.name}</p>
-                <p><strong>Email:</strong> {msg.email}</p>
+          {unreadMessages.length > 0 ? (
+            unreadMessages.map((msg) => (
+              <div className="message-card" key={msg.messageId}>
+                <p><strong>Name:</strong> {msg.senderName}</p>
+                <p><strong>Email:</strong> {msg.senderEmail}</p>
                 <p><strong>Phone:</strong> {msg.phone}</p>
                 <p><strong>Message:</strong> {msg.message}</p>
                 <div className="message-actions">
-                  <button className="reply-btn" onClick={() => replyToEmail(msg.email)}>Reply</button>
-                  <button className="mark-read-btn" onClick={() => markAsRead(index)}>Mark as Read</button>
-                  <button className="delete-btn" onClick={() => deleteMessage(index, false)}>Delete</button>
+                  <button className="reply-btn" onClick={() => replyToEmail(msg.senderEmail)}>Reply</button>
+                  <button className="mark-read-btn" onClick={() => markAsRead(msg.messageId)}>Mark as Read</button>
+                  <button className="delete-btn" onClick={() => deleteMessage(msg.messageId, false)}>Delete</button>
                 </div>
               </div>
             ))
@@ -91,15 +96,15 @@ const AdminContactUs = () => {
         <div className="read-messages">
           <h2>📂 Read Messages</h2>
           {readMessages.length > 0 ? (
-            readMessages.map((msg, index) => (
-              <div className="message-card read" key={index}>
-                <p><strong>Name:</strong> {msg.name}</p>
-                <p><strong>Email:</strong> {msg.email}</p>
+            readMessages.map((msg) => (
+              <div className="message-card read" key={msg.messageId}>
+                <p><strong>Name:</strong> {msg.senderName}</p>
+                <p><strong>Email:</strong> {msg.senderEmail}</p>
                 <p><strong>Phone:</strong> {msg.phone}</p>
                 <p><strong>Message:</strong> {msg.message}</p>
                 <div className="message-actions">
-                  <button className="unread-btn" onClick={() => markAsUnread(index)}>Mark as Unread</button>
-                  <button className="delete-btn" onClick={() => deleteMessage(index, true)}>Delete</button>
+                  <button className="unread-btn" onClick={() => markAsUnread(msg.messageId)}>Mark as Unread</button>
+                  <button className="delete-btn" onClick={() => deleteMessage(msg.messageId, true)}>Delete</button>
                 </div>
               </div>
             ))

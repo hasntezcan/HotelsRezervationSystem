@@ -28,7 +28,8 @@ public class ContactMessage {
 
     @Column(name = "sent_at", nullable = false)
     private LocalDateTime sentAt;
-
+    @Column(name = "is_read", nullable = false)
+    private Boolean isRead = false;  // <-- Yeni alan
     public ContactMessage() {
         this.sentAt = LocalDateTime.now();
     }
@@ -70,5 +71,14 @@ public class ContactMessage {
     }
     public void setSentAt(LocalDateTime sentAt) {
         this.sentAt = sentAt;
+    }
+    
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
     }
 }
