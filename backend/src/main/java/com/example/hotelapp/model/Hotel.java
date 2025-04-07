@@ -1,30 +1,35 @@
 package com.example.hotelapp.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "hotels")
 public class Hotel {
 
     @Id
-    @Column(name = "hotel_id")
+    @Column(name = "hotel_id", nullable = false)
     private String hotelId;
 
     @Column(name = "manager_id")
     private Long managerId;
 
-    private String name;
+    @Column(nullable = false)
+    private String name; // JSON'deki hotelName alanı
+
+    @Column(columnDefinition = "TEXT")
     private String address;
+
     private String city;
     private String country;
     private double latitude;
     private double longitude;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Column(name = "star_rating")
-    private int starRating;
+    private Integer starRating;
 
     @Column(name = "check_in_time")
     private String checkInTime;
@@ -36,9 +41,28 @@ public class Hotel {
     private String cancellationPolicy;
 
     private String status;
-    private String description;
 
-    // ✅ Getter ve Setter'lar
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    // Ek alanlar
+    @Column(name = "price_per_night")
+    private Double pricePerNight;
+
+    private Integer capacity;
+
+    // "amenities" artık veritabanında saklanmayacağından @Transient işareti ekliyoruz.
+    @Transient
+    private String amenities;
+
+    private String photo;
+    // "featured" alanı kaldırılmıştır
+
+    public Hotel() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // Getters and Setters
 
     public String getHotelId() {
         return hotelId;
@@ -104,11 +128,19 @@ public class Hotel {
         this.longitude = longitude;
     }
 
-    public int getStarRating() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Integer getStarRating() {
         return starRating;
     }
 
-    public void setStarRating(int starRating) {
+    public void setStarRating(Integer starRating) {
         this.starRating = starRating;
     }
 
@@ -144,11 +176,43 @@ public class Hotel {
         this.status = status;
     }
 
-    public String getDescription() {
-        return description;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Double getPricePerNight() {
+        return pricePerNight;
+    }
+
+    public void setPricePerNight(Double pricePerNight) {
+        this.pricePerNight = pricePerNight;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+    public String getAmenities() {
+        return amenities;
+    }
+
+    public void setAmenities(String amenities) {
+        this.amenities = amenities;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 }

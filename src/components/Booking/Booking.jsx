@@ -6,10 +6,12 @@ import { Form, FormGroup, ListGroup, ListGroupItem, Button } from 'reactstrap'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 
+
 const Booking = ({ tour, avgRating }) => {
   const { price, reviews, title } = tour
   const navigate = useNavigate()
   const { user } = useContext(AuthContext)
+
 
   const [booking, setBooking] = useState({
     userId: user && user._id,
@@ -22,6 +24,7 @@ const Booking = ({ tour, avgRating }) => {
     startDate: '',
     endDate: ''
   })
+
 
   const handleChange = (e) => {
     setBooking((prev) => ({ ...prev, [e.target.id]: e.target.value }))
