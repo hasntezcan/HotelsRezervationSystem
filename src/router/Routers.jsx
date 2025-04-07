@@ -23,6 +23,7 @@ import ProfileBookings from '../pages/profile/ProfileBookings.jsx';
 import ProfileSettings from '../pages/profile/ProfileSettings';
 import Overview from '../pages/profile/Overview';
 import AdminHotel from '../pages/AdminHotels.jsx';
+import PaymentPage from '../pages/Booking/PaymentPage.jsx';
 
 const Routers = () => {
   return (
@@ -43,6 +44,7 @@ const Routers = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/search-results" element={<SearchResults />} />
+      <Route path="/payment" element={<PaymentPage />} /> {/* Ödeme Sayfası */}
 
          {/* ✅ Manager Sayfaları */}
          <Route path="/manager" element={<Manager />} /> {/* Dashboard */}

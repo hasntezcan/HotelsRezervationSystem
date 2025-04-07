@@ -1,0 +1,134 @@
+.PaymentRoom__container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 900px;
+    font-family: sans-serif;
+  }
+  
+  .PaymentRoom__title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  
+  /* Konaklama yerinde öne çıkanlar */
+  .PaymentRoom__highlights {
+    margin-bottom: 20px;
+  }
+  
+  .PaymentRoom__subtitle {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  
+  .PaymentRoom__icons-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .PaymentRoom__icon-item {
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  /* Oda Bilgisi */
+  .PaymentRoom__room-info {
+    margin-bottom: 20px;
+  }
+  
+  .PaymentRoom__room-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 8px;
+    text-align: left;
+  }
+  
+  .PaymentRoom__room-included-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .PaymentRoom__room-included-item {
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  /* Tercihler */
+  .PaymentRoom__preferences {
+    margin-bottom: 20px;
+  }
+  
+  .PaymentRoom__pref-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+  
+  .PaymentRoom__pref-note {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+  
+  .PaymentRoom__pref-item {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  
+  /* Select kutusu (sigara tercihi) */
+  .PaymentRoom__select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 5px;
+  }
+  
+  /* Özel İstek */
+  .PaymentRoom__special-request {
+    margin-bottom: 20px;
+  }
+  
+  .PaymentRoom__special-label {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+  
+  .PaymentRoom__special-textarea {
+    width: 100%;
+    min-height: 80px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+    resize: vertical;
+  }
+  
