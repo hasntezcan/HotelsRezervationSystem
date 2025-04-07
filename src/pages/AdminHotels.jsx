@@ -3,7 +3,6 @@ import "../styles/AdminHotels.css";
 import axios from "axios";
 
 const AdminHotel = () => {
-  // Yeni state nesnesi Java tarafındaki alan isimleriyle uyumlu
   const [hotels, setHotels] = useState([]);
   const [newHotel, setNewHotel] = useState({
     name: "",
@@ -13,14 +12,13 @@ const AdminHotel = () => {
     capacity: "",
     amenities: "",
     photo: "",
-    featured: false,
   });
   const [editingHotel, setEditingHotel] = useState(null);
 
-  // Tüm otelleri çek (GET /api/hotels)
+  // /api/hotels/withAmenities endpoint'ine istek atıyoruz
   const fetchHotels = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/hotels");
+      const response = await axios.get("http://localhost:8080/api/hotels/withAmenities");
       setHotels(response.data);
     } catch (error) {
       console.error("Error fetching hotels:", error);
@@ -31,7 +29,6 @@ const AdminHotel = () => {
     fetchHotels();
   }, []);
 
-  // Formdaki değişiklikleri state'e yansıt
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setNewHotel({ 
@@ -40,13 +37,11 @@ const AdminHotel = () => {
     });
   };
 
-  // Yeni otel ekle (POST /api/hotels)
   const addHotel = async () => {
     if (!newHotel.name || !newHotel.city || !newHotel.address) return;
     try {
       const response = await axios.post("http://localhost:8080/api/hotels", newHotel);
       setHotels([...hotels, response.data]);
-      // Formu sıfırla
       setNewHotel({
         name: "",
         city: "",
@@ -55,14 +50,12 @@ const AdminHotel = () => {
         capacity: "",
         amenities: "",
         photo: "",
-        featured: false,
       });
     } catch (error) {
       console.error("Error adding hotel:", error);
     }
   };
 
-  // Otel sil (DELETE /api/hotels/{hotelId})
   const deleteHotel = async (id) => {
     try {
       await axios.delete(`http://localhost:8080/api/hotels/${id}`);
@@ -72,7 +65,6 @@ const AdminHotel = () => {
     }
   };
 
-  // Düzenleme moduna geç; form alanlarını ilgili otel verisiyle doldur
   const editHotel = (hotel) => {
     setEditingHotel(hotel);
     setNewHotel({
@@ -83,18 +75,13 @@ const AdminHotel = () => {
       capacity: hotel.capacity,
       amenities: hotel.amenities,
       photo: hotel.photo,
-      featured: hotel.featured,
     });
   };
 
-  // Otel güncelle (PUT /api/hotels/{hotelId})
   const updateHotel = async () => {
     try {
-      // Orijinal veriler ile formdaki verileri birleştiriyoruz.
-      // Eğer formdaki alan boş ise, orijinal değeri koruyoruz.
       const updatedData = { ...editingHotel };
       Object.keys(newHotel).forEach((key) => {
-        // Burada, boş string veya undefined/null ise, orijinal değeri koruyoruz.
         if (newHotel[key] !== "" && newHotel[key] !== null && newHotel[key] !== undefined) {
           updatedData[key] = newHotel[key];
         }
@@ -118,7 +105,6 @@ const AdminHotel = () => {
         capacity: "",
         amenities: "",
         photo: "",
-        featured: false,
       });
     } catch (error) {
       console.error("Error updating hotel:", error);
@@ -129,7 +115,6 @@ const AdminHotel = () => {
     <div id="admin-hotel-container">
       <div id="admin-hotel-management-title">Hotel Management</div>
       
-      {/* Form Alanı */}
       <div id="admin-hotel-form">
         <input
           type="text"
@@ -180,15 +165,6 @@ const AdminHotel = () => {
           value={newHotel.photo}
           onChange={handleChange}
         />
-        <label>
-          Featured:
-          <input
-            type="checkbox"
-            name="featured"
-            checked={newHotel.featured}
-            onChange={handleChange}
-          />
-        </label>
         {editingHotel ? (
           <button id="admin-hotel-button" onClick={updateHotel}>
             Update Hotel
@@ -200,7 +176,6 @@ const AdminHotel = () => {
         )}
       </div>
 
-      {/* Otel Listesi */}
       <div id="admin-hotel-list">
         {hotels.map((hotel) => (
           <div className="admin-hotel-item" key={hotel.hotelId} id={hotel.hotelId}>

@@ -5,7 +5,8 @@ import com.example.hotelapp.repository.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -20,19 +21,20 @@ public class HotelController {
     public ResponseEntity<?> getAllHotels() {
         return ResponseEntity.ok(hotelRepository.findAll());
     }
+    
+    // Yeni endpoint: Amenity bilgilerini de içeren otel listesi
+    @GetMapping("/withAmenities")
+    public ResponseEntity<?> getAllHotelsWithAmenities() {
+        List<Map<String, Object>> hotelsWithAmenities = hotelRepository.findAllWithAmenities();
+        return ResponseEntity.ok(hotelsWithAmenities);
+    }
 
     @PostMapping
     public ResponseEntity<?> addHotel(@RequestBody Hotel hotel) {
-        // Eğer hotelId boşsa, UUID ile atayın.
         if (hotel.getHotelId() == null || hotel.getHotelId().isEmpty()) {
             hotel.setHotelId(UUID.randomUUID().toString());
         }
-        // Front-end JSON'unda "hotelName" gönderildiğini varsayalım.
-        // Modelde "name" alanı kullanılacak.
-        // Bu dönüşümü burada yapıyoruz:
-        if (hotel.getName() != null) {
-            hotel.setName(hotel.getName());
-        }
+        // "featured" alanı kaldırıldı
         Hotel savedHotel = hotelRepository.save(hotel);
         return ResponseEntity.ok(savedHotel);
     }
@@ -41,7 +43,6 @@ public class HotelController {
     public ResponseEntity<?> updateHotel(@PathVariable String hotelId, @RequestBody Hotel hotelDetails) {
         return hotelRepository.findById(hotelId)
             .map(hotel -> {
-                // Front-end'den gelen hotelName, modelde "name" alanına aktarılıyor.
                 hotel.setName(hotelDetails.getName());
                 hotel.setCity(hotelDetails.getCity());
                 hotel.setAddress(hotelDetails.getAddress());
@@ -49,8 +50,7 @@ public class HotelController {
                 hotel.setCapacity(hotelDetails.getCapacity());
                 hotel.setAmenities(hotelDetails.getAmenities());
                 hotel.setPhoto(hotelDetails.getPhoto());
-                hotel.setFeatured(hotelDetails.getFeatured());
-                // Diğer alanları da güncelleyebilirsiniz, örneğin:
+                // "featured" alanı kaldırıldı
                 hotel.setCountry(hotelDetails.getCountry());
                 hotel.setLatitude(hotelDetails.getLatitude());
                 hotel.setLongitude(hotelDetails.getLongitude());
