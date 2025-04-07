@@ -61,20 +61,41 @@
 
 .review__input {
    display: flex;
-   align-items: center;
-   justify-content: space-between;
    width: 100%;
-   padding: 0.5rem;
-   border-radius: 2rem;
    border: 1px solid var(--secondary-color);
-}
-
-.review__input input {
-   width: 100%;
-   padding: 0.5rem 0;
+   border-radius: 2rem;
+   overflow: hidden;
+   height: 40px;
+ }
+ 
+ .review__input input {
+   flex: 1;
    border: none;
    outline: none;
-}
+   padding: 0 1rem;
+   font-size: 0.9rem;
+   height: 100%;
+   border-radius: 0;
+ }
+ 
+ .review__input button {
+   border: none;
+   background-color: var(--secondary-color);
+   color: white;
+   padding: 0 1.2rem;
+   font-weight: 500;
+   cursor: pointer;
+   border-radius: 1.8rem!important; /* 👈 BU ÖNEMLİ: Butona da radius verdik */
+   transition: background-color 0.3s ease;
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+ }
+ 
+ .review__input button:hover {
+   background-color: var(--accent-color);
+ }
 
 .user__reviews {
    margin-top: 2.5rem;
@@ -150,6 +171,102 @@
  .rating__group span.selected-rating {
    color: var(--accent-color);
    font-weight: bold;
+ }
+
+ .tour__rooms {
+   border-radius: 0.5rem;
+   border: 1px solid var(--secondary-color);
+   padding: 1.5rem;
+   margin-top: 2rem;
+   background-color: #fff;
+ }
+ 
+ /* =========================
+    3) ROOM KART STİLLERİ
+    ========================= */
+ .room-card {
+   background-color: #fff;
+   border: 1px solid #ddd;
+   border-radius: 5px;
+   padding: 1rem;
+   text-align: center;
+   cursor: pointer;
+   transition: transform 0.3s ease, box-shadow 0.3s ease;
+   /* Varsayılan halde bullets olmasın diye, 
+      .room-card içindeki ul/li’ler yine list-style: none olacak */
+ }
+ 
+ .room-card:hover {
+   transform: scale(1.02);
+   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+ }
+ 
+ /* Tıklanarak seçilmiş kart */
+ .room-card.selected {
+   border: 1.5px solid var(--secondary-color);
+   transform: scale(1.03);
+   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+ }
+ 
+ /* Kart içindeki oda resmi */
+ .room-image {
+   width: 100%;
+   height: auto;
+   border-radius: 5px;
+   margin-bottom: 1rem;
+   object-fit: cover; /* Gerekirse resmi kırpmadan sığdırma */
+ }
+ 
+ /* Oda başlığı */
+ .room-title {
+   font-size: 1.1rem;
+   font-weight: 600;
+   margin-bottom: 0.5rem;
+ }
+ 
+ /* Açıklama + liste kapsayan div */
+ .room-desc-amenities {
+   margin-top: 0.5rem;
+ }
+ 
+ /* Açıklama metni */
+ .room-desc {
+   line-height: 1.5;
+   font-size: 0.95rem;
+   margin-bottom: 1rem;
+   color: var(--text-color);
+ }
+ 
+ /* =========================
+    4) BULLET’LARI KALDIRMA
+    ========================= */
+ .room__amenities,
+ .room__amenities li {
+   list-style: none !important;
+   margin: 0;
+   padding: 0;
+ }
+ 
+ /* Liste maddeleri ikona dayalı */
+ .room__amenities li {
+   margin-bottom: 0.5rem;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   font-size: 0.9rem;
+   color: var(--text-color);
+ }
+ 
+ .room__amenities li i {
+   color: var(--secondary-color);
+   font-size: 1.1rem;
+ }
+ 
+ /* RESPONSIVE */
+ @media (max-width: 768px) {
+   .room-card {
+     margin-bottom: 1rem;
+   }
  }
 
 /* =============== RESPONSIVE ================ */

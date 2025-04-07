@@ -1,0 +1,90 @@
+/* .tour__rooms zaten .tour__info ve .tour__reviews ile aynı border/padding'e sahip 
+   olabileceği için asıl kart stillerini burada tanımlıyoruz. */
+
+/* Oda kartı */
+.room-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+
+  /* Hover ve tıklama efektleri */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.room-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Seçili oda */
+.room-card.selected {
+  border: 2px solid var(--accent-color);
+  transform: scale(1.03);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Görsel */
+.room-image {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}
+
+/* Başlık */
+.room-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Açıklama + liste kapsayıcısı */
+.room-desc-amenities {
+  margin-top: 0.5rem;
+}
+
+/* Açıklama metni */
+.room-desc {
+  line-height: 1.5;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+/* Özellik listesi */
+.room__amenities {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.room__amenities li {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.room__amenities li i {
+  color: var(--secondary-color);
+  font-size: 1.1rem;
+}
+
+.room-price {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--secondary-color);
+}
+
+/* Responsive düzende alt alta gelsin */
+@media (max-width: 768px) {
+  .room-card {
+    margin-bottom: 1rem;
+  }
+}
