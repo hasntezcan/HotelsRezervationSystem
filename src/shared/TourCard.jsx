@@ -5,19 +5,17 @@ import './tour-card.css'
 import calculateAvgRating from '../utils/avgRating'
 
 const TourCard = ({ tour }) => {
-  const { _id, title, city, photo, price, featured, reviews, rating } = tour
+  const { hotelId, title, city, imgUrl, price, featured, reviews, rating } = tour
 
-  // eğer “reviews” array’inde ortalama hesaplıyorsan:
-  const { totalRating, avgRating } = calculateAvgRating(reviews || [])
-
-  // ya da local JSON’da rating alanı varsa (hotel.rating)
-  // const avgRating = rating
+  // Eğer reviews verisi varsa ortalama hesapla, yoksa rating göster
+  const { avgRating } = calculateAvgRating(reviews || [])
+  const displayRating = reviews && reviews.length > 0 ? avgRating : rating || 'Not rated'
 
   return (
     <div className='tour__card'>
       <Card>
         <div className="tour__img">
-          <img src={photo} alt="tour-img" />
+          <img src={imgUrl} alt="hotel-img" />
           {featured && <span>Featured</span>}
         </div>
 
@@ -28,18 +26,18 @@ const TourCard = ({ tour }) => {
             </span>
             <span className="tour__rating d-flex align-items-center gap-1">
               <i className='ri-star-fill'></i> 
-              {avgRating === 0 ? 'Not rated' : avgRating}
-              {reviews && reviews.length > 0 ? <span>({reviews.length})</span> : 'Not rated'}
+              {displayRating}
+              {reviews && reviews.length > 0 ? <span>({reviews.length})</span> : ''}
             </span>
           </div>
 
           <h5 className='tour__title'>
-            <Link to={`/hotels/${_id}`}>{title}</Link>
+            <Link to={`/hotels/${hotelId}`}>{title}</Link>
           </h5>
 
           <div className="card__bottom d-flex align-items-center justify-content-between mt-3">
-            <h5>${price} <span> /per person</span></h5>
-            <Link to={`/hotels/${_id}`}>
+            <h5>${price} <span>/per person</span></h5>
+            <Link to={`/hotels/${hotelId}`}>
               <button className='booking__btn'>Book Now</button>
             </Link>
           </div>
@@ -50,4 +48,3 @@ const TourCard = ({ tour }) => {
 }
 
 export default TourCard
-

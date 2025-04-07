@@ -27,36 +27,58 @@ const Hotels = () => {
     Tokyo: tokyoImg
   }
 
-  // Fetch cities from backend
+  // Fetch city list on first render
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/cities`)
-        const data = await response.json()
+        const res = await fetch(`${BASE_URL}/cities`)
+        const data = await res.json()
         setCities(data)
       } catch (error) {
-        console.error('Error fetching cities:', error)
+        console.error("Error fetching cities:", error)
       }
     }
-
     fetchCities()
   }, [])
 
-  // Fetch hotels when a city is selected
-  const handleCitySelect = async (city) => {
-    try {
-      setSelectedCity(city)
-      setPage(0)
+  // Fetch hotels + images when city is selected
+  useEffect(() => {
+    const fetchHotelsWithImages = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/city?name=${selectedCity}`);
+        const hotelsData = await res.json();
+
+        const hotelsWithImages = await Promise.all(
+          hotelsData.map(async (hotel) => {
+            try {
+              const imgRes = await fetch(`http://localhost:8080/api/hotel-images/${hotel.hotelId}/primary`);
+              const imgData = await imgRes.json();
+              return {
+                ...hotel,
+                imgUrl: imgData.imageUrl // ✅ Only from hotelimages table
+              };
+            } catch {
+              return {
+                ...hotel,
+                imgUrl: '' // fallback in case image not found
+              };
+            }
+          })
+        );
+
+        setHotels(hotelsWithImages);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching hotels or images:", err);
+        setLoading(false);
+      }
+    };
+
+    if (selectedCity) {
       setLoading(true)
-      const response = await fetch(`${BASE_URL}/city?name=${city}`)
-      const data = await response.json()
-      setHotels(data)
-      setLoading(false)
-    } catch (error) {
-      console.error('Error fetching hotels:', error)
-      setLoading(false)
+      fetchHotelsWithImages()
     }
-  }
+  }, [selectedCity])
 
   const toursPerPage = 8
   const start = page * toursPerPage
@@ -95,7 +117,10 @@ const Hotels = () => {
                     <div
                       className="city-card"
                       key={city}
-                      onClick={() => handleCitySelect(city)}
+                      onClick={() => {
+                        setSelectedCity(city)
+                        setPage(0)
+                      }}
                     >
                       <div className="city-img">
                         <img src={cityImages[city] || londonImg} alt={city} />
@@ -123,13 +148,12 @@ const Hotels = () => {
                           tour={{
                             ...tour,
                             title: tour.name,
-                            imgUrl: tour.photo,
+                            imgUrl: tour.imgUrl,
                             price: tour.pricePerNight,
                             location: tour.city,
                             rating: tour.starRating || 'Not rated'
                           }}
                         />
-
                       </Col>
                     ))}
 
