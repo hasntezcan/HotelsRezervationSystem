@@ -80,13 +80,22 @@ const AdminHotel = () => {
 
   const updateHotel = async () => {
     try {
-      const updatedData = { ...editingHotel };
+      // Güncellenmeyecek alanları (örneğin, createdAt ve hotelId) payload'dan çıkarıyoruz.
+      const { hotelId, createdAt, ...editingData } = editingHotel;
+  
+      // Form verilerindeki alanları da dahil ediyoruz.
+      // Eğer formdan gelen alan undefined veya null ise, bunları payload'a eklemiyoruz.
+      const updatedData = { ...editingData };
       Object.keys(newHotel).forEach((key) => {
-        if (newHotel[key] !== "" && newHotel[key] !== null && newHotel[key] !== undefined) {
+        // Değer null veya undefined ise, boş string kullanarak controlled input hatasını önleyebiliriz.
+        if (newHotel[key] !== undefined && newHotel[key] !== null) {
           updatedData[key] = newHotel[key];
+        } else {
+          updatedData[key] = ""; // Veya ihtiyaca göre, o alanı tamamen eklememeyi tercih edebilirsiniz.
         }
       });
   
+      // Güncelleme isteği yaparken id'yi URL'den gönderiyoruz.
       const response = await axios.put(
         `http://localhost:8080/api/hotels/${editingHotel.hotelId}`,
         updatedData
@@ -110,6 +119,7 @@ const AdminHotel = () => {
       console.error("Error updating hotel:", error);
     }
   };
+  
 
   return (
     <div id="admin-hotel-container">

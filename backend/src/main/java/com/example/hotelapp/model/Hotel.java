@@ -51,12 +51,12 @@ public class Hotel {
 
     private Integer capacity;
 
-    // Amenities JSON dizisi olarak gönderilebilir, burada basitlik açısından string tutuluyor
-    @Column(columnDefinition = "TEXT")
+    // "amenities" artık veritabanında saklanmayacağından @Transient işareti ekliyoruz.
+    @Transient
     private String amenities;
 
     private String photo;
-    private Boolean featured;
+    // "featured" alanı kaldırılmıştır
 
     public Hotel() {
         this.createdAt = LocalDateTime.now();
@@ -180,7 +180,6 @@ public class Hotel {
         return createdAt;
     }
 
-    // createdAt'ı setter ile değiştirmek genelde önerilmez fakat ihtiyaca göre ekleyebilirsiniz.
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -215,13 +214,5 @@ public class Hotel {
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }
-
-    public Boolean getFeatured() {
-        return featured;
-    }
-
-    public void setFeatured(Boolean featured) {
-        this.featured = featured;
     }
 }
