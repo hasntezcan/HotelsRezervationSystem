@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 07 Nis 2025, 18:09:19
+-- Üretim Zamanı: 08 Nis 2025, 00:16:57
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -119,7 +119,7 @@ INSERT INTO `hotelamenities` (`amenity_id`, `name`, `icon_url`) VALUES
 ('a40', 'VIP Services', ''),
 ('a41', 'Exclusive Wine Cellar', ''),
 ('a42', 'Designer Suites', ''),
-('a5', 'Spa', ''),
+('a5', 'sezo', ''),
 ('a6', 'Bar', ''),
 ('a7', 'City View', ''),
 ('a8', 'Free Parking', ''),
@@ -141,7 +141,6 @@ CREATE TABLE `hotelamenityjunction` (
 --
 
 INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
-('01', 'a1'),
 ('01', 'a2'),
 ('01', 'a3'),
 ('01', 'a4'),
@@ -151,7 +150,38 @@ INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
 ('02', 'a8'),
 ('03', 'a1'),
 ('03', 'a10'),
-('03', 'a9');
+('03', 'a9'),
+('04', 'a11'),
+('04', 'a12'),
+('04', 'a13'),
+('05', 'a14'),
+('05', 'a15'),
+('05', 'a18'),
+('06', 'a16'),
+('06', 'a17'),
+('06', 'a19'),
+('07', 'a14'),
+('07', 'a21'),
+('08', 'a20'),
+('08', 'a22'),
+('09', 'a24'),
+('09', 'a27'),
+('10', 'a25'),
+('10', 'a26'),
+('11', 'a28'),
+('11', 'a29'),
+('12', 'a31'),
+('12', 'a32'),
+('12', 'a33'),
+('13', 'a34'),
+('13', 'a35'),
+('14', 'a36'),
+('14', 'a37'),
+('14', 'a38'),
+('15', 'a39'),
+('16', 'a40'),
+('16', 'a41'),
+('16', 'a42');
 
 -- --------------------------------------------------------
 
@@ -210,34 +240,31 @@ CREATE TABLE `hotels` (
   `cancellation_policy` text DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `amenities` varchar(255) DEFAULT NULL,
   `capacity` int(11) DEFAULT NULL,
   `photo` varchar(255) DEFAULT NULL,
-  `price_per_night` double DEFAULT NULL,
-  `featured` bit(1) DEFAULT NULL
+  `price_per_night` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Tablo döküm verisi `hotels`
 --
 
-INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `country`, `latitude`, `longitude`, `description`, `star_rating`, `check_in_time`, `check_out_time`, `cancellation_policy`, `status`, `created_at`, `amenities`, `capacity`, `photo`, `price_per_night`, `featured`) VALUES
-('01', 1, 'ANANANANNANA', '123 Oxford Street, London', 'bacın', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style with spacious rooms and excellent city views.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', 'Free Wi-Fi, Breakfast Included, Swimming Pool, Gym', NULL, NULL, NULL, NULL),
-('02', 1, 'Royal Palace London', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty at this prestigious address, with luxury amenities and impeccable service.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', 'Free Parking, City View, Bar, Spa', NULL, NULL, NULL, NULL),
-('03', 1, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views and enjoy relaxing riverside walks in central London.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', 'Free Wi-Fi, Restaurant, Riverside View', NULL, NULL, NULL, NULL),
-('04', 1, 'Skyline Tower London', '321 Skyline Avenue, London', 'London', 'United Kingdom', 51.515, -0.141, 'Reach new heights at Skyline Tower with luxury suites and breathtaking city panoramas.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL, NULL, NULL),
-('05', 1, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bali', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise with beachfront access and unforgettable sunsets every day.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL, NULL, NULL),
-('06', 1, 'Tropical Paradise Bali', '789 Island Street, Bali', 'Bali', 'Indonesia', -8.414, 115.195, 'Dive into luxury with private pools and ultimate relaxation in the heart of Bali.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL, NULL, NULL),
-('07', 1, 'Golden Sands Resort', '999 Ocean Drive, Bali', 'Bali', 'Indonesia', -8.42, 115.2, 'Relax on golden sands and sip cocktails while enjoying Bali’s breathtaking sunsets.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL, NULL, NULL),
-('08', 1, 'Island Escape Hotel', '222 Paradise Lane, Bali', 'Bali', 'Indonesia', -8.43, 115.21, 'A secluded retreat offering private beaches and luxury amenities for an unforgettable escape.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL, NULL, NULL),
-('09', 1, 'Tokyo Sky Hotel', '789 Shibuya, Tokyo', 'Tokyo', 'Japan', 35.658, 139.7016, 'Enjoy panoramic city views and premium services at the heart of bustling Tokyo.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL, NULL, NULL),
-('10', 1, 'Shinjuku Business Hotel', '45 Business Street, Tokyo', 'Tokyo', 'Japan', 35.6938, 139.7034, 'Perfect for business travelers with fast Wi-Fi and professional meeting rooms.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL, NULL, NULL),
-('11', 1, 'Cherry Blossom Resort', '22 Sakura Avenue, Tokyo', 'Tokyo', 'Japan', 35.6895, 139.6917, 'Experience traditional Japanese hospitality surrounded by beautiful cherry blossoms.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL, NULL, NULL),
-('12', 1, 'Luxury Tower Tokyo', '567 Ginza Road, Tokyo', 'Tokyo', 'Japan', 35.6717, 139.765, 'Enjoy penthouse suites and gourmet dining in Tokyo’s upscale Ginza district.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL, NULL, NULL),
-('13', 1, 'Eiffel Grand Hotel', '123 Champs Elysees, Paris', 'Paris', 'France', 48.8566, 2.3522, 'Stay steps away from the Eiffel Tower with luxurious accommodations and fine dining.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL, NULL, NULL),
-('14', 1, 'Louvre Palace Hotel', '89 Louvre Street, Paris', 'Paris', 'France', 48.8606, 2.3376, 'Discover art and culture with premium access to the Louvre and luxury services.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL, NULL, NULL),
-('15', 1, 'Seine River Hotel', '456 Riverfront, Paris', 'Paris', 'France', 48.857, 2.354, 'Enjoy riverside dining and scenic boat rides in the heart of Paris.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-07 13:25:25', NULL, NULL, NULL, NULL, NULL),
-('16', 1, 'Parisian Royal Suites', '777 Palace Road, Paris', 'Paris', 'France', 48.8582, 2.35, 'Royal treatment with exclusive wine cellar and designer suites in Paris.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-07 13:25:25', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `country`, `latitude`, `longitude`, `description`, `star_rating`, `check_in_time`, `check_out_time`, `cancellation_policy`, `status`, `created_at`, `capacity`, `photo`, `price_per_night`) VALUES
+('02', 1, 'Royal Palace London', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty at this prestigious address, with luxury amenities and impeccable service.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('03', 1, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views and enjoy relaxing riverside walks in central London.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('04', 1, 'Skyline Tower London', '321 Skyline Avenue, London', 'London', 'United Kingdom', 51.515, -0.141, 'Reach new heights at Skyline Tower with luxury suites and breathtaking city panoramas.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('05', 1, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bali', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise with beachfront access and unforgettable sunsets every day.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('06', 1, 'Tropical Paradise Bali', '789 Island Street, Bali', 'Bali', 'Indonesia', -8.414, 115.195, 'Dive into luxury with private pools and ultimate relaxation in the heart of Bali.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('07', 1, 'Golden Sands Resort', '999 Ocean Drive, Bali', 'Bali', 'Indonesia', -8.42, 115.2, 'Relax on golden sands and sip cocktails while enjoying Bali’s breathtaking sunsets.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('09', 1, 'Tokyo Sky Hotel', '789 Shibuya, Tokyo', 'Tokyo', 'Japan', 35.658, 139.7016, 'Enjoy panoramic city views and premium services at the heart of bustling Tokyo.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('10', 1, 'Shinjuku Business Hotel', '45 Business Street, Tokyo', 'Tokyo', 'Japan', 35.6938, 139.7034, 'Perfect for business travelers with fast Wi-Fi and professional meeting rooms.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('11', 1, 'Cherry Blossom Resort', '22 Sakura Avenue, Tokyo', 'Tokyo', 'Japan', 35.6895, 139.6917, 'Experience traditional Japanese hospitality surrounded by beautiful cherry blossoms.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('12', 1, 'Luxury Tower Tokyo', '567 Ginza Road, Tokyo', 'Tokyo', 'Japan', 35.6717, 139.765, 'Enjoy penthouse suites and gourmet dining in Tokyo’s upscale Ginza district.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('13', 1, 'Eiffel Grand Hotel', '123 Champs Elysees, Paris', 'Paris', 'France', 48.8566, 2.3522, 'Stay steps away from the Eiffel Tower with luxurious accommodations and fine dining.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('14', 1, 'Louvre Palace Hotel', '89 Louvre Street, Paris', 'Paris', 'France', 48.8606, 2.3376, 'Discover art and culture with premium access to the Louvre and luxury services.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+('15', 1, 'Seine River Hotel', '456 Riverfront, Paris', 'Paris', 'France', 48.857, 2.354, 'Enjoy riverside dining and scenic boat rides in the heart of Paris.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-07 13:25:25', NULL, NULL, NULL),
+('16', 1, 'Parisian Royal Suites', '777 Palace Road, Paris', 'Paris', 'France', 48.8582, 2.35, 'Royal treatment with exclusive wine cellar and designer suites in Paris.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-07 13:25:25', NULL, NULL, NULL),
+('3ac6bd10-972c-4c82-b74c-c3141f59a585', NULL, 'denemeaaaaaa', 'deneme', 'deneme', NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, '2025-04-07 19:13:12', 50, '', 50);
 
 -- --------------------------------------------------------
 
