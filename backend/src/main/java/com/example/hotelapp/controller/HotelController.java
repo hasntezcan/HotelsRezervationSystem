@@ -20,6 +20,17 @@ public class HotelController {
     public ResponseEntity<?> getAllHotels() {
         return ResponseEntity.ok(hotelRepository.findAll());
     }
+    
+    @GetMapping("/cities")
+    public ResponseEntity<?> getAllCitiesWithHotels() {
+        return ResponseEntity.ok(hotelRepository.findDistinctCityByStatus());
+    }
+    
+    @GetMapping("/city")
+    public ResponseEntity<?> getHotelsByCity(@RequestParam String name) {
+        return ResponseEntity.ok(hotelRepository.findByCityIgnoreCaseAndStatus(name, "approved"));
+    }
+    
 
     @PostMapping
     public ResponseEntity<?> addHotel(@RequestBody Hotel hotel) {
