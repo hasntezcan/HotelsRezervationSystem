@@ -2,6 +2,7 @@ package com.example.hotelapp.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "hotels")
@@ -55,7 +56,9 @@ public class Hotel {
     @Transient // Artık veritabanında saklanmayacak
     private String amenities;
 
-    private String photo;
+    //private String photo;
+    private Boolean featured;
+    //private String photo;
 
     public Hotel() {
         this.createdAt = LocalDateTime.now();
@@ -206,11 +209,31 @@ public class Hotel {
         this.amenities = amenities;
     }
 
-    public String getPhoto() {
+    /*public String getPhoto() {
         return photo;
     }
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }*/
+
+    public Boolean getFeatured() {
+        return featured;
     }
+
+    public void setFeatured(Boolean featured) {
+        this.featured = featured;
+    }
+
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<HotelImage> images;
+    
+    public List<HotelImage> getImages() {
+        return images;
+    }
+    
+    public void setImages(List<HotelImage> images) {
+        this.images = images;
+    }
+    
 }

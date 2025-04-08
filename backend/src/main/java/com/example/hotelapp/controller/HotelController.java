@@ -1,10 +1,13 @@
 package com.example.hotelapp.controller;
 
+import com.example.hotelapp.dto.HotelWithImageDTO;
 import com.example.hotelapp.model.Hotel;
 import com.example.hotelapp.repository.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +23,18 @@ public class HotelController {
     public ResponseEntity<?> getAllHotels() {
         return ResponseEntity.ok(hotelRepository.findAll());
     }
+    
+    @GetMapping("/cities")
+    public ResponseEntity<?> getAllCitiesWithHotels() {
+        return ResponseEntity.ok(hotelRepository.findDistinctCityByStatus());
+    }
+    
+    @GetMapping("/city")
+    public ResponseEntity<?> getHotelsByCity(@RequestParam String name) {
+        List<HotelWithImageDTO> dtoList = hotelRepository.findHotelsWithPrimaryImageByCity(name);
+        return ResponseEntity.ok(dtoList);
+    }
+
     
     // Endpoint: Otellerin amenity bilgilerini de getirir.
     @GetMapping("/withAmenities")
@@ -46,7 +61,11 @@ public class HotelController {
                 hotel.setPricePerNight(hotelDetails.getPricePerNight());
                 hotel.setCapacity(hotelDetails.getCapacity());
                 hotel.setAmenities(hotelDetails.getAmenities());
-                hotel.setPhoto(hotelDetails.getPhoto());
+                //hotel.setPhoto(hotelDetails.getPhoto());
+                hotel.setFeatured(hotelDetails.getFeatured());
+                // Diğer alanları da güncelleyebilirsiniz, örneğin:
+                hotel.setCountry(hotelDetails.getCountry());
+                //hotel.setPhoto(hotelDetails.getPhoto());
                 hotel.setLatitude(hotelDetails.getLatitude());
                 hotel.setLongitude(hotelDetails.getLongitude());
                 hotel.setDescription(hotelDetails.getDescription());

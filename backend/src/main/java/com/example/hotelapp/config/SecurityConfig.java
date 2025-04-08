@@ -25,7 +25,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/auth/**", "/api/contact/**", "/api/hotels/**").permitAll() // Allow public access
+                .requestMatchers("/api/auth/**", "/api/contact/**", "/api/hotels/**", "/api/hotel-images").permitAll() // Allow public access
                 .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> httpBasic.disable())
