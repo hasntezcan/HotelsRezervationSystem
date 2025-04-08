@@ -1,15 +1,19 @@
+// AuthController.java
 package com.example.hotelapp.controller;
 
 import com.example.hotelapp.model.LoginRequest;
+import com.example.hotelapp.model.Manager;
 import com.example.hotelapp.model.User;
+import com.example.hotelapp.repository.ManagerRepository;
 import com.example.hotelapp.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -21,6 +25,9 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private ManagerRepository managerRepository;
 
     // Register endpoint
     @PostMapping("/register")
@@ -57,8 +64,7 @@ public class AuthController {
             String dbPassword = user.getPassword();
             
             if (!incomingPassword.equals(dbPassword)) {
-                String debugMessage = "Password is incorrect.";
-                return ResponseEntity.status(401).body(debugMessage);
+                return ResponseEntity.status(401).body("Password is incorrect.");
             }
             return ResponseEntity.ok(user);
         } catch (Exception e) {
@@ -103,21 +109,24 @@ public class AuthController {
         return ResponseEntity.ok(adminOpt.get());
     }
     
-
-// Manager profilini döndüren GET endpoint
-@GetMapping("/profile/manager")
-public ResponseEntity<?> getManagerProfile() {
-    Optional<User> managerOpt = userRepository.findAll()
-            .stream()
-            .filter(user -> "manager".equalsIgnoreCase(user.getRole()))
-            .findFirst();
-    if (managerOpt.isEmpty()) {
-        return ResponseEntity.status(404).body("Manager user not found.");
+    // Manager profilini döndüren GET endpoint
+    @GetMapping("/profile/manager")
+public ResponseEntity<?> getManagerProfile(@RequestParam Long userId) {
+    Optional<User> optionalUser = userRepository.findById(userId);
+    if (optionalUser.isEmpty() || !"manager".equalsIgnoreCase(optionalUser.get().getRole())) {
+        return ResponseEntity.status(404).body("Manager not found.");
     }
-    return ResponseEntity.ok(managerOpt.get());
+    User managerUser = optionalUser.get();
+    Optional<Manager> managerOpt = managerRepository.findByUserId(managerUser.getUserId());
+    if (managerOpt.isEmpty()) {
+        return ResponseEntity.status(404).body("Manager record not found.");
+    }
+    Manager manager = managerOpt.get();
+    Map<String, Object> response = new HashMap<>();
+    response.put("user", managerUser);
+    response.put("managerId", manager.getManagerId());
+    response.put("hotelId", manager.getHotelId());
+    return ResponseEntity.ok(response);
 }
-
-
-
 
 }
