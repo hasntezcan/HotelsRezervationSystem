@@ -7,6 +7,7 @@ const AdminHotel = () => {
   const [newHotel, setNewHotel] = useState({
     name: "",
     city: "",
+    country: "", // Yeni eklenen country alanı
     address: "",
     pricePerNight: "",
     capacity: "",
@@ -31,9 +32,9 @@ const AdminHotel = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setNewHotel({ 
-      ...newHotel, 
-      [name]: type === "checkbox" ? checked : value 
+    setNewHotel({
+      ...newHotel,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -45,6 +46,7 @@ const AdminHotel = () => {
       setNewHotel({
         name: "",
         city: "",
+        country: "", // Reset için boşaltıldı
         address: "",
         pricePerNight: "",
         capacity: "",
@@ -70,6 +72,7 @@ const AdminHotel = () => {
     setNewHotel({
       name: hotel.name,
       city: hotel.city,
+      country: hotel.country, // Düzenleme modunda country alanını da dolduruyoruz.
       address: hotel.address,
       pricePerNight: hotel.pricePerNight,
       capacity: hotel.capacity,
@@ -82,20 +85,18 @@ const AdminHotel = () => {
     try {
       // Güncellenmeyecek alanları (örneğin, createdAt ve hotelId) payload'dan çıkarıyoruz.
       const { hotelId, createdAt, ...editingData } = editingHotel;
-  
+
       // Form verilerindeki alanları da dahil ediyoruz.
       // Eğer formdan gelen alan undefined veya null ise, bunları payload'a eklemiyoruz.
       const updatedData = { ...editingData };
       Object.keys(newHotel).forEach((key) => {
-        // Değer null veya undefined ise, boş string kullanarak controlled input hatasını önleyebiliriz.
         if (newHotel[key] !== undefined && newHotel[key] !== null) {
           updatedData[key] = newHotel[key];
         } else {
-          updatedData[key] = ""; // Veya ihtiyaca göre, o alanı tamamen eklememeyi tercih edebilirsiniz.
+          updatedData[key] = "";
         }
       });
-  
-      // Güncelleme isteği yaparken id'yi URL'den gönderiyoruz.
+
       const response = await axios.put(
         `http://localhost:8080/api/hotels/${editingHotel.hotelId}`,
         updatedData
@@ -109,6 +110,7 @@ const AdminHotel = () => {
       setNewHotel({
         name: "",
         city: "",
+        country: "", // Reset country input
         address: "",
         pricePerNight: "",
         capacity: "",
@@ -119,12 +121,11 @@ const AdminHotel = () => {
       console.error("Error updating hotel:", error);
     }
   };
-  
 
   return (
     <div id="admin-hotel-container">
       <div id="admin-hotel-management-title">Hotel Management</div>
-      
+
       <div id="admin-hotel-form">
         <input
           type="text"
@@ -138,6 +139,13 @@ const AdminHotel = () => {
           name="city"
           placeholder="City"
           value={newHotel.city}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="country"
+          placeholder="Country"
+          value={newHotel.country}
           onChange={handleChange}
         />
         <input
@@ -190,15 +198,11 @@ const AdminHotel = () => {
         {hotels.map((hotel) => (
           <div className="admin-hotel-item" key={hotel.hotelId} id={hotel.hotelId}>
             <div className="admin-hotel-title">{hotel.name}</div>
-            <p>
-              {hotel.city} - {hotel.address}
-            </p>
+            <p>{hotel.city}, {hotel.country} - {hotel.address}</p>
             <p>
               Price: ${hotel.pricePerNight} | Capacity: {hotel.capacity}
             </p>
-            <p>
-              Amenities: {hotel.amenities}
-            </p>
+            <p>Amenities: {hotel.amenities}</p>
             <button className="admin-hotel-edit-btn" onClick={() => editHotel(hotel)}>
               Edit
             </button>
