@@ -57,7 +57,7 @@ public class Hotel {
     private String amenities;
 
     //private String photo;
-    private Boolean featured;
+    //private Boolean featured;
     //private String photo;
 
     public Hotel() {
@@ -217,13 +217,23 @@ public class Hotel {
         this.photo = photo;
     }*/
 
-    public Boolean getFeatured() {
+    @Column(name = "featured")
+    private boolean featured;
+    public boolean isFeatured() {
+        return featured;
+    }
+    
+    public void setFeatured(boolean featured) {
+        this.featured = featured;
+    }
+
+    /*public Boolean getFeatured() {
         return featured;
     }
 
     public void setFeatured(Boolean featured) {
         this.featured = featured;
-    }
+    }*/
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<HotelImage> images;
