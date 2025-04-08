@@ -8,8 +8,9 @@ import java.time.LocalDateTime;
 public class Hotel {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment için
     @Column(name = "hotel_id", nullable = false)
-    private String hotelId;
+    private Long hotelId;  // Türü String'den Long'a değiştirildi.
 
     @Column(name = "manager_id")
     private Long managerId;
@@ -51,24 +52,21 @@ public class Hotel {
 
     private Integer capacity;
 
-    // "amenities" artık veritabanında saklanmayacağından @Transient işareti ekliyoruz.
-    @Transient
+    @Transient // Artık veritabanında saklanmayacak
     private String amenities;
 
     private String photo;
-    // "featured" alanı kaldırılmıştır
 
     public Hotel() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
-
-    public String getHotelId() {
+    // Getter ve Setter'lar
+    public Long getHotelId() {
         return hotelId;
     }
 
-    public void setHotelId(String hotelId) {
+    public void setHotelId(Long hotelId) {
         this.hotelId = hotelId;
     }
 

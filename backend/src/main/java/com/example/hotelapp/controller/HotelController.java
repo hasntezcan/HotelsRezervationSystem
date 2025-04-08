@@ -31,9 +31,7 @@ public class HotelController {
 
     @PostMapping
     public ResponseEntity<?> addHotel(@RequestBody Hotel hotel) {
-        if (hotel.getHotelId() == null || hotel.getHotelId().isEmpty()) {
-            hotel.setHotelId(UUID.randomUUID().toString());
-        }
+        
         // "featured" alanı kaldırıldı
         Hotel savedHotel = hotelRepository.save(hotel);
         return ResponseEntity.ok(savedHotel);
