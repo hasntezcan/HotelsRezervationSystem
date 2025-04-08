@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/hotels")
@@ -22,7 +21,7 @@ public class HotelController {
         return ResponseEntity.ok(hotelRepository.findAll());
     }
     
-    // Yeni endpoint: Amenity bilgilerini de içeren otel listesi
+    // Endpoint: Otellerin amenity bilgilerini de getirir.
     @GetMapping("/withAmenities")
     public ResponseEntity<?> getAllHotelsWithAmenities() {
         List<Map<String, Object>> hotelsWithAmenities = hotelRepository.findAllWithAmenities();
@@ -31,25 +30,23 @@ public class HotelController {
 
     @PostMapping
     public ResponseEntity<?> addHotel(@RequestBody Hotel hotel) {
-        
-        // "featured" alanı kaldırıldı
+        // "featured" alanı kaldırıldı.
         Hotel savedHotel = hotelRepository.save(hotel);
         return ResponseEntity.ok(savedHotel);
     }
 
     @PutMapping("/{hotelId}")
-    public ResponseEntity<?> updateHotel(@PathVariable String hotelId, @RequestBody Hotel hotelDetails) {
+    public ResponseEntity<?> updateHotel(@PathVariable Long hotelId, @RequestBody Hotel hotelDetails) {
         return hotelRepository.findById(hotelId)
             .map(hotel -> {
                 hotel.setName(hotelDetails.getName());
                 hotel.setCity(hotelDetails.getCity());
+                hotel.setCountry(hotelDetails.getCountry());
                 hotel.setAddress(hotelDetails.getAddress());
                 hotel.setPricePerNight(hotelDetails.getPricePerNight());
                 hotel.setCapacity(hotelDetails.getCapacity());
                 hotel.setAmenities(hotelDetails.getAmenities());
                 hotel.setPhoto(hotelDetails.getPhoto());
-                // "featured" alanı kaldırıldı
-                hotel.setCountry(hotelDetails.getCountry());
                 hotel.setLatitude(hotelDetails.getLatitude());
                 hotel.setLongitude(hotelDetails.getLongitude());
                 hotel.setDescription(hotelDetails.getDescription());
@@ -65,7 +62,7 @@ public class HotelController {
     }
 
     @DeleteMapping("/{hotelId}")
-    public ResponseEntity<?> deleteHotel(@PathVariable String hotelId) {
+    public ResponseEntity<?> deleteHotel(@PathVariable Long hotelId) {
         if (hotelRepository.existsById(hotelId)) {
             hotelRepository.deleteById(hotelId);
             return ResponseEntity.ok("Hotel deleted successfully.");
