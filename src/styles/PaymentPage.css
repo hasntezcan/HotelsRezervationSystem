@@ -68,46 +68,47 @@ label {
 }
 
 
+
 /************************************************
   PAYMENTNAME COMPONENT
 ************************************************/
-.PaymentName__container {
-  /* You can add "payment-box" if you want a uniform style */
-}
-
-.PaymentName__title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.PaymentName__note {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 15px;
-}
-
 .PaymentName__form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  gap: 4px;
 }
 
-.PaymentName__input {
-  max-width: 400px; /* Optional width limit */
-}
-
-.PaymentName__checkbox-group {
-  margin-top: 10px;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
+/* Label stilleri */
+.PaymentName__form-group label {
+  font-weight: 600;
   font-size: 14px;
   color: #333;
 }
 
-.PaymentName__checkbox {
-  margin-top: 3px;
+/* Asıl metin kutusu (First Name, Last Name vb.) */
+.PaymentName__input {
+  display: block;
+  width: 100%;
+  max-width: 400px;       /* Genişlik kısıtlaması */
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #333;
+  background-color: #fff;
+  border: 2px solid #2a9d8f;  /* Bordür rengi */
+  border-radius: 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Odaklanıldığında (focus) efekt */
+.PaymentName__input:focus {
+  border-color: #21867a;
+  box-shadow: 0 0 4px rgba(33, 134, 122, 0.4);
+}
+
+.PaymentName__input::placeholder {
+  color: #999;
+  opacity: 1;
 }
 
 /************************************************
@@ -193,7 +194,7 @@ label {
   PAYMENTCARD COMPONENT
 ************************************************/
 .PaymentCard__container {
-  /* Uniform box style if desired */
+
 }
 
 /* Heading (Step 3: Payment Details) */
@@ -201,6 +202,7 @@ label {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 15px;
+  color: #333; 
 }
 
 .PaymentCard__content {
@@ -222,58 +224,75 @@ label {
   padding: 15px;
   border: 1px solid #2a9d8f; /* CHANGED from #ddd */
   border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Hafif gölge eklendi */
 }
 
 /* Form Groups */
 .PaymentCard__form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
+  gap: 4px; /* label ile input arasına ek boşluk */
 }
 
+
 .PaymentCard__label {
-  font-weight: 500;
-  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+.PaymentCard__input {
+  width: 100%;
+  max-width: 380px;  /* Dilediğiniz gibi ayarlayabilirsiniz */
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #333;
+  background-color: #fff;
+  border: 2px solid #2a9d8f;
+  border-radius: 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 /* Credit Card Icon */
 .PaymentCard__input-wrapper--icon {
   position: relative;
+  display: inline-block;
+  width: 100%;
 }
 
 .PaymentCard__icon {
   position: absolute;
   top: 50%;
-  right: 10px;
-  left: auto;
+  left: 12px;         /* Sola yerleştirmek için değiştirdik */
   transform: translateY(-50%);
-  color: #aaa;
+  color: #999;
   font-size: 20px;
-  z-index: 2;
   pointer-events: none;
 }
 
 .PaymentCard__input--card {
-  position: relative; 
-  z-index: 1;    
   padding-left: 40px; 
-  padding-right: 40px; 
-  background-color: #fff; 
 }
 
+.PaymentCard__input:focus {
+  border-color: #21867a;
+  box-shadow: 0 0 4px rgba(33, 134, 122, 0.4);
+}
 .PaymentCard__expiry-container {
   display: flex;
   gap: 10px;
 }
 
-.PaymentCard__select {
-  width: auto; 
-  min-width: 60px;
-}
-
+.PaymentCard__select, 
 .PaymentCard__cvc {
-  width: 80px;
-  max-width: 80px; 
+  width: auto;
+  min-width: 60px; 
+  max-width: 88px;        /* Biraz daraltmak isterseniz */
+  padding: 10px;
+  border: 2px solid #2a9d8f;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .PaymentCard__accepted-title {
@@ -292,6 +311,11 @@ label {
 .PaymentCard__logo {
   width: 50px;
   height: auto;
+}
+.PaymentCard__select:focus,
+.PaymentCard__cvc:focus {
+  border-color: #21867a;
+  box-shadow: 0 0 4px rgba(33, 134, 122, 0.4);
 }
 
 /************************************************
@@ -359,3 +383,52 @@ label {
   background-color: #21867b; /* Darker shade for hover */
 }
 
+/************************************************
+  RESPONSIVE ADJUSTMENTS FOR MOBILE (max-width: 768px)
+************************************************/
+@media (max-width: 768px) {
+  /* Ana container: Mobilde tek sütun düzen */
+  .payment-layout {
+    flex-direction: column;    /* Yatay düzen yerine dikey düzen */
+    gap: 10px;                 /* Elemanlar arasındaki boşluk mobilde azaltıldı */
+    padding: 10px;             /* Kenar boşlukları daraltıldı */
+  }
+
+  /* Form içerik alanı: Tam genişlik */
+  .payment-content {
+    width: 100%;
+    margin: 0 auto;            /* Ortalanmış görünüm */
+  }
+
+  /* Ödeme özeti (sidebar): Artık sticky değil, en alta yerleşir */
+  .payment-sidebar {
+    position: static;          /* Sticky kaldırıldı */
+    width: 100%;
+    margin-top: 20px;          /* Form ile arasında boşluk bırakıldı */
+    top: auto;
+  }
+
+  /* Input elemanları: Mobilde container genişliğine uyum sağlar */
+  .PaymentName__input,
+  .PaymentCard__input {
+    max-width: 400px;          /* Varsayılan genişlik korunur */
+    width: 100%;               /* Container genişliğine uyum sağlar */
+  }
+
+  /* Ödeme ile alakalı uyarı varsa, mobilde gizlenir (örneğin: .odeme-uyarisi) */
+  .odeme-uyarisi {
+    display: none;
+  }
+}
+
+/************************************************
+  EXTRA RESPONSIVE ADJUSTMENTS FOR VERY SMALL SCREENS (max-width: 480px)
+************************************************/
+@media (max-width: 480px) {
+  /* İhtiyaca göre burada ekstra düzenlemeler yapabilirsiniz.
+     Örnek: inputların maksimum genişliğini yüzde 100 olarak ayarlamak */
+  .PaymentName__input,
+  .PaymentCard__input {
+    max-width: 100%;
+  }
+}
