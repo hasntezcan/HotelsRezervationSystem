@@ -23,6 +23,13 @@ public class HotelController {
     public ResponseEntity<?> getAllHotels() {
         return ResponseEntity.ok(hotelRepository.findAll());
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchHotels(@RequestParam("query") String query) {
+        List<HotelWithImageDTO> results = hotelRepository.searchHotelsByNameOrCity(query);
+        return ResponseEntity.ok(results);
+    }
+
     
     @GetMapping("/cities")
     public ResponseEntity<?> getAllCitiesWithHotels() {
