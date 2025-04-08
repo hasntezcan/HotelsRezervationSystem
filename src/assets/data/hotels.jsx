@@ -15,7 +15,7 @@ import hotelImg14 from "/src/assets/images/hotel-img14.jpg";
 
 const hotels = [
   {
-    _id: "01",
+    _id: "1",
     title: "The Grand London Hotel",
     city: "London",
     address: "123 Oxford Street, London",
@@ -29,7 +29,7 @@ const hotels = [
     featured: true,
   },
   {
-    _id: "02",
+    _id: "2",
     title: "Royal Palace London",
     city: "London",
     address: "10 Downing Street, London",
@@ -43,7 +43,7 @@ const hotels = [
     featured: true,
   },
   {
-    _id: "03",
+    _id: "3",
     title: "London River Hotel",
     city: "London",
     address: "567 River Road, London",
@@ -57,7 +57,7 @@ const hotels = [
     featured: false,
   },
   {
-    _id: "04",
+    _id: "4",
     title: "Skyline Tower London",
     city: "London",
     address: "321 Skyline Avenue, London",
@@ -71,7 +71,7 @@ const hotels = [
     featured: false,
   },
   {
-    _id: "05",
+    _id: "5",
     title: "Bali Beach Resort",
     city: "Bali",
     address: "456 Sunset Road, Bali",
@@ -85,7 +85,7 @@ const hotels = [
     featured: true,
   },
   {
-    _id: "06",
+    _id: "6",
     title: "Tropical Paradise Bali",
     city: "Bali",
     address: "789 Island Street, Bali",
@@ -99,7 +99,7 @@ const hotels = [
     featured: true,
   },
   {
-    _id: "07",
+    _id: "7",
     title: "Golden Sands Resort",
     city: "Bali",
     address: "999 Ocean Drive, Bali",
@@ -113,7 +113,7 @@ const hotels = [
     featured: false,
   },
   {
-    _id: "08",
+    _id: "8",
     title: "Island Escape Hotel",
     city: "Bali",
     address: "222 Paradise Lane, Bali",
@@ -127,7 +127,7 @@ const hotels = [
     featured: false,
   },
   {
-    _id: "09",
+    _id: "9",
     title: "Tokyo Sky Hotel",
     city: "Tokyo",
     address: "789 Shibuya, Tokyo",
