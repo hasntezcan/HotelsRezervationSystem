@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Map;
 
-public interface HotelRepository extends JpaRepository<Hotel, String> {
+public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
     // ✅ Existing native query - for admin panel / full hotel info
     @Query(value = "SELECT " +

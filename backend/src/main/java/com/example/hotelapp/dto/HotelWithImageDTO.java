@@ -1,7 +1,7 @@
 package com.example.hotelapp.dto;
 
 public class HotelWithImageDTO {
-    private String hotelId;
+    private Long hotelId;
     private String name;
     private String city;
     private Double pricePerNight;
@@ -9,7 +9,7 @@ public class HotelWithImageDTO {
     private String primaryImageUrl;
 
     // Constructor
-    public HotelWithImageDTO(String hotelId, String name, String city, 
+    public HotelWithImageDTO(Long hotelId, String name, String city, 
                              Double pricePerNight, Integer starRating,
                              String primaryImageUrl) {
         this.hotelId = hotelId;
@@ -21,7 +21,7 @@ public class HotelWithImageDTO {
     }
 
     // Getters
-    public String getHotelId() {
+    public Long getHotelId() {
         return hotelId;
     }
 
@@ -46,7 +46,7 @@ public class HotelWithImageDTO {
     }
 
     // Setters
-    public void setHotelId(String hotelId) {
+    public void setHotelId(Long hotelId) {
         this.hotelId = hotelId;
     }
 

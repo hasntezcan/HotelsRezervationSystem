@@ -209,14 +209,6 @@ public class Hotel {
         this.amenities = amenities;
     }
 
-    /*public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }*/
-
     @Column(name = "featured")
     private boolean featured;
     public boolean isFeatured() {

@@ -46,7 +46,7 @@ const Hotels = () => {
     const fetchHotelsWithImages = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${BASE_URL}/city?name=${selectedCity}`);
+        const res = await fetch(`${BASE_URL}/city?name=${selectedCity}`)
         const hotelsData = await res.json();  // This is now HotelWithImageDTO list
   
         // No extra calls needed. The response already contains primaryImageUrl
