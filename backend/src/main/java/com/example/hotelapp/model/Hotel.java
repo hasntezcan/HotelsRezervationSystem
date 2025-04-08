@@ -2,6 +2,7 @@ package com.example.hotelapp.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "hotels")
@@ -55,7 +56,7 @@ public class Hotel {
     @Column(columnDefinition = "TEXT")
     private String amenities;
 
-    private String photo;
+    //private String photo;
     private Boolean featured;
 
     public Hotel() {
@@ -209,13 +210,13 @@ public class Hotel {
         this.amenities = amenities;
     }
 
-    public String getPhoto() {
+    /*public String getPhoto() {
         return photo;
     }
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }
+    }*/
 
     public Boolean getFeatured() {
         return featured;
@@ -224,4 +225,16 @@ public class Hotel {
     public void setFeatured(Boolean featured) {
         this.featured = featured;
     }
+
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<HotelImage> images;
+    
+    public List<HotelImage> getImages() {
+        return images;
+    }
+    
+    public void setImages(List<HotelImage> images) {
+        this.images = images;
+    }
+    
 }

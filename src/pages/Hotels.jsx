@@ -45,40 +45,29 @@ const Hotels = () => {
   useEffect(() => {
     const fetchHotelsWithImages = async () => {
       try {
+        setLoading(true);
         const res = await fetch(`${BASE_URL}/city?name=${selectedCity}`);
-        const hotelsData = await res.json();
-
-        const hotelsWithImages = await Promise.all(
-          hotelsData.map(async (hotel) => {
-            try {
-              const imgRes = await fetch(`http://localhost:8080/api/hotel-images/${hotel.hotelId}/primary`);
-              const imgData = await imgRes.json();
-              return {
-                ...hotel,
-                imgUrl: imgData.imageUrl // ✅ Only from hotelimages table
-              };
-            } catch {
-              return {
-                ...hotel,
-                imgUrl: '' // fallback in case image not found
-              };
-            }
-          })
-        );
-
+        const hotelsData = await res.json();  // This is now HotelWithImageDTO list
+  
+        // No extra calls needed. The response already contains primaryImageUrl
+        const hotelsWithImages = hotelsData.map((hotel) => ({
+          ...hotel,
+          imgUrl: hotel.primaryImageUrl || '', // fallback if null
+        }));
+  
         setHotels(hotelsWithImages);
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching hotels or images:", err);
+        console.error('Error fetching hotels or images:', err);
         setLoading(false);
       }
     };
-
+  
     if (selectedCity) {
-      setLoading(true)
-      fetchHotelsWithImages()
+      fetchHotelsWithImages();
     }
-  }, [selectedCity])
+  }, [selectedCity]);
+  
 
   const toursPerPage = 8
   const start = page * toursPerPage

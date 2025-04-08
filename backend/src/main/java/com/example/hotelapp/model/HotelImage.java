@@ -10,8 +10,10 @@ public class HotelImage {
     @Column(name = "image_id")
     private String imageId;
 
-    @Column(name = "hotel_id")
-    private String hotelId;
+    @ManyToOne
+    @JoinColumn(name = "hotel_id")
+    private Hotel hotel;
+    
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -24,8 +26,8 @@ public class HotelImage {
     public String getImageId() { return imageId; }
     public void setImageId(String imageId) { this.imageId = imageId; }
 
-    public String getHotelId() { return hotelId; }
-    public void setHotelId(String hotelId) { this.hotelId = hotelId; }
+    /*public String getHotelId() { return hotelId; }
+    public void setHotelId(String hotelId) { this.hotelId = hotelId; }*/
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }

@@ -1,5 +1,6 @@
 package com.example.hotelapp.controller;
 
+import com.example.hotelapp.dto.HotelWithImageDTO;
 import com.example.hotelapp.model.Hotel;
 import com.example.hotelapp.repository.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/hotels")
@@ -28,8 +30,10 @@ public class HotelController {
     
     @GetMapping("/city")
     public ResponseEntity<?> getHotelsByCity(@RequestParam String name) {
-        return ResponseEntity.ok(hotelRepository.findByCityIgnoreCaseAndStatus(name, "approved"));
+        List<HotelWithImageDTO> dtoList = hotelRepository.findHotelsWithPrimaryImageByCity(name);
+        return ResponseEntity.ok(dtoList);
     }
+
     
 
     @PostMapping
@@ -59,7 +63,7 @@ public class HotelController {
                 hotel.setPricePerNight(hotelDetails.getPricePerNight());
                 hotel.setCapacity(hotelDetails.getCapacity());
                 hotel.setAmenities(hotelDetails.getAmenities());
-                hotel.setPhoto(hotelDetails.getPhoto());
+                //hotel.setPhoto(hotelDetails.getPhoto());
                 hotel.setFeatured(hotelDetails.getFeatured());
                 // Diğer alanları da güncelleyebilirsiniz, örneğin:
                 hotel.setCountry(hotelDetails.getCountry());
