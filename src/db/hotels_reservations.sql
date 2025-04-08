@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 08 Nis 2025, 17:44:01
+-- Üretim Zamanı: 08 Nis 2025, 20:08:54
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -597,7 +597,7 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `hotels`
 --
 ALTER TABLE `hotels`
-  MODIFY `hotel_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `hotel_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `managers`

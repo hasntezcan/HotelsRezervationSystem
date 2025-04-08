@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Card,
   CardContent,
@@ -12,31 +12,35 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from 'axios';
 import SidebarManager from "../components/Sidebar_manager";
+import { AuthContext } from '../context/AuthContext';
 
 const ManagerProfile = () => {
-  const [manager, setManager] = useState(null);
+  const { user } = useContext(AuthContext); // Login olmuş kullanıcı (user nesnesi)
+  const [managerData, setManagerData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState({ phone: "" });
 
-  // Manager profilini backend'den çekiyoruz.
   useEffect(() => {
+    if (!user || !user.userId) {
+      setLoading(false);
+      return;
+    }
     axios
-      .get("http://localhost:8080/api/auth/profile/manager")
+      .get(`http://localhost:8080/api/auth/profile/manager?userId=${user.userId}`)
       .then((response) => {
         const data = response.data;
-        // Backend'den gelen alan adlarının isimlerine dikkat edin. Örneğin, first_name yerine firstName dönüyorsa,
-        // buna göre state güncellemesi yapın.
-        setManager({
-          userId: data.userId,
-          username: data.username,
-          email: data.email,
-          password: data.password,
-          firstName: data.first_name, // veya data.firstName
-          lastName: data.last_name,   // veya data.lastName
-          phone: data.phone,
-          // Eğer avatar alanı varsa ekleyebilirsiniz
+        setManagerData({
+          userId: data.user.userId,
+          username: data.user.username,
+          email: data.user.email,
+          password: data.user.password,
+          firstName: data.user.first_name || data.user.firstName,
+          lastName: data.user.last_name || data.user.lastName,
+          phone: data.user.phone,
+          managerId: data.managerId,
+          hotelId: data.hotelId,
         });
         setLoading(false);
       })
@@ -44,40 +48,35 @@ const ManagerProfile = () => {
         console.error("Error fetching manager profile:", error);
         setLoading(false);
       });
-  }, []);
+  }, [user]);
 
-  // Input değişikliklerini state'e yansıtıyoruz.
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    // Telefon numarası formatı kontrolü
     if (name === "phone") {
-      const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/; // Format: (123) 456-7890
+      const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
       setError((prevError) => ({
         ...prevError,
         phone: phoneRegex.test(value) ? "" : "Format: (123) 456-7890",
       }));
     }
-    setManager((prevManager) => ({
-      ...prevManager,
+    setManagerData((prev) => ({
+      ...prev,
       [name]: value,
     }));
   };
 
-  // "Save Changes" butonuna tıklandığında çalışan fonksiyon.
   const handleSaveChanges = async () => {
-    if (!manager) return;
-    if (error.phone) return; // Geçersiz telefon varsa gönderme
+    if (!managerData) return;
+    if (error.phone) return;
 
-    // Düzenlenmiş veriler
     const payload = {
-      userId: manager.userId,
-      username: manager.username,
-      email: manager.email,
-      password: manager.password,
-      first_name: manager.firstName,
-      last_name: manager.lastName,
-      phone: manager.phone,
+      userId: managerData.userId,
+      username: managerData.username,
+      email: managerData.email,
+      password: managerData.password,
+      first_name: managerData.firstName,
+      last_name: managerData.lastName,
+      phone: managerData.phone,
     };
 
     try {
@@ -85,9 +84,8 @@ const ManagerProfile = () => {
         "http://localhost:8080/api/auth/profile",
         payload
       );
-      // Güncellemeden dönen veriyi state'e yansıtıyoruz.
       const updatedData = response.data;
-      setManager({
+      setManagerData({
         userId: updatedData.userId,
         username: updatedData.username,
         email: updatedData.email,
@@ -95,6 +93,8 @@ const ManagerProfile = () => {
         firstName: updatedData.first_name,
         lastName: updatedData.last_name,
         phone: updatedData.phone,
+        managerId: managerData.managerId, // ManagerID ve hotelID sabit kalır
+        hotelId: managerData.hotelId,
       });
       setIsEditing(false);
       alert("Profile updated successfully!");
@@ -104,24 +104,14 @@ const ManagerProfile = () => {
     }
   };
 
-  // Eğer manager verisi yüklenmemişse
   if (loading) return <p>Loading...</p>;
-  if (!manager) return <p>No manager profile data available.</p>;
+  if (!managerData) return <p>No manager profile data available.</p>;
 
   return (
     <div className="dashboard" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <SidebarManager />
-
       <div className="content" style={{ padding: '40px', width: '100%', maxWidth: '600px' }}>
-        <Card
-          style={{
-            width: '100%',
-            borderRadius: '15px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            textAlign: 'center',
-            padding: '20px',
-          }}
-        >
+        <Card style={{ width: '100%', borderRadius: '15px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', textAlign: 'center', padding: '20px' }}>
           <CardContent>
             <Box display="flex" flexDirection="column" alignItems="center">
               <img
@@ -129,19 +119,20 @@ const ManagerProfile = () => {
                 alt="Profile"
                 style={{ width: "100px", height: "100px", borderRadius: "50%", marginBottom: "15px" }}
               />
-
               <Typography variant="h4" style={{ fontWeight: 'bold' }}>
                 Your Profile
               </Typography>
+              <Typography variant="subtitle1">
+                Manager ID: {managerData.managerId} | User ID: {managerData.userId}
+              </Typography>
             </Box>
-
             <Box display="flex" flexDirection="column" marginTop="20px">
               <TextField
                 label="First Name"
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
-                value={manager.firstName || ""}
+                value={managerData.firstName || ""}
                 name="firstName"
                 onChange={handleInputChange}
                 style={{ marginBottom: '10px' }}
@@ -151,7 +142,7 @@ const ManagerProfile = () => {
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
-                value={manager.lastName || ""}
+                value={managerData.lastName || ""}
                 name="lastName"
                 onChange={handleInputChange}
                 style={{ marginBottom: '10px' }}
@@ -161,7 +152,7 @@ const ManagerProfile = () => {
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
-                value={manager.username || ""}
+                value={managerData.username || ""}
                 name="username"
                 onChange={handleInputChange}
                 style={{ marginBottom: '10px' }}
@@ -171,7 +162,7 @@ const ManagerProfile = () => {
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
-                value={manager.email || ""}
+                value={managerData.email || ""}
                 name="email"
                 onChange={handleInputChange}
                 style={{ marginBottom: '10px' }}
@@ -181,7 +172,7 @@ const ManagerProfile = () => {
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
-                value={manager.phone || ""}
+                value={managerData.phone || ""}
                 name="phone"
                 onChange={handleInputChange}
                 error={!!error.phone}
@@ -194,7 +185,7 @@ const ManagerProfile = () => {
                 fullWidth
                 disabled={!isEditing}
                 type={showPassword ? "text" : "password"}
-                value={manager.password || ""}
+                value={managerData.password || ""}
                 name="password"
                 onChange={handleInputChange}
                 style={{ marginBottom: '10px' }}
@@ -209,21 +200,15 @@ const ManagerProfile = () => {
                 }}
               />
             </Box>
-
             <Button
               variant="contained"
               color="primary"
               fullWidth
-              style={{
-                marginTop: '20px',
-                backgroundColor: "#E07A5F",
-                color: "#ffffff",
-              }}
+              style={{ marginTop: '20px', backgroundColor: "#E07A5F", color: "#ffffff" }}
               onClick={handleSaveChanges}
             >
               Save Changes
             </Button>
-
             <Button
               variant="outlined"
               fullWidth

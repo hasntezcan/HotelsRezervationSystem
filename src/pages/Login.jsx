@@ -36,48 +36,59 @@ const Login = () => {
     return newErrors;
   };
 
-  const handleClick = async (e) => {
-    e.preventDefault();
-    dispatch({ type: 'LOGIN_START' });
+  // ...
+const handleClick = async (e) => {
+  e.preventDefault();
+  dispatch({ type: 'LOGIN_START' });
+  
+  const newErrors = validateFields();
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    dispatch({ type: 'LOGIN_FAILURE', payload: 'Validation errors' });
+    return;
+  }
 
-    const newErrors = validateFields();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      dispatch({ type: 'LOGIN_FAILURE', payload: 'Validation errors' });
-      return;
+  try {
+    const response = await fetch('http://localhost:8080/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: credentials.email,
+        password: credentials.password,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Something went wrong');
     }
-
-    try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: credentials.email,
-          password: credentials.password,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Something went wrong');
-      }
-      
-      const userData = await response.json();
-      dispatch({ type: 'LOGIN_SUCCESS', payload: userData });
+    
+    const userData = await response.json();
+    
+    if (userData.user && userData.managerId) {
+      alert(`Welcome, ${userData.user.username}! Your user ID is ${userData.user.userId} and your manager ID is ${userData.managerId}.`);
+    } else {
       alert(`Welcome, ${userData.username}!`);
-
-      if (userData.role === 'admin') {
-        navigate('/admin');
-      } else if (userData.role === 'manager') {
-        navigate('/manager');
-      } else {
-        navigate('/');
-      }
-    } catch (err) {
-      alert(err.message);
-      dispatch({ type: 'LOGIN_FAILURE', payload: err.message });
     }
-  };
+    
+    dispatch({ type: 'LOGIN_SUCCESS', payload: userData });
+    
+    // Yönlendirme kısmı:
+    if (userData.role && userData.role.toLowerCase() === 'admin') {
+      navigate('/admin');
+    } else if (userData.role && userData.role.toLowerCase() === 'manager') {
+      navigate('/manager');
+    } else {
+      navigate('/');
+    }
+    
+  } catch (err) {
+    alert(err.message);
+    dispatch({ type: 'LOGIN_FAILURE', payload: err.message });
+  }
+};
+
+  
 
   const goRegister = () => {
     navigate('/register');
