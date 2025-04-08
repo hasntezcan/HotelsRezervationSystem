@@ -9,10 +9,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Map;
 
+public interface HotelRepository extends JpaRepository<Hotel, String> {
 
-public interface HotelRepository extends JpaRepository<Hotel, Long> {
-    List<Hotel> findByCity(String city);
-
+    // ✅ Existing native query - for admin panel / full hotel info
     @Query(value = "SELECT " +
             "h.hotel_id as hotelId, " +
             "h.name as name, " +
@@ -37,4 +36,20 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "LEFT JOIN hotelamenities a ON hj.amenity_id = a.amenity_id " +
             "GROUP BY h.hotel_id", nativeQuery = true)
     List<Map<String, Object>> findAllWithAmenities();
+
+    // ✅ For frontend city filtering
+    List<Hotel> findByCityIgnoreCaseAndStatus(String city, String status);
+
+    // ✅ To return distinct approved cities
+    @Query("SELECT DISTINCT h.city FROM Hotel h WHERE h.status = 'approved'")
+    List<String> findDistinctCityByStatus();
+
+    // ✅ To return hotel + primary image in one API call (used by Hotels.jsx)
+    @Query("SELECT new com.example.hotelapp.dto.HotelWithImageDTO(" +
+            "h.hotelId, h.name, h.city, h.pricePerNight, h.starRating, i.imageUrl) " +
+            "FROM Hotel h " +
+            "LEFT JOIN h.images i ON i.isPrimary = true " +
+            "WHERE LOWER(h.city) = LOWER(:city) " +
+            "AND h.status = 'approved'")
+    List<HotelWithImageDTO> findHotelsWithPrimaryImageByCity(@Param("city") String city);
 }

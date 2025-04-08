@@ -51,7 +51,7 @@ public class HotelController {
     }
 
     @PutMapping("/{hotelId}")
-    public ResponseEntity<?> updateHotel(@PathVariable Long hotelId, @RequestBody Hotel hotelDetails) {
+    public ResponseEntity<?> updateHotel(@PathVariable String hotelId, @RequestBody Hotel hotelDetails) {
         return hotelRepository.findById(hotelId)
             .map(hotel -> {
                 hotel.setName(hotelDetails.getName());
@@ -62,7 +62,7 @@ public class HotelController {
                 hotel.setCapacity(hotelDetails.getCapacity());
                 hotel.setAmenities(hotelDetails.getAmenities());
                 //hotel.setPhoto(hotelDetails.getPhoto());
-                hotel.setFeatured(hotelDetails.getFeatured());
+                hotel.setFeatured(hotelDetails.isFeatured());
                 // Diğer alanları da güncelleyebilirsiniz, örneğin:
                 hotel.setCountry(hotelDetails.getCountry());
                 //hotel.setPhoto(hotelDetails.getPhoto());
@@ -81,7 +81,7 @@ public class HotelController {
     }
 
     @DeleteMapping("/{hotelId}")
-    public ResponseEntity<?> deleteHotel(@PathVariable Long hotelId) {
+    public ResponseEntity<?> deleteHotel(@PathVariable String hotelId) {
         if (hotelRepository.existsById(hotelId)) {
             hotelRepository.deleteById(hotelId);
             return ResponseEntity.ok("Hotel deleted successfully.");
