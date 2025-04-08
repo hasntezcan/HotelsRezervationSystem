@@ -1,38 +1,38 @@
 /************************************************
-  ANA KONTEYNER (SAYFA DÜZENİ)
+  MAIN CONTAINER (PAGE LAYOUT)
 ************************************************/
 .payment-layout {
-  display: flex;            /* Solda form bölümü, sağda özet alanı */
+  display: flex; /* Left content (forms), right summary */
   gap: 20px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f9fafc; /* Hafif gri arka plan, isteğe bağlı */
+  background-color: #fff; 
   font-family: "Helvetica", Arial, sans-serif;
 }
 
 .payment-content {
-  flex: 2;                  /* Soldaki asıl içerik (adımlar) daha geniş */
+  flex: 2; /* The left side has the main content (steps) */
   display: flex;
   flex-direction: column;
-; /* İsteğe bağlı, genişliği sınırlamak için */
-  gap: 20px;
+  gap: 20px; 
 }
 
 .payment-sidebar {
-  flex: 1;                  /* Sağdaki sabit kutu */
+  margin-top: 50px; 
+  flex: 1; 
   position: sticky;
-  top: 20px;                /* Kaydırma yapıldığında sabit kalsın */
+  top: 120px; 
   align-self: flex-start;
-  height: fit-content;       /* İçeriğe göre otomatik yükseklik */
+  height: fit-content; 
 }
 
 /************************************************
-  GENEL KUTU STİLİ (Her Adımın Beyaz Kutusu)
+  GENERAL BOX STYLE (White Boxes for Each Step)
 ************************************************/
 .payment-box {
   background-color: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid #2a9d8f; /* CHANGED from #ddd */
   border-radius: 6px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -45,7 +45,7 @@
 }
 
 /************************************************
-  ADIM BAŞLIKLARI / GENEL YAZI STİLİ
+  STEP HEADINGS / GENERAL TEXT STYLE
 ************************************************/
 .step-title {
   font-size: 20px;
@@ -68,7 +68,7 @@ label {
 }
 
 /************************************************
-  FORM ELEMANLARI
+  FORM ELEMENTS
 ************************************************/
 input[type="text"],
 input[type="email"],
@@ -88,24 +88,21 @@ input[type="email"]:focus,
 input[type="tel"]:focus,
 select:focus {
   outline: none;
-  border-color: #66afe9; /* Odaklandığında hafif mavi çerçeve */
+  border-color: #66afe9; /* Light blue outline on focus */
   box-shadow: 0 0 3px rgba(102,175,233,0.6);
 }
 
 /************************************************
-  PAYMENTNAME BİLEŞENİ
+  PAYMENTNAME COMPONENT
 ************************************************/
 .PaymentName__container {
-  /* Ortak kutu stilini kullanmak isterseniz: */
-  /* ya "payment-box" class’ını ekleyebilir,
-     ya da doğrudan buraya stil verebilirsiniz. */
+  /* You can add "payment-box" if you want a uniform style */
 }
 
 .PaymentName__title {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
-
 }
 
 .PaymentName__note {
@@ -121,8 +118,7 @@ select:focus {
 }
 
 .PaymentName__input {
-  max-width: 400px; /* İsteğe bağlı, genişliği sınırlamak için */
-  /* Yukarıdaki input[type="text"] vb. ile aynı */
+  max-width: 400px; /* Optional width limit */
 }
 
 .PaymentName__checkbox-group {
@@ -139,11 +135,20 @@ select:focus {
 }
 
 /************************************************
-  PAYMENTROOM BİLEŞENİ
+  PAYMENTROOM COMPONENT
 ************************************************/
 .PaymentRoom__container {
-  /* Yine isterseniz "payment-box" ekleyip
-     tek tip kutu görünümü sağlayabilirsiniz. */
+  background-color: #fff;        
+  border: 1px solid #2a9d8f;     /* CHANGED from #ddd */
+  border-radius: 6px;           
+  padding: 10px 15px;           
+  color: #333;
+  font-size: 14px;
+  min-width: 150px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+  /* You can optionally add "payment-box" for a uniform style. */
 }
 
 .PaymentRoom__title {
@@ -159,7 +164,7 @@ select:focus {
   color: #444;
 }
 
-/* Liste içi icon, satır vb. ayar */
+/* Styles for icons, lines, etc. */
 .PaymentRoom__icons-list,
 .PaymentRoom__room-included-list {
   list-style: none;
@@ -175,24 +180,22 @@ select:focus {
   align-items: center;
 }
 .PaymentRoom__grid-list {
-  display: flex;          /* Esnek kutu modeli */
-  flex-wrap: wrap;        /* Yan yana sığmazsa alt satıra geçsin */
-  gap: 10px;              /* Kutucuklar arası boşluk */
-  list-style: none;       /* Nokta/madde imlerini gizle */
+  display: flex;          
+  flex-wrap: wrap;        
+  gap: 10px;              
+  list-style: none;       
   padding: 0;
   margin: 0;
 }
 
-/* Her bir madde bir kutu olsun */
+/* Each item is a box */
 .PaymentRoom__item-box {
-  background-color: #fff;        /* Beyaz kutu */
-  border: 1px solid #ddd;       /* İnce gri kenarlık */
-  border-radius: 6px;           /* Hafif köşe yuvarlama */
-  padding: 10px 15px;           /* İç boşluk */
+  background-color: #fff;        
+  border: 1px solid #2a9d8f;     /* CHANGED from #ddd */
+  border-radius: 6px;           
+  padding: 10px 15px;           
   color: #333;
   font-size: 14px;
-
-  /* Genişlik sınırı isterseniz */
   min-width: 150px;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -202,24 +205,22 @@ select:focus {
   transform: translateY(-2px);
 }
 .PaymentRoom__room-box {
-  margin-top: 20px;             /* Üstten boşluk */
-  padding: 15px;                /* İç boşluk */
-  background-color: #f9fafc;    /* Hafif gri arka plan (isteğe bağlı) */
-  border: 1px solid #ddd;       /* İnce gri kenarlık */
-  border-radius: 6px;           /* Köşe yuvarlaması */
+  margin-top: 20px;           
+  padding: 15px;              
+  background-color: #f9fafc;  
+  border: 1px solid #2a9d8f;   /* CHANGED from #ddd */
+  border-radius: 6px;         
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-
-
 /************************************************
-  PAYMENTCARD BİLEŞENİ
+  PAYMENTCARD COMPONENT
 ************************************************/
 .PaymentCard__container {
-  /* Tek tip kutu görünümü */
+  /* Uniform box style if desired */
 }
 
-/* Başlık (Adım 3: Ödeme detayları) */
+/* Heading (Step 3: Payment Details) */
 .PaymentCard__title {
   font-size: 18px;
   font-weight: bold;
@@ -229,7 +230,7 @@ select:focus {
 .PaymentCard__content {
   display: flex;
   gap: 20px;
-  flex-wrap: wrap; /* Küçük ekranlarda alt satıra geçebilir */
+  flex-wrap: wrap; /* Wrap on small screens */
 }
 
 .PaymentCard__formWrapper {
@@ -243,11 +244,11 @@ select:focus {
   margin-bottom: 50px;
   background: #f9fafc;
   padding: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #2a9d8f; /* CHANGED from #ddd */
   border-radius: 4px;
 }
 
-/* Form Grupları */
+/* Form Groups */
 .PaymentCard__form-group {
   display: flex;
   flex-direction: column;
@@ -259,7 +260,7 @@ select:focus {
   margin-bottom: 5px;
 }
 
-/* Kredi Kartı Ikonu */
+/* Credit Card Icon */
 .PaymentCard__input-wrapper--icon {
   position: relative;
 }
@@ -277,11 +278,11 @@ select:focus {
 }
 
 .PaymentCard__input--card {
-  padding-left: 10px; /* İkon alanı için boşluk */
-  padding-right: 40px; /* İkon alanı için boşluk */
-  position: relative;
-  z-index: 1;              /* İkonun gerisinde kalmasın diye 1 veriyoruz */
- ; /* Ikon alanı için boşluk */
+  position: relative; 
+  z-index: 1;    
+  padding-left: 40px; 
+  padding-right: 40px; 
+  background-color: #fff; 
 }
 
 .PaymentCard__expiry-container {
@@ -290,14 +291,13 @@ select:focus {
 }
 
 .PaymentCard__select {
-  /* Yukarıdaki select stili ile aynı */
-  width: auto; /* Yan yana durabilsin */
+  width: auto; 
   min-width: 60px;
 }
 
 .PaymentCard__cvc {
   width: 80px;
-  max-width: 80px; /* CVC alanı için genişlik sınırı */
+  max-width: 80px; 
 }
 
 .PaymentCard__accepted-title {
@@ -306,7 +306,7 @@ select:focus {
   font-weight: bold;
 }
 
-/* Ödeme Logoları */
+/* Accepted Payment Logos */
 .PaymentCard__accepted-logos {
   display: flex;
   gap: 10px;
@@ -318,23 +318,15 @@ select:focus {
   height: auto;
 }
 
-.PaymentCard__input--card {
-  position: relative; 
-  z-index: 1;              /* İkonun gerisinde kalmasın diye 1 veriyoruz */
-  padding-left: 40px;      /* İkon alanı kadar boşluk */
-  background-color: #fff;  /* Beyaz arkaplan (ikon gözüksün) */
-}
-
-
 /************************************************
-  PAYMENTPAY BİLEŞENİ (Sağ Taraftaki Otel Kutu)
+  PAYMENTPAY COMPONENT (Right-Side Hotel Box)
 ************************************************/
 .paymentPay-container {
   background-color: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid #2a9d8f; /* CHANGED from #ddd */
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  overflow: hidden; /* Resim taşmasın */
+  overflow: hidden; /* Prevent image overflow */
 }
 
 .paymentPay-img {
@@ -363,34 +355,31 @@ select:focus {
 .paymentPay-price {
   font-size: 16px;
   font-weight: bold;
-  color: #d9534f; /* Kırmızı ton */
+  color: #d9534f; 
   margin-bottom: 4px;
 }
 
 /************************************************
-  EK: BUTTON STİLLERİ, UYARI VS.
+  EXTRAS: BUTTON STYLES, ALERT, ETC.
 ************************************************/
-button {
-  background-color: #0063e5;
+.myGreenBookNowButton {
+  /* Background color similar to the screenshot */
+  background-color: #2a9d8f; 
   color: #fff;
   border: none;
-  padding: 10px 16px;
-  border-radius: 4px;
+  padding: 12px 20px;
+  border-radius: 30px; /* Large radius for pill shape */
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
+  text-align: center;
   transition: background-color 0.3s;
+  width: 100%; /* If you want it full-width; remove or adjust as needed */
+  max-width: 250px; /* Optional max-width limit */
+  display: inline-block; /* So you can center it or place it inline */
 }
 
-button:hover {
-  background-color: #0056c1;
+.myGreenBookNowButton:hover {
+  background-color: #21867b; /* Darker shade for hover */
 }
 
-.payment-note {
-  background-color: #fffae6;
-  border-left: 4px solid #ffe14b;
-  padding: 10px;
-  font-size: 14px;
-  margin-top: 10px;
-  color: #7a5b00;
-}

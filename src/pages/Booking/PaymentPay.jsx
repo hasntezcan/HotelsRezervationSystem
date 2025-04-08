@@ -1,42 +1,93 @@
 import React from "react";
-import "./../../styles/PaymentPage.css"; 
-import defaultPhoto from "./../../assets/images/hotelImages.jpg"; // Örnek resim, fallback olarak kullanabiliriz
+import defaultPhoto from "../../assets/images/hotelImages.jpg";
+import "./../../styles/PaymentPage.css";
 
 const PaymentPay = ({
+  // Hotel Information
   hotelName = "Hilton Garden Inn",
-  photo = defaultPhoto,
-  address = "123 Street, City, Country",
-  checkInDate = "2025-05-12",
-  checkOutDate = "2025-05-15",
-  price = 140,
-  onPaymentClick = () => alert("Ödeme İşlemi Başlatıldı!")
+  photo, // We'll decide in code if we use this or defaultPhoto
+  address = "",
+  checkInDate = "",
+  checkOutDate = "",
+  price = 0,
+
+  // PaymentName Data (Step 1)
+  firstName = "",
+  lastName = "",
+  email = "",
+  phone = "",
+
+  // PaymentCard Data (Step 3)
+  cardName = "",
+  cardSurname = "",
+  cardNumber = "",
+  expiryMonth = "",
+  expiryYear = "",
+  cvc = "",
+
+  onPaymentClick = () => {}
 }) => {
+  // Determine which photo to actually use
+  // If "photo" is null, undefined, or an empty string, use defaultPhoto
+  const actualPhoto = photo || defaultPhoto;
+
+  // Check if all necessary fields are completed
+  const isFormComplete =
+    firstName.trim() &&
+    lastName.trim() &&
+    email.trim() &&
+    phone.trim() &&
+    cardName.trim() &&
+    cardSurname.trim() &&
+    cardNumber.trim() &&
+    expiryMonth.trim() &&
+    expiryYear.trim() &&
+    cvc.trim();
+
+  // Identify missing fields
+  const findMissingFields = () => {
+    const missing = [];
+    if (!firstName.trim()) missing.push("First Name");
+    if (!lastName.trim()) missing.push("Last Name");
+    if (!email.trim()) missing.push("Email");
+    if (!phone.trim()) missing.push("Phone");
+    if (!cardName.trim()) missing.push("Card Name");
+    if (!cardSurname.trim()) missing.push("Card Surname");
+    if (!cardNumber.trim()) missing.push("Card Number");
+    if (!expiryMonth.trim()) missing.push("Expiry Month");
+    if (!expiryYear.trim()) missing.push("Expiry Year");
+    if (!cvc.trim()) missing.push("CVC");
+    return missing;
+  };
+
+  const handlePayment = () => {
+    if (!isFormComplete) {
+      const missingFields = findMissingFields();
+      alert(
+        "Please complete all fields.\n\nMissing Fields:\n" +
+          missingFields.join("\n")
+      );
+      return;
+    }
+    onPaymentClick();
+  };
+
   return (
     <div className="paymentPay-container">
       <div className="paymentPay-card">
-        {/* Otel fotoğrafı */}
-        <img src={photo} alt={hotelName} className="paymentPay-img" />
+        {/* Hotel Image */}
+        <img src={actualPhoto} alt={hotelName} className="paymentPay-img" />
 
         <div className="paymentPay-content">
-          {/* Otel adı */}
           <h3 className="paymentPay-name">{hotelName}</h3>
-
-          {/* Otel adresi */}
           <p className="paymentPay-address">{address}</p>
-
-          {/* Kalınacak tarih bilgisi */}
           <p className="paymentPay-dates">
-            Tarih: {checkInDate} - {checkOutDate}
+            Date: {checkInDate} - {checkOutDate}
           </p>
+          <div className="paymentPay-price">Price: ${price}</div>
 
-          {/* Fiyat bilgisi */}
-          <div className="paymentPay-price">
-            <span>Fiyat: </span> ${price}
-          </div>
-
-          {/* Ödeme butonu */}
-          <button className="paymentPay-button" onClick={onPaymentClick}>
-            Ödeme Yap
+          <button className="myGreenBookNowButton" onClick={handlePayment}>
+            Book Now
           </button>
         </div>
       </div>

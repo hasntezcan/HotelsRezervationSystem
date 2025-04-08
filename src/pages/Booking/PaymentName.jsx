@@ -1,66 +1,63 @@
-import React, { useState } from "react";
+import React from "react";
 import "./../../styles/PaymentPage.css";
 
-const PaymentName = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+const PaymentName = ({
+  firstName, setFirstName,
+  lastName, setLastName,
+  email, setEmail,
+  phone, setPhone
+}) => {
 
+  // Remove any digits from the "First Name" input
   const handleFirstNameChange = (e) => {
-    const value = e.target.value.replace(/[0-9]/g, "");
-    setFirstName(value);
+    const onlyLetters = e.target.value.replace(/[0-9]/g, "");
+    setFirstName(onlyLetters);
   };
 
+  // Remove any digits from the "Last Name" input
   const handleLastNameChange = (e) => {
-    const value = e.target.value.replace(/[0-9]/g, "");
-    setLastName(value);
+    const onlyLetters = e.target.value.replace(/[0-9]/g, "");
+    setLastName(onlyLetters);
   };
 
+  // Remove any non-digit characters from the "Mobile Number" input
   const handlePhoneChange = (e) => {
-    const value = e.target.value.replace(/[^0-9]/g, "");
-    setPhone(value);
+    const onlyDigits = e.target.value.replace(/\D/g, "");
+    setPhone(onlyDigits);
   };
 
   return (
     <div className="PaymentName__container">
-      <h2 className="PaymentName__title">Adım 1: Bilgileriniz</h2>
-      <p className="PaymentName__note">* doldurulması zorunlu alanlar</p>
+      <h2 className="PaymentName__title">Step 1: Your Information</h2>
+      <p className="PaymentName__note">* Required fields</p>
       <form className="PaymentName__form">
         <div className="PaymentName__form-group">
-          <label htmlFor="firstName">Adı *</label>
+          <label>First Name *</label>
           <input
             type="text"
-            id="firstName"
-            placeholder="Bu odada kalacak misafirlerden birinin adını yazın"
+            placeholder="Enter your first name"
             required
             className="PaymentName__input"
             value={firstName}
             onChange={handleFirstNameChange}
-            pattern="^[A-Za-zÇĞİÖŞÜçğıöşü\s]+$"
-            title="Sadece harfler ve boşluk kullanılabilir."
           />
         </div>
         <div className="PaymentName__form-group">
-          <label htmlFor="lastName">Soyadı *</label>
+          <label>Last Name *</label>
           <input
             type="text"
-            id="lastName"
-            placeholder="Soyad"
+            placeholder="Enter your last name"
             required
             className="PaymentName__input"
             value={lastName}
             onChange={handleLastNameChange}
-            pattern="^[A-Za-zÇĞİÖŞÜçğıöşü\s]+$"
-            title="Sadece harfler ve boşluk kullanılabilir."
           />
         </div>
         <div className="PaymentName__form-group">
-          <label htmlFor="email">E-posta adresi *</label>
+          <label>Email Address *</label>
           <input
             type="email"
-            id="email"
-            placeholder="Onay e-posta adresiniz"
+            placeholder="Your email address"
             required
             className="PaymentName__input"
             value={email}
@@ -68,23 +65,20 @@ const PaymentName = () => {
           />
         </div>
         <div className="PaymentName__form-group">
-          <label htmlFor="phone">Cep telefon numarası *</label>
+          <label>Mobile Number *</label>
           <input
             type="tel"
-            id="phone"
-            placeholder="Telefon numaranızı girin"
+            placeholder="Your phone number"
             required
             className="PaymentName__input"
             value={phone}
             onChange={handlePhoneChange}
-            pattern="^[0-9]+$"
-            title="Sadece rakamlar kullanılabilir."
           />
         </div>
-      
       </form>
     </div>
   );
 };
 
 export default PaymentName;
+//

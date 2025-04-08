@@ -1,31 +1,28 @@
 import React from "react";
-// İsteğe göre "PaymentPage.css" veya "PaymentRoom.css"
 import "./../../styles/PaymentRoom.css";
 
 const PaymentRoom = () => {
   return (
-    <div className="PaymentRoom__container">
-      <h2 className="PaymentRoom__title">Adım 2: Konaklama Yeri Detayları</h2>
+    <div>
+      <h2 className="PaymentRoom__title">Step 2: Accommodation Details</h2>
 
-      {/* Öne çıkanlar */}
-      <div className="PaymentRoom__highlights">
-        <h3 className="PaymentRoom__subtitle">Öne çıkanlar</h3>
-        <ul className="PaymentRoom__grid-list">
-          <li className="PaymentRoom__item-box">Ücretsiz otopark</li>
-          <li className="PaymentRoom__item-box">Ücretsiz Kablosuz İnternet</li>
-          <li className="PaymentRoom__item-box">Evcil Hayvan Dostu</li>
-          <li className="PaymentRoom__item-box">24 Saat Resepsiyon</li>
-        </ul>
-      </div>
+      {/* Highlights */}
+      <h3 className="PaymentRoom__subtitle">Highlights</h3>
+      <ul className="PaymentRoom__grid-list">
+        <li className="PaymentRoom__item-box">Free Parking</li>
+        <li className="PaymentRoom__item-box">Free WiFi</li>
+        <li className="PaymentRoom__item-box">Pet Friendly</li>
+        <li className="PaymentRoom__item-box">24-Hour Reception</li>
+      </ul>
 
-      {/* Oda Bilgisi: Odayı ayrı bir "room-box" içine alıyoruz */}
+      {/* Room Information: Only one container (room-box) for the "Luxury Single Room" */}
       <div className="PaymentRoom__room-box">
-        <h3 className="PaymentRoom__subtitle">Luxury Tek Büyük Yataklı Oda</h3>
+        <h3 className="PaymentRoom__subtitle">Luxury Single Room with Queen Bed</h3>
         <ul className="PaymentRoom__grid-list">
-          <li className="PaymentRoom__item-box">Kahvaltı mevcut</li>
-          <li className="PaymentRoom__item-box">1 büyük (Queen) Boy Yatak</li>
-          <li className="PaymentRoom__item-box">Sigara içilen oda</li>
-          <li className="PaymentRoom__item-box">Oda Servisi</li>
+          <li className="PaymentRoom__item-box">Breakfast Available</li>
+          <li className="PaymentRoom__item-box">1 Large (Queen) Bed</li>
+          <li className="PaymentRoom__item-box">Smoking Room</li>
+          <li className="PaymentRoom__item-box">Room Service</li>
         </ul>
       </div>
     </div>
