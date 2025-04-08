@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 08 Nis 2025, 22:43:40
+-- Üretim Zamanı: 09 Nis 2025, 01:14:30
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -97,7 +97,7 @@ CREATE TABLE `contact_messages` (
 
 INSERT INTO `contact_messages` (`message_id`, `sender_name`, `sender_email`, `phone`, `message`, `sent_at`, `is_read`) VALUES
 ('5850c479-e734-461a-b7b6-28df3e35b895', 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'aa', '2025-04-05 11:20:24', 0),
-('7dae1e1d-8ce7-40c3-8459-fb19cefce8d2', 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'nabe sabo', '2025-04-05 10:59:17', 0);
+('7dae1e1d-8ce7-40c3-8459-fb19cefce8d2', 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'nabe sabo', '2025-04-05 10:59:17', 1);
 
 -- --------------------------------------------------------
 
@@ -311,7 +311,7 @@ INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `coun
 CREATE TABLE `managers` (
   `manager_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
-  `hotel_id` bigint(20) NOT NULL,
+  `hotel_id` varchar(255) NOT NULL,
   `assigned_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -320,22 +320,22 @@ CREATE TABLE `managers` (
 --
 
 INSERT INTO `managers` (`manager_id`, `user_id`, `hotel_id`, `assigned_at`) VALUES
-(1, 16, 1, '2025-04-08 20:32:15'),
-(2, 17, 2, '2025-04-08 14:40:26'),
-(3, 18, 3, '2025-04-08 14:40:26'),
-(4, 19, 4, '2025-04-08 14:40:26'),
-(5, 20, 5, '2025-04-08 14:40:26'),
-(6, 21, 6, '2025-04-08 14:40:26'),
-(7, 22, 7, '2025-04-08 14:40:26'),
-(8, 23, 8, '2025-04-08 14:40:26'),
-(9, 24, 9, '2025-04-08 20:32:15'),
-(10, 25, 10, '2025-04-08 20:32:15'),
-(11, 26, 11, '2025-04-08 20:32:15'),
-(12, 27, 12, '2025-04-08 20:32:15'),
-(13, 28, 13, '2025-04-08 20:32:15'),
-(14, 29, 14, '2025-04-08 20:35:48'),
-(15, 30, 15, '2025-04-08 20:35:48'),
-(16, 31, 16, '2025-04-08 20:36:11');
+(1, 16, '1', '2025-04-08 20:32:15'),
+(2, 17, '2', '2025-04-08 14:40:26'),
+(3, 18, '3', '2025-04-08 14:40:26'),
+(4, 19, '4', '2025-04-08 14:40:26'),
+(5, 20, '5', '2025-04-08 14:40:26'),
+(6, 21, '6', '2025-04-08 14:40:26'),
+(7, 22, '7', '2025-04-08 14:40:26'),
+(8, 23, '8', '2025-04-08 14:40:26'),
+(9, 24, '9', '2025-04-08 20:32:15'),
+(10, 25, '10', '2025-04-08 20:32:15'),
+(11, 26, '11', '2025-04-08 20:32:15'),
+(12, 27, '12', '2025-04-08 20:32:15'),
+(13, 28, '13', '2025-04-08 20:32:15'),
+(14, 29, '14', '2025-04-08 20:35:48'),
+(15, 30, '15', '2025-04-08 20:35:48'),
+(16, 31, '16', '2025-04-08 20:36:11');
 
 -- --------------------------------------------------------
 
@@ -392,7 +392,7 @@ CREATE TABLE `reviews` (
 --
 
 CREATE TABLE `roomamenities` (
-  `amenity_id` char(36) NOT NULL,
+  `amenity_id` bigint(20) NOT NULL,
   `name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -403,8 +403,9 @@ CREATE TABLE `roomamenities` (
 --
 
 CREATE TABLE `roomamenityjunction` (
-  `room_id` char(36) NOT NULL,
-  `amenity_id` char(36) NOT NULL
+  `room_id` bigint(20) NOT NULL,
+  `amenity_id` bigint(20) NOT NULL,
+  `is_primary` bit(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -414,8 +415,8 @@ CREATE TABLE `roomamenityjunction` (
 --
 
 CREATE TABLE `roomimages` (
-  `image_id` char(36) NOT NULL,
-  `room_id` char(36) DEFAULT NULL,
+  `image_id` bigint(20) NOT NULL,
+  `room_id` bigint(20) NOT NULL,
   `image_url` varchar(255) NOT NULL,
   `is_primary` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -428,7 +429,7 @@ CREATE TABLE `roomimages` (
 
 CREATE TABLE `rooms` (
   `room_id` char(36) NOT NULL,
-  `hotel_id` char(36) DEFAULT NULL,
+  `hotel_id` bigint(20) NOT NULL,
   `room_type` varchar(50) NOT NULL,
   `description` text DEFAULT NULL,
   `price_per_night` decimal(10,2) NOT NULL,
@@ -436,7 +437,10 @@ CREATE TABLE `rooms` (
   `total_rooms` int(11) NOT NULL,
   `size` varchar(20) DEFAULT NULL,
   `bed_type` varchar(50) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `image_id` int(11) DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `room_size` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -617,6 +621,18 @@ ALTER TABLE `managers`
   MODIFY `manager_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
+-- Tablo için AUTO_INCREMENT değeri `roomamenities`
+--
+ALTER TABLE `roomamenities`
+  MODIFY `amenity_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `roomimages`
+--
+ALTER TABLE `roomimages`
+  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
@@ -643,6 +659,12 @@ ALTER TABLE `hotels`
 --
 ALTER TABLE `managers`
   ADD CONSTRAINT `fk_managers_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Tablo kısıtlamaları `roomamenityjunction`
+--
+ALTER TABLE `roomamenityjunction`
+  ADD CONSTRAINT `FKnobhag8n4b4f5af0hxwx0a512` FOREIGN KEY (`amenity_id`) REFERENCES `roomamenities` (`amenity_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
