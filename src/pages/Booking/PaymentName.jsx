@@ -81,17 +81,7 @@ const PaymentName = () => {
             title="Sadece rakamlar kullanılabilir."
           />
         </div>
-        <div className="PaymentName__checkbox-group">
-          <label htmlFor="marketingCheck" className="PaymentName__checkbox-label">
-            <input
-              type="checkbox"
-              id="marketingCheck"
-              defaultChecked
-              className="PaymentName__checkbox"
-            />
-            StayInn.com tarafından size seyahat fırsatları, özel teklifler ve diğer bilgilerin gönderilmesini istemiyorsanız lütfen bu kutudaki işareti kaldırın.
-          </label>
-        </div>
+      
       </form>
     </div>
   );

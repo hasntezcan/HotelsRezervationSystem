@@ -1,51 +1,116 @@
-/* ==== Genel Sayfa Düzeni ==== */
-
-.paymentPage__main-container {
-  display: flex;
-  gap: 25px;
-  padding: 20px;
+/************************************************
+  ANA KONTEYNER (SAYFA DÜZENİ)
+************************************************/
+.payment-layout {
+  display: flex;            /* Solda form bölümü, sağda özet alanı */
+  gap: 20px;
   max-width: 1200px;
   margin: 0 auto;
-  align-items: flex-start;
+  padding: 20px;
+  background-color: #f9fafc; /* Hafif gri arka plan, isteğe bağlı */
+  font-family: "Helvetica", Arial, sans-serif;
 }
 
-/* Sol taraftaki tüm içerik */
-.payment-left-side {
-  flex: 2;
+.payment-content {
+  flex: 2;                  /* Soldaki asıl içerik (adımlar) daha geniş */
   display: flex;
   flex-direction: column;
-  gap: 25px;
+; /* İsteğe bağlı, genişliği sınırlamak için */
+  gap: 20px;
 }
 
-/* Sağdaki sabit içerik */
-.payment-right-side {
-  flex: 1;
+.payment-sidebar {
+  flex: 1;                  /* Sağdaki sabit kutu */
   position: sticky;
-  top: 10px;
+  top: 20px;                /* Kaydırma yapıldığında sabit kalsın */
+  align-self: flex-start;
+  height: fit-content;       /* İçeriğe göre otomatik yükseklik */
 }
 
-/* ==== PaymentName Bileşeni ==== */
-
-.PaymentName__container {
-  width: 100%;
+/************************************************
+  GENEL KUTU STİLİ (Her Adımın Beyaz Kutusu)
+************************************************/
+.payment-box {
   background-color: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.PaymentName__title,
-.PaymentCard__title,
-.PaymentRoom__title {
-  font-size: 22px;
+.payment-box h2,
+.payment-box h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+/************************************************
+  ADIM BAŞLIKLARI / GENEL YAZI STİLİ
+************************************************/
+.step-title {
+  font-size: 20px;
   font-weight: bold;
-  color: var(--primary-color);
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.step-subtitle {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #333;
+  display: inline-block;
+}
+
+/************************************************
+  FORM ELEMANLARI
+************************************************/
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+select:focus {
+  outline: none;
+  border-color: #66afe9; /* Odaklandığında hafif mavi çerçeve */
+  box-shadow: 0 0 3px rgba(102,175,233,0.6);
+}
+
+/************************************************
+  PAYMENTNAME BİLEŞENİ
+************************************************/
+.PaymentName__container {
+  /* Ortak kutu stilini kullanmak isterseniz: */
+  /* ya "payment-box" class’ını ekleyebilir,
+     ya da doğrudan buraya stil verebilirsiniz. */
+}
+
+.PaymentName__title {
+  font-size: 18px;
+  font-weight: bold;
   margin-bottom: 10px;
+
 }
 
 .PaymentName__note {
   font-size: 14px;
-  color: var(--text-color);
+  color: #666;
   margin-bottom: 15px;
 }
 
@@ -56,51 +121,115 @@
 }
 
 .PaymentName__input {
-  padding: 10px;
-  border: 1px solid var(--primary-color);
-  border-radius: 5px;
-  font-size: 16px;
+  max-width: 400px; /* İsteğe bağlı, genişliği sınırlamak için */
+  /* Yukarıdaki input[type="text"] vb. ile aynı */
 }
 
 .PaymentName__checkbox-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
   margin-top: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: #333;
 }
 
-/* ==== PaymentRoom Bileşeni ==== */
+.PaymentName__checkbox {
+  margin-top: 3px;
+}
 
+/************************************************
+  PAYMENTROOM BİLEŞENİ
+************************************************/
 .PaymentRoom__container {
-  background-color: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  /* Yine isterseniz "payment-box" ekleyip
+     tek tip kutu görünümü sağlayabilirsiniz. */
+}
+
+.PaymentRoom__title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
 }
 
 .PaymentRoom__subtitle {
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 10px;
+  font-weight: bold;
+  color: #444;
 }
 
+/* Liste içi icon, satır vb. ayar */
 .PaymentRoom__icons-list,
 .PaymentRoom__room-included-list {
-  padding-left: 20px;
-  color: var(--text-color);
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  color: #555;
 }
 
-/* ==== PaymentCard Bileşeni ==== */
+.PaymentRoom__icons-list li,
+.PaymentRoom__room-included-list li {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+}
+.PaymentRoom__grid-list {
+  display: flex;          /* Esnek kutu modeli */
+  flex-wrap: wrap;        /* Yan yana sığmazsa alt satıra geçsin */
+  gap: 10px;              /* Kutucuklar arası boşluk */
+  list-style: none;       /* Nokta/madde imlerini gizle */
+  padding: 0;
+  margin: 0;
+}
 
+/* Her bir madde bir kutu olsun */
+.PaymentRoom__item-box {
+  background-color: #fff;        /* Beyaz kutu */
+  border: 1px solid #ddd;       /* İnce gri kenarlık */
+  border-radius: 6px;           /* Hafif köşe yuvarlama */
+  padding: 10px 15px;           /* İç boşluk */
+  color: #333;
+  font-size: 14px;
+
+  /* Genişlik sınırı isterseniz */
+  min-width: 150px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+.PaymentRoom__item-box:hover {
+  transform: translateY(-2px);
+}
+.PaymentRoom__room-box {
+  margin-top: 20px;             /* Üstten boşluk */
+  padding: 15px;                /* İç boşluk */
+  background-color: #f9fafc;    /* Hafif gri arka plan (isteğe bağlı) */
+  border: 1px solid #ddd;       /* İnce gri kenarlık */
+  border-radius: 6px;           /* Köşe yuvarlaması */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+
+
+/************************************************
+  PAYMENTCARD BİLEŞENİ
+************************************************/
 .PaymentCard__container {
-  background-color: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  /* Tek tip kutu görünümü */
+}
+
+/* Başlık (Adım 3: Ödeme detayları) */
+.PaymentCard__title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
 }
 
 .PaymentCard__content {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap; /* Küçük ekranlarda alt satıra geçebilir */
 }
 
 .PaymentCard__formWrapper {
@@ -108,17 +237,29 @@
 }
 
 .PaymentCard__acceptedWrapper {
-  flex: 1;
   align-self: flex-start;
+  flex: 1;
   margin-top: 50px;
+  margin-bottom: 50px;
+  background: #f9fafc;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
+/* Form Grupları */
 .PaymentCard__form-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
 }
 
+.PaymentCard__label {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+/* Kredi Kartı Ikonu */
 .PaymentCard__input-wrapper--icon {
   position: relative;
 }
@@ -126,13 +267,21 @@
 .PaymentCard__icon {
   position: absolute;
   top: 50%;
-  left: 10px;
+  right: 10px;
+  left: auto;
   transform: translateY(-50%);
-  color: var(--primary-color);
+  color: #aaa;
+  font-size: 20px;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .PaymentCard__input--card {
-  padding-left: 50px;
+  padding-left: 10px; /* İkon alanı için boşluk */
+  padding-right: 40px; /* İkon alanı için boşluk */
+  position: relative;
+  z-index: 1;              /* İkonun gerisinde kalmasın diye 1 veriyoruz */
+ ; /* Ikon alanı için boşluk */
 }
 
 .PaymentCard__expiry-container {
@@ -140,42 +289,58 @@
   gap: 10px;
 }
 
-.PaymentCard__select,
-.PaymentCard__input {
-  padding: 10px;
-  border: 1px solid var(--primary-color);
-  border-radius: 5px;
-  font-size: 16px;
+.PaymentCard__select {
+  /* Yukarıdaki select stili ile aynı */
+  width: auto; /* Yan yana durabilsin */
+  min-width: 60px;
+}
+
+.PaymentCard__cvc {
+  width: 80px;
+  max-width: 80px; /* CVC alanı için genişlik sınırı */
 }
 
 .PaymentCard__accepted-title {
   margin-bottom: 10px;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: bold;
 }
 
+/* Ödeme Logoları */
 .PaymentCard__accepted-logos {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 .PaymentCard__logo {
-  width: 60px;
+  width: 50px;
+  height: auto;
 }
 
-/* ==== Ödeme Kartı (PaymentPay) Sağdaki Sabit Bileşen ==== */
+.PaymentCard__input--card {
+  position: relative; 
+  z-index: 1;              /* İkonun gerisinde kalmasın diye 1 veriyoruz */
+  padding-left: 40px;      /* İkon alanı kadar boşluk */
+  background-color: #fff;  /* Beyaz arkaplan (ikon gözüksün) */
+}
 
+
+/************************************************
+  PAYMENTPAY BİLEŞENİ (Sağ Taraftaki Otel Kutu)
+************************************************/
 .paymentPay-container {
   background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden; /* Resim taşmasın */
 }
 
 .paymentPay-img {
   width: 100%;
   height: 180px;
   object-fit: cover;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
 }
 
 .paymentPay-content {
@@ -183,353 +348,49 @@
 }
 
 .paymentPay-name {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  color: #333;
 }
 
 .paymentPay-address {
-  color: #555;
-  margin-bottom: 10px;
+  color: #666;
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 
 .paymentPay-price {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
-  color: #e85d04;
+  color: #d9534f; /* Kırmızı ton */
+  margin-bottom: 4px;
 }
-/* =========================================
-   Root Variables (your palette)
-   ========================================= */
-   :root {
-    --primary-color: #264653;      /* Dark teal */
-    --secondary-color: #2A9D8F;    /* Light teal */
-    --heading-color: #264653;      /* Dark teal */
-    --background-color: #ffffff;   /* White */
-    --text-color: #264653;         /* Dark teal */
-    --accent-color: #E07A5F;       /* Coral */
-    --hover-color: #d65f5f;        /* Hover coral */
-    --font-name: "Montserrat", sans-serif;
-    --subtitle-font-name: "Island Moments", cursive;
-  }
-  
-  /* A global reset or base styles */
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: var(--font-name);
-    background: var(--background-color);
-    color: var(--text-color);
-  }
-  
-  /* =========================================
-     Layout: Sidebar + Content
-     ========================================= */
-  .profile-section {
-    min-height: 70vh;
-    padding: 50px 0;
-    background-color: #f9fafc; /* Light grey background for profile area */
-    /* If you want a pure white, you can do var(--background-color) */
-  }
-  
-  .profile-sidebar {
-    background-color: var(--background-color);
-    border: 1px solid var(--secondary-color);
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
-  }
-  .sidebar-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--heading-color);
-  }
-  .sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .sidebar-menu a {
-    color: var(--text-color);
-    text-decoration: none;
-    font-weight: 500;
-    padding: 8px 10px;
-    border-radius: 6px;
-    transition: background-color 0.2s;
-  }
-  .sidebar-menu a:hover {
-    background-color: #f0f3f9;
-  }
-  .link-active {
-    background-color: rgba(42, 157, 143, 0.15); /* light teal overlay */
-    color: var(--heading-color);
-  }
-  
-  .profile-content {
-    background: var(--background-color);
-    border: 1px solid var(--secondary-color);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    padding: 20px;
-    min-height: 400px;
-  }
-  
-  /* =========================================
-     Overview Page
-     ========================================= */
-  .stats-box {
-    display: flex;
-    flex-wrap: wrap; /* Wrap on smaller screens */
-    gap: 20px;
-    margin: 20px 0;
-  }
-  
-  /* Each stat card */
-  .stat {
-    background-color: #f9fafc; /* Light background for stats */
-    border: 1px solid var(--secondary-color);
-    border-radius: 6px;
-    padding: 15px 20px;
-    text-align: center;
-    flex: 1 1 180px; /* They can wrap or grow as needed */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    transition: transform 0.3s, background-color 0.3s, color 0.3s;
-    min-width: 150px;
-  }
-  .stat h4 {
-    font-size: 1.4rem;
-    margin-bottom: 5px;
-    color: var(--heading-color);
-  }
-  .stat span {
-    font-size: 0.9rem;
-    color: var(--text-color);
-  }
-  
-  /* Make a stat clickable on hover */
-  .clickable {
-    cursor: pointer;
-  }
-  .clickable:hover {
-    transform: translateY(-2px);
-    background-color: var(--secondary-color); /* Light teal */
-    color: #fff; /* Switch text to white for contrast */
-  }
-  .clickable:hover h4,
-  .clickable:hover span {
-    color: #fff;
-  }
-  
-  /* Featured hotels */
-  .featured-hotels {
-    margin-top: 30px;
-  }
-  .featured-hotels h5 {
-    margin-bottom: 15px;
-    font-weight: 600;
-    color: var(--heading-color);
-  }
-  .featured-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 16px;
-  }
-  
-  /* Hotel card */
-  .featured-item {
-    background: var(--background-color);
-    border: 1px solid var(--secondary-color);
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    overflow: hidden;
-    transition: transform 0.2s;
-  }
-  .featured-item:hover {
-    transform: translateY(-3px);
-  }
-  .featured-img {
-    width: 100%;
-    height: 160px;
-    overflow: hidden;
-    background-color: #f0f0f0;
-  }
-  .featured-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.2s;
-  }
-  .featured-img img:hover {
-    transform: scale(1.05);
-  }
-  .featured-info {
-    padding: 10px 15px 15px;
-  }
-  .featured-info h6 a{
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-    text-decoration: none;
-    color: var(--heading-color);
-  }
-  .featured-info h6 a:hover {
-    color: var(--accent-color); /* Hoverda farklı renk */
-  }
-  .featured-info .city {
-    font-size: 0.85rem;
-    color: #777;
-    margin-bottom: 4px;
-  }
-  .featured-info .price {
-    font-size: 0.9rem;
-    color: var(--text-color);
-  }
-  
-  /* =========================================
-     Bookings Page
-     ========================================= */
-  .profile-bookings-container {
-    background: #f9fafc;
-    padding: 20px;
-    border-radius: 8px;
-    color: var(--text-color);
-  }
-  .profile-bookings-container h2 {
-    margin-bottom: 1rem;
-    color: var(--heading-color);
-  }
-  .booking-section h4 {
-    margin-bottom: 0.8rem;
-    color: var(--heading-color);
-  }
-  
-  /* Limit the height of the upcoming section so it scrolls when > 5 bookings */
-  .upcoming-list {
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  
-  /* Individual booking card */
-  .booking-item {
-    background: var(--background-color);
-    border: 1px solid var(--secondary-color);
-    border-radius: 6px;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    position: relative;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-  .booking-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-  }
-  .booking-header h5 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--heading-color);
-  }
-  .booking-header span {
-    font-size: 0.85rem;
-    color: #666;
-  }
-  .booking-body p {
-    margin: 3px 0;
-    font-size: 0.9rem;
-    color: #555;
-  }
-  .booking-body label {
-    font-size: 0.8rem;
-    font-weight: 500;
-    margin-right: 5px;
-  }
-  
-  /* 3-dot action menu */
-  .booking-actions {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-  .dots-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: #999;
-    outline: none;
-    padding: 4px;
-  }
-  .dots-btn:hover {
-    color: var(--accent-color); /* Use the coral accent on hover */
-  }
-  .actions-menu {
-    background: var(--background-color);
-    border: 1px solid var(--secondary-color);
-    border-radius: 4px;
-    position: absolute;
-    right: 0;
-    top: 35px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  .actions-menu button {
-    background: transparent;
-    border: none;
-    padding: 8px 12px;
-    text-align: left;
-    width: 100%;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: var(--text-color);
-    transition: background-color 0.2s, color 0.2s;
-  }
-  .actions-menu button:hover {
-    background: var(--secondary-color);
-    color: #fff;
-  }
-  
-  /* =========================================
-     Settings Page
-     ========================================= */
-  .settings-form .form-group {
-    margin-bottom: 15px;
-  }
-  .settings-form label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 5px;
-    color: var(--heading-color);
-  }
-  .settings-form input {
-    width: 100%;
-    padding: 0.6rem;
-    border: 1px solid var(--secondary-color);
-    border-radius: 5px;
-    color: var(--text-color);
-  }
-  .settings-form input:focus {
-    outline: none;
-    border-color: var(--accent-color);
-  }
-  .settings-form button {
-    margin-top: 10px;
-    background: var(--accent-color);
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-  }
-  .settings-form button:hover {
-    background: var(--hover-color);
-    transform: scale(1.02);
-  }
-  
+
+/************************************************
+  EK: BUTTON STİLLERİ, UYARI VS.
+************************************************/
+button {
+  background-color: #0063e5;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #0056c1;
+}
+
+.payment-note {
+  background-color: #fffae6;
+  border-left: 4px solid #ffe14b;
+  padding: 10px;
+  font-size: 14px;
+  margin-top: 10px;
+  color: #7a5b00;
+}

@@ -1,28 +1,33 @@
 import React from 'react';
-import PaymentName from '../Booking/PaymentName';
-import PaymentRoom from '../Booking/PaymentRoom';
-import PaymentCard from '../Booking/PaymentCard';
-import PaymentPay from '../Booking/PaymentPay';
+import PaymentName from './PaymentName';
+import PaymentRoom from './PaymentRoom';
+import PaymentCard from './PaymentCard';
+import PaymentPay from './PaymentPay';
 
 import '../../styles/PaymentPage.css'; // Ana container stilleri
-import { Payment } from '@mui/icons-material';
+// ... PaymentName, PaymentRoom, PaymentCard, PaymentPay bileşenlerini import edin.
 
 const PaymentPage = () => {
   return (
     <div className="payment-layout">
+      {/* Sol taraftaki içerik */}
       <div className="payment-content">
-        <PaymentName />
-        <PaymentRoom />
-        <PaymentCard />
+        <div className="payment-box">
+          <PaymentName />
+        </div>
+
+        <div className="payment-box">
+          <PaymentRoom />
+        </div>
+
+        <div className="payment-box">
+          <PaymentCard />
+        </div>
       </div>
-      
+
+      {/* Sağ taraftaki özet kutusu */}
       <div className="payment-sidebar">
-        <PaymentPay
-          hotelName="Hilton Garden Inn"
-          price={140}
-          photo={hotelImage}
-          address="123 Street, City, Country"
-        />
+        <PaymentPay />
       </div>
     </div>
   );

@@ -1,33 +1,33 @@
 import React from "react";
-import "./../../styles/PaymentPage.css"; // Ana container stilleri
+// İsteğe göre "PaymentPage.css" veya "PaymentRoom.css"
+import "./../../styles/PaymentRoom.css";
 
 const PaymentRoom = () => {
   return (
     <div className="PaymentRoom__container">
-      <h2 className="PaymentRoom__title">Adım 2: Konaklama yeri detayları</h2>
+      <h2 className="PaymentRoom__title">Adım 2: Konaklama Yeri Detayları</h2>
 
-      {/* Konaklama yerinde öne çıkanlar */}
+      {/* Öne çıkanlar */}
       <div className="PaymentRoom__highlights">
-        <h3 className="PaymentRoom__subtitle">Konaklama yerinde öne çıkanlar</h3>
-        <ul className="PaymentRoom__icons-list">
-          <li className="PaymentRoom__icon-item">Ücretsiz otopark</li>
-          <li className="PaymentRoom__icon-item">Ücretsiz Kablosuz İnternet</li>
-          <li className="PaymentRoom__icon-item">Evcil Hayvan Dostu</li>
-          {/* İsterseniz buraya başka öne çıkan özellikler ekleyebilirsiniz */}
+        <h3 className="PaymentRoom__subtitle">Öne çıkanlar</h3>
+        <ul className="PaymentRoom__grid-list">
+          <li className="PaymentRoom__item-box">Ücretsiz otopark</li>
+          <li className="PaymentRoom__item-box">Ücretsiz Kablosuz İnternet</li>
+          <li className="PaymentRoom__item-box">Evcil Hayvan Dostu</li>
+          <li className="PaymentRoom__item-box">24 Saat Resepsiyon</li>
         </ul>
       </div>
 
-      {/* Oda Bilgisi */}
-      <div className="PaymentRoom__room-info">
-  <h3 className="PaymentRoom__room-title">Luxury Tek Büyük Yataklı Oda</h3>
-  <ul className="PaymentRoom__room-included-list">
-    <li className="PaymentRoom__room-included-item">Ücretsiz Kablosuz İnternet</li>
-    <li className="PaymentRoom__room-included-item">Kahvaltı mevcut (otelde ödeyin)</li>
-    <li className="PaymentRoom__room-included-item">1 büyük (Queen) Boy Yatak</li>
-    <li className="PaymentRoom__room-included-item">Sigara içilen</li>
-  </ul>
-</div>
-
+      {/* Oda Bilgisi: Odayı ayrı bir "room-box" içine alıyoruz */}
+      <div className="PaymentRoom__room-box">
+        <h3 className="PaymentRoom__subtitle">Luxury Tek Büyük Yataklı Oda</h3>
+        <ul className="PaymentRoom__grid-list">
+          <li className="PaymentRoom__item-box">Kahvaltı mevcut</li>
+          <li className="PaymentRoom__item-box">1 büyük (Queen) Boy Yatak</li>
+          <li className="PaymentRoom__item-box">Sigara içilen oda</li>
+          <li className="PaymentRoom__item-box">Oda Servisi</li>
+        </ul>
+      </div>
     </div>
   );
 };
