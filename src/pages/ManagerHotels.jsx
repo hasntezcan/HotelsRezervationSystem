@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   TextField,
   Button,
@@ -6,29 +6,34 @@ import {
   Card,
   CardContent,
   Typography,
-  Box
+  Box,
 } from "@mui/material";
 import SidebarManager from "../components/Sidebar_manager";
 import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
 const ManagerHotels = () => {
+  const { user } = useContext(AuthContext); // Login olmuş kullanıcı bilgisi
   const [hotels, setHotels] = useState([]);
   const [editHotel, setEditHotel] = useState(null);
+  const [error, setError] = useState(null);
 
-  // Burada ilgili manager'ın otel bilgilerini çektiğimizi varsayıyoruz.
-  // Örneğin, backend'den "GET /api/hotels/manager" çağrısı yapılabilir.
-  // Şimdilik localStorage'den veya statik veriden simülasyon yapalım.
+  // Backend'den manager'a ait otel verilerini alıyoruz.
   useEffect(() => {
-    const storedHotels = JSON.parse(localStorage.getItem("managerHotels"));
-    if (storedHotels) {
-      setHotels(storedHotels);
-    } else {
-      // Eğer localStorage'de veri yoksa boş diziyle başlatın.
-      setHotels([]);
+    if (user && user.userId) {
+      axios
+        .get(`http://localhost:8080/api/hotels/manager?userId=${user.userId}`)
+        .then((response) => {
+          setHotels(response.data);
+        })
+        .catch((err) => {
+          console.error("Error fetching hotels:", err);
+          setError("Error fetching hotels");
+        });
     }
-  }, []);
+  }, [user]);
 
-  // Manager için gösterilecek otelin seçimi (örneğin; manager’a ait tek otel varsa, ilk eleman seçilir)
+  // Manager'ın otel(leri) içinden düzenleme için ilk oteli seçiyoruz.
   const hotelToEdit = hotels.length > 0 ? hotels[0] : null;
 
   // Düzenleme moduna geçmek için
@@ -36,35 +41,42 @@ const ManagerHotels = () => {
     setEditHotel({ ...hotel });
   };
 
-  // Kaydet butonuna tıklandığında güncellenmiş verileri kaydet
+  // Kaydet butonuna tıklanınca güncellenmiş verileri state üzerinde güncelliyoruz.
+  // Gerektiğinde backend update API çağrısı da ekleyebilirsiniz.
   const handleSave = () => {
     const updatedHotels = hotels.map((hotel) =>
       hotel.hotelId === editHotel.hotelId ? editHotel : hotel
     );
     setHotels(updatedHotels);
-    localStorage.setItem("managerHotels", JSON.stringify(updatedHotels));
     setEditHotel(null);
+    // Örneğin, backend'e PUT isteği yapılabilir:
+    // axios.put(`http://localhost:8080/api/hotels/${editHotel.hotelId}`, editHotel)
+    //   .then(response => { ... })
+    //   .catch(err => { ... });
   };
 
   // Formdaki input'lardaki değişiklikleri state'e yansıtma
   const handleChange = (e, field) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setEditHotel({ ...editHotel, [field]: value });
   };
+
+  if (error) {
+    return <Typography color="error">{error}</Typography>;
+  }
 
   return (
     <div className="dashboard" style={{ display: "flex" }}>
       <SidebarManager />
-
       <div className="content" style={{ padding: "40px", width: "100%" }}>
         <Grid container spacing={4} style={{ width: "100%", maxWidth: "1400px" }}>
-          {/* Otel bilgileri */}
+          {/* Otel bilgilerini görüntüleme */}
           <Grid item xs={12} sm={6}>
             <Card
               style={{
                 borderRadius: "50px",
                 boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                padding: "20px"
+                padding: "20px",
               }}
             >
               <CardContent>
@@ -104,15 +116,14 @@ const ManagerHotels = () => {
               </CardContent>
             </Card>
           </Grid>
-
-          {/* Düzenleme formu */}
+          {/* Düzenleme Formu */}
           <Grid item xs={12} sm={6}>
             {editHotel && editHotel.hotelId === hotelToEdit?.hotelId ? (
               <Card
                 style={{
                   borderRadius: "50px",
                   boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                  padding: "20px"
+                  padding: "20px",
                 }}
               >
                 <CardContent>
@@ -121,63 +132,63 @@ const ManagerHotels = () => {
                   </Typography>
                   <TextField
                     label="Hotel Name"
-                    value={editHotel?.name}
+                    value={editHotel?.name || ""}
                     onChange={(e) => handleChange(e, "name")}
                     fullWidth
                     margin="normal"
                   />
                   <TextField
                     label="City"
-                    value={editHotel?.city}
+                    value={editHotel?.city || ""}
                     onChange={(e) => handleChange(e, "city")}
                     fullWidth
                     margin="normal"
                   />
                   <TextField
                     label="Country"
-                    value={editHotel?.country}
+                    value={editHotel?.country || ""}
                     onChange={(e) => handleChange(e, "country")}
                     fullWidth
                     margin="normal"
                   />
                   <TextField
                     label="Address"
-                    value={editHotel?.address}
+                    value={editHotel?.address || ""}
                     onChange={(e) => handleChange(e, "address")}
                     fullWidth
                     margin="normal"
                   />
                   <TextField
                     label="Price Per Night"
-                    value={editHotel?.pricePerNight}
+                    value={editHotel?.pricePerNight || ""}
                     onChange={(e) => handleChange(e, "pricePerNight")}
                     fullWidth
                     margin="normal"
                   />
                   <TextField
                     label="Capacity"
-                    value={editHotel?.capacity}
+                    value={editHotel?.capacity || ""}
                     onChange={(e) => handleChange(e, "capacity")}
                     fullWidth
                     margin="normal"
                   />
                   <TextField
                     label="Amenities"
-                    value={editHotel?.amenities}
+                    value={editHotel?.amenities || ""}
                     onChange={(e) => handleChange(e, "amenities")}
                     fullWidth
                     margin="normal"
                   />
                   <TextField
                     label="Photo URL"
-                    value={editHotel?.photo}
+                    value={editHotel?.photo || ""}
                     onChange={(e) => handleChange(e, "photo")}
                     fullWidth
                     margin="normal"
                   />
                   <TextField
                     label="Manager ID"
-                    value={editHotel?.managerId}
+                    value={editHotel?.managerId || ""}
                     disabled
                     fullWidth
                     margin="normal"
