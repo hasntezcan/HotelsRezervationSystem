@@ -6,6 +6,7 @@ import com.example.hotelapp.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,7 +57,7 @@ public class AuthController {
             String dbPassword = user.getPassword();
             
             if (!incomingPassword.equals(dbPassword)) {
-                String debugMessage = "Password is incorrect." ;
+                String debugMessage = "Password is incorrect.";
                 return ResponseEntity.status(401).body(debugMessage);
             }
             return ResponseEntity.ok(user);
@@ -101,4 +102,22 @@ public class AuthController {
         }
         return ResponseEntity.ok(adminOpt.get());
     }
+    
+
+// Manager profilini döndüren GET endpoint
+@GetMapping("/profile/manager")
+public ResponseEntity<?> getManagerProfile() {
+    Optional<User> managerOpt = userRepository.findAll()
+            .stream()
+            .filter(user -> "manager".equalsIgnoreCase(user.getRole()))
+            .findFirst();
+    if (managerOpt.isEmpty()) {
+        return ResponseEntity.status(404).body("Manager user not found.");
+    }
+    return ResponseEntity.ok(managerOpt.get());
+}
+
+
+
+
 }
