@@ -4,55 +4,68 @@ import axios from "axios";
 
 const AdminHotel = () => {
   const [hotels, setHotels] = useState([]);
+  const [managers, setManagers] = useState([]); // Yeni state
   const [newHotel, setNewHotel] = useState({
-    hotelName: "",
+    name: "",
     city: "",
+    country: "",
     address: "",
     pricePerNight: "",
     capacity: "",
-    amenities: "", // Virgülle ayrılmış string; backend'de parse edilebilir.
+    amenities: "",
     photo: "",
-    featured: false,
+    managerId: ""   // Manager seçimi için (opsiyonel)
   });
   const [editingHotel, setEditingHotel] = useState(null);
 
-  // Backend'den otel verilerini çek
   const fetchHotels = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/hotels");
+      const response = await axios.get("http://localhost:8080/api/hotels/withAmenities");
       setHotels(response.data);
     } catch (error) {
       console.error("Error fetching hotels:", error);
     }
   };
 
+  // Yeni: Manager listesini çekme fonksiyonu
+  const fetchManagers = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/managers");
+      setManagers(response.data);
+    } catch (error) {
+      console.error("Error fetching managers:", error);
+    }
+  };
+
   useEffect(() => {
     fetchHotels();
+    fetchManagers();
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewHotel({ ...newHotel, [name]: value });
+    const { name, value, type, checked } = e.target;
+    setNewHotel({
+      ...newHotel,
+      [name]: type === "checkbox" ? checked : value,
+    });
   };
 
   const addHotel = async () => {
-    // Gerekli alanların doldurulduğundan emin olun
-    if (!newHotel.hotelName || !newHotel.city || !newHotel.address) return;
+    if (!newHotel.name || !newHotel.city || !newHotel.address) return;
     try {
-      // POST isteği gönderirken, front-end'ten gelen "hotelName" değeri
-      // backend tarafında "name" alanına aktarılacaktır.
       const response = await axios.post("http://localhost:8080/api/hotels", newHotel);
       setHotels([...hotels, response.data]);
-      // Formu sıfırla
+      // Formu resetleyin:
       setNewHotel({
-        hotelName: "",
+        name: "",
         city: "",
+        country: "",
         address: "",
         pricePerNight: "",
         capacity: "",
         amenities: "",
         photo: "",
-        featured: false,
+        managerId: ""
       });
     } catch (error) {
       console.error("Error adding hotel:", error);
@@ -62,7 +75,7 @@ const AdminHotel = () => {
   const deleteHotel = async (id) => {
     try {
       await axios.delete(`http://localhost:8080/api/hotels/${id}`);
-      setHotels(hotels.filter((hotel) => hotel.hotel_id !== id));
+      setHotels(hotels.filter((hotel) => hotel.hotelId !== id));
     } catch (error) {
       console.error("Error deleting hotel:", error);
     }
@@ -70,46 +83,46 @@ const AdminHotel = () => {
 
   const editHotel = (hotel) => {
     setEditingHotel(hotel);
-    // Map JSON verisinde "name" alanı otel adını temsil ettiği için,
-    // onu "hotelName" olarak set ediyoruz.
     setNewHotel({
-      hotelName: hotel.name,
+      name: hotel.name,
       city: hotel.city,
+      country: hotel.country,
       address: hotel.address,
-      pricePerNight: hotel.price_per_night,
+      pricePerNight: hotel.pricePerNight,
       capacity: hotel.capacity,
-      amenities:
-        typeof hotel.amenities === "string"
-          ? hotel.amenities
-          : Array.isArray(hotel.amenities)
-          ? hotel.amenities.join(", ")
-          : "",
+      amenities: hotel.amenities,
       photo: hotel.photo,
-      featured: hotel.featured,
+      managerId: hotel.managerId || ""   // Mevcut manager varsa
     });
   };
 
   const updateHotel = async () => {
     try {
+      const { hotelId, createdAt, ...editingData } = editingHotel;
+      const updatedData = { ...editingData };
+      Object.keys(newHotel).forEach((key) => {
+        updatedData[key] = newHotel[key] !== undefined && newHotel[key] !== null ? newHotel[key] : "";
+      });
       const response = await axios.put(
-        `http://localhost:8080/api/hotels/${editingHotel.hotel_id}`,
-        newHotel
+        `http://localhost:8080/api/hotels/${editingHotel.hotelId}`,
+        updatedData
       );
       setHotels(
         hotels.map((hotel) =>
-          hotel.hotel_id === editingHotel.hotel_id ? response.data : hotel
+          hotel.hotelId === editingHotel.hotelId ? response.data : hotel
         )
       );
       setEditingHotel(null);
       setNewHotel({
-        hotelName: "",
+        name: "",
         city: "",
+        country: "",
         address: "",
         pricePerNight: "",
         capacity: "",
         amenities: "",
         photo: "",
-        featured: false,
+        managerId: ""
       });
     } catch (error) {
       console.error("Error updating hotel:", error);
@@ -119,14 +132,13 @@ const AdminHotel = () => {
   return (
     <div id="admin-hotel-container">
       <div id="admin-hotel-management-title">Hotel Management</div>
-      
-      {/* Form Alanı */}
+
       <div id="admin-hotel-form">
         <input
           type="text"
-          name="hotelName"
+          name="name"
           placeholder="Hotel Name"
-          value={newHotel.hotelName}
+          value={newHotel.name}
           onChange={handleChange}
         />
         <input
@@ -134,6 +146,13 @@ const AdminHotel = () => {
           name="city"
           placeholder="City"
           value={newHotel.city}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="country"
+          placeholder="Country"
+          value={newHotel.country}
           onChange={handleChange}
         />
         <input
@@ -171,6 +190,15 @@ const AdminHotel = () => {
           value={newHotel.photo}
           onChange={handleChange}
         />
+        {/* Yeni: Manager seçimi için dropdown */}
+        <select name="managerId" value={newHotel.managerId} onChange={handleChange}>
+          <option value="">Select Manager</option>
+          {managers.map((manager) => (
+            <option key={manager.managerId} value={manager.managerId}>
+              {manager.managerName} {/* İsim olarak firstName veya username kullanabilirsiniz */}
+            </option>
+          ))}
+        </select>
         {editingHotel ? (
           <button id="admin-hotel-button" onClick={updateHotel}>
             Update Hotel
@@ -182,29 +210,23 @@ const AdminHotel = () => {
         )}
       </div>
 
-      {/* Otel Listesi */}
       <div id="admin-hotel-list">
         {hotels.map((hotel) => (
-          <div className="admin-hotel-item" key={hotel.hotel_id} id={hotel.hotel_id}>
+          <div className="admin-hotel-item" key={hotel.hotelId} id={hotel.hotelId}>
             <div className="admin-hotel-title">{hotel.name}</div>
             <p>
-              {hotel.city} - {hotel.address}
+              {hotel.city}, {hotel.country} - {hotel.address}
             </p>
             <p>
-              Price: ${hotel.price_per_night} | Capacity: {hotel.capacity}
+              Price: ${hotel.pricePerNight} | Capacity: {hotel.capacity}
             </p>
-            <p>
-              Amenities:{" "}
-              {typeof hotel.amenities === "string"
-                ? hotel.amenities
-                : Array.isArray(hotel.amenities)
-                ? hotel.amenities.join(", ")
-                : ""}
-            </p>
+            <p>Amenities: {hotel.amenities}</p>
+            {/* Eğer manager bilgisi de varsa gösterelim */}
+            {hotel.managerName && <p>Manager: {hotel.managerName}</p>}
             <button className="admin-hotel-edit-btn" onClick={() => editHotel(hotel)}>
               Edit
             </button>
-            <button className="admin-hotel-delete-btn" onClick={() => deleteHotel(hotel.hotel_id)}>
+            <button className="admin-hotel-delete-btn" onClick={() => deleteHotel(hotel.hotelId)}>
               Delete
             </button>
           </div>

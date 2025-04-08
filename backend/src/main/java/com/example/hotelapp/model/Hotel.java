@@ -9,8 +9,9 @@ import java.util.List;
 public class Hotel {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment için
     @Column(name = "hotel_id", nullable = false)
-    private String hotelId;
+    private Long hotelId;  // Türü String'den Long'a değiştirildi.
 
     @Column(name = "manager_id")
     private Long managerId;
@@ -52,24 +53,23 @@ public class Hotel {
 
     private Integer capacity;
 
-    // Amenities JSON dizisi olarak gönderilebilir, burada basitlik açısından string tutuluyor
-    @Column(columnDefinition = "TEXT")
+    @Transient // Artık veritabanında saklanmayacak
     private String amenities;
 
     //private String photo;
     private Boolean featured;
+    //private String photo;
 
     public Hotel() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
-
-    public String getHotelId() {
+    // Getter ve Setter'lar
+    public Long getHotelId() {
         return hotelId;
     }
 
-    public void setHotelId(String hotelId) {
+    public void setHotelId(Long hotelId) {
         this.hotelId = hotelId;
     }
 
@@ -181,7 +181,6 @@ public class Hotel {
         return createdAt;
     }
 
-    // createdAt'ı setter ile değiştirmek genelde önerilmez fakat ihtiyaca göre ekleyebilirsiniz.
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }

@@ -1,0 +1,385 @@
+/************************************************
+  MAIN CONTAINER (PAGE LAYOUT)
+************************************************/
+.payment-layout {
+  display: flex; /* Left content (forms), right summary */
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff; 
+  font-family: "Helvetica", Arial, sans-serif;
+}
+
+.payment-content {
+  flex: 2; /* The left side has the main content (steps) */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; 
+}
+
+.payment-sidebar {
+  margin-top: 50px; 
+  flex: 1; 
+  position: sticky;
+  top: 120px; 
+  align-self: flex-start;
+  height: fit-content; 
+}
+
+/************************************************
+  GENERAL BOX STYLE (White Boxes for Each Step)
+************************************************/
+.payment-box {
+  background-color: #fff;
+  border: 1px solid #2a9d8f; /* CHANGED from #ddd */
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.payment-box h2,
+.payment-box h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+/************************************************
+  STEP HEADINGS / GENERAL TEXT STYLE
+************************************************/
+.step-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.step-subtitle {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #333;
+  display: inline-block;
+}
+
+/************************************************
+  FORM ELEMENTS
+************************************************/
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+select:focus {
+  outline: none;
+  border-color: #66afe9; /* Light blue outline on focus */
+  box-shadow: 0 0 3px rgba(102,175,233,0.6);
+}
+
+/************************************************
+  PAYMENTNAME COMPONENT
+************************************************/
+.PaymentName__container {
+  /* You can add "payment-box" if you want a uniform style */
+}
+
+.PaymentName__title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.PaymentName__note {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.PaymentName__form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.PaymentName__input {
+  max-width: 400px; /* Optional width limit */
+}
+
+.PaymentName__checkbox-group {
+  margin-top: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.PaymentName__checkbox {
+  margin-top: 3px;
+}
+
+/************************************************
+  PAYMENTROOM COMPONENT
+************************************************/
+.PaymentRoom__container {
+  background-color: #fff;        
+  border: 1px solid #2a9d8f;     /* CHANGED from #ddd */
+  border-radius: 6px;           
+  padding: 10px 15px;           
+  color: #333;
+  font-size: 14px;
+  min-width: 150px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+  /* You can optionally add "payment-box" for a uniform style. */
+}
+
+.PaymentRoom__title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.PaymentRoom__subtitle {
+  font-size: 16px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #444;
+}
+
+/* Styles for icons, lines, etc. */
+.PaymentRoom__icons-list,
+.PaymentRoom__room-included-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  color: #555;
+}
+
+.PaymentRoom__icons-list li,
+.PaymentRoom__room-included-list li {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+}
+.PaymentRoom__grid-list {
+  display: flex;          
+  flex-wrap: wrap;        
+  gap: 10px;              
+  list-style: none;       
+  padding: 0;
+  margin: 0;
+}
+
+/* Each item is a box */
+.PaymentRoom__item-box {
+  background-color: #fff;        
+  border: 1px solid #2a9d8f;     /* CHANGED from #ddd */
+  border-radius: 6px;           
+  padding: 10px 15px;           
+  color: #333;
+  font-size: 14px;
+  min-width: 150px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+.PaymentRoom__item-box:hover {
+  transform: translateY(-2px);
+}
+.PaymentRoom__room-box {
+  margin-top: 20px;           
+  padding: 15px;              
+  background-color: #f9fafc;  
+  border: 1px solid #2a9d8f;   /* CHANGED from #ddd */
+  border-radius: 6px;         
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/************************************************
+  PAYMENTCARD COMPONENT
+************************************************/
+.PaymentCard__container {
+  /* Uniform box style if desired */
+}
+
+/* Heading (Step 3: Payment Details) */
+.PaymentCard__title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.PaymentCard__content {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap; /* Wrap on small screens */
+}
+
+.PaymentCard__formWrapper {
+  flex: 2;
+}
+
+.PaymentCard__acceptedWrapper {
+  align-self: flex-start;
+  flex: 1;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  background: #f9fafc;
+  padding: 15px;
+  border: 1px solid #2a9d8f; /* CHANGED from #ddd */
+  border-radius: 4px;
+}
+
+/* Form Groups */
+.PaymentCard__form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.PaymentCard__label {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+/* Credit Card Icon */
+.PaymentCard__input-wrapper--icon {
+  position: relative;
+}
+
+.PaymentCard__icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  left: auto;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 20px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.PaymentCard__input--card {
+  position: relative; 
+  z-index: 1;    
+  padding-left: 40px; 
+  padding-right: 40px; 
+  background-color: #fff; 
+}
+
+.PaymentCard__expiry-container {
+  display: flex;
+  gap: 10px;
+}
+
+.PaymentCard__select {
+  width: auto; 
+  min-width: 60px;
+}
+
+.PaymentCard__cvc {
+  width: 80px;
+  max-width: 80px; 
+}
+
+.PaymentCard__accepted-title {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/* Accepted Payment Logos */
+.PaymentCard__accepted-logos {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.PaymentCard__logo {
+  width: 50px;
+  height: auto;
+}
+
+/************************************************
+  PAYMENTPAY COMPONENT (Right-Side Hotel Box)
+************************************************/
+.paymentPay-container {
+  background-color: #fff;
+  border: 1px solid #2a9d8f; /* CHANGED from #ddd */
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden; /* Prevent image overflow */
+}
+
+.paymentPay-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.paymentPay-content {
+  padding: 15px;
+}
+
+.paymentPay-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.paymentPay-address {
+  color: #666;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.paymentPay-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #d9534f; 
+  margin-bottom: 4px;
+}
+
+/************************************************
+  EXTRAS: BUTTON STYLES, ALERT, ETC.
+************************************************/
+.myGreenBookNowButton {
+  /* Background color similar to the screenshot */
+  background-color: #2a9d8f; 
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 30px; /* Large radius for pill shape */
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s;
+  width: 100%; /* If you want it full-width; remove or adjust as needed */
+  max-width: 250px; /* Optional max-width limit */
+  display: inline-block; /* So you can center it or place it inline */
+}
+
+.myGreenBookNowButton:hover {
+  background-color: #21867b; /* Darker shade for hover */
+}
+

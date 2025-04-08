@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/hotels")
@@ -35,30 +36,27 @@ public class HotelController {
     }
 
     
+    // Endpoint: Otellerin amenity bilgilerini de getirir.
+    @GetMapping("/withAmenities")
+    public ResponseEntity<?> getAllHotelsWithAmenities() {
+        List<Map<String, Object>> hotelsWithAmenities = hotelRepository.findAllWithAmenities();
+        return ResponseEntity.ok(hotelsWithAmenities);
+    }
 
     @PostMapping
     public ResponseEntity<?> addHotel(@RequestBody Hotel hotel) {
-        // Eğer hotelId boşsa, UUID ile atayın.
-        if (hotel.getHotelId() == null || hotel.getHotelId().isEmpty()) {
-            hotel.setHotelId(UUID.randomUUID().toString());
-        }
-        // Front-end JSON'unda "hotelName" gönderildiğini varsayalım.
-        // Modelde "name" alanı kullanılacak.
-        // Bu dönüşümü burada yapıyoruz:
-        if (hotel.getName() != null) {
-            hotel.setName(hotel.getName());
-        }
+        // "featured" alanı kaldırıldı.
         Hotel savedHotel = hotelRepository.save(hotel);
         return ResponseEntity.ok(savedHotel);
     }
 
     @PutMapping("/{hotelId}")
-    public ResponseEntity<?> updateHotel(@PathVariable String hotelId, @RequestBody Hotel hotelDetails) {
+    public ResponseEntity<?> updateHotel(@PathVariable Long hotelId, @RequestBody Hotel hotelDetails) {
         return hotelRepository.findById(hotelId)
             .map(hotel -> {
-                // Front-end'den gelen hotelName, modelde "name" alanına aktarılıyor.
                 hotel.setName(hotelDetails.getName());
                 hotel.setCity(hotelDetails.getCity());
+                hotel.setCountry(hotelDetails.getCountry());
                 hotel.setAddress(hotelDetails.getAddress());
                 hotel.setPricePerNight(hotelDetails.getPricePerNight());
                 hotel.setCapacity(hotelDetails.getCapacity());
@@ -67,6 +65,7 @@ public class HotelController {
                 hotel.setFeatured(hotelDetails.getFeatured());
                 // Diğer alanları da güncelleyebilirsiniz, örneğin:
                 hotel.setCountry(hotelDetails.getCountry());
+                //hotel.setPhoto(hotelDetails.getPhoto());
                 hotel.setLatitude(hotelDetails.getLatitude());
                 hotel.setLongitude(hotelDetails.getLongitude());
                 hotel.setDescription(hotelDetails.getDescription());
@@ -82,7 +81,7 @@ public class HotelController {
     }
 
     @DeleteMapping("/{hotelId}")
-    public ResponseEntity<?> deleteHotel(@PathVariable String hotelId) {
+    public ResponseEntity<?> deleteHotel(@PathVariable Long hotelId) {
         if (hotelRepository.existsById(hotelId)) {
             hotelRepository.deleteById(hotelId);
             return ResponseEntity.ok("Hotel deleted successfully.");
