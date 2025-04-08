@@ -1,22 +1,24 @@
-import React from 'react'
-import { Card, CardBody } from 'reactstrap'
-import { Link } from 'react-router-dom'
-import './tour-card.css'
-import calculateAvgRating from '../utils/avgRating'
+import React from 'react';
+import { Card, CardBody } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import './tour-card.css';
 
 const TourCard = ({ tour }) => {
-  const { hotelId, title, city, imgUrl, price, featured, reviews, rating } = tour
-
-  // Eğer reviews verisi varsa ortalama hesapla, yoksa rating göster
-  const { avgRating } = calculateAvgRating(reviews || [])
-  const displayRating = reviews && reviews.length > 0 ? avgRating : rating || 'Not rated'
+  const {
+    hotelId,
+    name,
+    city,
+    pricePerNight,
+    primaryImageUrl,
+    starRating,
+  } = tour;
 
   return (
     <div className='tour__card'>
       <Card>
         <div className="tour__img">
-          <img src={imgUrl} alt="hotel-img" />
-          {featured && <span>Featured</span>}
+          <img src={primaryImageUrl} alt="hotel-img" />
+          {starRating >= 4 && <span>Featured</span>}
         </div>
 
         <CardBody>
@@ -25,18 +27,17 @@ const TourCard = ({ tour }) => {
               <i className='ri-map-pin-line'></i> {city}
             </span>
             <span className="tour__rating d-flex align-items-center gap-1">
-              <i className='ri-star-fill'></i> 
-              {displayRating}
-              {reviews && reviews.length > 0 ? <span>({reviews.length})</span> : ''}
+              <i className='ri-star-fill'></i>
+              {starRating ? `${starRating} / 5` : 'Not rated'}
             </span>
           </div>
 
           <h5 className='tour__title'>
-            <Link to={`/hotels/${hotelId}`}>{title}</Link>
+            <Link to={`/hotels/${hotelId}`}>{name}</Link>
           </h5>
 
           <div className="card__bottom d-flex align-items-center justify-content-between mt-3">
-            <h5>${price} <span>/per person</span></h5>
+            <h5>${pricePerNight} <span>/per night</span></h5>
             <Link to={`/hotels/${hotelId}`}>
               <button className='booking__btn'>Book Now</button>
             </Link>
@@ -44,7 +45,7 @@ const TourCard = ({ tour }) => {
         </CardBody>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default TourCard
+export default TourCard;

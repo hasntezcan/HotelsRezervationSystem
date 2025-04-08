@@ -11,7 +11,7 @@ import java.util.Map;
 
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
-    // ✅ Existing native query - for admin panel / full hotel info
+    // Existing native query - for admin panel / full hotel info
     @Query(value = "SELECT " +
             "h.hotel_id as hotelId, " +
             "h.name as name, " +
@@ -44,6 +44,16 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     @Query("SELECT DISTINCT h.city FROM Hotel h WHERE h.status = 'approved'")
     List<String> findDistinctCityByStatus();
 
+    @Query("SELECT new com.example.hotelapp.dto.HotelWithImageDTO(" +
+            "h.hotelId, h.name, h.city, h.pricePerNight, h.starRating, i.imageUrl) " +
+            "FROM Hotel h " +
+            "LEFT JOIN h.images i ON i.isPrimary = true " +
+            "WHERE (LOWER(h.name) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "OR LOWER(h.city) LIKE LOWER(CONCAT('%', :query, '%'))) " +
+            "AND h.status = 'approved'")
+    List<HotelWithImageDTO> searchHotelsByNameOrCity(@Param("query") String query);
+
+
     // ✅ To return hotel + primary image in one API call (used by Hotels.jsx)
     @Query("SELECT new com.example.hotelapp.dto.HotelWithImageDTO(" +
             "h.hotelId, h.name, h.city, h.pricePerNight, h.starRating, i.imageUrl) " +
@@ -52,4 +62,5 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "WHERE LOWER(h.city) = LOWER(:city) " +
             "AND h.status = 'approved'")
     List<HotelWithImageDTO> findHotelsWithPrimaryImageByCity(@Param("city") String city);
+
 }

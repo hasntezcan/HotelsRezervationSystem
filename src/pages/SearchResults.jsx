@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import hotels from "../assets/data/hotels"; 
+import axios from "axios";
 import { Container, Row, Col } from "reactstrap";
 
 import CommonSection from "../shared/CommonSection";
@@ -18,20 +18,38 @@ const SearchResults = () => {
   const adults = parseInt(params.get("adults")) || 1;
   const children = parseInt(params.get("children")) || 0;
 
-  let filteredHotels = hotels.filter(
-    (hotel) => hotel.city.toLowerCase() === destination.toLowerCase()
-  );
+  const [filteredHotels, setFilteredHotels] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  if (adults + children) {
-    filteredHotels = filteredHotels.filter(
-      (hotel) => hotel.maxGroupSize >= adults + children
-    );
-  }
+  useEffect(() => {
+    const fetchHotels = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/hotels/search?query=${destination}`
+        );
+        const groupSize = adults + children;
+        const data = response.data.filter(hotel => {
+          // Only return hotels with enough capacity (if available)
+          return hotel.capacity == null || hotel.capacity >= groupSize;
+        });
+
+        setFilteredHotels(data);
+      } catch (error) {
+        console.error("Error fetching hotels:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (destination) {
+      fetchHotels();
+    }
+  }, [destination, adults, children]);
 
   return (
     <>
       <CommonSection title="Search Results" />
-      
+
       <section>
         <Container>
           <Row>
@@ -47,8 +65,8 @@ const SearchResults = () => {
           <Row>
             <Col lg="12" className="mb-4">
               <p>
-                <strong>Destination:</strong> {destination} | 
-                <strong> Dates:</strong>{" "}
+                <strong>Destination:</strong> {destination} |{" "}
+                <strong>Dates:</strong>{" "}
                 {startDate
                   ? new Date(startDate).toLocaleDateString()
                   : "Not Specified"}{" "}
@@ -60,9 +78,13 @@ const SearchResults = () => {
               </p>
             </Col>
 
-            {filteredHotels.length > 0 ? (
+            {loading ? (
+              <Col lg="12">
+                <h5 className="text-center">Loading hotels...</h5>
+              </Col>
+            ) : filteredHotels.length > 0 ? (
               filteredHotels.map((hotel) => (
-                <Col lg="3" md="4" sm="6" className="mb-4" key={hotel._id}>
+                <Col lg="3" md="4" sm="6" className="mb-4" key={hotel.hotelId}>
                   <TourCard tour={hotel} />
                 </Col>
               ))
