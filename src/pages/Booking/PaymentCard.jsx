@@ -39,10 +39,12 @@ const PaymentCard = ({
 
   // Prevent non-digit characters in CVC
   const handleCvcChange = (e) => {
-    const input = e.target.value.replace(/[^\d]/g, "");
+    let input = e.target.value.replace(/\D/g, ""); // Sadece rakamlara izin ver
+    if (input.length > 4) {
+      input = input.slice(0, 4); // 4 haneden fazlasını at
+    }
     setCvc(input);
   };
-
   // Generate month/year lists
   const months = Array.from({ length: 12 }, (_, i) =>
     (i + 1).toString().padStart(2, "0")
