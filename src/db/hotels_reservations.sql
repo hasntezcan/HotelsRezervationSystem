@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 08 Nis 2025, 15:02:55
+-- Üretim Zamanı: 08 Nis 2025, 17:44:01
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -20,6 +20,40 @@ SET time_zone = "+00:00";
 --
 -- Veritabanı: `hotels_reservations`
 --
+
+DELIMITER $$
+--
+-- Yordamlar
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AssignManagersToHotels` ()   BEGIN
+  DECLARE done INT DEFAULT 0;
+  DECLARE var_hotel_id CHAR(36);
+  DECLARE cur_hotels CURSOR FOR SELECT hotel_id FROM hotels;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+  
+  OPEN cur_hotels;
+  
+  read_loop: LOOP
+    FETCH cur_hotels INTO var_hotel_id;
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+    
+    -- Oluşturulacak manager kullanıcı bilgileri (örnek veriler)
+    INSERT INTO users (username, role, email, password, first_name, last_name, phone)
+    VALUES (CONCAT('manager_', var_hotel_id), 'manager', CONCAT('manager_', var_hotel_id, '@example.com'), 'password', 'Manager', var_hotel_id, '0000000000');
+    
+    SET @new_user_id = LAST_INSERT_ID();
+    
+    INSERT INTO managers (user_id, hotel_id)
+    VALUES (@new_user_id, var_hotel_id);
+    
+  END LOOP;
+  
+  CLOSE cur_hotels;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -225,7 +259,7 @@ INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VA
 --
 
 CREATE TABLE `hotels` (
-  `hotel_id` char(36) NOT NULL,
+  `hotel_id` bigint(20) NOT NULL,
   `manager_id` bigint(20) DEFAULT NULL,
   `name` varchar(100) NOT NULL,
   `address` text DEFAULT NULL,
@@ -250,16 +284,16 @@ CREATE TABLE `hotels` (
 --
 
 INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `country`, `latitude`, `longitude`, `description`, `star_rating`, `check_in_time`, `check_out_time`, `cancellation_policy`, `status`, `created_at`, `capacity`, `photo`, `price_per_night`) VALUES
-('02', 1, 'Royal Palace Londona', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty at this prestigious address, with luxury amenities and impeccable service.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, '', NULL),
-('03', 1, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views and enjoy relaxing riverside walks in central London.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
-('05', 1, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bali', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise with beachfront access and unforgettable sunsets every day.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
-('06', 1, 'Tropical Paradise Bali', '789 Island Street, Bali', 'Bali', 'Indonesia', -8.414, 115.195, 'Dive into luxury with private pools and ultimate relaxation in the heart of Bali.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
-('07', 1, 'Golden Sands Resort', '999 Ocean Drive, Bali', 'Bali', 'Indonesia', -8.42, 115.2, 'Relax on golden sands and sip cocktails while enjoying Bali’s breathtaking sunsets.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
-('09', 1, 'Tokyo Sky Hotel', '789 Shibuya, Tokyo', 'Tokyo', 'Japan', 35.658, 139.7016, 'Enjoy panoramic city views and premium services at the heart of bustling Tokyo.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
-('10', 1, 'Shinjuku Business Hotelaaaa', '45 Business Street, Tokyo', 'Tokyo', 'Japan', 35.6938, 139.7034, 'Perfect for business travelers with fast Wi-Fi and professional meeting rooms.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, '', NULL),
-('11', 1, 'Cherry Blossom Resort', '22 Sakura Avenue, Tokyo', 'Tokyo', 'Japan', 35.6895, 139.6917, 'Experience traditional Japanese hospitality surrounded by beautiful cherry blossoms.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
-('12', 1, 'Luxury Tower Tokyo', '567 Ginza Road, Tokyo', 'Tokyo', 'Japan', 35.6717, 139.765, 'Enjoy penthouse suites and gourmet dining in Tokyo’s upscale Ginza district.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
-('13', 1, 'Eiffel Grand Hotel', '123 Champs Elysees, Paris', 'Paris', 'France', 48.8566, 2.3522, 'Stay steps away from the Eiffel Tower with luxurious accommodations and fine dining.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL);
+(2, 2, 'Royal Palace Londona', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty at this prestigious address, with luxury amenities and impeccable service.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, '', NULL),
+(3, 3, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views and enjoy relaxing riverside walks in central London.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+(5, 4, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bali', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise with beachfront access and unforgettable sunsets every day.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+(6, 5, 'Tropical Paradise Bali', '789 Island Street, Bali', 'Bali', 'Indonesia', -8.414, 115.195, 'Dive into luxury with private pools and ultimate relaxation in the heart of Bali.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+(7, 6, 'Golden Sands Resort', '999 Ocean Drive, Bali', 'Bali', 'Indonesia', -8.42, 115.2, 'Relax on golden sands and sip cocktails while enjoying Bali’s breathtaking sunsets.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+(9, 7, 'Tokyo Sky Hotel', '789 Shibuya, Tokyo', 'Tokyo', 'Japan', 35.658, 139.7016, 'Enjoy panoramic city views and premium services at the heart of bustling Tokyo.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+(10, 8, 'Shinjuku Business Hotelaaaa', '45 Business Street, Tokyo', 'Tokyo', 'Japan', 35.6938, 139.7034, 'Perfect for business travelers with fast Wi-Fi and professional meeting rooms.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, '', NULL),
+(11, 9, 'Cherry Blossom Resort', '22 Sakura Avenue, Tokyo', 'Tokyo', 'Japan', 35.6895, 139.6917, 'Experience traditional Japanese hospitality surrounded by beautiful cherry blossoms.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+(12, 10, 'Luxury Tower Tokyo', '567 Ginza Road, Tokyo', 'Tokyo', 'Japan', 35.6717, 139.765, 'Enjoy penthouse suites and gourmet dining in Tokyo’s upscale Ginza district.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL),
+(13, 11, 'Eiffel Grand Hotel', '123 Champs Elysees, Paris', 'Paris', 'France', 48.8566, 2.3522, 'Stay steps away from the Eiffel Tower with luxurious accommodations and fine dining.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -279,7 +313,16 @@ CREATE TABLE `managers` (
 --
 
 INSERT INTO `managers` (`manager_id`, `user_id`, `hotel_id`, `assigned_at`) VALUES
-(1, 15, '02', '2025-04-08 12:51:50');
+(2, 16, '02', '2025-04-08 14:40:26'),
+(3, 17, '03', '2025-04-08 14:40:26'),
+(4, 18, '05', '2025-04-08 14:40:26'),
+(5, 19, '06', '2025-04-08 14:40:26'),
+(6, 20, '07', '2025-04-08 14:40:26'),
+(7, 21, '09', '2025-04-08 14:40:26'),
+(8, 22, '10', '2025-04-08 14:40:26'),
+(9, 23, '11', '2025-04-08 14:40:26'),
+(10, 24, '12', '2025-04-08 14:40:26'),
+(11, 25, '13', '2025-04-08 14:40:26');
 
 -- --------------------------------------------------------
 
@@ -413,8 +456,16 @@ INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_
 (11, 'dede', 'user', 'dede@dede.com', '123456', 'dede', 'dede', '05313313131', '2025-04-03 17:57:28', '2025-04-03 17:57:28', 0),
 (12, 'admin', 'admin', 'admin@admin.com', '1234567', 'admin', 'admin', '05467897895', '2025-04-03 18:54:48', '2025-04-05 12:07:35', 0),
 (13, 'deneme', 'user', 'esad.emir34@stu.khas.edu.tr', '123456', 'emir', 'şahin', '05512024369', '2025-04-05 10:50:27', '2025-04-05 10:50:27', 0),
-(14, 'hasantezcan', 'manager', 'hasantezcan@gmail.com', 'abcd1234', 'Hasan', 'Tezcan', '05531092919', '2025-04-05 15:46:50', '2025-04-08 12:45:37', 0),
-(15, 'manager1', 'manager', 'manager1@example.com', 'secret', 'Manager', 'One', '0123456789', '2025-04-08 12:48:30', '2025-04-08 12:48:30', 1);
+(16, 'manager_royal_palace', 'manager', 'royal.manager@example.com', 'password', 'Royalaaaa', 'Manager', '0000000001', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
+(17, 'manager_london_river', 'manager', 'london.manager@example.com', 'password', 'London', 'Manager', '0000000002', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
+(18, 'manager_bali_beach', 'manager', 'bali.manager@example.com', 'password', 'Bali', 'Manager', '0000000003', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
+(19, 'manager_tropical_paradise', 'manager', 'tropical.manager@example.com', 'password', 'Tropical', 'Manager', '0000000004', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
+(20, 'manager_golden_sands', 'manager', 'golden.manager@example.com', 'password', 'Golden', 'Manager', '0000000005', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
+(21, 'manager_tokyo_sky', 'manager', 'tokyo.manager@example.com', 'password', 'Tokyo', 'Manager', '0000000006', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
+(22, 'manager_shinjuku_business', 'manager', 'shinjuku.manager@example.com', 'password', 'Shinjuku', 'Manager', '0000000007', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
+(23, 'manager_cherry_blossom', 'manager', 'cherry.manager@example.com', 'password', 'Cherry', 'Manager', '0000000008', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
+(24, 'manager_luxury_tower', 'manager', 'luxury.manager@example.com', 'password', 'Luxury', 'Manager', '0000000009', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
+(25, 'manager_eiffel_grand', 'manager', 'eiffel.manager@example.com', 'password', 'Eiffel', 'Manager', '0000000010', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0);
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -535,16 +586,22 @@ ALTER TABLE `users`
 --
 
 --
+-- Tablo için AUTO_INCREMENT değeri `hotels`
+--
+ALTER TABLE `hotels`
+  MODIFY `hotel_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
 -- Tablo için AUTO_INCREMENT değeri `managers`
 --
 ALTER TABLE `managers`
-  MODIFY `manager_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `manager_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- Dökümü yapılmış tablolar için kısıtlamalar
@@ -554,7 +611,6 @@ ALTER TABLE `users`
 -- Tablo kısıtlamaları `managers`
 --
 ALTER TABLE `managers`
-  ADD CONSTRAINT `fk_managers_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_managers_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
