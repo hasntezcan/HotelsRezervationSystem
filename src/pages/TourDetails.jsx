@@ -8,7 +8,6 @@ import avatar from '../assets/images/avatar.jpg';
 import Booking from '../components/Booking/Booking';
 import { AuthContext } from '../context/AuthContext';
 import Room from '../components/Room/Room';
-import axios from 'axios';
 
 const TourDetails = () => {
   const { id } = useParams();
