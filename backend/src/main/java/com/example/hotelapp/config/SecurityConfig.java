@@ -25,7 +25,14 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/auth/**", "/api/contact/**", "/api/hotels/**", "/api/hotel-images").permitAll() // Allow public access
+                // Aşağıda /api/users/** ekleyerek users endpoint’lerini public yaptık
+                .requestMatchers(
+                    "/api/auth/**",
+                    "/api/contact/**",
+                    "/api/hotels/**",
+                    "/api/hotel-images",
+                    "/api/users/**"  // <-- eklendi
+                ).permitAll() // Bu path'lere erişim serbest
                 .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> httpBasic.disable())
@@ -34,6 +41,7 @@ public class SecurityConfig {
                 .authenticationEntryPoint((request, response, authException) ->
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
             );
+
         return http.build();
     }
 
