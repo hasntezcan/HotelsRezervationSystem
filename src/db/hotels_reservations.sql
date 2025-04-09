@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 09 Nis 2025, 17:51:10
+-- Üretim Zamanı: 09 Nis 2025, 19:08:10
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -103,9 +103,7 @@ CREATE TABLE `contact_messages` (
 --
 
 INSERT INTO `contact_messages` (`message_id`, `sender_name`, `sender_email`, `phone`, `message`, `sent_at`, `is_read`) VALUES
-(1, 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'aa', '2025-04-05 11:20:24', 0),
-(2, 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'nabe sabo', '2025-04-05 10:59:17', 0),
-(3, 'Emir Esad Şahin', 'esad.emir34@gmail.com', '05438813007', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', '2025-04-09 12:40:11', 0);
+(1, 'Emir Esad Şahin', 'esad.emir34@gmail.com', '05438813007', 'anan', '2025-04-09 14:07:07', 0);
 
 -- --------------------------------------------------------
 
@@ -679,7 +677,7 @@ ALTER TABLE `bookings`
 -- Tablo için AUTO_INCREMENT değeri `contact_messages`
 --
 ALTER TABLE `contact_messages`
-  MODIFY `message_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `message_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `hotelamenities`

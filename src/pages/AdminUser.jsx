@@ -3,13 +3,10 @@ import "../styles/AdminStaff.css";
 import axios from "axios";
 
 const AdminUser = () => {
-  // Managers bölümü (Sizin eski local state veriniz)
-  const [managers, setManagers] = useState([
-    { name: "Alice Johnson", email: "alice@example.com", hotelName: "Grand Hotel", city: "New York", username: "aliceJ", password: "password123" },
-    { name: "Bob Smith", email: "bob@example.com", hotelName: "Sunset Resort", city: "Los Angeles", username: "bobS", password: "securepass" }
-  ]);
+  // Veritabanından role=manager olan kullanıcıları tutan state
+  const [managers, setManagers] = useState([]);
 
-  // Yeni manager formu
+  // Yeni manager formu (isteğe bağlı)
   const [newManager, setNewManager] = useState({
     name: "",
     email: "",
@@ -22,26 +19,39 @@ const AdminUser = () => {
   // --- Users listesi (role=user) veritabanından çekilecek ---
   const [users, setUsers] = useState([]);
 
-  // Sayfa yüklendiğinde role=user kullanıcıları çek
+  // Sayfa yüklendiğinde hem role=user hem de role=manager kullanıcılarını çekiyoruz
   useEffect(() => {
     fetchUsers();
+    fetchManagers();
   }, []);
 
   // Veritabanından role=user olan kullanıcıları çek
   const fetchUsers = async () => {
     try {
       // Spring Boot tarafında GET /api/users?role=user
-      // bu sorgu role='user' olanları döndürecek şekilde ayarlanmış olmalı
       const response = await axios.get("http://localhost:8080/api/users?role=user");
-      setUsers(response.data); 
-      // Beklenen data: [{ userId:1, firstName:'Ali', lastName:'Veli', ... }, ...]
+      setUsers(response.data);
+      // Beklenen data: [{ userId:1, first_name:'Ali', last_name:'Veli', ... }, ...]
     } catch (error) {
       console.error("Error fetching users:", error);
       alert("Failed to fetch users with role=user.");
     }
   };
 
-  // Manager ekle (local state)
+  // Veritabanından role=manager olan kullanıcıları çek
+  const fetchManagers = async () => {
+    try {
+      // Spring Boot tarafında GET /api/users?role=manager
+      const response = await axios.get("http://localhost:8080/api/users?role=manager");
+      setManagers(response.data);
+      // Beklenen data: [{ userId:1, first_name:'ManagerFirstName', last_name:'ManagerLastName', ... }, ...]
+    } catch (error) {
+      console.error("Error fetching managers:", error);
+      alert("Failed to fetch managers with role=manager.");
+    }
+  };
+
+  // Manager ekle (local state, örnek için; formun backend'e kayıt işlemi yapılmıyor)
   const addManager = () => {
     setManagers([...managers, newManager]);
     setNewManager({ name: "", email: "", hotelName: "", city: "", username: "", password: "" });
@@ -52,24 +62,24 @@ const AdminUser = () => {
     setNewManager({ ...newManager, [e.target.name]: e.target.value });
   };
 
-  // Manager sil (local state)
-  const deleteManager = (username) => {
-    setManagers(managers.filter(manager => manager.username !== username));
+  // Manager sil (backend + local state)  
+  const deleteManager = async (userId) => {
+    try {
+      // DELETE /api/users/{userId} endpoint'i manager silme işlemini gerçekleştirecek şekilde yapılandırılmış olmalı
+      await axios.delete(`http://localhost:8080/api/users/${userId}`);
+      // Başarılı ise local state'ten manager'ı çıkarıyoruz
+      setManagers(managers.filter((manager) => manager.userId !== userId));
+    } catch (error) {
+      console.error("Error deleting manager:", error);
+      alert("Failed to delete manager.");
+    }
   };
 
-  // Manager düzenle
-  const editManager = (index) => {
-    const managerToEdit = managers[index];
-    setNewManager(managerToEdit);
-  };
-
-  // Kullanıcı (role=user) sil (veritabanı + local state)
+  // Kullanıcı (role=user) sil (backend + local state)
   const deleteUser = async (userId) => {
     try {
-      // DELETE /api/users/{userId}
       await axios.delete(`http://localhost:8080/api/users/${userId}`);
-      // Başarılıysa local state'ten çıkar
-      setUsers(prev => prev.filter(u => u.userId !== userId));
+      setUsers((prev) => prev.filter((u) => u.userId !== userId));
     } catch (error) {
       console.error("Error deleting user:", error);
       alert("Failed to delete user.");
@@ -81,7 +91,7 @@ const AdminUser = () => {
       <h1 className="admin-user-title">Admin User Management</h1>
       <div className="admin-user-management-section">
         
-        {/* Manager Ekleme Formu */}
+        {/* Manager Ekleme Formu (isteğe bağlı) */}
         <div className="admin-user-section fixed-section" style={{ color: "white" }}>
           <h2>Add Manager</h2>
           <div className="admin-user-form grid-layout">
@@ -141,28 +151,47 @@ const AdminUser = () => {
           <button className="admin-user-button" onClick={addManager}>Add Manager</button>
         </div>
 
-        {/* Managerları Görme (Local State) */}
+        {/* Managers List: Sadece role=manager olanların isim ve soyisimleri ve silme butonu */}
         <div className="admin-user-section" style={{ color: "white" }}>
           <h2>Managers List</h2>
-          <ul className="admin-user-list">
-            {managers.map((manager, index) => (
-              <li className="admin-user-list-item" key={index} style={{ color: "white" }}>
-                {manager.name} ({manager.email}) - {manager.hotelName}, {manager.city}
-                <button className="admin-user-edit-btn" onClick={() => editManager(index)}>Edit</button>
-                <button className="admin-user-delete-btn" onClick={() => deleteManager(manager.username)}>Delete</button>
-              </li>
-            ))}
-          </ul>
+          {managers.length > 0 ? (
+            <table className="admin-user-list-table">
+              <thead>
+                <tr>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {managers.map((manager) => (
+                  <tr key={manager.userId}>
+                    <td>{manager.first_name}</td>
+                    <td>{manager.last_name}</td>
+                    <td>
+                      <button
+                        className="admin-user-delete-btn"
+                        onClick={() => deleteManager(manager.userId)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No managers found with role=manager.</p>
+          )}
         </div>
 
         {/* Users List (role=user) - DB'den */}
         <div className="admin-user-section" style={{ color: "white" }}>
-          <h2>Users List </h2>
+          <h2>Users List</h2>
           {users.length > 0 ? (
             <table className="admin-user-list-table">
               <thead>
                 <tr>
-                  
                   <th>Name</th>
                   <th>Surname</th>
                   <th>Action</th>
@@ -171,7 +200,6 @@ const AdminUser = () => {
               <tbody>
                 {users.map((u) => (
                   <tr key={u.userId}>
-                    
                     <td>{u.first_name}</td>
                     <td>{u.last_name}</td>
                     <td>
