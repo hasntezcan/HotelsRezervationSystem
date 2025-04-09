@@ -3,8 +3,8 @@
 import { createContext, useEffect, useReducer } from 'react'
 
 const initial_state = {
-  user: localStorage.getItem('user')
-    ? JSON.parse(localStorage.getItem('user'))
+  user: sessionStorage.getItem('user')
+    ? JSON.parse(sessionStorage.getItem('user'))
     : null,
   loading: false,
   error: null
@@ -52,9 +52,13 @@ const AuthReducer = (state, action) => {
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, initial_state)
 
-  // user her değiştiğinde localStorage'a yaz
+  // state.user değiştiğinde, eğer kullanıcı varsa sessionStorage'a yaz, yoksa temizle.
   useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(state.user))
+    if (state.user) {
+      sessionStorage.setItem('user', JSON.stringify(state.user))
+    } else {
+      sessionStorage.removeItem('user')
+    }
   }, [state.user])
 
   return (
