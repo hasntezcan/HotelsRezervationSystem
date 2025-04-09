@@ -25,6 +25,8 @@ import Overview from '../pages/profile/Overview';
 import AdminHotel from '../pages/AdminHotels.jsx';
 import PaymentPage from '../pages/Booking/PaymentPage.jsx';
 import PrivateRoute from '../components/PrivateRoute';
+import ManagerRoute from '../components/ManagerRoute';
+import AdminRoute from '../components/AdminRoute';
 
 const Routers = () => {
   return (
@@ -42,28 +44,28 @@ const Routers = () => {
       <Route path="/search-results" element={<SearchResults />} />
       <Route path="/payment" element={<PaymentPage />} />
       <Route path="/profile" element={<Profile />}>
-            <Route index element={<Overview />} />
-            <Route path="bookings" element={<ProfileBookings />} />
-            <Route path="settings" element={<ProfileSettings />} />
-      </Route>
-      
-      {/* Protected Manager Routes */}
-      <Route element={<PrivateRoute />}>
-         <Route path="/manager" element={<Manager />} />
-         <Route path="/manager/hotel" element={<ManagerHotels />} />
-         <Route path="/manager/reservations" element={<ManagerReservations />} />
-         <Route path="/manager/profile" element={<ManagerProfile />} />
+        <Route index element={<Overview />} />
+        <Route path="bookings" element={<ProfileBookings />} />
+        <Route path="settings" element={<ProfileSettings />} />
       </Route>
 
-      {/* Protected Admin Routes */}
-      <Route element={<PrivateRoute />}>
-         <Route path="/admin/*" element={<Admin />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="contactUs" element={<AdminContact />} />
-            <Route path="user" element={<AdminUser />} />
-            <Route path="profile" element={<AdminProfile />} />
-            <Route path="hotels" element={<AdminHotel />} />
-         </Route>
+      {/* Protected Manager Routes: Yalnızca manager'lar erişebilsin */}
+      <Route element={<ManagerRoute />}>
+        <Route path="/manager" element={<Manager />} />
+        <Route path="/manager/hotel" element={<ManagerHotels />} />
+        <Route path="/manager/reservations" element={<ManagerReservations />} />
+        <Route path="/manager/profile" element={<ManagerProfile />} />
+      </Route>
+
+      {/* Protected Admin Routes: Yalnızca admin'ler erişebilsin */}
+      <Route element={<AdminRoute />}>
+        <Route path="/admin/*" element={<Admin />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="contactUs" element={<AdminContact />} />
+          <Route path="user" element={<AdminUser />} />
+          <Route path="profile" element={<AdminProfile />} />
+          <Route path="hotels" element={<AdminHotel />} />
+        </Route>
       </Route>
     </Routes>
   );
