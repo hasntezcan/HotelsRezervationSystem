@@ -50,24 +50,10 @@ const Booking = ({ tour, avgRating }) => {
     }
 
     if (
-      !booking.fullName.trim() ||
-      !booking.phone.trim() ||
       !booking.startDate ||
       !booking.endDate
     ) {
       alert('Please fill all required fields.');
-      return;
-    }
-
-    const nameRegex = /^[A-Za-z\s]+$/;
-    if (!nameRegex.test(booking.fullName)) {
-      alert('Full name can only contain letters and spaces.');
-      return;
-    }
-
-    const phoneRegex = /^\+?\d{7,15}$/;
-    if (!phoneRegex.test(booking.phone)) {
-      alert('Invalid phone format. Must be 7–15 digits, without spaces.');
       return;
     }
 
