@@ -11,6 +11,7 @@
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/model/Manager.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/repository/HotelRepository.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/repository/ManagerHotelRepository.java
+/Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/model/Booking.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/dto/HotelWithImageDTO.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/repository/ManagerRepository.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/controller/AuthController.java
@@ -24,9 +25,12 @@
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/model/RoomAmenityJunction.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/repository/RoomAmenityRepository.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/repository/RoomAmenityJunctionRepository.java
+/Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/controller/BookingController.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/model/LoginRequest.java
+/Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/repository/BookingRepository.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/model/RoomAmenityJunctionId.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/model/Hotel.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/model/RoomImage.java
+/Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/controller/UserController.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/repository/HotelImageRepository.java
 /Users/hasantezcan/HotelsRezervationSystem/backend/src/main/java/com/example/hotelapp/controller/HotelImageController.java

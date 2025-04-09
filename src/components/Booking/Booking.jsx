@@ -1,19 +1,20 @@
-// src/components/Booking/Booking.jsx
-
 import React, { useState, useContext } from 'react';
 import './booking.css';
 import { Form, FormGroup, ListGroup, ListGroupItem, Button } from 'reactstrap';
-import { useNavigate, useLocation } from 'react-router-dom'; // ✅ useLocation imported
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 
-const Booking = ({ tour, avgRating }) => {
-  const { price, reviews, title } = tour;
+const Booking = ({ tour, avgRating, selectedRoom }) => {
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ was missing
-
+  const location = useLocation();
   const { user } = useContext(AuthContext);
 
-  // ✅ Get default dates from query string
+  // If a room is selected, use room's name and price; otherwise, fallback to tour
+  const roomName = selectedRoom ? selectedRoom.name : tour.title;
+  const roomPrice = selectedRoom ? selectedRoom.pricePerNight : tour.price;
+  const reviews = tour.reviews || [];
+
+  // Grab default dates from query params if provided
   const queryParams = new URLSearchParams(location.search);
   const defaultStartDate = queryParams.get('startDate') || '';
   const defaultEndDate = queryParams.get('endDate') || '';
@@ -21,7 +22,7 @@ const Booking = ({ tour, avgRating }) => {
   const [booking, setBooking] = useState({
     userId: user && user._id,
     userEmail: user && user.email,
-    tourName: title,
+    tourName: roomName, // store room/hotel name
     fullName: '',
     phone: '',
     adultCount: 1,
@@ -35,11 +36,10 @@ const Booking = ({ tour, avgRating }) => {
   };
 
   const serviceFee = 10;
-  const totalAmount = (
-    Number(price) * Number(booking.adultCount) +
-    Number(price) * Number(booking.childCount) * 0.5 +
-    serviceFee
-  );
+  const totalAmount =
+    Number(roomPrice) * Number(booking.adultCount) +
+    Number(roomPrice) * Number(booking.childCount) * 0.5 +
+    serviceFee;
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -49,10 +49,7 @@ const Booking = ({ tour, avgRating }) => {
       return;
     }
 
-    if (
-      !booking.startDate ||
-      !booking.endDate
-    ) {
+    if (!booking.startDate || !booking.endDate) {
       alert('Please fill all required fields.');
       return;
     }
@@ -67,17 +64,18 @@ const Booking = ({ tour, avgRating }) => {
       alert('End date cannot be earlier than start date.');
       return;
     }
-
     if (Number(booking.adultCount) < 1 && Number(booking.childCount) < 1) {
       alert('At least 1 adult or child is required.');
       return;
     }
 
+    // store the new booking in localStorage for now
     let existingBookings = JSON.parse(localStorage.getItem('bookings')) || [];
     existingBookings.push({
       ...booking,
       totalAmount,
       createdAt: new Date().toISOString(),
+      roomId: selectedRoom ? selectedRoom.id : null, // store the selected room ID
     });
     localStorage.setItem('bookings', JSON.stringify(existingBookings));
 
@@ -91,12 +89,12 @@ const Booking = ({ tour, avgRating }) => {
     <div className="booking">
       <div className="booking__top d-flex align-items-center justify-content-between">
         <h3>
-          ${price}
-          <span>/per person</span>
+          ${roomPrice}
+          <span>/per night</span>
         </h3>
         <span className="tour__rating d-flex align-items-center">
           <i className="ri-star-fill" style={{ color: 'var(--secondary-color)' }}></i>
-          {avgRating === 0 ? null : avgRating} ({reviews?.length})
+          {avgRating === 0 ? null : avgRating} ({reviews.length})
         </span>
       </div>
 
