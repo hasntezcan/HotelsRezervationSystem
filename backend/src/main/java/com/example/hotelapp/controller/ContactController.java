@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/contact")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -16,12 +14,10 @@ public class ContactController {
     @Autowired
     private ContactMessageRepository contactMessageRepository;
 
-    // Mevcut POST -> yeni mesaj kaydetme
+    // Yeni mesaj kaydetme
     @PostMapping
     public ResponseEntity<?> submitMessage(@RequestBody ContactMessage contactMessage) {
-        if (contactMessage.getMessageId() == null || contactMessage.getMessageId().isEmpty()) {
-            contactMessage.setMessageId(UUID.randomUUID().toString());
-        }
+        // ID auto-increment olacağı için setMessageId(...) yapmamıza gerek yok.
         ContactMessage savedMessage = contactMessageRepository.save(contactMessage);
         return ResponseEntity.ok(savedMessage);
     }
@@ -40,31 +36,32 @@ public class ContactController {
 
     // Mesajı "read" olarak işaretle
     @PutMapping("/markAsRead/{messageId}")
-    public ResponseEntity<?> markAsRead(@PathVariable String messageId) {
+    public ResponseEntity<?> markAsRead(@PathVariable Long messageId) {
         return contactMessageRepository.findById(messageId)
                 .map(msg -> {
                     msg.setIsRead(true);
                     contactMessageRepository.save(msg);
-                    return ResponseEntity.ok("Message marked as read.");
+                    return ResponseEntity.ok(msg); 
+                    // "Message marked as read." yerine tüm mesaj objesini dönüyoruz.
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // Mesajı "unread" olarak işaretle
     @PutMapping("/markAsUnread/{messageId}")
-    public ResponseEntity<?> markAsUnread(@PathVariable String messageId) {
+    public ResponseEntity<?> markAsUnread(@PathVariable Long messageId) {
         return contactMessageRepository.findById(messageId)
                 .map(msg -> {
                     msg.setIsRead(false);
                     contactMessageRepository.save(msg);
-                    return ResponseEntity.ok("Message marked as unread.");
+                    return ResponseEntity.ok(msg);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // Mesajı sil
     @DeleteMapping("/{messageId}")
-    public ResponseEntity<?> deleteMessage(@PathVariable String messageId) {
+    public ResponseEntity<?> deleteMessage(@PathVariable Long messageId) {
         if (contactMessageRepository.existsById(messageId)) {
             contactMessageRepository.deleteById(messageId);
             return ResponseEntity.ok("Message deleted.");

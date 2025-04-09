@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 09 Nis 2025, 14:58:31
+-- Üretim Zamanı: 09 Nis 2025, 17:51:10
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -104,7 +104,8 @@ CREATE TABLE `contact_messages` (
 
 INSERT INTO `contact_messages` (`message_id`, `sender_name`, `sender_email`, `phone`, `message`, `sent_at`, `is_read`) VALUES
 (1, 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'aa', '2025-04-05 11:20:24', 0),
-(2, 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'nabe sabo', '2025-04-05 10:59:17', 1);
+(2, 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'nabe sabo', '2025-04-05 10:59:17', 0),
+(3, 'Emir Esad Şahin', 'esad.emir34@gmail.com', '05438813007', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', '2025-04-09 12:40:11', 0);
 
 -- --------------------------------------------------------
 
@@ -231,7 +232,7 @@ INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
 --
 
 CREATE TABLE `hotelimages` (
-  `image_id` bigint(20) NOT NULL,
+  `image_id` varchar(255) NOT NULL,
   `hotel_id` bigint(20) DEFAULT NULL,
   `image_url` varchar(255) NOT NULL,
   `is_primary` tinyint(1) DEFAULT 0
@@ -242,22 +243,22 @@ CREATE TABLE `hotelimages` (
 --
 
 INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VALUES
-(1, 1, '/hotel_images/hotel-img01.jpg', 1),
-(2, 2, '/hotel_images/hotel-img02.jpg', 1),
-(3, 3, '/hotel_images/hotel-img03.jpg', 1),
-(4, 4, '/hotel_images/hotel-img04.jpg', 1),
-(5, 5, '/hotel_images/hotel-img05.jpg', 1),
-(6, 6, '/hotel_images/hotel-img06.jpg', 1),
-(7, 7, '/hotel_images/hotel-img07.jpg', 1),
-(8, 8, '/hotel_images/hotel-img08.jpg', 1),
-(9, 9, '/hotel_images/hotel-img09.jpg', 1),
-(10, 10, '/hotel_images/hotel-img10.jpg', 1),
-(11, 11, '/hotel_images/hotel-img11.jpg', 1),
-(12, 12, '/hotel_images/hotel-img12.jpg', 1),
-(13, 13, '/hotel_images/hotel-img13.jpg', 1),
-(14, 14, '/hotel_images/hotel-img14.jpg', 1),
-(15, 15, '/hotel_images/hotel-img15.jpg', 1),
-(16, 16, '/hotel_images/hotel-img16.jpg', 1);
+('1', 1, '/hotel_images/hotel-img01.jpg', 1),
+('10', 10, '/hotel_images/hotel-img10.jpg', 1),
+('11', 11, '/hotel_images/hotel-img11.jpg', 1),
+('12', 12, '/hotel_images/hotel-img12.jpg', 1),
+('13', 13, '/hotel_images/hotel-img13.jpg', 1),
+('14', 14, '/hotel_images/hotel-img14.jpg', 1),
+('15', 15, '/hotel_images/hotel-img15.jpg', 1),
+('16', 16, '/hotel_images/hotel-img16.jpg', 1),
+('2', 2, '/hotel_images/hotel-img02.jpg', 1),
+('3', 3, '/hotel_images/hotel-img03.jpg', 1),
+('4', 4, '/hotel_images/hotel-img04.jpg', 1),
+('5', 5, '/hotel_images/hotel-img05.jpg', 1),
+('6', 6, '/hotel_images/hotel-img06.jpg', 1),
+('7', 7, '/hotel_images/hotel-img07.jpg', 1),
+('8', 8, '/hotel_images/hotel-img08.jpg', 1),
+('9', 9, '/hotel_images/hotel-img09.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -317,7 +318,7 @@ INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `coun
 CREATE TABLE `managers` (
   `manager_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
-  `hotel_id` bigint(20) NOT NULL,
+  `hotel_id` varchar(255) NOT NULL,
   `assigned_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -326,22 +327,22 @@ CREATE TABLE `managers` (
 --
 
 INSERT INTO `managers` (`manager_id`, `user_id`, `hotel_id`, `assigned_at`) VALUES
-(1, 16, 1, '2025-04-08 20:32:15'),
-(2, 17, 2, '2025-04-08 14:40:26'),
-(3, 18, 3, '2025-04-08 14:40:26'),
-(4, 19, 4, '2025-04-08 14:40:26'),
-(5, 20, 5, '2025-04-08 14:40:26'),
-(6, 21, 6, '2025-04-08 14:40:26'),
-(7, 22, 7, '2025-04-08 14:40:26'),
-(8, 23, 8, '2025-04-08 14:40:26'),
-(9, 24, 9, '2025-04-08 20:32:15'),
-(10, 25, 10, '2025-04-08 20:32:15'),
-(11, 26, 11, '2025-04-08 20:32:15'),
-(12, 27, 12, '2025-04-08 20:32:15'),
-(13, 28, 13, '2025-04-08 20:32:15'),
-(14, 29, 14, '2025-04-08 20:35:48'),
-(15, 30, 15, '2025-04-08 20:35:48'),
-(16, 31, 16, '2025-04-08 20:36:11');
+(1, 16, '1', '2025-04-08 20:32:15'),
+(2, 17, '2', '2025-04-08 14:40:26'),
+(3, 18, '3', '2025-04-08 14:40:26'),
+(4, 19, '4', '2025-04-08 14:40:26'),
+(5, 20, '5', '2025-04-08 14:40:26'),
+(6, 21, '6', '2025-04-08 14:40:26'),
+(7, 22, '7', '2025-04-08 14:40:26'),
+(8, 23, '8', '2025-04-08 14:40:26'),
+(9, 24, '9', '2025-04-08 20:32:15'),
+(10, 25, '10', '2025-04-08 20:32:15'),
+(11, 26, '11', '2025-04-08 20:32:15'),
+(12, 27, '12', '2025-04-08 20:32:15'),
+(13, 28, '13', '2025-04-08 20:32:15'),
+(14, 29, '14', '2025-04-08 20:35:48'),
+(15, 30, '15', '2025-04-08 20:35:48'),
+(16, 31, '16', '2025-04-08 20:36:11');
 
 -- --------------------------------------------------------
 
@@ -402,6 +403,22 @@ CREATE TABLE `roomamenities` (
   `name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Tablo döküm verisi `roomamenities`
+--
+
+INSERT INTO `roomamenities` (`amenity_id`, `name`) VALUES
+(43, 'Sea View'),
+(44, 'Balcony'),
+(45, 'Mini Bar'),
+(46, 'King Size Bed'),
+(47, 'Air Conditioning'),
+(48, 'Sea View'),
+(49, 'Balcony'),
+(50, 'Mini Bar'),
+(51, 'King Size Bed'),
+(52, 'Air Conditioning');
+
 -- --------------------------------------------------------
 
 --
@@ -413,6 +430,18 @@ CREATE TABLE `roomamenityjunction` (
   `amenity_id` bigint(20) NOT NULL,
   `is_primary` bit(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Tablo döküm verisi `roomamenityjunction`
+--
+
+INSERT INTO `roomamenityjunction` (`room_id`, `amenity_id`, `is_primary`) VALUES
+(1, 43, b'1'),
+(1, 44, b'0'),
+(1, 45, b'1'),
+(2, 46, b'1'),
+(2, 47, b'1'),
+(2, 48, b'1');
 
 -- --------------------------------------------------------
 
@@ -426,6 +455,20 @@ CREATE TABLE `roomimages` (
   `image_url` varchar(255) NOT NULL,
   `is_primary` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Tablo döküm verisi `roomimages`
+--
+
+INSERT INTO `roomimages` (`image_id`, `room_id`, `image_url`, `is_primary`) VALUES
+(1, 1, '/public/room_images/room-img01.jpg', 1),
+(2, 1, '/assets/room_images/room-img02.jpg', 0),
+(3, 2, '/assets/room_images/room-img03.jpg', 1),
+(4, 2, '/assets/room_images/room-img04.jpg', 0),
+(5, 1, '/assets/room_images/room-img01.jpg', 1),
+(6, 1, '/assets/room_images/room-img02.jpg', 0),
+(7, 2, '/assets/room_images/room-img03.jpg', 1),
+(8, 2, '/assets/room_images/room-img04.jpg', 0);
 
 -- --------------------------------------------------------
 
@@ -448,6 +491,18 @@ CREATE TABLE `rooms` (
   `name` varchar(100) NOT NULL,
   `room_size` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Tablo döküm verisi `rooms`
+--
+
+INSERT INTO `rooms` (`room_id`, `hotel_id`, `room_type`, `description`, `price_per_night`, `capacity`, `total_rooms`, `size`, `bed_type`, `created_at`, `image_id`, `name`, `room_size`) VALUES
+(1, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:38:04', NULL, 'Deluxe Sea View', 35),
+(2, 2, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:38:04', NULL, 'Standard Comfort', 25),
+(3, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:40:01', NULL, 'Deluxe Sea View', 35),
+(4, 2, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:01', NULL, 'Standard Comfort', 25),
+(7, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:40:20', NULL, 'Deluxe Sea View', 35),
+(8, 2, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', NULL, 'Standard Comfort', 25);
 
 -- --------------------------------------------------------
 
@@ -624,19 +679,13 @@ ALTER TABLE `bookings`
 -- Tablo için AUTO_INCREMENT değeri `contact_messages`
 --
 ALTER TABLE `contact_messages`
-  MODIFY `message_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `message_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `hotelamenities`
 --
 ALTER TABLE `hotelamenities`
   MODIFY `amenity_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
-
---
--- Tablo için AUTO_INCREMENT değeri `hotelimages`
---
-ALTER TABLE `hotelimages`
-  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `hotels`
@@ -672,19 +721,19 @@ ALTER TABLE `reviews`
 -- Tablo için AUTO_INCREMENT değeri `roomamenities`
 --
 ALTER TABLE `roomamenities`
-  MODIFY `amenity_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `amenity_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `roomimages`
 --
 ALTER TABLE `roomimages`
-  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `room_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `room_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `users`

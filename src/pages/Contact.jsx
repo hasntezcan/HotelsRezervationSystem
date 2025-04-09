@@ -20,18 +20,23 @@ const Contact = () => {
     setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:8080/api/contact", formData);
-      console.log('Response:', response.data);
-      alert('Your message has been sent!');
-      setFormData({ name: '', email: '', phone: '', message: '' });
-    } catch (error) {
-      console.error('Error sending message:', error);
-      alert('Error sending message. Please try again.');
-    }
-  };
+  // ... 
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    // Artık messageId göndermiyoruz
+    const response = await axios.post("http://localhost:8080/api/contact", formData);
+    console.log('Saved Message:', response.data);
+    // response.data.messageId -> backend tarafından üretilen numeric ID
+    alert('Your message has been sent!');
+    setFormData({ name: '', email: '', phone: '', message: '' });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    alert('Error sending message. Please try again.');
+  }
+};
+// ...
+
 
   return (
     <section className="contact__section">

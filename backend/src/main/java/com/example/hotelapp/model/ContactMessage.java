@@ -1,6 +1,5 @@
 package com.example.hotelapp.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -9,15 +8,14 @@ import java.time.LocalDateTime;
 public class ContactMessage {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Otomatik ID atama
     @Column(name = "message_id", nullable = false)
-    private String messageId;
+    private Long messageId;
 
     @Column(name = "sender_name", nullable = false)
-    @JsonProperty("name")
     private String senderName;
 
     @Column(name = "sender_email", nullable = false)
-    @JsonProperty("email")
     private String senderEmail;
 
     @Column(nullable = false)
@@ -27,58 +25,63 @@ public class ContactMessage {
     private String message;
 
     @Column(name = "sent_at", nullable = false)
-    private LocalDateTime sentAt;
+    private LocalDateTime sentAt = LocalDateTime.now();
+
     @Column(name = "is_read", nullable = false)
-    private Boolean isRead = false;  // <-- Yeni alan
+    private Boolean isRead = false;
+
+    // Constructors
     public ContactMessage() {
-        this.sentAt = LocalDateTime.now();
+        // sentAt varsayılan değeri yukarıda tanımladık.
     }
 
-    // Getters and setters
-
-    public String getMessageId() {
+    // Getter - Setter
+    public Long getMessageId() {
         return messageId;
     }
-    public void setMessageId(String messageId) {
+    public void setMessageId(Long messageId) {
         this.messageId = messageId;
     }
+
     public String getSenderName() {
         return senderName;
     }
     public void setSenderName(String senderName) {
         this.senderName = senderName;
     }
+
     public String getSenderEmail() {
         return senderEmail;
     }
     public void setSenderEmail(String senderEmail) {
         this.senderEmail = senderEmail;
     }
+
     public String getPhone() {
         return phone;
     }
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
     public String getMessage() {
         return message;
     }
     public void setMessage(String message) {
         this.message = message;
     }
+
     public LocalDateTime getSentAt() {
         return sentAt;
     }
     public void setSentAt(LocalDateTime sentAt) {
         this.sentAt = sentAt;
     }
-    
 
-    public boolean isRead() {
+    public Boolean getIsRead() {
         return isRead;
     }
-
-    public void setIsRead(boolean isRead) {
-        this.isRead = isRead;
+    public void setIsRead(Boolean read) {
+        isRead = read;
     }
 }
