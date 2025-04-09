@@ -1,5 +1,6 @@
 package com.example.hotelapp.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -8,13 +9,19 @@ import java.time.LocalDateTime;
 public class ContactMessage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Otomatik ID atama
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id", nullable = false)
     private Long messageId;
 
+    // Veritabanında sender_name kolonu,
+    // JSON’da "name" olarak kullanmak için
+    @JsonProperty("name")
     @Column(name = "sender_name", nullable = false)
     private String senderName;
 
+    // Veritabanında sender_email kolonu,
+    // JSON’da "email" olarak kullanmak için
+    @JsonProperty("email")
     @Column(name = "sender_email", nullable = false)
     private String senderEmail;
 
@@ -30,12 +37,10 @@ public class ContactMessage {
     @Column(name = "is_read", nullable = false)
     private Boolean isRead = false;
 
-    // Constructors
     public ContactMessage() {
-        // sentAt varsayılan değeri yukarıda tanımladık.
     }
 
-    // Getter - Setter
+    // === GETTER & SETTER ===
     public Long getMessageId() {
         return messageId;
     }
@@ -43,6 +48,8 @@ public class ContactMessage {
         this.messageId = messageId;
     }
 
+    // Getter & Setter for senderName,
+    // but thanks to @JsonProperty("name"), JSON’da "name" olarak görünür
     public String getSenderName() {
         return senderName;
     }
@@ -50,6 +57,8 @@ public class ContactMessage {
         this.senderName = senderName;
     }
 
+    // Getter & Setter for senderEmail,
+    // but thanks to @JsonProperty("email"), JSON’da "email" olarak görünür
     public String getSenderEmail() {
         return senderEmail;
     }
@@ -81,7 +90,7 @@ public class ContactMessage {
     public Boolean getIsRead() {
         return isRead;
     }
-    public void setIsRead(Boolean read) {
-        isRead = read;
+    public void setIsRead(Boolean isRead) {
+        this.isRead = isRead;
     }
 }

@@ -14,10 +14,9 @@ public class ContactController {
     @Autowired
     private ContactMessageRepository contactMessageRepository;
 
-    // Yeni mesaj kaydetme
+    // Yeni mesaj kaydet
     @PostMapping
     public ResponseEntity<?> submitMessage(@RequestBody ContactMessage contactMessage) {
-        // ID auto-increment olacağı için setMessageId(...) yapmamıza gerek yok.
         ContactMessage savedMessage = contactMessageRepository.save(contactMessage);
         return ResponseEntity.ok(savedMessage);
     }
@@ -41,8 +40,7 @@ public class ContactController {
                 .map(msg -> {
                     msg.setIsRead(true);
                     contactMessageRepository.save(msg);
-                    return ResponseEntity.ok(msg); 
-                    // "Message marked as read." yerine tüm mesaj objesini dönüyoruz.
+                    return ResponseEntity.ok(msg);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
