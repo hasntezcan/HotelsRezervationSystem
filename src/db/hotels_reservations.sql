@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 09 Nis 2025, 13:56:04
+-- Üretim Zamanı: 09 Nis 2025, 14:58:31
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -27,29 +27,36 @@ DELIMITER $$
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AssignManagersToHotels` ()   BEGIN
   DECLARE done INT DEFAULT 0;
-  DECLARE var_hotel_id CHAR(36);
+  DECLARE var_hotel_id BIGINT;
   DECLARE cur_hotels CURSOR FOR SELECT hotel_id FROM hotels;
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-  
+
   OPEN cur_hotels;
-  
+
   read_loop: LOOP
     FETCH cur_hotels INTO var_hotel_id;
     IF done THEN
       LEAVE read_loop;
     END IF;
-    
-    -- Oluşturulacak manager kullanıcı bilgileri (örnek veriler)
+
     INSERT INTO users (username, role, email, password, first_name, last_name, phone)
-    VALUES (CONCAT('manager_', var_hotel_id), 'manager', CONCAT('manager_', var_hotel_id, '@example.com'), 'password', 'Manager', var_hotel_id, '0000000000');
-    
+    VALUES (
+      CONCAT('manager_', var_hotel_id),
+      'manager',
+      CONCAT('manager_', var_hotel_id, '@example.com'),
+      'password',
+      'Manager',
+      var_hotel_id,
+      '0000000000'
+    );
+
     SET @new_user_id = LAST_INSERT_ID();
-    
+
     INSERT INTO managers (user_id, hotel_id)
     VALUES (@new_user_id, var_hotel_id);
-    
+
   END LOOP;
-  
+
   CLOSE cur_hotels;
 END$$
 
@@ -62,9 +69,9 @@ DELIMITER ;
 --
 
 CREATE TABLE `bookings` (
-  `booking_id` char(36) NOT NULL,
+  `booking_id` bigint(20) NOT NULL,
   `user_id` bigint(20) DEFAULT NULL,
-  `room_id` char(36) DEFAULT NULL,
+  `room_id` bigint(20) DEFAULT NULL,
   `check_in_date` date NOT NULL,
   `check_out_date` date NOT NULL,
   `quantity` int(11) NOT NULL CHECK (`quantity` > 0),
@@ -82,7 +89,7 @@ CREATE TABLE `bookings` (
 --
 
 CREATE TABLE `contact_messages` (
-  `message_id` varchar(255) NOT NULL,
+  `message_id` bigint(20) NOT NULL,
   `sender_name` varchar(255) NOT NULL,
   `sender_email` varchar(255) NOT NULL,
   `phone` varchar(50) NOT NULL,
@@ -96,8 +103,8 @@ CREATE TABLE `contact_messages` (
 --
 
 INSERT INTO `contact_messages` (`message_id`, `sender_name`, `sender_email`, `phone`, `message`, `sent_at`, `is_read`) VALUES
-('5850c479-e734-461a-b7b6-28df3e35b895', 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'aa', '2025-04-05 11:20:24', 0),
-('7dae1e1d-8ce7-40c3-8459-fb19cefce8d2', 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'nabe sabo', '2025-04-05 10:59:17', 1);
+(1, 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'aa', '2025-04-05 11:20:24', 0),
+(2, 'a', 'esad.emir34@stu.khas.edu.tr', '05438813007', 'nabe sabo', '2025-04-05 10:59:17', 1);
 
 -- --------------------------------------------------------
 
@@ -106,7 +113,7 @@ INSERT INTO `contact_messages` (`message_id`, `sender_name`, `sender_email`, `ph
 --
 
 CREATE TABLE `hotelamenities` (
-  `amenity_id` char(36) NOT NULL,
+  `amenity_id` bigint(20) NOT NULL,
   `name` varchar(50) NOT NULL,
   `icon_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -116,48 +123,48 @@ CREATE TABLE `hotelamenities` (
 --
 
 INSERT INTO `hotelamenities` (`amenity_id`, `name`, `icon_url`) VALUES
-('a1', 'Free Wi-Fi', ''),
-('a10', 'Restaurant', ''),
-('a11', 'Skyline View', ''),
-('a12', 'Luxury Suites', ''),
-('a13', 'Helipad', ''),
-('a14', 'Beachfront', ''),
-('a15', 'Private Pool', ''),
-('a16', 'Beach View', ''),
-('a17', 'Luxury Spa', ''),
-('a18', 'Sunset View', ''),
-('a19', 'Cocktail Bar', ''),
-('a2', 'Breakfast Included', ''),
-('a20', 'Massage Therapy', ''),
-('a21', 'Private Beach', ''),
-('a22', 'Infinity Pool', ''),
-('a23', 'Scuba Diving', ''),
-('a24', 'Business Center', ''),
-('a25', 'Free Shuttle', ''),
-('a26', 'Meeting Rooms', ''),
-('a27', 'Fast Wi-Fi', ''),
-('a28', 'Traditional Spa', ''),
-('a29', 'Tea Ceremony', ''),
-('a3', 'Swimming Pool', ''),
-('a30', 'Garden View', ''),
-('a31', 'Penthouse Suites', ''),
-('a32', 'Private Lounge', ''),
-('a33', 'Michelin Star Restaurant', ''),
-('a34', 'Eiffel Tower View', ''),
-('a35', 'Fine Dining', ''),
-('a36', 'Artistic Decor', ''),
-('a37', 'Exclusive Bar', ''),
-('a38', 'Gourmet Restaurant', ''),
-('a39', 'Boat Rides', ''),
-('a4', 'Gym', ''),
-('a40', 'VIP Services', ''),
-('a41', 'Exclusive Wine Cellar', ''),
-('a42', 'Designer Suites', ''),
-('a5', 'sezo', ''),
-('a6', 'Bar', ''),
-('a7', 'City View', ''),
-('a8', 'Free Parking', ''),
-('a9', 'Riverside View', '');
+(1, 'Free Wi-Fi', ''),
+(2, 'Breakfast Included', ''),
+(3, 'Swimming Pool', ''),
+(4, 'Gym', ''),
+(5, 'sezo', ''),
+(6, 'Bar', ''),
+(7, 'City View', ''),
+(8, 'Free Parking', ''),
+(9, 'Riverside View', ''),
+(10, 'Restaurant', ''),
+(11, 'Skyline View', ''),
+(12, 'Luxury Suites', ''),
+(13, 'Helipad', ''),
+(14, 'Beachfront', ''),
+(15, 'Private Pool', ''),
+(16, 'Beach View', ''),
+(17, 'Luxury Spa', ''),
+(18, 'Sunset View', ''),
+(19, 'Cocktail Bar', ''),
+(20, 'Massage Therapy', ''),
+(21, 'Private Beach', ''),
+(22, 'Infinity Pool', ''),
+(23, 'Scuba Diving', ''),
+(24, 'Business Center', ''),
+(25, 'Free Shuttle', ''),
+(26, 'Meeting Rooms', ''),
+(27, 'Fast Wi-Fi', ''),
+(28, 'Traditional Spa', ''),
+(29, 'Tea Ceremony', ''),
+(30, 'Garden View', ''),
+(31, 'Penthouse Suites', ''),
+(32, 'Private Lounge', ''),
+(33, 'Michelin Star Restaurant', ''),
+(34, 'Eiffel Tower View', ''),
+(35, 'Fine Dining', ''),
+(36, 'Artistic Decor', ''),
+(37, 'Exclusive Bar', ''),
+(38, 'Gourmet Restaurant', ''),
+(39, 'Boat Rides', ''),
+(40, 'VIP Services', ''),
+(41, 'Exclusive Wine Cellar', ''),
+(42, 'Designer Suites', '');
 
 -- --------------------------------------------------------
 
@@ -166,8 +173,8 @@ INSERT INTO `hotelamenities` (`amenity_id`, `name`, `icon_url`) VALUES
 --
 
 CREATE TABLE `hotelamenityjunction` (
-  `hotel_id` char(36) NOT NULL,
-  `amenity_id` char(36) NOT NULL
+  `hotel_id` bigint(20) NOT NULL,
+  `amenity_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -175,47 +182,47 @@ CREATE TABLE `hotelamenityjunction` (
 --
 
 INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
-('01', 'a2'),
-('01', 'a3'),
-('01', 'a4'),
-('02', 'a5'),
-('02', 'a6'),
-('02', 'a7'),
-('02', 'a8'),
-('03', 'a1'),
-('03', 'a10'),
-('03', 'a9'),
-('04', 'a11'),
-('04', 'a12'),
-('04', 'a13'),
-('05', 'a14'),
-('05', 'a15'),
-('05', 'a18'),
-('06', 'a16'),
-('06', 'a17'),
-('06', 'a19'),
-('07', 'a14'),
-('07', 'a21'),
-('08', 'a20'),
-('08', 'a22'),
-('09', 'a24'),
-('09', 'a27'),
-('10', 'a25'),
-('10', 'a26'),
-('11', 'a28'),
-('11', 'a29'),
-('12', 'a31'),
-('12', 'a32'),
-('12', 'a33'),
-('13', 'a34'),
-('13', 'a35'),
-('14', 'a36'),
-('14', 'a37'),
-('14', 'a38'),
-('15', 'a39'),
-('16', 'a40'),
-('16', 'a41'),
-('16', 'a42');
+(1, 2),
+(1, 3),
+(1, 4),
+(2, 5),
+(2, 6),
+(2, 7),
+(2, 8),
+(3, 1),
+(3, 9),
+(3, 10),
+(4, 11),
+(4, 12),
+(4, 13),
+(5, 14),
+(5, 15),
+(5, 18),
+(6, 16),
+(6, 17),
+(6, 19),
+(7, 14),
+(7, 21),
+(8, 20),
+(8, 22),
+(9, 24),
+(9, 27),
+(10, 25),
+(10, 26),
+(11, 28),
+(11, 29),
+(12, 31),
+(12, 32),
+(12, 33),
+(13, 34),
+(13, 35),
+(14, 36),
+(14, 37),
+(14, 38),
+(15, 39),
+(16, 40),
+(16, 41),
+(16, 42);
 
 -- --------------------------------------------------------
 
@@ -224,7 +231,7 @@ INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
 --
 
 CREATE TABLE `hotelimages` (
-  `image_id` varchar(255) NOT NULL,
+  `image_id` bigint(20) NOT NULL,
   `hotel_id` bigint(20) DEFAULT NULL,
   `image_url` varchar(255) NOT NULL,
   `is_primary` tinyint(1) DEFAULT 0
@@ -235,22 +242,22 @@ CREATE TABLE `hotelimages` (
 --
 
 INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VALUES
-('01-img', 1, '/hotel_images/hotel-img01.jpg', 1),
-('02-img', 2, '/hotel_images/hotel-img02.jpg', 1),
-('03-img', 3, '/hotel_images/hotel-img03.jpg', 1),
-('04-img', 4, '/hotel_images/hotel-img04.jpg', 1),
-('05-img', 5, '/hotel_images/hotel-img05.jpg', 1),
-('06-img', 6, '/hotel_images/hotel-img06.jpg', 1),
-('07-img', 7, '/hotel_images/hotel-img07.jpg', 1),
-('08-img', 8, '/hotel_images/hotel-img08.jpg', 1),
-('09-img', 9, '/hotel_images/hotel-img09.jpg', 1),
-('10-img', 10, '/hotel_images/hotel-img10.jpg', 1),
-('11-img', 11, '/hotel_images/hotel-img11.jpg', 1),
-('12-img', 12, '/hotel_images/hotel-img12.jpg', 1),
-('13-img', 13, '/hotel_images/hotel-img13.jpg', 1),
-('14-img', 14, '/hotel_images/hotel-img14.jpg', 1),
-('15-img', 15, '/hotel_images/hotel-img15.jpg', 1),
-('16-img', 16, '/hotel_images/hotel-img16.jpg', 1);
+(1, 1, '/hotel_images/hotel-img01.jpg', 1),
+(2, 2, '/hotel_images/hotel-img02.jpg', 1),
+(3, 3, '/hotel_images/hotel-img03.jpg', 1),
+(4, 4, '/hotel_images/hotel-img04.jpg', 1),
+(5, 5, '/hotel_images/hotel-img05.jpg', 1),
+(6, 6, '/hotel_images/hotel-img06.jpg', 1),
+(7, 7, '/hotel_images/hotel-img07.jpg', 1),
+(8, 8, '/hotel_images/hotel-img08.jpg', 1),
+(9, 9, '/hotel_images/hotel-img09.jpg', 1),
+(10, 10, '/hotel_images/hotel-img10.jpg', 1),
+(11, 11, '/hotel_images/hotel-img11.jpg', 1),
+(12, 12, '/hotel_images/hotel-img12.jpg', 1),
+(13, 13, '/hotel_images/hotel-img13.jpg', 1),
+(14, 14, '/hotel_images/hotel-img14.jpg', 1),
+(15, 15, '/hotel_images/hotel-img15.jpg', 1),
+(16, 16, '/hotel_images/hotel-img16.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -284,22 +291,22 @@ CREATE TABLE `hotels` (
 --
 
 INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `country`, `latitude`, `longitude`, `description`, `star_rating`, `check_in_time`, `check_out_time`, `cancellation_policy`, `status`, `created_at`, `capacity`, `price_per_night`, `featured`) VALUES
-(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'anan', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style with spacious rooms and excellent city views.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(2, 2, 'Royal Palace London', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty at this prestigious address, with luxury amenities and impeccable service.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(3, 3, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views and enjoy relaxing riverside walks in central London.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(4, 4, 'Skyline Tower London', '321 Skyline Avenue, London', 'London', 'United Kingdom', 51.515, -0.141, 'Reach new heights at Skyline Tower with luxury suites and breathtaking city panoramas.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(5, 5, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bali', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise with beachfront access and unforgettable sunsets every day.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(6, 6, 'Tropical Paradise Bali', '789 Island Street, Bali', 'Bali', 'Indonesia', -8.414, 115.195, 'Dive into luxury with private pools and ultimate relaxation in the heart of Bali.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(7, 7, 'Golden Sands Resort', '999 Ocean Drive, Bali', 'Bali', 'Indonesia', -8.42, 115.2, 'Relax on golden sands and sip cocktails while enjoying Bali’s breathtaking sunsets.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(8, 8, 'Island Escape Hotel', '222 Paradise Lane, Bali', 'Bali', 'Indonesia', -8.43, 115.21, 'A secluded retreat offering private beaches and luxury amenities for an unforgettable escape.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(9, 9, 'Tokyo Sky Hotel', '789 Shibuya, Tokyo', 'Tokyo', 'Japan', 35.658, 139.7016, 'Enjoy panoramic city views and premium services at the heart of bustling Tokyo.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(10, 10, 'Shinjuku Business Hotel', '45 Business Street, Tokyo', 'Tokyo', 'Japan', 35.6938, 139.7034, 'Perfect for business travelers with fast Wi-Fi and professional meeting rooms.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(11, 11, 'Cherry Blossom Resort', '22 Sakura Avenue, Tokyo', 'Tokyo', 'Japan', 35.6895, 139.6917, 'Experience traditional Japanese hospitality surrounded by beautiful cherry blossoms.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(12, 12, 'Luxury Tower Tokyo', '567 Ginza Road, Tokyo', 'Tokyoaaa', 'Japan', 0, 0, 'Enjoy penthouse suites and gourmet dining in Tokyo’s upscale Ginza district.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', NULL, '2025-04-06 13:58:50', 0, 0, 0),
-(13, 13, 'Eiffel Grand Hotel', '123 Champs Elysees, Paris', 'Paris', 'France', 48.8566, 2.3522, 'Stay steps away from the Eiffel Tower with luxurious accommodations and fine dining.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(14, 14, 'Louvre Palace Hotel', '89 Louvre Street, Paris', 'Paris', 'France', 48.8606, 2.3376, 'Discover art and culture with premium access to the Louvre and luxury services.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(15, 15, 'Seine River Hotel', '456 Riverfront, Paris', 'Paris', 'France', 48.857, 2.354, 'Enjoy riverside dining and scenic boat rides in the heart of Paris.', 4, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0),
-(16, 16, 'Parisian Royal Suites', '777 Palace Road, Paris', 'Paris', 'France', 48.8582, 2.35, 'Royal treatment with exclusive wine cellar and designer suites in Paris.', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours before check-in.', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0);
+(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'anan', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style...', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(2, 2, 'Royal Palace London', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(3, 3, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(4, 4, 'Skyline Tower London', '321 Skyline Avenue, London', 'London', 'United Kingdom', 51.515, -0.141, 'Reach new heights...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(5, 5, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bali', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(6, 6, 'Tropical Paradise Bali', '789 Island Street, Bali', 'Bali', 'Indonesia', -8.414, 115.195, 'Dive into luxury...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(7, 7, 'Golden Sands Resort', '999 Ocean Drive, Bali', 'Bali', 'Indonesia', -8.42, 115.2, 'Relax on golden sands...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(8, 8, 'Island Escape Hotel', '222 Paradise Lane, Bali', 'Bali', 'Indonesia', -8.43, 115.21, 'A secluded retreat...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(9, 9, 'Tokyo Sky Hotel', '789 Shibuya, Tokyo', 'Tokyo', 'Japan', 35.658, 139.7016, 'Enjoy panoramic city views...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(10, 10, 'Shinjuku Business Hotel', '45 Business Street, Tokyo', 'Tokyo', 'Japan', 35.6938, 139.7034, 'Perfect for business travelers...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(11, 11, 'Cherry Blossom Resort', '22 Sakura Avenue, Tokyo', 'Tokyo', 'Japan', 35.6895, 139.6917, 'Experience traditional Japanese hospitality...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(12, 12, 'Luxury Tower Tokyo', '567 Ginza Road, Tokyo', 'Tokyoaaa', 'Japan', 0, 0, 'Enjoy penthouse suites...', 5, '14:00:00', '12:00:00', 'Free cancellation...', NULL, '2025-04-06 13:58:50', 0, 0, 0),
+(13, 13, 'Eiffel Grand Hotel', '123 Champs Elysees, Paris', 'Paris', 'France', 48.8566, 2.3522, 'Stay steps away from the Eiffel Tower...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(14, 14, 'Louvre Palace Hotel', '89 Louvre Street, Paris', 'Paris', 'France', 48.8606, 2.3376, 'Discover art and culture...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(15, 15, 'Seine River Hotel', '456 Riverfront, Paris', 'Paris', 'France', 48.857, 2.354, 'Enjoy riverside dining...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0),
+(16, 16, 'Parisian Royal Suites', '777 Palace Road, Paris', 'Paris', 'France', 48.8582, 2.35, 'Royal treatment...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -310,7 +317,7 @@ INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `coun
 CREATE TABLE `managers` (
   `manager_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
-  `hotel_id` varchar(255) NOT NULL,
+  `hotel_id` bigint(20) NOT NULL,
   `assigned_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -319,22 +326,22 @@ CREATE TABLE `managers` (
 --
 
 INSERT INTO `managers` (`manager_id`, `user_id`, `hotel_id`, `assigned_at`) VALUES
-(1, 16, '1', '2025-04-08 20:32:15'),
-(2, 17, '2', '2025-04-08 14:40:26'),
-(3, 18, '3', '2025-04-08 14:40:26'),
-(4, 19, '4', '2025-04-08 14:40:26'),
-(5, 20, '5', '2025-04-08 14:40:26'),
-(6, 21, '6', '2025-04-08 14:40:26'),
-(7, 22, '7', '2025-04-08 14:40:26'),
-(8, 23, '8', '2025-04-08 14:40:26'),
-(9, 24, '9', '2025-04-08 20:32:15'),
-(10, 25, '10', '2025-04-08 20:32:15'),
-(11, 26, '11', '2025-04-08 20:32:15'),
-(12, 27, '12', '2025-04-08 20:32:15'),
-(13, 28, '13', '2025-04-08 20:32:15'),
-(14, 29, '14', '2025-04-08 20:35:48'),
-(15, 30, '15', '2025-04-08 20:35:48'),
-(16, 31, '16', '2025-04-08 20:36:11');
+(1, 16, 1, '2025-04-08 20:32:15'),
+(2, 17, 2, '2025-04-08 14:40:26'),
+(3, 18, 3, '2025-04-08 14:40:26'),
+(4, 19, 4, '2025-04-08 14:40:26'),
+(5, 20, 5, '2025-04-08 14:40:26'),
+(6, 21, 6, '2025-04-08 14:40:26'),
+(7, 22, 7, '2025-04-08 14:40:26'),
+(8, 23, 8, '2025-04-08 14:40:26'),
+(9, 24, 9, '2025-04-08 20:32:15'),
+(10, 25, 10, '2025-04-08 20:32:15'),
+(11, 26, 11, '2025-04-08 20:32:15'),
+(12, 27, 12, '2025-04-08 20:32:15'),
+(13, 28, 13, '2025-04-08 20:32:15'),
+(14, 29, 14, '2025-04-08 20:35:48'),
+(15, 30, 15, '2025-04-08 20:35:48'),
+(16, 31, 16, '2025-04-08 20:36:11');
 
 -- --------------------------------------------------------
 
@@ -343,8 +350,8 @@ INSERT INTO `managers` (`manager_id`, `user_id`, `hotel_id`, `assigned_at`) VALU
 --
 
 CREATE TABLE `payments` (
-  `payment_id` char(36) NOT NULL,
-  `booking_id` char(36) DEFAULT NULL,
+  `payment_id` bigint(20) NOT NULL,
+  `booking_id` bigint(20) DEFAULT NULL,
   `amount` decimal(10,2) NOT NULL,
   `payment_method` enum('credit_card','paypal','bank_transfer') NOT NULL,
   `transaction_id` varchar(255) DEFAULT NULL,
@@ -359,9 +366,9 @@ CREATE TABLE `payments` (
 --
 
 CREATE TABLE `promotions` (
-  `promotion_id` char(36) NOT NULL,
-  `hotel_id` char(36) DEFAULT NULL,
-  `room_id` char(36) DEFAULT NULL,
+  `promotion_id` bigint(20) NOT NULL,
+  `hotel_id` bigint(20) DEFAULT NULL,
+  `room_id` bigint(20) DEFAULT NULL,
   `description` text DEFAULT NULL,
   `discount_percentage` int(11) DEFAULT NULL CHECK (`discount_percentage` between 1 and 100),
   `start_date` date NOT NULL,
@@ -376,9 +383,9 @@ CREATE TABLE `promotions` (
 --
 
 CREATE TABLE `reviews` (
-  `review_id` char(36) NOT NULL,
+  `review_id` bigint(20) NOT NULL,
   `user_id` bigint(20) DEFAULT NULL,
-  `hotel_id` char(36) DEFAULT NULL,
+  `hotel_id` bigint(20) DEFAULT NULL,
   `rating` int(11) DEFAULT NULL CHECK (`rating` between 1 and 5),
   `comment` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
@@ -427,7 +434,7 @@ CREATE TABLE `roomimages` (
 --
 
 CREATE TABLE `rooms` (
-  `room_id` char(36) NOT NULL,
+  `room_id` bigint(20) NOT NULL,
   `hotel_id` bigint(20) NOT NULL,
   `room_type` varchar(50) NOT NULL,
   `description` text DEFAULT NULL,
@@ -608,6 +615,30 @@ ALTER TABLE `users`
 --
 
 --
+-- Tablo için AUTO_INCREMENT değeri `bookings`
+--
+ALTER TABLE `bookings`
+  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `contact_messages`
+--
+ALTER TABLE `contact_messages`
+  MODIFY `message_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `hotelamenities`
+--
+ALTER TABLE `hotelamenities`
+  MODIFY `amenity_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `hotelimages`
+--
+ALTER TABLE `hotelimages`
+  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
 -- Tablo için AUTO_INCREMENT değeri `hotels`
 --
 ALTER TABLE `hotels`
@@ -620,16 +651,40 @@ ALTER TABLE `managers`
   MODIFY `manager_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
+-- Tablo için AUTO_INCREMENT değeri `payments`
+--
+ALTER TABLE `payments`
+  MODIFY `payment_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `promotions`
+--
+ALTER TABLE `promotions`
+  MODIFY `promotion_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `review_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
 -- Tablo için AUTO_INCREMENT değeri `roomamenities`
 --
 ALTER TABLE `roomamenities`
-  MODIFY `amenity_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `amenity_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `roomimages`
 --
 ALTER TABLE `roomimages`
   MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `rooms`
+--
+ALTER TABLE `rooms`
+  MODIFY `room_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `users`
@@ -642,10 +697,24 @@ ALTER TABLE `users`
 --
 
 --
+-- Tablo kısıtlamaları `bookings`
+--
+ALTER TABLE `bookings`
+  ADD CONSTRAINT `fk_bookings_room` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`),
+  ADD CONSTRAINT `fk_bookings_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
+-- Tablo kısıtlamaları `hotelamenityjunction`
+--
+ALTER TABLE `hotelamenityjunction`
+  ADD CONSTRAINT `fk_hotelamenityjunction_amenity` FOREIGN KEY (`amenity_id`) REFERENCES `hotelamenities` (`amenity_id`),
+  ADD CONSTRAINT `fk_hotelamenityjunction_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`);
+
+--
 -- Tablo kısıtlamaları `hotelimages`
 --
 ALTER TABLE `hotelimages`
-  ADD CONSTRAINT `FK3ae7nsprhld4xstwbi0bwf1y6` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`);
+  ADD CONSTRAINT `fk_hotelimages_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`);
 
 --
 -- Tablo kısıtlamaları `hotels`
@@ -660,10 +729,36 @@ ALTER TABLE `managers`
   ADD CONSTRAINT `fk_managers_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
+-- Tablo kısıtlamaları `payments`
+--
+ALTER TABLE `payments`
+  ADD CONSTRAINT `fk_payments_booking` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`);
+
+--
+-- Tablo kısıtlamaları `promotions`
+--
+ALTER TABLE `promotions`
+  ADD CONSTRAINT `fk_promotions_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`),
+  ADD CONSTRAINT `fk_promotions_room` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`);
+
+--
+-- Tablo kısıtlamaları `reviews`
+--
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `fk_reviews_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`),
+  ADD CONSTRAINT `fk_reviews_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
 -- Tablo kısıtlamaları `roomamenityjunction`
 --
 ALTER TABLE `roomamenityjunction`
-  ADD CONSTRAINT `FKnobhag8n4b4f5af0hxwx0a512` FOREIGN KEY (`amenity_id`) REFERENCES `roomamenities` (`amenity_id`);
+  ADD CONSTRAINT `fk_roomamenityjunction_amenity` FOREIGN KEY (`amenity_id`) REFERENCES `roomamenities` (`amenity_id`);
+
+--
+-- Tablo kısıtlamaları `rooms`
+--
+ALTER TABLE `rooms`
+  ADD CONSTRAINT `fk_rooms_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
