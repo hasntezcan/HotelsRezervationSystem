@@ -3,7 +3,7 @@ import { Card, CardBody } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './tour-card.css';
 
-const TourCard = ({ tour }) => {
+const TourCard = ({ tour, checkIn, checkOut }) => {
   const {
     hotelId,
     name,
@@ -12,6 +12,11 @@ const TourCard = ({ tour }) => {
     primaryImageUrl,
     starRating,
   } = tour;
+
+  // Build booking URL based on whether dates are provided
+  const bookingUrl = checkIn && checkOut
+    ? `/hotels/${hotelId}?startDate=${checkIn}&endDate=${checkOut}`
+    : `/hotels/${hotelId}`;
 
   return (
     <div className='tour__card'>
@@ -38,7 +43,7 @@ const TourCard = ({ tour }) => {
 
           <div className="card__bottom d-flex align-items-center justify-content-between mt-3">
             <h5>${pricePerNight} <span>/per night</span></h5>
-            <Link to={`/hotels/${hotelId}`}>
+            <Link to={bookingUrl}>
               <button className='booking__btn'>Book Now</button>
             </Link>
           </div>

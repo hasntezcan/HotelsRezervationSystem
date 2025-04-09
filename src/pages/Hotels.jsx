@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom' // ✅ Added
 import CommonSection from '../shared/CommonSection'
 import TourCard from './../shared/TourCard'
 import SearchBar from './../shared/SearchBar'
@@ -18,6 +19,10 @@ const Hotels = () => {
   const [page, setPage] = useState(0)
   const [loading, setLoading] = useState(false)
 
+  const [checkIn, setCheckIn] = useState('')
+  const [checkOut, setCheckOut] = useState('')
+
+  const location = useLocation(); // ✅ Get current URL
   const BASE_URL = 'http://localhost:8080/api/hotels'
 
   const cityImages = {
@@ -27,7 +32,30 @@ const Hotels = () => {
     Tokyo: tokyoImg
   }
 
-  // Fetch city list on first render
+  // ✅ Read city + dates from query string on first load
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const cityParam = queryParams.get("city");
+    const checkInParam = queryParams.get("startDate");
+    const checkOutParam = queryParams.get("endDate");
+
+    if (cityParam && checkInParam && checkOutParam) {
+      setSelectedCity(cityParam);
+      setCheckIn(checkInParam);
+      setCheckOut(checkOutParam);
+      setPage(0);
+    }
+  }, [location.search]);
+
+  // 🔍 onSearch handler from SearchBar
+  const handleSearch = (city, start, end) => {
+    setSelectedCity(city)
+    setCheckIn(start)
+    setCheckOut(end)
+    setPage(0)
+  }
+
+  // Fetch available cities
   useEffect(() => {
     const fetchCities = async () => {
       try {
@@ -41,33 +69,31 @@ const Hotels = () => {
     fetchCities()
   }, [])
 
-  // Fetch hotels + images when city is selected
+  // Fetch hotels for selected city
   useEffect(() => {
     const fetchHotelsWithImages = async () => {
       try {
-        setLoading(true);
-        const res = await fetch(`${BASE_URL}/city?name=${selectedCity}`)
-        const hotelsData = await res.json();  // This is now HotelWithImageDTO list
-  
-        // No extra calls needed. The response already contains primaryImageUrl
+        setLoading(true)
+        const res = await fetch(`${BASE_URL}/search?query=${selectedCity}`)
+        const hotelsData = await res.json()
+
         const hotelsWithImages = hotelsData.map((hotel) => ({
           ...hotel,
-          imgUrl: hotel.primaryImageUrl || '', // fallback if null
-        }));
-  
-        setHotels(hotelsWithImages);
-        setLoading(false);
+          imgUrl: hotel.primaryImageUrl || ''
+        }))
+
+        setHotels(hotelsWithImages)
+        setLoading(false)
       } catch (err) {
-        console.error('Error fetching hotels or images:', err);
-        setLoading(false);
+        console.error('Error fetching hotels or images:', err)
+        setLoading(false)
       }
-    };
-  
-    if (selectedCity) {
-      fetchHotelsWithImages();
     }
-  }, [selectedCity]);
-  
+
+    if (selectedCity) {
+      fetchHotelsWithImages()
+    }
+  }, [selectedCity])
 
   const toursPerPage = 8
   const start = page * toursPerPage
@@ -90,7 +116,8 @@ const Hotels = () => {
       <section>
         <Container>
           <Row>
-            <SearchBar />
+            {/* ✅ Now works for both Home and Hotels */}
+            <SearchBar onSearch={handleSearch} />
           </Row>
         </Container>
       </section>
@@ -142,6 +169,8 @@ const Hotels = () => {
                             location: tour.city,
                             rating: tour.starRating || 'Not rated'
                           }}
+                          checkIn={checkIn}
+                          checkOut={checkOut}
                         />
                       </Col>
                     ))}

@@ -54,13 +54,13 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     List<HotelWithImageDTO> searchHotelsByNameOrCity(@Param("query") String query);
 
 
-    // ✅ To return hotel + primary image in one API call (used by Hotels.jsx)
     @Query("SELECT new com.example.hotelapp.dto.HotelWithImageDTO(" +
-            "h.hotelId, h.name, h.city, h.pricePerNight, h.starRating, i.imageUrl) " +
-            "FROM Hotel h " +
-            "LEFT JOIN h.images i ON i.isPrimary = true " +
-            "WHERE LOWER(h.city) = LOWER(:city) " +
-            "AND h.status = 'approved'")
+        "h.hotelId, h.name, h.city, h.pricePerNight, h.starRating, i.imageUrl) " +
+        "FROM Hotel h " +
+        "LEFT JOIN h.images i ON i.isPrimary = true " +
+        "WHERE LOWER(h.city) LIKE LOWER(CONCAT('%', :city, '%')) " +
+        "AND h.status = 'approved'")
     List<HotelWithImageDTO> findHotelsWithPrimaryImageByCity(@Param("city") String city);
+
 
 }

@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../shared/search-bar.css";
 import { startOfMonth } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { IoClose } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
-const SearchBar = () => {
+const SearchBar = ({ onSearch }) => {
   const [destination, setDestination] = useState("");
   const [dates, setDates] = useState([null, null]);
   const [defaultViewDate, setDefaultViewDate] = useState(startOfMonth(new Date()));
@@ -35,9 +35,22 @@ const SearchBar = () => {
       alert("Please fill in all fields!");
       return;
     }
-    navigate(
-      `/search-results?destination=${destination}&startDate=${dates[0].toISOString()}&endDate=${dates[1].toISOString()}&adults=${adults}&children=${children}&pets=${pets}`
-    );
+
+    const formatDateLocal = (date) => {
+      const offset = date.getTimezoneOffset();
+      const localDate = new Date(date.getTime() - offset * 60000);
+      return localDate.toISOString().split("T")[0];
+    };
+    
+    const checkIn = formatDateLocal(dates[0]);
+    const checkOut = formatDateLocal(dates[1]);
+    
+
+    if (onSearch) {
+      onSearch(destination, checkIn, checkOut);
+    } else {
+      navigate(`/hotels?city=${destination}&startDate=${checkIn}&endDate=${checkOut}`);
+    }
   };
 
   const clearDates = () => {
@@ -51,7 +64,6 @@ const SearchBar = () => {
       {calendarOpen || dropdownOpen ? <div className="blackout-overlay"></div> : null}
 
       <div className="search-bar">
-        {/* Destination Selection */}
         <input
           type="text"
           placeholder="Where do you want to go?"
@@ -60,7 +72,6 @@ const SearchBar = () => {
           className="search-input"
         />
 
-        {/* Date Selection */}
         <div className="date-picker-container">
           <DatePicker
             key={calendarKey}
@@ -78,7 +89,7 @@ const SearchBar = () => {
             defaultViewDate={defaultViewDate}
             onCalendarOpen={() => {
               setCalendarOpen(true);
-              setDefaultViewDate(startOfMonth(new Date())); // Reset to current month on open
+              setDefaultViewDate(startOfMonth(new Date()));
             }}
             onCalendarClose={() => setCalendarOpen(false)}
           />
@@ -87,7 +98,6 @@ const SearchBar = () => {
           )}
         </div>
 
-        {/* Passenger Selection */}
         <div
           className={`passenger-select ${dropdownOpen ? "active" : ""}`}
           onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -95,13 +105,11 @@ const SearchBar = () => {
           {adults} Adults - {children} Children {pets ? " - With Pets" : ""}
         </div>
 
-        {/* Search Button */}
         <button onClick={handleSearch} className="search-button">
           Search
         </button>
       </div>
 
-      {/* Passenger Dropdown */}
       {dropdownOpen && (
         <div className="passenger-dropdown-container">
           <div className="passenger-dropdown" ref={dropdownRef}>
@@ -133,7 +141,6 @@ const SearchBar = () => {
                 />
               </label>
             </div>
-
 
             <button className="guest-close" onClick={() => setDropdownOpen(false)}>
               Done
