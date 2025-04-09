@@ -13,12 +13,12 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 
 const ManagerHotels = () => {
-  const { user } = useContext(AuthContext); // Login olmuş kullanıcı bilgisi
+  const { user } = useContext(AuthContext);
   const [hotels, setHotels] = useState([]);
   const [editHotel, setEditHotel] = useState(null);
   const [error, setError] = useState(null);
 
-  // Backend'den manager'a ait otel verilerini alıyoruz.
+  // Manager'a ait otel verilerini backend'den alıyoruz.
   useEffect(() => {
     if (user && user.userId) {
       axios
@@ -33,32 +33,74 @@ const ManagerHotels = () => {
     }
   }, [user]);
 
-  // Manager'ın otel(leri) içinden düzenleme için ilk oteli seçiyoruz.
+  // İlk oteli görüntülemek için
   const hotelToEdit = hotels.length > 0 ? hotels[0] : null;
 
-  // Düzenleme moduna geçmek için
+  // Düzenleme moduna geçiş: Düzenlenecek oteli state'e aktarırken "featured" alanı için
+  // undefined ya da null ise false olarak set ediyoruz.
   const handleEdit = (hotel) => {
-    setEditHotel({ ...hotel });
+    setEditHotel({ ...hotel, featured: hotel.featured ?? false });
   };
 
-  // Kaydet butonuna tıklanınca güncellenmiş verileri state üzerinde güncelliyoruz.
-  // Gerektiğinde backend update API çağrısı da ekleyebilirsiniz.
-  const handleSave = () => {
-    const updatedHotels = hotels.map((hotel) =>
-      hotel.hotelId === editHotel.hotelId ? editHotel : hotel
-    );
-    setHotels(updatedHotels);
-    setEditHotel(null);
-    // Örneğin, backend'e PUT isteği yapılabilir:
-    // axios.put(`http://localhost:8080/api/hotels/${editHotel.hotelId}`, editHotel)
-    //   .then(response => { ... })
-    //   .catch(err => { ... });
+  // Güncellemeleri veritabanına göndermek için
+  const handleSave = async () => {
+    try {
+      const payload = {
+        name: editHotel.name ?? "",
+        city: editHotel.city ?? "",
+        country: editHotel.country ?? "",
+        address: editHotel.address ?? "",
+        pricePerNight: editHotel.pricePerNight ?? 0,
+        capacity: editHotel.capacity ?? 0,
+        amenities: editHotel.amenities ?? "",
+        managerId: editHotel.managerId ?? "",
+        checkInTime: editHotel.checkInTime ?? "",
+        checkOutTime: editHotel.checkOutTime ?? "",
+        cancellationPolicy: editHotel.cancellationPolicy ?? "",
+        description: editHotel.description ?? "",
+        starRating: editHotel.starRating ?? 0,
+        featured:
+          editHotel.featured !== undefined && editHotel.featured !== null
+            ? editHotel.featured
+            : false,
+      };
+
+      // Authorization header'ı kontrol ediyoruz
+      const config = {
+        headers: {
+          Authorization: user?.token ? `Bearer ${user.token}` : "",
+          "Content-Type": "application/json",
+        },
+      };
+
+      const response = await axios.put(
+        `http://localhost:8080/api/hotels/${editHotel.hotelId}`,
+        payload,
+        config
+      );
+
+      // Güncellenen oteli state'de güncelliyoruz
+      const updatedHotel = response.data;
+      const updatedHotels = hotels.map((hotel) =>
+        hotel.hotelId === updatedHotel.hotelId ? updatedHotel : hotel
+      );
+      setHotels(updatedHotels);
+      setEditHotel(null);
+      alert("Hotel updated successfully!");
+    } catch (err) {
+      console.error("Error updating hotel:", err);
+      alert(err.response ? err.response.data : "Error updating hotel");
+    }
   };
 
-  // Formdaki input'lardaki değişiklikleri state'e yansıtma
+  // Form inputlarındaki değişiklikleri state'e yansıtma
   const handleChange = (e, field) => {
-    const { value } = e.target;
-    setEditHotel({ ...editHotel, [field]: value });
+    if (field === "featured") {
+      // Checkbox kullanımı: e.target.checked boolean değer verir.
+      setEditHotel({ ...editHotel, featured: e.target.checked });
+    } else {
+      setEditHotel({ ...editHotel, [field]: e.target.value });
+    }
   };
 
   if (error) {
@@ -70,7 +112,7 @@ const ManagerHotels = () => {
       <SidebarManager />
       <div className="content" style={{ padding: "40px", width: "100%" }}>
         <Grid container spacing={4} style={{ width: "100%", maxWidth: "1400px" }}>
-          {/* Otel bilgilerini görüntüleme */}
+          {/* Otel Bilgileri */}
           <Grid item xs={12} sm={6}>
             <Card
               style={{
@@ -106,16 +148,10 @@ const ManagerHotels = () => {
                 <Typography variant="body2" style={{ marginBottom: "10px" }}>
                   <strong>Manager ID:</strong> {hotelToEdit?.managerId}
                 </Typography>
-                {hotelToEdit?.photo && (
-                  <img
-                    src={hotelToEdit.photo}
-                    alt="Hotel"
-                    style={{ width: "100%", borderRadius: "10px" }}
-                  />
-                )}
               </CardContent>
             </Card>
           </Grid>
+
           {/* Düzenleme Formu */}
           <Grid item xs={12} sm={6}>
             {editHotel && editHotel.hotelId === hotelToEdit?.hotelId ? (
@@ -160,6 +196,7 @@ const ManagerHotels = () => {
                   />
                   <TextField
                     label="Price Per Night"
+                    type="number"
                     value={editHotel?.pricePerNight || ""}
                     onChange={(e) => handleChange(e, "pricePerNight")}
                     fullWidth
@@ -167,6 +204,7 @@ const ManagerHotels = () => {
                   />
                   <TextField
                     label="Capacity"
+                    type="number"
                     value={editHotel?.capacity || ""}
                     onChange={(e) => handleChange(e, "capacity")}
                     fullWidth
@@ -180,19 +218,22 @@ const ManagerHotels = () => {
                     margin="normal"
                   />
                   <TextField
-                    label="Photo URL"
-                    value={editHotel?.photo || ""}
-                    onChange={(e) => handleChange(e, "photo")}
-                    fullWidth
-                    margin="normal"
-                  />
-                  <TextField
                     label="Manager ID"
                     value={editHotel?.managerId || ""}
                     disabled
                     fullWidth
                     margin="normal"
                   />
+                  <Box display="flex" alignItems="center" marginY="15px">
+                    <Typography variant="body1" style={{ marginRight: "10px" }}>
+                      Featured:
+                    </Typography>
+                    <input
+                      type="checkbox"
+                      checked={editHotel.featured}
+                      onChange={(e) => handleChange(e, "featured")}
+                    />
+                  </Box>
                   <Button
                     variant="contained"
                     color="primary"

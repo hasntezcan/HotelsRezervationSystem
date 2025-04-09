@@ -11,44 +11,45 @@ public class ManagerHotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hotel_id")
     private Long hotelId;
-    
+
     @Column(name = "manager_id")
     private Long managerId;
-    
+
     @Column(nullable = false)
     private String name;
-    
+
     private String address;
     private String city;
     private String country;
     private Double latitude;
     private Double longitude;
     private String description;
-    
+
     @Column(name = "star_rating")
     private Integer starRating;
-    
+
     @Column(name = "check_in_time")
     private String checkInTime;
-    
+
     @Column(name = "check_out_time")
     private String checkOutTime;
-    
+
     @Column(name = "cancellation_policy")
     private String cancellationPolicy;
-    
+
     private String status;
-    
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
+
     private Integer capacity;
-    private String photo;
-    
+
     @Column(name = "price_per_night")
     private Double pricePerNight;
     
-    private Boolean featured;
+    // Nullable false ve varsayılan değeri false olarak ayarlandı
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean featured = false;
 
     // Getters and setters
 
@@ -148,12 +149,8 @@ public class ManagerHotel {
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
-    public String getPhoto() {
-        return photo;
-    }
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
+    
+    
     public Double getPricePerNight() {
         return pricePerNight;
     }
