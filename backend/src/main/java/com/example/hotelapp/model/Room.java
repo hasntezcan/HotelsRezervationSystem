@@ -5,12 +5,15 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "rooms")
 public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "room_id")
     private Long id;
 
     @Column(name = "hotel_id", nullable = false)
@@ -31,46 +34,50 @@ public class Room {
     @Column(name = "room_size", nullable = false)
     private Integer roomSize;
 
+    @Column(name = "size")
+    private String size;
+
+    @Column(name = "bed_type")
+    private String bedType;
+
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "total_rooms", nullable = false)
     private Integer totalRooms;
 
-    // Eğer tablo varsa; aksi halde ihtiyaca göre kaldırabilirsiniz.
     @Column(name = "image_id")
     private Integer imageId;
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
-    // Bir odanın birden fazla resmi olabilir (Tablo: roomimages)
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<RoomImage> images;
+    
 
-    // Odaya ait amenity’leri, junction tablosu aracılığıyla getiriyoruz (Tablo: roomamenityjunction)
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RoomAmenityJunction> amenityJunctions;
-
-    // Kurucu metodlar
     public Room() {
     }
 
     public Room(Long hotelId, String roomType, String name, BigDecimal pricePerNight, Integer capacity,
-                Integer roomSize, String description, Integer totalRooms, Integer imageId, LocalDateTime createdAt) {
+                Integer roomSize, String size, String bedType, String description, Integer totalRooms,
+                Integer imageId, LocalDateTime createdAt) {
         this.hotelId = hotelId;
         this.roomType = roomType;
         this.name = name;
         this.pricePerNight = pricePerNight;
         this.capacity = capacity;
         this.roomSize = roomSize;
+        this.size = size;
+        this.bedType = bedType;
         this.description = description;
         this.totalRooms = totalRooms;
         this.imageId = imageId;
         this.createdAt = createdAt;
     }
 
-    // Getters ve Setters
+    // Getter ve Setterlar
 
     public Long getId() {
         return id;
@@ -128,6 +135,22 @@ public class Room {
         this.roomSize = roomSize;
     }
 
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getBedType() {
+        return bedType;
+    }
+
+    public void setBedType(String bedType) {
+        this.bedType = bedType;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -167,12 +190,5 @@ public class Room {
     public void setImages(List<RoomImage> images) {
         this.images = images;
     }
-
-    public List<RoomAmenityJunction> getAmenityJunctions() {
-        return amenityJunctions;
-    }
-
-    public void setAmenityJunctions(List<RoomAmenityJunction> amenityJunctions) {
-        this.amenityJunctions = amenityJunctions;
-    }
+        
 }

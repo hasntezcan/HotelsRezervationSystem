@@ -2,6 +2,7 @@ package com.example.hotelapp.model;
 
 import jakarta.persistence.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "roomamenities")
@@ -19,6 +20,7 @@ public class RoomAmenity {
     // Tersi ilişki: Bu amenity hangi junction'larda kullanıldı?
     // Yani hangi odalara eklenmiş?
     @OneToMany(mappedBy = "amenity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<RoomAmenityJunction> junctions;
 
     // GETTER-SETTER

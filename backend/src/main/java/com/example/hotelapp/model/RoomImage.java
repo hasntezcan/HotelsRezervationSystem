@@ -1,5 +1,7 @@
 package com.example.hotelapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -17,9 +19,9 @@ public class RoomImage {
     @Column(name = "is_primary")
     private Boolean isPrimary;
 
-    // Oda FK
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(name = "room_id")
+    @JsonBackReference
     private Room room;
 
     // GETTER-SETTER
