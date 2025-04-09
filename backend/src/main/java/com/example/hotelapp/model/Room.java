@@ -56,9 +56,6 @@ public class Room {
     @JsonManagedReference
     private List<RoomImage> images;
     
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
-    private List<RoomAmenityJunction> amenityJunctions;
 
     public Room() {
     }
@@ -193,13 +190,5 @@ public class Room {
     public void setImages(List<RoomImage> images) {
         this.images = images;
     }
-
-    public List<RoomAmenityJunction> getAmenityJunctions() {
-        return amenityJunctions;
-    }
- 
-    public void setAmenityJunctions(List<RoomAmenityJunction> amenityJunctions) {
-        this.amenityJunctions = amenityJunctions;
-    }
-        */
+        
 }

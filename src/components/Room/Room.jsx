@@ -40,7 +40,7 @@ const Room = ({ selectedRoom, onRoomSelect }) => {
         const imageUrl = primaryImage ? primaryImage.imageUrl : 'https://via.placeholder.com/400x300?text=No+Image';
 
         // Amenity listesi
-        const amenities = room.amenityJunctions?.map(junction => junction.amenity?.name).filter(Boolean);
+       // const amenities = room.amenityJunctions?.map(junction => junction.amenity?.name).filter(Boolean);
 
         return (
           <Col lg="6" md="6" sm="12" className="mb-4" key={room.id}>
@@ -65,13 +65,8 @@ const Room = ({ selectedRoom, onRoomSelect }) => {
                   <li>
                     <i className="ri-hotel-bed-line"></i> {room.bedType}
                   </li>
-                  {amenities && amenities.map((amenity, idx) => (
-                    <li key={idx}>
-                      <i className={amenityIcons[amenity] || 'ri-star-line'}></i> {amenity}
-                    </li>
-                  ))}
                   <li>
-                    <i className="ri-wifi-line"></i> Free Wi-Fi
+                  <i className="ri-wifi-line"></i> Free Wi-Fi
                   </li>
                 </ul>
               </div>
