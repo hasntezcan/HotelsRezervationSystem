@@ -8,11 +8,9 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 
-// Örnek veriler
-const stats = [
-    { title: "Total Hotels", value: "11,361" },
+// Diğer statik veriler, grafikler, mailData, profitLossData vs. aynı kalıyor:
+const otherStats = [
     { title: "Total Rooms", value: "431,225"},
-    { title: "Managers", value: "32,441"},
     { title: "Gain", value: "1,325,134" },
 ];
 
@@ -29,13 +27,6 @@ const reservationData = [
     { name: "October", Paris: 370, Bali: 270, Tokyo: 520, London: 480 },
     { name: "November", Paris: 340, Bali: 250, Tokyo: 490, London: 450 },
     { name: "December", Paris: 310, Bali: 220, Tokyo: 460, London: 420 },
-];
-
-const managerData = [
-    { name: "Paris", value: 120 },
-    { name: "Bali", value: 95 },
-    { name: "Tokyo", value: 100 },
-    { name: "London", value: 110 },
 ];
 
 const mailData = [
@@ -55,12 +46,16 @@ const profitLossData = [
 const AdminDashboard = () => {
   const [date, setDate] = useState(new Date());
   const [weather, setWeather] = useState({ temp: "", condition: "", icon: "" });
-  
-  // Ekran genişliğini takip eden state
   const [isMobile, setIsMobile] = useState(false);
+  
+  const [totalHotels, setTotalHotels] = useState(0);
+  const [totalManagers, setTotalManagers] = useState(0);
+  
+  // Yeni eklenen state: şehir bazında manager sayısı
+  const [managersPerCity, setManagersPerCity] = useState([]);
 
+  // Hava durumu, ekran boyutu vs. effect
   useEffect(() => {
-    // Hava durumu verisini çek
     const fetchWeather = async () => {
       try {
         const apiKey = "d8979e0f88b7755b0afbcc390b89b16e";
@@ -78,7 +73,6 @@ const AdminDashboard = () => {
     };
     fetchWeather();
 
-    // Ekran boyutu değiştikçe isMobile güncelle
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -87,12 +81,72 @@ const AdminDashboard = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // İçinde bulunduğumuz ay index'i (Ocak=0, Şubat=1 vs.)
+  // Toplam veriler ve Managers Per City için useEffect
+  useEffect(() => {
+    fetchTotalHotels();
+    fetchTotalManagers();
+    fetchManagersPerCity();
+  }, []);
+
+  // GET /api/hotels ile toplam otelleri çekiyoruz.
+  const fetchTotalHotels = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/hotels");
+      setTotalHotels(Array.isArray(response.data) ? response.data.length : 0);
+    } catch (error) {
+      console.error("Error fetching total hotels:", error);
+    }
+  };
+
+  // GET /api/users?role=manager ile toplam manager sayısını çekiyoruz.
+  const fetchTotalManagers = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/users?role=manager");
+      setTotalManagers(Array.isArray(response.data) ? response.data.length : 0);
+    } catch (error) {
+      console.error("Error fetching total managers:", error);
+    }
+  };
+
+  // GET /api/hotels endpoint'ini kullanarak, her otelin bulunduğu şehir ve o şehirde atanmış benzersiz manager sayısını hesaplıyoruz.
+  const fetchManagersPerCity = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/hotels");
+      const hotels = response.data; // Beklenen: ManagerHotel nesneleri
+      // Şehir bazında unique manager id'leri tutmak için bir obje oluşturuyoruz
+      const cityMap = {};
+      hotels.forEach((hotel) => {
+        const city = hotel.city || "Unknown";
+        if (!cityMap[city]) {
+          cityMap[city] = new Set();
+        }
+        if (hotel.managerId) {
+          cityMap[city].add(hotel.managerId);
+        }
+      });
+      // Her şehir için manager sayısını hesaplayıp, pie chart verisine uygun formata çeviriyoruz
+      const data = Object.keys(cityMap).map((city) => ({
+        name: city,
+        value: cityMap[city].size,
+      }));
+      setManagersPerCity(data);
+    } catch (error) {
+      console.error("Error fetching managers per city:", error);
+    }
+  };
+
   const currentMonthIndex = new Date().getMonth();
-  // Mobilde sadece ayın index'i kadar veriyi slice ile alıyoruz
   const displayedData = isMobile
     ? reservationData.slice(0, currentMonthIndex + 1)
     : reservationData;
+
+  // Stat kartlarını güncellenmiş değerlerle oluşturuyoruz
+  const stats = [
+    { title: "Total Hotels", value: totalHotels.toLocaleString() },
+    { title: "Total Rooms", value: otherStats.find(s => s.title === "Total Rooms").value },
+    { title: "Managers", value: totalManagers.toLocaleString() },
+    { title: "Gain", value: otherStats.find(s => s.title === "Gain").value },
+  ];
 
   return (
     <div className="dashboard-container">
@@ -103,7 +157,6 @@ const AdminDashboard = () => {
           <div className="stat-card" key={index}>
             <h3>{stat.value}</h3>
             <p>{stat.title}</p>
-            {/* isterseniz stat.percentage ekleyebilirsiniz */}
           </div>
         ))}
       </div>
@@ -155,25 +208,16 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Aylık Rezervasyon Sayıları (White text & Mobil kısıtlama) */}
+      {/* Aylık Rezervasyon Sayıları */}
       <div className="chart-container">
         <h3>Monthly Reservations by City</h3>
         <ResponsiveContainer width="100%" height={250}>
           <LineChart data={displayedData}>
-            {/* Grid çizgileri gri veya daha koyu bir renk: */}
             <CartesianGrid stroke="#555" strokeDasharray="3 3" />
-            {/* X ve Y eksenleri, tick (yazılar) beyaz */}
             <XAxis dataKey="name" stroke="#fff" tick={{ fill: "#fff" }} />
             <YAxis stroke="#fff" tick={{ fill: "#fff" }} />
-            {/* Tooltip arka plan ve metin rengi */}
-            <Tooltip
-              contentStyle={{ backgroundColor: "#222", borderColor: "#222" }}
-              labelStyle={{ color: "#fff" }}
-              itemStyle={{ color: "#fff" }}
-            />
-            {/* Legend (isteğe bağlı) */}
+            <Tooltip contentStyle={{ backgroundColor: "#222", borderColor: "#222" }} labelStyle={{ color: "#fff" }} itemStyle={{ color: "#fff" }} />
             <Legend wrapperStyle={{ color: "#fff" }} />
-            {/* Çizgiler farklı renklerde kalabilir */}
             <Line type="monotone" dataKey="Paris" stroke="#8884d8" />
             <Line type="monotone" dataKey="Bali" stroke="#82ca9d" />
             <Line type="monotone" dataKey="Tokyo" stroke="#ff7300" />
@@ -182,13 +226,13 @@ const AdminDashboard = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Alt Kısım: Pie Chart & Bar Chart */}
+      {/* Bottom Container: Pie Chart & Bar Chart */}
       <div className="bottom-container">
         <div className="pie-chart">
           <h3>Managers Per City</h3>
           <PieChart width={250} height={250}>
-            <Pie data={managerData} cx="50%" cy="50%" outerRadius={60} fill="#8884d8" label>
-              {managerData.map((_, index) => (
+            <Pie data={managersPerCity} cx="50%" cy="50%" outerRadius={60} fill="#8884d8" label>
+              {managersPerCity.map((_, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={
@@ -202,8 +246,8 @@ const AdminDashboard = () => {
             </Pie>
           </PieChart>
           <ul>
-            {managerData.map((city, index) => (
-              <li key={index}>{city.name}: {city.value} Managers</li>
+            {managersPerCity.map((cityData, index) => (
+              <li key={index}>{cityData.name}: {cityData.value} Managers</li>
             ))}
           </ul>
         </div>
@@ -214,11 +258,7 @@ const AdminDashboard = () => {
             <BarChart data={profitLossData}>
               <XAxis dataKey="name" stroke="#fff" tick={{ fill: "#fff" }} />
               <YAxis stroke="#fff" tick={{ fill: "#fff" }} />
-              <Tooltip
-                contentStyle={{ backgroundColor: "#222", borderColor: "#222" }}
-                labelStyle={{ color: "#fff" }}
-                itemStyle={{ color: "#fff" }}
-              />
+              <Tooltip contentStyle={{ backgroundColor: "#222", borderColor: "#222" }} labelStyle={{ color: "#fff" }} itemStyle={{ color: "#fff" }} />
               <Legend wrapperStyle={{ color: "#fff" }} />
               <Bar dataKey="revenue" fill="#00C49F" />
               <Bar dataKey="tax" fill="red" />
