@@ -2,12 +2,14 @@ package com.example.hotelapp.controller;
 
 import com.example.hotelapp.dto.HotelWithImageDTO;
 import com.example.hotelapp.model.Hotel;
+import com.example.hotelapp.model.Room;
 import com.example.hotelapp.repository.HotelRepository;
+import com.example.hotelapp.repository.RoomRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +20,25 @@ public class HotelController {
 
     @Autowired
     private HotelRepository hotelRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
+
+    @GetMapping("/{hotelId}/rooms")
+    public ResponseEntity<List<Room>> getRoomsByHotelId(@PathVariable Long hotelId) {
+        List<Room> rooms = roomRepository.findByHotelId(hotelId);
+        if(rooms.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(rooms);
+    }
+
+    @GetMapping("/{hotelId}")
+    public ResponseEntity<Hotel> getHotelById(@PathVariable Long hotelId) {
+        return hotelRepository.findById(hotelId)
+               .map(ResponseEntity::ok)
+               .orElse(ResponseEntity.notFound().build());
+    }
 
     @GetMapping
     public ResponseEntity<?> getAllHotels() {

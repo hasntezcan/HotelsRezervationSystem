@@ -1,4 +1,3 @@
-// AuthController.java
 package com.example.hotelapp.controller;
 
 import com.example.hotelapp.model.LoginRequest;
@@ -6,6 +5,7 @@ import com.example.hotelapp.model.Manager;
 import com.example.hotelapp.model.User;
 import com.example.hotelapp.repository.ManagerRepository;
 import com.example.hotelapp.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class AuthController {
 
     // Login endpoint: Plain text şifre karşılaştırması
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         try {
             Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
             if (optionalUser.isEmpty()) {
@@ -66,6 +66,8 @@ public class AuthController {
             if (!incomingPassword.equals(dbPassword)) {
                 return ResponseEntity.status(401).body("Password is incorrect.");
             }
+            // Kullanıcı başarılı giriş yaptıysa, HTTP session'ına kullanıcıyı ekleyelim.
+            request.getSession().setAttribute("user", user);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
@@ -111,22 +113,28 @@ public class AuthController {
     
     // Manager profilini döndüren GET endpoint
     @GetMapping("/profile/manager")
-public ResponseEntity<?> getManagerProfile(@RequestParam Long userId) {
-    Optional<User> optionalUser = userRepository.findById(userId);
-    if (optionalUser.isEmpty() || !"manager".equalsIgnoreCase(optionalUser.get().getRole())) {
-        return ResponseEntity.status(404).body("Manager not found.");
+    public ResponseEntity<?> getManagerProfile(@RequestParam Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty() || !"manager".equalsIgnoreCase(optionalUser.get().getRole())) {
+            return ResponseEntity.status(404).body("Manager not found.");
+        }
+        User managerUser = optionalUser.get();
+        Optional<Manager> managerOpt = managerRepository.findByUserId(managerUser.getUserId());
+        if (managerOpt.isEmpty()) {
+            return ResponseEntity.status(404).body("Manager record not found.");
+        }
+        Manager manager = managerOpt.get();
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", managerUser);
+        response.put("managerId", manager.getManagerId());
+        response.put("hotelId", manager.getHotelId());
+        return ResponseEntity.ok(response);
     }
-    User managerUser = optionalUser.get();
-    Optional<Manager> managerOpt = managerRepository.findByUserId(managerUser.getUserId());
-    if (managerOpt.isEmpty()) {
-        return ResponseEntity.status(404).body("Manager record not found.");
+    
+    // Logout endpoint: Oturumu geçersiz kılarak çıkış yapar.
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        request.getSession().invalidate();
+        return ResponseEntity.ok("User logged out successfully.");
     }
-    Manager manager = managerOpt.get();
-    Map<String, Object> response = new HashMap<>();
-    response.put("user", managerUser);
-    response.put("managerId", manager.getManagerId());
-    response.put("hotelId", manager.getHotelId());
-    return ResponseEntity.ok(response);
-}
-
 }
