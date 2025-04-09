@@ -7,6 +7,7 @@ import avatar from '../assets/images/avatar.jpg';
 import Booking from '../components/Booking/Booking';
 import { AuthContext } from '../context/AuthContext';
 import Room from '../components/Room/Room';
+import axios from 'axios';
 
 // LOCAL JSON
 import hotels from '../assets/data/hotels';
@@ -37,12 +38,14 @@ const TourDetails = () => {
     title, 
     desc, 
     price, 
-    reviews, 
     city, 
     address, 
     maxGroupSize,
     amenities // WiFi, Breakfast Included vb. eklendi
   } = tour;
+
+  const [reviews, setReviews] = useState([]);
+
 
   // İndirim kontrolü
   const queryParams = new URLSearchParams(location.search);
@@ -56,36 +59,54 @@ const TourDetails = () => {
     }
   }
 
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/reviews/hotel/${id}`)
+      .then((res) => {
+        setReviews(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch reviews:", err);
+      });
+  }, [id]);
+  
+
   // Ortalama puan hesaplama
   const { totalRating, avgRating } = calculateAvgRating(reviews || []);
 
   // Yorum ekleme fonksiyonu
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     const reviewText = reviewMsgRef.current.value;
-
+  
     if (!user) {
       alert('Please sign in');
       return;
     }
-
+  
     const newReview = {
-      username: user?.username || 'Guest',
-      reviewText,
+      userId: user.id,                 // make sure this exists in context
+      hotelId: parseInt(id),           // from URL param
       rating: tourRating,
-      createdAt: new Date().toISOString(),
+      comment: reviewText
     };
-
-    const idx = hotels.findIndex((item) => item._id === id);
-    if (idx !== -1) {
-      hotels[idx].reviews.push(newReview);
-      localStorage.setItem('hotelsData', JSON.stringify(hotels));
-      alert('Review submitted successfully!');
+  
+    try {
+      console.log("Sending review:", newReview);
+      await axios.post('http://localhost:8080/api/reviews', newReview);
+      alert("Review submitted successfully!");
+  
+      // Refresh reviews from backend
+      const res = await axios.get(`http://localhost:8080/api/reviews/hotel/${id}`);
+      setReviews(res.data);
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      alert("Failed to submit review.");
     }
-
+  
     reviewMsgRef.current.value = '';
     setTourRating(null);
   };
+  
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -181,26 +202,24 @@ const TourDetails = () => {
                 <ListGroup className="user__reviews">
                   {reviews?.map((review, index) => (
                     <div className="review__item" key={index}>
-                      <img src={avatar} alt="" />
-
+                      <img src={avatar} alt="avatar" />
                       <div className="w-100">
                         <div className="d-flex align-items-center justify-content-between">
                           <div>
-                            <h5>{review.username}</h5>
+                            <h5>User #{review.userId}</h5>
                             <p>{new Date(review.createdAt).toLocaleDateString()}</p>
                           </div>
-
                           <span className="d-flex align-items-center">
                             {review.rating}
                             <i className="ri-star-s-fill"></i>
                           </span>
                         </div>
-
-                        <h6>{review.reviewText}</h6>
+                        <h6>{review.comment}</h6>
                       </div>
                     </div>
                   ))}
                 </ListGroup>
+
               </div>
             </div>
           </Col>
