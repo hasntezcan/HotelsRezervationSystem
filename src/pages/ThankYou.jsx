@@ -17,7 +17,7 @@ const ThankYou = () => {
                 <i className="ri-checkbox-circle-line"></i>
               </div>
               <h1 className="thank-you-title">Thank You</h1>
-              <h3 className="thank-you-subtitle">Your room is rezerved</h3>
+              <h3 className="thank-you-subtitle">Your room is reserved</h3>
               <p className="thank-you-text">
                 We appreciate your trust in us. A confirmation email has been
                 sent to you. <br/>We look forward to providing an amazing experience!

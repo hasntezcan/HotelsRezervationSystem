@@ -23,6 +23,15 @@ public class RoomController {
         List<Room> rooms = roomService.getAllRooms();
         return ResponseEntity.ok(rooms);
     }
+    
+    @GetMapping("/hotel/{hotelId}")
+    public ResponseEntity<List<Room>> getRoomsByHotelId(@PathVariable Long hotelId){
+        List<Room> rooms = roomService.getRoomsByHotelId(hotelId);
+        if(rooms.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(rooms);
+    }
 
     // Belirli bir odayı ID ile getir
     @GetMapping("/{id}")
