@@ -125,24 +125,6 @@ const Booking = ({ tour, avgRating }) => {
       <div className="booking__form">
         <h5>Information</h5>
         <Form className="booking__info-form" onSubmit={handleClick}>
-          <FormGroup>
-            <input
-              type="text"
-              placeholder="Full Name"
-              id="fullName"
-              onChange={handleChange}
-              value={booking.fullName}
-            />
-          </FormGroup>
-          <FormGroup>
-            <input
-              type="tel"
-              placeholder="Phone"
-              id="phone"
-              onChange={handleChange}
-              value={booking.phone}
-            />
-          </FormGroup>
 
           <FormGroup className="d-flex align-items-center gap-3">
             <div className="date-box">

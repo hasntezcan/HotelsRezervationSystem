@@ -34,6 +34,8 @@ public class RoomService {
                     room.setPricePerNight(updatedRoom.getPricePerNight());
                     room.setCapacity(updatedRoom.getCapacity());
                     room.setRoomSize(updatedRoom.getRoomSize());
+                    room.setSize(updatedRoom.getSize()); // ✅ eklendi
+                    room.setBedType(updatedRoom.getBedType()); // ✅ eklendi
                     room.setDescription(updatedRoom.getDescription());
                     room.setTotalRooms(updatedRoom.getTotalRooms());
                     room.setImageId(updatedRoom.getImageId());

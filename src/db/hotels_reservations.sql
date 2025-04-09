@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 09 Nis 2025, 14:58:31
+-- Üretim Zamanı: 09 Nis 2025, 15:45:14
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -20,48 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Veritabanı: `hotels_reservations`
 --
-
-DELIMITER $$
---
--- Yordamlar
---
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AssignManagersToHotels` ()   BEGIN
-  DECLARE done INT DEFAULT 0;
-  DECLARE var_hotel_id BIGINT;
-  DECLARE cur_hotels CURSOR FOR SELECT hotel_id FROM hotels;
-  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-
-  OPEN cur_hotels;
-
-  read_loop: LOOP
-    FETCH cur_hotels INTO var_hotel_id;
-    IF done THEN
-      LEAVE read_loop;
-    END IF;
-
-    INSERT INTO users (username, role, email, password, first_name, last_name, phone)
-    VALUES (
-      CONCAT('manager_', var_hotel_id),
-      'manager',
-      CONCAT('manager_', var_hotel_id, '@example.com'),
-      'password',
-      'Manager',
-      var_hotel_id,
-      '0000000000'
-    );
-
-    SET @new_user_id = LAST_INSERT_ID();
-
-    INSERT INTO managers (user_id, hotel_id)
-    VALUES (@new_user_id, var_hotel_id);
-
-  END LOOP;
-
-  CLOSE cur_hotels;
-END$$
-
-DELIMITER ;
-
 -- --------------------------------------------------------
 
 --
@@ -402,6 +360,22 @@ CREATE TABLE `roomamenities` (
   `name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Tablo döküm verisi `roomamenities`
+--
+
+INSERT INTO `roomamenities` (`amenity_id`, `name`) VALUES
+(43, 'Sea View'),
+(44, 'Balcony'),
+(45, 'Mini Bar'),
+(46, 'King Size Bed'),
+(47, 'Air Conditioning'),
+(48, 'Sea View'),
+(49, 'Balcony'),
+(50, 'Mini Bar'),
+(51, 'King Size Bed'),
+(52, 'Air Conditioning');
+
 -- --------------------------------------------------------
 
 --
@@ -413,6 +387,18 @@ CREATE TABLE `roomamenityjunction` (
   `amenity_id` bigint(20) NOT NULL,
   `is_primary` bit(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Tablo döküm verisi `roomamenityjunction`
+--
+
+INSERT INTO `roomamenityjunction` (`room_id`, `amenity_id`, `is_primary`) VALUES
+(1, 43, b'1'),
+(1, 44, b'0'),
+(1, 45, b'1'),
+(2, 46, b'1'),
+(2, 47, b'1'),
+(2, 48, b'1');
 
 -- --------------------------------------------------------
 
@@ -426,6 +412,20 @@ CREATE TABLE `roomimages` (
   `image_url` varchar(255) NOT NULL,
   `is_primary` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Tablo döküm verisi `roomimages`
+--
+
+INSERT INTO `roomimages` (`image_id`, `room_id`, `image_url`, `is_primary`) VALUES
+(1, 1, '/public/room_images/room-img01.jpg', 1),
+(2, 1, '/assets/room_images/room-img02.jpg', 0),
+(3, 2, '/assets/room_images/room-img03.jpg', 1),
+(4, 2, '/assets/room_images/room-img04.jpg', 0),
+(5, 1, '/assets/room_images/room-img01.jpg', 1),
+(6, 1, '/assets/room_images/room-img02.jpg', 0),
+(7, 2, '/assets/room_images/room-img03.jpg', 1),
+(8, 2, '/assets/room_images/room-img04.jpg', 0);
 
 -- --------------------------------------------------------
 
@@ -448,6 +448,18 @@ CREATE TABLE `rooms` (
   `name` varchar(100) NOT NULL,
   `room_size` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Tablo döküm verisi `rooms`
+--
+
+INSERT INTO `rooms` (`room_id`, `hotel_id`, `room_type`, `description`, `price_per_night`, `capacity`, `total_rooms`, `size`, `bed_type`, `created_at`, `image_id`, `name`, `room_size`) VALUES
+(1, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:38:04', NULL, 'Deluxe Sea View', 35),
+(2, 2, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:38:04', NULL, 'Standard Comfort', 25),
+(3, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:40:01', NULL, 'Deluxe Sea View', 35),
+(4, 2, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:01', NULL, 'Standard Comfort', 25),
+(7, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:40:20', NULL, 'Deluxe Sea View', 35),
+(8, 2, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', NULL, 'Standard Comfort', 25);
 
 -- --------------------------------------------------------
 
@@ -672,19 +684,19 @@ ALTER TABLE `reviews`
 -- Tablo için AUTO_INCREMENT değeri `roomamenities`
 --
 ALTER TABLE `roomamenities`
-  MODIFY `amenity_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `amenity_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `roomimages`
 --
 ALTER TABLE `roomimages`
-  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `room_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `room_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `users`

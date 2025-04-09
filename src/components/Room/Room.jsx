@@ -1,43 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'reactstrap';
-import room1 from '../../assets/images/Room_1.jpg';
-import room2 from '../../assets/images/Room_2.jpg';
+import axios from 'axios';
+
+const amenityIcons = {
+  'Sea View': 'ri-eye-line',
+  'Balcony': 'ri-home-line',
+  'Mini Bar': 'ri-cup-line',
+  'King Size Bed': 'ri-hotel-bed-line',
+  'Air Conditioning': 'ri-snowflake-line',
+  'Breakfast Included': 'ri-restaurant-line',
+  'Swimming Pool': 'ri-pool-line',
+  'Gym': 'ri-dumbbell-line'
+};
 
 const Room = ({ selectedRoom, onRoomSelect }) => {
-  // İki oda örneği; her oda ayrı pricePerNight içeriyor.
-  const rooms = [
-    {
-      id: 'standard',
-      name: 'Standard Room',
-      image: room1,
-      pricePerNight: 50,
-      desc: 'A cozy room for up to 2 guests.',
-      amenities: [
-        { icon: 'ri-ruler-line', text: '30 m²' },
-        { icon: 'ri-user-line', text: 'Max 2 people' },
-        { icon: 'ri-forbid-line', text: 'Non-smoking' },
-        { icon: 'ri-wifi-line', text: 'Free Wi-Fi' },
-      ],
-    },
-    {
-      id: 'family',
-      name: 'Family Room',
-      image: room2,
-      pricePerNight: 80,
-      desc: 'Spacious option for the whole family.',
-      amenities: [
-        { icon: 'ri-ruler-line', text: '50 m²' },
-        { icon: 'ri-user-line', text: 'Max 4 people' },
-        { icon: 'ri-forbid-line', text: 'Non-smoking' },
-        { icon: 'ri-wifi-line', text: 'Free Wi-Fi' },
-      ],
-    },
-  ];
+  const [rooms, setRooms] = useState([]);
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/rooms');
+        console.log('Rooms API response:', response.data);
+        setRooms(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error('Error fetching rooms:', error);
+        setRooms([]); // Hata durumunda rooms boş array yap
+      }
+    };
+
+    fetchRooms();
+  }, []);
 
   return (
     <Row>
       {rooms.map((room) => {
         const isSelected = selectedRoom === room.id;
+
+        const primaryImage = room.images?.find(img => img.isPrimary) || room.images?.[0];
+        const imageUrl = primaryImage ? primaryImage.imageUrl : 'https://via.placeholder.com/400x300?text=No+Image';
+
+        // Amenity listesi
+        const amenities = room.amenityJunctions?.map(junction => junction.amenity?.name).filter(Boolean);
 
         return (
           <Col lg="6" md="6" sm="12" className="mb-4" key={room.id}>
@@ -45,20 +48,31 @@ const Room = ({ selectedRoom, onRoomSelect }) => {
               className={`room-card ${isSelected ? 'selected' : ''}`}
               onClick={() => onRoomSelect(room.id)}
             >
-              <img src={room.image} alt={room.name} className="room-image" />
+              <img src={imageUrl} alt={room.name} className="room-image" />
               <h5 className="room-title">{room.name}</h5>
-              {/* Fiyatı her odada gösteriyoruz */}
               <p className="room-price">
                 ${room.pricePerNight} <span>/ night</span>
               </p>
               <div className="room-desc-amenities">
-                <p className="room-desc">{room.desc}</p>
+                <p className="room-desc">{room.description}</p>
                 <ul className="room__amenities">
-                  {room.amenities.map((amenity, idx) => (
+                  <li>
+                    <i className="ri-ruler-line"></i> {room.roomSize} m²
+                  </li>
+                  <li>
+                    <i className="ri-user-line"></i> Max {room.capacity} people
+                  </li>
+                  <li>
+                    <i className="ri-hotel-bed-line"></i> {room.bedType}
+                  </li>
+                  {amenities && amenities.map((amenity, idx) => (
                     <li key={idx}>
-                      <i className={amenity.icon}></i> {amenity.text}
+                      <i className={amenityIcons[amenity] || 'ri-star-line'}></i> {amenity}
                     </li>
                   ))}
+                  <li>
+                    <i className="ri-wifi-line"></i> Free Wi-Fi
+                  </li>
                 </ul>
               </div>
             </div>

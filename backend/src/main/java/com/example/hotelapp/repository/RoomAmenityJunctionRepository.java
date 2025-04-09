@@ -1,0 +1,1 @@
+// bunu yaratmadım gerek yoktur diye
