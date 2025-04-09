@@ -11,32 +11,32 @@ const Contact = () => {
     message: ''
   });
 
-  // Scroll to top when the component mounts
+  // Sayfa yüklendiğinde en üste git
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Form alanlarındaki değişiklikleri kaydeder
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
-  // ... 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    // Artık messageId göndermiyoruz
-    const response = await axios.post("http://localhost:8080/api/contact", formData);
-    console.log('Saved Message:', response.data);
-    // response.data.messageId -> backend tarafından üretilen numeric ID
-    alert('Your message has been sent!');
-    setFormData({ name: '', email: '', phone: '', message: '' });
-  } catch (error) {
-    console.error('Error sending message:', error);
-    alert('Error sending message. Please try again.');
-  }
-};
-// ...
+  // Form gönderimi
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // messageId gönderilmesine gerek yok, ID auto-increment
+      const response = await axios.post("http://localhost:8080/api/contact", formData);
+      console.log('Saved Message:', response.data);
 
+      alert('Your message has been sent!');
+      // Formu sıfırla
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Error sending message. Please try again.');
+    }
+  };
 
   return (
     <section className="contact__section">
@@ -46,7 +46,7 @@ const handleSubmit = async (e) => {
             <div className="map__container">
               <iframe
                 title="location-map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.0139351281478!2d28.95639361268239!3d41.02495107122876!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab9f12ab56e17%3A0x9485bbf687d7cbfd!2sKadir%20Has%20%C3%9Cniversitesi!5e0!3m2!1str!2str!4v1740860263820!5m2!1str!2str"
+                src="https://www.google.com/maps/embed?pb=..."
                 width="100%"
                 height="550"
                 style={{ border: 0 }}
@@ -122,18 +122,7 @@ const handleSubmit = async (e) => {
               </Form>
 
               <div className="social__links mt-4">
-                <a href="https://twitter.com" target="_blank" rel="noreferrer" className="social__icon">
-                  <i className="ri-twitter-line"></i>
-                </a>
-                <a href="https://instagram.com" target="_blank" rel="noreferrer" className="social__icon">
-                  <i className="ri-instagram-line"></i>
-                </a>
-                <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" className="social__icon">
-                  <i className="ri-linkedin-box-line"></i>
-                </a>
-                <a href="https://github.com" target="_blank" rel="noreferrer" className="social__icon">
-                  <i className="ri-github-line"></i>
-                </a>
+                {/* Sosyal medya linkleriniz */}
               </div>
             </div>
           </Col>
