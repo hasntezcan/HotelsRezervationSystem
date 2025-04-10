@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 11 Nis 2025, 01:21:51
+-- Üretim Zamanı: 10 Nis 2025, 23:23:51
 -- Sunucu sürümü: 10.4.32-MariaDB
--- PHP Sürümü: 8.2.12
+-- PHP Sürümü: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -38,21 +38,20 @@ CREATE TABLE `bookings` (
   `price_per_night` decimal(38,2) NOT NULL,
   `total_price` decimal(38,2) NOT NULL,
   `status` varchar(20) DEFAULT 'pending',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `hotel_id` bigint(20) DEFAULT NULL
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Tablo döküm verisi `bookings`
 --
 
-INSERT INTO `bookings` (`booking_id`, `user_id`, `room_id`, `check_in_date`, `check_out_date`, `quantity`, `num_guests`, `price_per_night`, `total_price`, `status`, `created_at`, `hotel_id`) VALUES
-(1, 1, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07', NULL),
-(2, 2, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07', NULL),
-(3, 3, 1, '2025-04-15', '2025-04-17', 1, 3, 100.00, 230.00, 'confirmed', '2025-04-10 13:22:07', NULL),
-(4, 4, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07', NULL),
-(5, 5, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07', NULL),
-(10, 2, 2, '2025-04-01', '2025-04-04', 1, 1, 100.00, 210.00, 'pending', '2025-04-10 18:10:38', NULL);
+INSERT INTO `bookings` (`booking_id`, `user_id`, `room_id`, `check_in_date`, `check_out_date`, `quantity`, `num_guests`, `price_per_night`, `total_price`, `status`, `created_at`) VALUES
+(1, 1, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07'),
+(2, 2, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07'),
+(3, 3, 1, '2025-04-15', '2025-04-17', 1, 3, 100.00, 230.00, 'confirmed', '2025-04-10 13:22:07'),
+(4, 4, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07'),
+(5, 5, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07'),
+(9, 2, 1, '2025-04-18', '2025-04-22', 1, 3, 150.00, 1510.00, 'pending', '2025-04-10 17:04:45');
 
 -- --------------------------------------------------------
 
@@ -196,64 +195,85 @@ CREATE TABLE `hotelimages` (
 
 INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VALUES
 (1, 1, '/hotel_images/hotel-img01.jpg', 1),
-(2, 2, '/hotel_images/hotel-img02.jpg', 1),
-(3, 3, '/hotel_images/hotel-img03.jpg', 1),
-(4, 4, '/hotel_images/hotel-img04.jpg', 1),
-(5, 5, '/hotel_images/hotel-img05.jpg', 1),
-(6, 6, '/hotel_images/hotel-img06.jpg', 1),
-(7, 7, '/hotel_images/hotel-img07.jpg', 1),
-(8, 8, '/hotel_images/hotel-img08.jpg', 1),
-(9, 9, '/hotel_images/hotel-img09.jpg', 1),
-(10, 10, '/hotel_images/hotel-img10.jpg', 1),
-(11, 11, '/hotel_images/hotel-img11.jpg', 1),
-(12, 12, '/hotel_images/hotel-img12.jpg', 1),
-(13, 13, '/hotel_images/hotel-img13.jpg', 1),
-(14, 14, '/hotel_images/hotel-img14.jpg', 1),
-(15, 15, '/hotel_images/hotel-img15.jpg', 1),
-(16, 16, '/hotel_images/hotel-img16.jpg', 1),
-(17, 1, '/hotel_images/hotel-img10.jpg', 0),
-(18, 2, '/hotel_images/hotel-img11.jpg', 0),
-(19, 3, '/hotel_images/hotel-img12.jpg', 0),
-(20, 4, '/hotel_images/hotel-img13.jpg', 0),
-(21, 5, '/hotel_images/hotel-img14.jpg', 0),
-(22, 6, '/hotel_images/hotel-img15.jpg', 0),
-(23, 7, '/hotel_images/hotel-img16.jpg', 0),
-(24, 8, '/hotel_images/hotel-img01.jpg', 0),
-(25, 9, '/hotel_images/hotel-img02.jpg', 0),
-(26, 10, '/hotel_images/hotel-img03.jpg', 0),
-(27, 11, '/hotel_images/hotel-img04.jpg', 0),
-(28, 12, '/hotel_images/hotel-img05.jpg', 0),
-(29, 13, '/hotel_images/hotel-img06.jpg', 0),
-(30, 14, '/hotel_images/hotel-img07.jpg', 0),
-(31, 15, '/hotel_images/hotel-img08.jpg', 0),
-(32, 16, '/hotel_images/hotel-img09.jpg', 0),
-(33, 1, '/hotel_images/hotel-img15.jpg', 0),
-(34, 1, '/hotel_images/hotel-img08.jpg', 0),
-(35, 1, '/hotel_images/hotel-img01.jpg', 1),
-(36, 2, '/hotel_images/hotel-img02.jpg', 1),
-(37, 3, '/hotel_images/hotel-img03.jpg', 1),
-(38, 4, '/hotel_images/hotel-img04.jpg', 1),
-(39, 5, '/hotel_images/hotel-img05.jpg', 1),
-(40, 6, '/hotel_images/hotel-img06.jpg', 1),
-(41, 7, '/hotel_images/hotel-img07.jpg', 1),
-(42, 8, '/hotel_images/hotel-img08.jpg', 1),
-(43, 9, '/hotel_images/hotel-img09.jpg', 1),
-(44, 10, '/hotel_images/hotel-img10.jpg', 1),
-(45, 11, '/hotel_images/hotel-img11.jpg', 1),
-(46, 12, '/hotel_images/hotel-img12.jpg', 1),
-(47, 13, '/hotel_images/hotel-img13.jpg', 1),
-(48, 14, '/hotel_images/hotel-img14.jpg', 1),
-(49, 15, '/hotel_images/hotel-img15.jpg', 1),
-(50, 16, '/hotel_images/hotel-img16.jpg', 1),
-(51, 1, '/hotel_images/hotel-img10.jpg', 0),
-(52, 2, '/hotel_images/hotel-img11.jpg', 0),
-(53, 3, '/hotel_images/hotel-img12.jpg', 0),
-(54, 4, '/hotel_images/hotel-img13.jpg', 0),
-(55, 5, '/hotel_images/hotel-img14.jpg', 0),
-(56, 6, '/hotel_images/hotel-img15.jpg', 0),
-(57, 7, '/hotel_images/hotel-img16.jpg', 0),
-(58, 8, '/hotel_images/hotel-img01.jpg', 0),
-(59, 9, '/hotel_images/hotel-img02.jpg', 0);
+(2, 1, '/hotel_images/hotel-img02.jpg', 0),
+(3, 1, '/hotel_images/hotel-img03.jpg', 0),
+(4, 1, '/hotel_images/hotel-img04.jpg', 0),
+(5, 1, '/hotel_images/hotel-img05.jpg', 0),
+(6, 2, '/hotel_images/hotel-img06.jpg', 1),
+(7, 2, '/hotel_images/hotel-img07.jpg', 0),
+(8, 2, '/hotel_images/hotel-img08.jpg', 0),
+(9, 2, '/hotel_images/hotel-img09.jpg', 0),
+(10, 2, '/hotel_images/hotel-img10.jpg', 0),
+(11, 3, '/hotel_images/hotel-img11.jpg', 1),
+(12, 3, '/hotel_images/hotel-img12.jpg', 0),
+(13, 3, '/hotel_images/hotel-img13.jpg', 0),
+(14, 3, '/hotel_images/hotel-img14.jpg', 0),
+(15, 3, '/hotel_images/hotel-img15.jpg', 0),
+(16, 4, '/hotel_images/hotel-img16.jpg', 1),
+(17, 4, '/hotel_images/hotel-img17.jpg', 0),
+(18, 4, '/hotel_images/hotel-img18.jpg', 0),
+(19, 4, '/hotel_images/hotel-img19.jpg', 0),
+(20, 5, '/hotel_images/hotel-img20.jpg', 1),
+(21, 5, '/hotel_images/hotel-img21.jpg', 0),
+(22, 5, '/hotel_images/hotel-img22.jpg', 0),
+(23, 5, '/hotel_images/hotel-img23.jpg', 0),
+(24, 5, '/hotel_images/hotel-img24.jpg', 0),
+(25, 5, '/hotel_images/hotel-img25.jpg', 0),
+(26, 6, '/hotel_images/hotel-img26.jpg', 1),
+(27, 6, '/hotel_images/hotel-img27.jpg', 0),
+(28, 6, '/hotel_images/hotel-img28.jpg', 0),
+(29, 6, '/hotel_images/hotel-img29.jpg', 0),
+(30, 6, '/hotel_images/hotel-img30.jpg', 0),
+(31, 7, '/hotel_images/hotel-img31.jpg', 1),
+(32, 7, '/hotel_images/hotel-img32.jpg', 0),
+(33, 7, '/hotel_images/hotel-img33.jpg', 0),
+(34, 7, '/hotel_images/hotel-img34.jpg', 0),
+(35, 7, '/hotel_images/hotel-img35.jpg', 0),
+(36, 8, '/hotel_images/hotel-img36.jpg', 1),
+(37, 8, '/hotel_images/hotel-img37.jpg', 0),
+(38, 8, '/hotel_images/hotel-img38.jpg', 0),
+(39, 8, '/hotel_images/hotel-img39.jpg', 0),
+(40, 8, '/hotel_images/hotel-img40.jpg', 0),
+(41, 9, '/hotel_images/hotel-img41.jpg', 1),
+(42, 9, '/hotel_images/hotel-img42.jpg', 0),
+(43, 9, '/hotel_images/hotel-img43.jpg', 0),
+(44, 9, '/hotel_images/hotel-img44.jpg', 0),
+(45, 9, '/hotel_images/hotel-img45.jpg', 0),
+(46, 10, '/hotel_images/hotel-img46.jpg', 1),
+(47, 10, '/hotel_images/hotel-img47.jpg', 0),
+(48, 10, '/hotel_images/hotel-img48.jpg', 0),
+(49, 10, '/hotel_images/hotel-img49.jpg', 0),
+(50, 10, '/hotel_images/hotel-img50.jpg', 0),
+(51, 11, '/hotel_images/hotel-img51.jpg', 1),
+(52, 11, '/hotel_images/hotel-img52.jpg', 0),
+(53, 11, '/hotel_images/hotel-img53.jpg', 0),
+(54, 11, '/hotel_images/hotel-img54.jpg', 0),
+(55, 11, '/hotel_images/hotel-img55.jpg', 0),
+(56, 12, '/hotel_images/hotel-img56.jpg', 1),
+(57, 12, '/hotel_images/hotel-img57.jpg', 0),
+(58, 12, '/hotel_images/hotel-img58.jpg', 0),
+(59, 12, '/hotel_images/hotel-img59.jpg', 0),
+(60, 12, '/hotel_images/hotel-img60.jpg', 0),
+(61, 13, '/hotel_images/hotel-img61.jpg', 1),
+(62, 13, '/hotel_images/hotel-img62.jpg', 0),
+(63, 13, '/hotel_images/hotel-img63.jpg', 0),
+(64, 13, '/hotel_images/hotel-img64.jpg', 0),
+(65, 13, '/hotel_images/hotel-img65.jpg', 0),
+(66, 14, '/hotel_images/hotel-img66.jpg', 1),
+(67, 14, '/hotel_images/hotel-img67.jpg', 0),
+(68, 14, '/hotel_images/hotel-img68.jpg', 0),
+(69, 14, '/hotel_images/hotel-img69.jpg', 0),
+(70, 14, '/hotel_images/hotel-img70.jpg', 0),
+(71, 15, '/hotel_images/hotel-img71.jpg', 1),
+(72, 15, '/hotel_images/hotel-img72.jpg', 0),
+(73, 15, '/hotel_images/hotel-img73.jpg', 0),
+(74, 15, '/hotel_images/hotel-img74.jpg', 0),
+(75, 16, '/hotel_images/hotel-img75.jpg', 1),
+(76, 16, '/hotel_images/hotel-img76.jpg', 0),
+(77, 16, '/hotel_images/hotel-img77.jpg', 0),
+(78, 16, '/hotel_images/hotel-img78.jpg', 0),
+(79, 16, '/hotel_images/hotel-img79.jpg', 0),
+(80, 16, '/hotel_images/hotel-img80.jpg', 0);
 
 -- --------------------------------------------------------
 
@@ -287,18 +307,18 @@ CREATE TABLE `hotels` (
 --
 
 INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `country`, `latitude`, `longitude`, `description`, `star_rating`, `check_in_time`, `check_out_time`, `cancellation_policy`, `status`, `created_at`, `capacity`, `price_per_night`, `featured`) VALUES
-(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'anannlar', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style...', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'London', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style...', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (2, 2, 'Royal Palace London', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (3, 3, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (4, 4, 'Skyline Tower London', '321 Skyline Avenue, London', 'London', 'United Kingdom', 51.515, -0.141, 'Reach new heights...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(5, 5, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bacın', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(5, 5, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bali', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (6, 6, 'Tropical Paradise Bali', '789 Island Street, Bali', 'Bali', 'Indonesia', -8.414, 115.195, 'Dive into luxury...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (7, 7, 'Golden Sands Resort', '999 Ocean Drive, Bali', 'Bali', 'Indonesia', -8.42, 115.2, 'Relax on golden sands...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (8, 8, 'Island Escape Hotel', '222 Paradise Lane, Bali', 'Bali', 'Indonesia', -8.43, 115.21, 'A secluded retreat...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (9, 9, 'Tokyo Sky Hotel', '789 Shibuya, Tokyo', 'Tokyo', 'Japan', 35.658, 139.7016, 'Enjoy panoramic city views...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (10, 10, 'Shinjuku Business Hotel', '45 Business Street, Tokyo', 'Tokyo', 'Japan', 35.6938, 139.7034, 'Perfect for business travelers...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (11, 11, 'Cherry Blossom Resort', '22 Sakura Avenue, Tokyo', 'Tokyo', 'Japan', 35.6895, 139.6917, 'Experience traditional Japanese hospitality...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(12, 12, 'Luxury Tower Tokyo', '567 Ginza Road, Tokyo', 'Tokyoaaa', 'Japan', 0, 0, 'Enjoy penthouse suites...', 5, '14:00:00', '12:00:00', 'Free cancellation...', NULL, '2025-04-06 13:58:50', 0, 0, 0),
+(12, 12, 'Luxury Tower Tokyo', '567 Ginza Road, Tokyo', 'Tokyo', 'Japan', 0, 0, 'Enjoy penthouse suites...', 5, '14:00:00', '12:00:00', 'Free cancellation...', NULL, '2025-04-06 13:58:50', 0, 0, 0),
 (13, 13, 'Eiffel Grand Hotel', '123 Champs Elysees, Paris', 'Paris', 'France', 48.8566, 2.3522, 'Stay steps away from the Eiffel Tower...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (14, 14, 'Louvre Palace Hotel', '89 Louvre Street, Paris', 'Paris', 'France', 48.8606, 2.3376, 'Discover art and culture...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (15, 15, 'Seine River Hotel', '456 Riverfront, Paris', 'Paris', 'France', 48.857, 2.354, 'Enjoy riverside dining...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0),
@@ -613,8 +633,7 @@ ALTER TABLE `bookings`
   ADD PRIMARY KEY (`booking_id`),
   ADD KEY `fk_bookings_user` (`user_id`),
   ADD KEY `fk_bookings_room` (`room_id`),
-  ADD KEY `idx_bookings_check_in` (`check_in_date`),
-  ADD KEY `FK7y09f5lun38jnooaw2hch0ke9` (`hotel_id`);
+  ADD KEY `idx_bookings_check_in` (`check_in_date`);
 
 --
 -- Tablo için indeksler `contact_messages`
@@ -725,7 +744,7 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `contact_messages`
@@ -743,7 +762,7 @@ ALTER TABLE `hotelamenities`
 -- Tablo için AUTO_INCREMENT değeri `hotelimages`
 --
 ALTER TABLE `hotelimages`
-  MODIFY `image_id` bigint(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `image_id` bigint(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `hotels`
@@ -807,7 +826,6 @@ ALTER TABLE `users`
 -- Tablo kısıtlamaları `bookings`
 --
 ALTER TABLE `bookings`
-  ADD CONSTRAINT `FK7y09f5lun38jnooaw2hch0ke9` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`),
   ADD CONSTRAINT `fk_bookings_room` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`),
   ADD CONSTRAINT `fk_bookings_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
