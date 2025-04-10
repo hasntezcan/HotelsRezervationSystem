@@ -62,5 +62,11 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
         "AND h.status = 'approved'")
     List<HotelWithImageDTO> findHotelsWithPrimaryImageByCity(@Param("city") String city);
 
+    @Query(value = "SELECT GROUP_CONCAT(a.name SEPARATOR ', ') " +
+       "FROM hotelamenityjunction hj " +
+       "JOIN hotelamenities a ON hj.amenity_id = a.amenity_id " +
+       "WHERE hj.hotel_id = :hotelId", nativeQuery = true)
+    String findAmenitiesByHotelId(@Param("hotelId") Long hotelId);
+
 
 }
