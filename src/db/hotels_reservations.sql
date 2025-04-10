@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 09 Nis 2025, 15:45:14
+-- Üretim Zamanı: 10 Nis 2025, 10:21:16
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -20,6 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Veritabanı: `hotels_reservations`
 --
+
 -- --------------------------------------------------------
 
 --
@@ -34,8 +35,8 @@ CREATE TABLE `bookings` (
   `check_out_date` date NOT NULL,
   `quantity` int(11) NOT NULL CHECK (`quantity` > 0),
   `num_guests` int(11) NOT NULL CHECK (`num_guests` > 0),
-  `price_per_night` decimal(10,2) NOT NULL,
-  `total_price` decimal(10,2) NOT NULL,
+  `price_per_night` decimal(38,2) NOT NULL,
+  `total_price` decimal(38,2) NOT NULL,
   `status` varchar(20) DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -348,6 +349,21 @@ CREATE TABLE `reviews` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Tablo döküm verisi `reviews`
+--
+
+INSERT INTO `reviews` (`review_id`, `user_id`, `hotel_id`, `rating`, `comment`, `created_at`) VALUES
+(1, 1, 1, 5, 'Amazing hotel with top-notch service!', '2025-04-09 03:21:49'),
+(2, 2, 1, 4, 'Very clean and comfortable. Would recommend.', '2025-04-05 07:21:49'),
+(3, 3, 1, 3, 'Decent stay but the breakfast could be better.', '2025-04-07 07:21:49'),
+(4, 1, 2, 4, 'Great location near the city center.', '2025-04-10 07:21:49'),
+(5, 2, 2, 5, 'The view from the room was breathtaking!', '2025-04-10 07:21:49'),
+(6, 3, 2, 4, 'Nice rooms and helpful staff.', '2025-04-10 07:21:49'),
+(7, 1, 3, 2, 'Not what I expected. Room was a bit small.', '2025-04-10 07:21:49'),
+(8, 2, 3, 3, 'Average experience. AC wasn’t working.', '2025-04-10 07:21:49'),
+(9, 3, 3, 4, 'Affordable and clean. Good value overall.', '2025-04-10 07:21:49');
+
 -- --------------------------------------------------------
 
 --
@@ -485,11 +501,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_name`, `last_name`, `phone`, `created_at`, `updated_at`, `is_verified`) VALUES
-(9, 'iamsahinemir', 'user', 'esad.emir34@gmail.com', '123456', 'emir esad', 'şahin', '05438813007', '2025-03-31 17:36:25', '2025-03-31 21:21:00', 1),
-(10, 'sezo', 'user', 'sezo@sezo.com', '123456', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-07 19:16:48', 1),
-(11, 'dede', 'user', 'dede@dede.com', '123456', 'dede', 'dede', '05313313131', '2025-04-03 17:57:28', '2025-04-03 17:57:28', 0),
-(12, 'admin', 'admin', 'admin@admin.com', '1234567', 'admin', 'admin', '05467897895', '2025-04-03 18:54:48', '2025-04-05 12:07:35', 0),
-(13, 'deneme', 'user', 'esad.emir34@stu.khas.edu.tr', '123456', 'emir', 'şahin', '05512024369', '2025-04-05 10:50:27', '2025-04-05 10:50:27', 0),
+(1, 'iamsahinemir', 'user', 'esad.emir34@gmail.com', '123456', 'emir esad', 'şahin', '05438813007', '2025-03-31 17:36:25', '2025-04-10 06:49:55', 1),
+(2, 'sezo', 'user', 'sezo@sezo.com', '123456', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-10 06:49:57', 1),
+(3, 'dede', 'user', 'dede@dede.com', '123456', 'dede', 'dede', '05313313131', '2025-04-03 17:57:28', '2025-04-10 06:50:00', 0),
+(4, 'admin', 'admin', 'admin@admin.com', '1234567', 'admin', 'admin', '05467897895', '2025-04-03 18:54:48', '2025-04-10 06:50:02', 0),
+(5, 'deneme', 'user', 'esad.emir34@stu.khas.edu.tr', '123456', 'emir', 'şahin', '05512024369', '2025-04-05 10:50:27', '2025-04-10 06:50:04', 0),
 (16, 'manager_royal_palace', 'manager', 'royal.manager@example.com', 'password', 'Royalaaaa', 'Manager', '0000000001', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
 (17, 'manager_london_river', 'manager', 'london.manager@example.com', 'password', 'London', 'Manager', '0000000002', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
 (18, 'manager_bali_beach', 'manager', 'bali.manager@example.com', 'password', 'Bali', 'Manager', '0000000003', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
@@ -671,7 +687,7 @@ ALTER TABLE `promotions`
 -- Tablo için AUTO_INCREMENT değeri `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `review_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `review_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `roomamenities`
@@ -757,7 +773,14 @@ ALTER TABLE `reviews`
 -- Tablo kısıtlamaları `roomamenityjunction`
 --
 ALTER TABLE `roomamenityjunction`
+  ADD CONSTRAINT `FK6m61o9a1cc0ofy4tu2yvvjhn0` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`),
   ADD CONSTRAINT `fk_roomamenityjunction_amenity` FOREIGN KEY (`amenity_id`) REFERENCES `roomamenities` (`amenity_id`);
+
+--
+-- Tablo kısıtlamaları `roomimages`
+--
+ALTER TABLE `roomimages`
+  ADD CONSTRAINT `FK9mcck8d7c05lsuuospj0n0hkv` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`);
 
 --
 -- Tablo kısıtlamaları `rooms`

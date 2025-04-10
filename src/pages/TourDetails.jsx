@@ -16,11 +16,11 @@ const TourDetails = () => {
   const [tour, setTour] = useState(null);
   const [tourRating, setTourRating] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState('');
+  const [reviews, setReviews] = useState([]);
   const reviewMsgRef = useRef('');
   const { user } = useContext(AuthContext);
 
   const handleRoomSelect = (room) => {
-    // If they click the same room twice, you can deselect, or keep it. Optional:
     setSelectedRoom(prev => (prev && prev.id === room.id) ? null : room);
   };
 
@@ -34,7 +34,17 @@ const TourDetails = () => {
       }
     };
 
+    const fetchReviews = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/api/reviews/hotel/${id}`);
+        setReviews(res.data);
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+      }
+    };
+
     fetchHotel();
+    fetchReviews();
     window.scrollTo(0, 0);
   }, [id]);
 
@@ -42,26 +52,21 @@ const TourDetails = () => {
     return <h4>Loading hotel data...</h4>;
   }
 
-  // Determine primary image from hotel's images array
   const primaryImageUrl = tour.images?.find(img => img.isPrimary)?.imageUrl ||
                           tour.images?.[0]?.imageUrl ||
                           'https://via.placeholder.com/400x300?text=No+Image';
 
-  // Map backend hotel fields to variables used in this page
   const name = tour.name;
   const desc = tour.description;
   const price = tour.pricePerNight;
-  const reviews = tour.reviews || [];
   const city = tour.city;
   const address = tour.address;
   const capacity = tour.capacity;
 
-  // For amenities, if backend data is missing or empty, use dummy amenities
   const dummyAmenities = tour.amenities 
     ? tour.amenities.split(',').map(a => a.trim())
     : ['Free Wi-Fi', 'Breakfast Included', 'Air Conditioning'];
 
-  // Apply discount if provided in URL query parameters
   const queryParams = new URLSearchParams(location.search);
   const discountParam = queryParams.get('discount');
   let actualPrice = price;
@@ -74,29 +79,36 @@ const TourDetails = () => {
 
   const { totalRating, avgRating } = calculateAvgRating(reviews);
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     const reviewText = reviewMsgRef.current.value;
+
     if (!user) {
       alert('Please sign in');
       return;
     }
-    const newReview = {
-      userId: user.id,                 // make sure this exists in context
-      hotelId: parseInt(id),           // from URL param
-      rating: tourRating,
-      comment: reviewText
-    };
-    if (!reviews) {
-      tour.reviews = [];
+
+    try {
+      const newReview = {
+        userId: user.id,
+        hotelId: parseInt(id),
+        rating: tourRating,
+        comment: reviewText
+      };
+
+      const res = await axios.post("http://localhost:8080/api/reviews", newReview, {
+        withCredentials: true
+      });
+      setReviews(prev => [...prev, res.data]);
+
+      alert('Review submitted successfully!');
+      reviewMsgRef.current.value = '';
+      setTourRating(null);
+    } catch (error) {
+      console.error("Failed to submit review:", error);
+      alert("Failed to submit review.");
     }
-    tour.reviews.push(newReview);
-    // Ideally, you would send this data to the backend to update the hotel record.
-    alert('Review submitted successfully!');
-    reviewMsgRef.current.value = '';
-    setTourRating(null);
   };
-  
 
   return (
     <section>
@@ -121,8 +133,6 @@ const TourDetails = () => {
                     <i className="ri-map-pin-2-line"></i> {city}
                   </span>
                 </div>
-
-                
 
                 <div className="tour__amenities">
                   <ul>
@@ -180,30 +190,33 @@ const TourDetails = () => {
                       <div className="w-100">
                         <div className="d-flex align-items-center justify-content-between">
                           <div>
-                            <h5>User #{review.userId}</h5>
-                            <p>{new Date(review.createdAt).toLocaleDateString()}</p>
+                            <h5>{review.username}</h5>
+                            <p>
+                              {typeof review.createdAt === 'string'
+                                ? new Date(review.createdAt.replace(' ', 'T')).toLocaleDateString()
+                                : 'Just now'}
+                            </p>
                           </div>
                           <span className="d-flex align-items-center">
                             {review.rating}
                             <i className="ri-star-s-fill"></i>
                           </span>
                         </div>
-                        <h6>{review.reviewText}</h6>
+                        <h6>{review.comment}</h6>
                       </div>
                     </div>
                   ))}
                 </ListGroup>
-
               </div>
             </div>
           </Col>
 
           <Col lg="4" className="mt-4 mt-lg-0">
-          <Booking
+            <Booking
               tour={{ ...tour, price: actualPrice }}
               avgRating={avgRating}
               selectedRoom={selectedRoom}
-          />
+            />
           </Col>
         </Row>
       </Container>

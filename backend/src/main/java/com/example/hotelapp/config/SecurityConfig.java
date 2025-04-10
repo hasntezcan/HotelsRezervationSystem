@@ -25,10 +25,30 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             // Session tabanlı kimlik doğrulaması: IF_REQUIRED
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-            .authorizeHttpRequests(authorize -> authorize
+            /*.authorizeHttpRequests(authorize -> authorize
                 // Login, register ve logout endpoint'leri açık
-                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/logout").permitAll()
-                // Diğer endpoint'ler için, özellikle admin ve manager profilleri, erişim için oturum açılmış (authenticated) olmalı.
+                .requestMatchers(
+                "/api/auth/login",
+                "/api/auth/register",
+                "/api/auth/logout",
+                "/api/hotels/**",
+                "/api/rooms/**",
+                "/api/reviews/**" 
+                ).permitAll()
+
+            )*/
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(
+                    "/api/auth/**",
+                    "/api/auth/login",
+                    "/api/auth/register",
+                    "/api/auth/logout",
+                    "/api/hotels/**",
+                    "/api/rooms/**",
+                    "/api/reviews/**",
+                    "/api/users/**",
+                    "/api/bookings/**"
+                ).permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> httpBasic.disable())
@@ -40,7 +60,8 @@ public class SecurityConfig {
             // HTTP yanıtlarına cache control başlıkları ekleyerek, logout sonrası önbellekten sayfa gösterimini engelliyoruz.
             .headers(headers -> headers.cacheControl())
             // Anonymous (anonim) kimlik doğrulamasını devre dışı bırakıyoruz.
-            .anonymous(anonymous -> anonymous.disable());
+            .anonymous(Customizer.withDefaults());
+
         
         return http.build();
     }
@@ -48,13 +69,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedOrigins(List.of("http://localhost:5173")); // ✅ exact origin
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);
-
+        config.setAllowCredentials(true); // <== this is fine with exact origin
+    
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+    
+    
 }
