@@ -39,7 +39,7 @@
   align-items: center;
   gap: 16px !important; /* Adjust spacing between elements */
   padding: 16px 24px !important; /* Adjust padding inside the search bar */
-  border-radius: 60px !important; /* Adjust corner radius */
+  border-radius: 15px !important; /* Adjust corner radius */
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5) !important; /* Adjust shadow */
   width: 1100px !important; /* Adjust width of the search bar */
   background: white !important; /* Change background color */
@@ -77,6 +77,7 @@
   display: flex !important;
   align-items: center !important;
   flex: 1 !important;
+  
 }
 
 
@@ -89,6 +90,14 @@
     display: flex;
     width: 100%;
   }
+
+  .react-datepicker-wrapper {
+    display: inline-block;
+    padding: 0;
+    border: 0;
+    width: 100%;
+  }
+  
   
   .react-datepicker__month-container {
    
@@ -311,7 +320,7 @@
   }
 
   .search-date-picker{
-    width: 100% !important;
+    width: 100% ;
   }
 
   .search-input,
