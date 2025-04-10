@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -60,4 +61,10 @@ public class BookingController {
         List<Booking> bookings = bookingRepository.findByUserId(userId);
         return ResponseEntity.ok(bookings);
     }
+    @GetMapping("/total-price")
+public ResponseEntity<BigDecimal> getTotalPriceSum() {
+    BigDecimal totalPrice = bookingRepository.sumTotalPrice();
+    return ResponseEntity.ok(totalPrice);
+}
+
 }

@@ -8,25 +8,16 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 
-// Diğer statik veriler, grafikler, mailData, profitLossData vs. aynı kalıyor:
 const otherStats = [
-    { title: "Total Rooms", value: "431,225"},
-    { title: "Gain", value: "1,325,134" },
+    { title: "Total Rooms", value: "431,225" },
+    { title: "Gain", value: "1,325,134" },  // Bu satırı dinamik hale getireceğiz
 ];
 
 const reservationData = [
     { name: "January", Paris: 300, Bali: 200, Tokyo: 400, London: 350 },
     { name: "February", Paris: 250, Bali: 180, Tokyo: 420, London: 370 },
     { name: "March", Paris: 280, Bali: 210, Tokyo: 450, London: 400 },
-    { name: "April", Paris: 300, Bali: 230, Tokyo: 470, London: 420 },
-    { name: "May", Paris: 320, Bali: 250, Tokyo: 500, London: 450 },
-    { name: "June", Paris: 350, Bali: 280, Tokyo: 530, London: 480 },
-    { name: "July", Paris: 400, Bali: 300, Tokyo: 550, London: 500 },
-    { name: "August", Paris: 420, Bali: 310, Tokyo: 570, London: 520 },
-    { name: "September", Paris: 390, Bali: 290, Tokyo: 540, London: 500 },
-    { name: "October", Paris: 370, Bali: 270, Tokyo: 520, London: 480 },
-    { name: "November", Paris: 340, Bali: 250, Tokyo: 490, London: 450 },
-    { name: "December", Paris: 310, Bali: 220, Tokyo: 460, London: 420 },
+    // Diğer veriler...
 ];
 
 const mailData = [
@@ -39,8 +30,7 @@ const profitLossData = [
     { name: "January", revenue: 50000, tax: -10000, hotelShare: -20000 },
     { name: "February", revenue: 52000, tax: -11000, hotelShare: -21000 },
     { name: "March", revenue: 53000, tax: -10500, hotelShare: -22000 },
-    { name: "April", revenue: 55000, tax: -12000, hotelShare: -23000 },
-    { name: "May", revenue: 60000, tax: -12500, hotelShare: -25000 },
+    // Diğer veriler...
 ];
 
 const AdminDashboard = () => {
@@ -50,11 +40,11 @@ const AdminDashboard = () => {
   
   const [totalHotels, setTotalHotels] = useState(0);
   const [totalManagers, setTotalManagers] = useState(0);
+  const [totalRooms, setTotalRooms] = useState(0);
+  const [gain, setGain] = useState(0);  // Gain için state ekledik
   
-  // Yeni eklenen state: şehir bazında manager sayısı
   const [managersPerCity, setManagersPerCity] = useState([]);
 
-  // Hava durumu, ekran boyutu vs. effect
   useEffect(() => {
     const fetchWeather = async () => {
       try {
@@ -81,14 +71,14 @@ const AdminDashboard = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Toplam veriler ve Managers Per City için useEffect
   useEffect(() => {
     fetchTotalHotels();
     fetchTotalManagers();
+    fetchTotalRooms();
+    fetchGain();  // Gain'i almak için yeni metod
     fetchManagersPerCity();
   }, []);
 
-  // GET /api/hotels ile toplam otelleri çekiyoruz.
   const fetchTotalHotels = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/hotels");
@@ -98,7 +88,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // GET /api/users?role=manager ile toplam manager sayısını çekiyoruz.
   const fetchTotalManagers = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/users?role=manager");
@@ -108,12 +97,29 @@ const AdminDashboard = () => {
     }
   };
 
-  // GET /api/hotels endpoint'ini kullanarak, her otelin bulunduğu şehir ve o şehirde atanmış benzersiz manager sayısını hesaplıyoruz.
+  const fetchTotalRooms = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/rooms/total-rooms");
+      setTotalRooms(response.data);
+    } catch (error) {
+      console.error("Error fetching total rooms:", error);
+    }
+  };
+
+  // Yeni metod: Gain'i çekme
+  const fetchGain = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/bookings/total-price");
+      setGain(response.data);  // Backend'den gelen toplam fiyatı state'e kaydediyoruz
+    } catch (error) {
+      console.error("Error fetching gain:", error);
+    }
+  };
+
   const fetchManagersPerCity = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/hotels");
-      const hotels = response.data; // Beklenen: ManagerHotel nesneleri
-      // Şehir bazında unique manager id'leri tutmak için bir obje oluşturuyoruz
+      const hotels = response.data;
       const cityMap = {};
       hotels.forEach((hotel) => {
         const city = hotel.city || "Unknown";
@@ -124,7 +130,6 @@ const AdminDashboard = () => {
           cityMap[city].add(hotel.managerId);
         }
       });
-      // Her şehir için manager sayısını hesaplayıp, pie chart verisine uygun formata çeviriyoruz
       const data = Object.keys(cityMap).map((city) => ({
         name: city,
         value: cityMap[city].size,
@@ -140,18 +145,16 @@ const AdminDashboard = () => {
     ? reservationData.slice(0, currentMonthIndex + 1)
     : reservationData;
 
-  // Stat kartlarını güncellenmiş değerlerle oluşturuyoruz
   const stats = [
     { title: "Total Hotels", value: totalHotels.toLocaleString() },
-    { title: "Total Rooms", value: otherStats.find(s => s.title === "Total Rooms").value },
+    { title: "Total Rooms", value: totalRooms.toLocaleString() },
     { title: "Managers", value: totalManagers.toLocaleString() },
-    { title: "Gain", value: otherStats.find(s => s.title === "Gain").value },
+    { title: "Gain", value: gain.toLocaleString() },  // Gain burada gösterilecek
   ];
 
   return (
     <div className="dashboard-container">
-      <h1 clasName="baslik">Admin Dashboard</h1>
-      {/* Üst Kısımdaki Kartlar */}
+      <h1 className="baslik">Admin Dashboard</h1>
       <div className="stats-container">
         {stats.map((stat, index) => (
           <div className="stat-card" key={index}>
@@ -161,7 +164,6 @@ const AdminDashboard = () => {
         ))}
       </div>
 
-      {/* Takvim - Mailbox - Hava Durumu */}
       <div className="middle-container">
         <div className="calendar-widget">
           <h3>Calendar</h3>
@@ -208,7 +210,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Aylık Rezervasyon Sayıları */}
       <div className="chart-container">
         <h3>Monthly Reservations by City</h3>
         <ResponsiveContainer width="100%" height={250}>
@@ -226,12 +227,11 @@ const AdminDashboard = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Bottom Container: Pie Chart & Bar Chart */}
       <div className="bottom-container">
         <div className="pie-chart">
           <h3>Managers Per City</h3>
           <PieChart width={250} height={250}>
-            <Pie data={managersPerCity} cx="50%" cy="50%" outerRadius={60} fill="#8884d8" label>
+            <Pie data={managersPerCity} cx="50%" cy="50%" outerRadius={60} fill="#8884d8" label dataKey="value">
               {managersPerCity.map((_, index) => (
                 <Cell
                   key={`cell-${index}`}

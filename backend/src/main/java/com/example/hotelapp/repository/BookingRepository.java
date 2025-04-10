@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,5 +28,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     );
 
     List<Booking> findByUserId(Long userId);
+    @Query("SELECT SUM(b.totalPrice) FROM Booking b")
+BigDecimal sumTotalPrice();
+
 
 }

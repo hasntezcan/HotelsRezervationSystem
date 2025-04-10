@@ -64,6 +64,7 @@ public class RoomController {
         roomService.deleteRoom(id);
         return ResponseEntity.ok(Map.of("message", "Room deleted successfully"));
     }
+// (Removed duplicate method definition)
 
     // Müsaitlik Kontrolü Endpoint (Örnek, Bookings entegrasyonu yapılınca genişletilebilir)
     @GetMapping("/check-availability")
@@ -78,5 +79,11 @@ public class RoomController {
             return ResponseEntity.ok(Map.of("available", true));
         }
         return ResponseEntity.notFound().build();
+    }
+    // Toplam oda sayısını getir
+    @GetMapping("/total-rooms")
+    public ResponseEntity<Long> getTotalRooms() {
+        long totalRooms = roomService.getTotalRooms();
+        return ResponseEntity.ok(totalRooms);
     }
 }
