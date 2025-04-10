@@ -222,12 +222,13 @@ const AdminHotel = () => {
           Select Amenities
         </button>
         <input
-          type="text"
-          name="photo"
-          placeholder="Photo URL"
-          value={newHotel.photo}
-          onChange={handleChange}
-        />
+  type="text"
+  name="photo"
+  placeholder="Photo URL"
+  value={newHotel.photo}
+  onChange={handleChange}
+  readOnly={editingHotel ? true : false}  // Düzenleme modunda okunamaz olacak
+/>
         {/* Manager select alanı: Edit modunda ise sadece otelin kendi manager bilgisi gösterilir ve değiştirilemez,
             normal modda ise tüm manager listesi gösterilir */}
         {editingHotel ? (
