@@ -8,15 +8,13 @@ import com.example.hotelapp.repository.HotelRepository;
 import com.example.hotelapp.repository.RoomRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.List;
-import java.util.Optional;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -109,5 +107,19 @@ public class BookingController {
     public List<Object[]> getMonthlyReservationsByCity() {
         return bookingRepository.getMonthlyReservationsByCity();
     }
+
+    @DeleteMapping("/{bookingId}")
+    public ResponseEntity<?> cancelBooking(@PathVariable Long bookingId) {
+        System.out.println("Trying to cancel booking with ID: " + bookingId);
+    
+        if (bookingRepository.existsById(bookingId)) {
+            bookingRepository.deleteById(bookingId);
+            return ResponseEntity.ok(Map.of("message", "Booking canceled successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found");
+        }
+    }
+    
+
 
 }

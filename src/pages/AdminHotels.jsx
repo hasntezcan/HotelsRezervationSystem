@@ -68,7 +68,7 @@ const AdminHotel = () => {
     setShowAmenitiesModal(true);
   };
 
-  // "Done" butonuna basınca, seçili amenity’leri virgülle birleştirip formdaki amenities alanını güncelle
+  // "Done" butonuna basınca, seçili amenity’leri virgülle birleştirip formdaki amenities alanını güncelleme
   const handleAmenitiesDone = () => {
     setNewHotel((prev) => ({
       ...prev,
@@ -98,11 +98,11 @@ const AdminHotel = () => {
   // Otel güncelleme fonksiyonu (sadece güncellenmek istenen alanlar gönderilecek)
   const updateHotel = async () => {
     try {
-      // newHotel içerisinden gereksiz alanları çıkarıyoruz (örneğin managerName, photo, photoUrl gibi alanlar varsa)
+      // newHotel içerisinden gereksiz alanları çıkarıyoruz (örneğin: managerName, photo, photoUrl gibi)
       const { managerName, photo, photoUrl, ...filteredNewHotel } = newHotel;
       // editingHotel'den de güncellenmeyecek alanları çıkartıyoruz:
       const { hotelId, createdAt, managerName: _, photo: __, photoUrl: ___, ...editingData } = editingHotel;
-      // Güncelleme verileri: Mevcut editingData üzerine yeni form verileri eklenir.
+      // Güncelleme verileri: editingData üzerine formdan gelen güncel alanları ekliyoruz.
       const updatedData = { ...editingData, ...filteredNewHotel };
 
       // Update isteği gönderiliyor.
@@ -217,7 +217,7 @@ const AdminHotel = () => {
             <button
               className="admin-hotel-delete-btn"
               onClick={() => {
-                // Delete işlevi eklenebilir
+                // Delete işlevi eklenebilir.
               }}
             >
               Delete
