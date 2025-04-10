@@ -212,6 +212,22 @@
     max-height: 400px;
     overflow-y: auto;
   }
+
+  
+  .booking-footer {
+    margin-top: 4px;
+    position: relative;
+    min-height: 25px; /* ensures space for booked-date */
+  }
+  
+  .booked-date {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
   
   /* Individual booking card */
   .booking-item {

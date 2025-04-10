@@ -13,7 +13,7 @@ const Bookings = () => {
     const fetchBookings = async () => {
       try {
         const userId = localStorage.getItem('userId')
-        const response = await fetch(`http://localhost:8080/api/bookings/user/${userId}`)
+        const response = await fetch(`http://localhost:8080/api/bookings/user/${userId}/details`)
         const data = await response.json()
         setAllBookings(data)
       } catch (err) {
@@ -28,23 +28,25 @@ const Bookings = () => {
   const now = new Date().setHours(0, 0, 0, 0)
 
   const upcoming = allBookings
-    .filter((b) => new Date(b.checkInDate).getTime() >= now)
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .filter((b) => new Date(b.booking.checkInDate).getTime() >= now)
+    .sort((a, b) => new Date(b.booking.createdAt) - new Date(a.booking.createdAt))
 
   const past = allBookings
-    .filter((b) => new Date(b.checkInDate).getTime() < now)
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .filter((b) => new Date(b.booking.checkInDate).getTime() < now)
+    .sort((a, b) => new Date(b.booking.createdAt) - new Date(a.booking.createdAt))
 
   const handleEditPhone = (bk) => {
-    setEditingId(bk.bookingId)
-    setEditPhone(bk.phone)
+    setEditingId(bk.booking.bookingId)
+    setEditPhone(bk.booking.phone)
   }
 
   const handleSavePhone = (bk) => {
-    // This part can be extended to update phone in the backend if needed
     const updated = allBookings.map((item) => {
-      if (item.bookingId === bk.bookingId) {
-        return { ...item, phone: editPhone }
+      if (item.booking.bookingId === bk.booking.bookingId) {
+        return {
+          ...item,
+          booking: { ...item.booking, phone: editPhone }
+        }
       }
       return item
     })
@@ -53,8 +55,24 @@ const Bookings = () => {
     alert('Phone updated!')
   }
 
+  const handleCancel = async (bookingId) => {
+    try {
+      await fetch(`http://localhost:8080/api/bookings/${bookingId}`, {
+        method: 'DELETE'
+      })
+
+      setAllBookings(prev =>
+        prev.filter(b => b.booking.bookingId !== bookingId)
+      )
+      alert('Booking canceled successfully.')
+    } catch (err) {
+      console.error('Cancel failed:', err)
+      alert('Cancelation failed.')
+    }
+  }
+
   const canCancel = (bk) => {
-    const diff = new Date(bk.checkInDate).getTime() - now
+    const diff = new Date(bk.booking.checkInDate).getTime() - now
     const days = diff / (1000 * 3600 * 24)
     return days >= 3
   }
@@ -69,15 +87,16 @@ const Bookings = () => {
           <p>No upcoming bookings.</p>
         ) : (
           <div className="booking-list upcoming-list">
-            {upcoming.map((bk) => (
+            {upcoming.map((bk, index) => (
               <BookingCard
-                key={bk.bookingId}
-                booking={bk}
+                key={index}
+                data={bk}
                 editingId={editingId}
                 editPhone={editPhone}
                 setEditPhone={setEditPhone}
                 onEditPhone={handleEditPhone}
                 onSavePhone={handleSavePhone}
+                onCancel={handleCancel}
                 canCancel={canCancel(bk)}
                 isPast={false}
               />
@@ -92,15 +111,16 @@ const Bookings = () => {
           <p>No past bookings.</p>
         ) : (
           <div className="booking-list">
-            {past.map((bk) => (
+            {past.map((bk, index) => (
               <BookingCard
-                key={bk.bookingId}
-                booking={bk}
+                key={index}
+                data={bk}
                 editingId={editingId}
                 editPhone={editPhone}
                 setEditPhone={setEditPhone}
                 onEditPhone={handleEditPhone}
                 onSavePhone={handleSavePhone}
+                onCancel={handleCancel}
                 canCancel={false}
                 isPast={true}
               />
@@ -113,31 +133,43 @@ const Bookings = () => {
 }
 
 const BookingCard = ({
-  booking,
+  data,
   editingId,
   editPhone,
   setEditPhone,
   onEditPhone,
   onSavePhone,
+  onCancel,
   canCancel,
   isPast
 }) => {
   const [menuOpen, setMenuOpen] = useState(false)
+  const { booking, hotelName, roomName, city, roomType } = data
   const isEditing = editingId === booking.bookingId
+
+  const formatDate = (dateStr) =>
+    new Date(dateStr).toLocaleDateString('en-GB')
+
+  const formatDateTime = (dateStr) =>
+    new Date(dateStr).toLocaleString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
 
   return (
     <div className="booking-item">
       <div className="booking-header">
         <h5>
-          Room ID: {booking.roomId} {booking.status === 'canceled' && '(Canceled)'}
+          {hotelName} – {roomName} ({roomType}) in {city}{' '}
+          {booking.status === 'canceled' && '(Canceled)'}
         </h5>
-        <span>{new Date(booking.createdAt).toLocaleString()}</span>
       </div>
 
       <div className="booking-body">
-        <p>
-          <strong>Total Guests:</strong> {booking.numGuests}
-        </p>
+        <p><strong>Total Guests:</strong> {booking.numGuests}</p>
 
         {isEditing ? (
           <div className="edit-phone">
@@ -149,17 +181,16 @@ const BookingCard = ({
             />
           </div>
         ) : (
-          <p>
-            <strong>Phone:</strong> {booking.phone || '-'}
-          </p>
+          <p><strong>Phone:</strong> {booking.phone || '-'}</p>
         )}
 
-        <p>
-          <strong>Dates:</strong> {booking.checkInDate} - {booking.checkOutDate}
-        </p>
-        <p>
-          <strong>Total:</strong> ${booking.totalPrice}
-        </p>
+        <p><strong>Dates:</strong> {formatDate(booking.checkInDate)} – {formatDate(booking.checkOutDate)}</p>
+
+        <p><strong>Total:</strong> ${booking.totalPrice}</p>
+
+        <div className="booking-footer">
+          <p className="booked-date"><strong>Booked on:</strong> {formatDateTime(booking.createdAt)}</p>
+        </div>
       </div>
 
       <div className="booking-actions">
@@ -169,13 +200,13 @@ const BookingCard = ({
         {menuOpen && (
           <div className="actions-menu">
             {isEditing ? (
-              <button onClick={() => onSavePhone(booking)}>Save Phone</button>
+              <button onClick={() => onSavePhone(data)}>Save Phone</button>
             ) : (
-              <button onClick={() => onEditPhone(booking)}>Edit Phone</button>
+              <button onClick={() => onEditPhone(data)}>Edit Phone</button>
             )}
 
             {canCancel && booking.status !== 'canceled' && !isPast && (
-              <button onClick={() => alert('Cancel feature coming soon.')}>Cancel</button>
+              <button onClick={() => onCancel(booking.bookingId)}>Cancel</button>
             )}
           </div>
         )}
