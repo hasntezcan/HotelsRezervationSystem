@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 10 Nis 2025, 20:04:47
+-- Üretim Zamanı: 11 Nis 2025, 01:21:51
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -38,20 +38,21 @@ CREATE TABLE `bookings` (
   `price_per_night` decimal(38,2) NOT NULL,
   `total_price` decimal(38,2) NOT NULL,
   `status` varchar(20) DEFAULT 'pending',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `hotel_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Tablo döküm verisi `bookings`
 --
 
-INSERT INTO `bookings` (`booking_id`, `user_id`, `room_id`, `check_in_date`, `check_out_date`, `quantity`, `num_guests`, `price_per_night`, `total_price`, `status`, `created_at`) VALUES
-(1, 1, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07'),
-(2, 2, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07'),
-(3, 3, 1, '2025-04-15', '2025-04-17', 1, 3, 100.00, 230.00, 'confirmed', '2025-04-10 13:22:07'),
-(4, 4, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07'),
-(5, 5, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07'),
-(9, 2, 1, '2025-04-18', '2025-04-22', 1, 3, 150.00, 1510.00, 'pending', '2025-04-10 17:04:45');
+INSERT INTO `bookings` (`booking_id`, `user_id`, `room_id`, `check_in_date`, `check_out_date`, `quantity`, `num_guests`, `price_per_night`, `total_price`, `status`, `created_at`, `hotel_id`) VALUES
+(1, 1, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07', NULL),
+(2, 2, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07', NULL),
+(3, 3, 1, '2025-04-15', '2025-04-17', 1, 3, 100.00, 230.00, 'confirmed', '2025-04-10 13:22:07', NULL),
+(4, 4, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07', NULL),
+(5, 5, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07', NULL),
+(10, 2, 2, '2025-04-01', '2025-04-04', 1, 1, 100.00, 210.00, 'pending', '2025-04-10 18:10:38', NULL);
 
 -- --------------------------------------------------------
 
@@ -227,7 +228,32 @@ INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VA
 (31, 15, '/hotel_images/hotel-img08.jpg', 0),
 (32, 16, '/hotel_images/hotel-img09.jpg', 0),
 (33, 1, '/hotel_images/hotel-img15.jpg', 0),
-(34, 1, '/hotel_images/hotel-img08.jpg', 0);
+(34, 1, '/hotel_images/hotel-img08.jpg', 0),
+(35, 1, '/hotel_images/hotel-img01.jpg', 1),
+(36, 2, '/hotel_images/hotel-img02.jpg', 1),
+(37, 3, '/hotel_images/hotel-img03.jpg', 1),
+(38, 4, '/hotel_images/hotel-img04.jpg', 1),
+(39, 5, '/hotel_images/hotel-img05.jpg', 1),
+(40, 6, '/hotel_images/hotel-img06.jpg', 1),
+(41, 7, '/hotel_images/hotel-img07.jpg', 1),
+(42, 8, '/hotel_images/hotel-img08.jpg', 1),
+(43, 9, '/hotel_images/hotel-img09.jpg', 1),
+(44, 10, '/hotel_images/hotel-img10.jpg', 1),
+(45, 11, '/hotel_images/hotel-img11.jpg', 1),
+(46, 12, '/hotel_images/hotel-img12.jpg', 1),
+(47, 13, '/hotel_images/hotel-img13.jpg', 1),
+(48, 14, '/hotel_images/hotel-img14.jpg', 1),
+(49, 15, '/hotel_images/hotel-img15.jpg', 1),
+(50, 16, '/hotel_images/hotel-img16.jpg', 1),
+(51, 1, '/hotel_images/hotel-img10.jpg', 0),
+(52, 2, '/hotel_images/hotel-img11.jpg', 0),
+(53, 3, '/hotel_images/hotel-img12.jpg', 0),
+(54, 4, '/hotel_images/hotel-img13.jpg', 0),
+(55, 5, '/hotel_images/hotel-img14.jpg', 0),
+(56, 6, '/hotel_images/hotel-img15.jpg', 0),
+(57, 7, '/hotel_images/hotel-img16.jpg', 0),
+(58, 8, '/hotel_images/hotel-img01.jpg', 0),
+(59, 9, '/hotel_images/hotel-img02.jpg', 0);
 
 -- --------------------------------------------------------
 
@@ -587,7 +613,8 @@ ALTER TABLE `bookings`
   ADD PRIMARY KEY (`booking_id`),
   ADD KEY `fk_bookings_user` (`user_id`),
   ADD KEY `fk_bookings_room` (`room_id`),
-  ADD KEY `idx_bookings_check_in` (`check_in_date`);
+  ADD KEY `idx_bookings_check_in` (`check_in_date`),
+  ADD KEY `FK7y09f5lun38jnooaw2hch0ke9` (`hotel_id`);
 
 --
 -- Tablo için indeksler `contact_messages`
@@ -698,7 +725,7 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `contact_messages`
@@ -716,7 +743,7 @@ ALTER TABLE `hotelamenities`
 -- Tablo için AUTO_INCREMENT değeri `hotelimages`
 --
 ALTER TABLE `hotelimages`
-  MODIFY `image_id` bigint(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `image_id` bigint(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `hotels`
@@ -780,6 +807,7 @@ ALTER TABLE `users`
 -- Tablo kısıtlamaları `bookings`
 --
 ALTER TABLE `bookings`
+  ADD CONSTRAINT `FK7y09f5lun38jnooaw2hch0ke9` FOREIGN KEY (`hotel_id`) REFERENCES `hotels` (`hotel_id`),
   ADD CONSTRAINT `fk_bookings_room` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`),
   ADD CONSTRAINT `fk_bookings_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
