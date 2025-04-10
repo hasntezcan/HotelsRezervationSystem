@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -65,6 +67,12 @@ public class BookingController {
 public ResponseEntity<BigDecimal> getTotalPriceSum() {
     BigDecimal totalPrice = bookingRepository.sumTotalPrice();
     return ResponseEntity.ok(totalPrice);
+}
+
+// Şehir bazında aylık rezervasyon sayısını döndüren metod
+@GetMapping("/monthly-reservations")
+public List<Object[]> getMonthlyReservationsByCity() {
+    return bookingRepository.getMonthlyReservationsByCity();
 }
 
 }
