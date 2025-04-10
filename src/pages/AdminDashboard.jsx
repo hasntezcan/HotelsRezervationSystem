@@ -8,43 +8,37 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 
-const otherStats = [
-    { title: "Total Rooms", value: "431,225" },
-    { title: "Gain", value: "1,325,134" },  // Bu satırı dinamik hale getireceğiz
-];
-
-const reservationData = [
-    { name: "January", Paris: 300, Bali: 200, Tokyo: 400, London: 350 },
-    { name: "February", Paris: 250, Bali: 180, Tokyo: 420, London: 370 },
-    { name: "March", Paris: 280, Bali: 210, Tokyo: 450, London: 400 },
-    // Diğer veriler...
-];
-
+// Diğer statik veriler (mail, profit-loss gibi)
 const mailData = [
-    { from: "John Doe", email: "john@example.com", subject: "Meeting Request" },
-    { from: "Jane Smith", email: "jane@example.com", subject: "Invoice Issue" },
-    { from: "Hotel Manager", email: "manager@hotel.com", subject: "Reservation Question" },
+  { from: "John Doe", email: "john@example.com", subject: "Meeting Request" },
+  { from: "Jane Smith", email: "jane@example.com", subject: "Invoice Issue" },
+  { from: "Hotel Manager", email: "manager@hotel.com", subject: "Reservation Question" },
 ];
 
 const profitLossData = [
-    { name: "January", revenue: 50000, tax: -10000, hotelShare: -20000 },
-    { name: "February", revenue: 52000, tax: -11000, hotelShare: -21000 },
-    { name: "March", revenue: 53000, tax: -10500, hotelShare: -22000 },
-    // Diğer veriler...
+  { name: "January", revenue: 50000, tax: -10000, hotelShare: -20000 },
+  { name: "February", revenue: 52000, tax: -11000, hotelShare: -21000 },
+  { name: "March", revenue: 53000, tax: -10500, hotelShare: -22000 },
+  // Diğer veriler...
 ];
 
 const AdminDashboard = () => {
+  // Genel state'ler
   const [date, setDate] = useState(new Date());
   const [weather, setWeather] = useState({ temp: "", condition: "", icon: "" });
   const [isMobile, setIsMobile] = useState(false);
-  
+
+  // İstatistik verileri
   const [totalHotels, setTotalHotels] = useState(0);
   const [totalManagers, setTotalManagers] = useState(0);
   const [totalRooms, setTotalRooms] = useState(0);
-  const [gain, setGain] = useState(0);  // Gain için state ekledik
-  
-  const [managersPerCity, setManagersPerCity] = useState([]);
+  const [gain, setGain] = useState(0);
 
+  // Ekstra grafikler için veriler
+  const [managersPerCity, setManagersPerCity] = useState([]);
+  const [monthlyReservations, setMonthlyReservations] = useState([]); // Dinamik rezervasyon verisi
+
+  // Hava durumu ve ekran boyutu effect'i
   useEffect(() => {
     const fetchWeather = async () => {
       try {
@@ -71,14 +65,17 @@ const AdminDashboard = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Tüm verileri çekme effect'i
   useEffect(() => {
     fetchTotalHotels();
     fetchTotalManagers();
     fetchTotalRooms();
-    fetchGain();  // Gain'i almak için yeni metod
+    fetchGain();
     fetchManagersPerCity();
+    fetchMonthlyReservations();
   }, []);
 
+  // Backend API çağrıları
   const fetchTotalHotels = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/hotels");
@@ -106,11 +103,10 @@ const AdminDashboard = () => {
     }
   };
 
-  // Yeni metod: Gain'i çekme
   const fetchGain = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/bookings/total-price");
-      setGain(response.data);  // Backend'den gelen toplam fiyatı state'e kaydediyoruz
+      setGain(response.data);
     } catch (error) {
       console.error("Error fetching gain:", error);
     }
@@ -140,16 +136,53 @@ const AdminDashboard = () => {
     }
   };
 
-  const currentMonthIndex = new Date().getMonth();
-  const displayedData = isMobile
-    ? reservationData.slice(0, currentMonthIndex + 1)
-    : reservationData;
+  // Aylık rezervasyon verisini backend'den çekme ve formatlama
+  const fetchMonthlyReservations = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/bookings/monthly-reservations");
+      console.log("Raw monthly reservation data:", response.data); // DEBUG
+      if (!Array.isArray(response.data)) {
+        console.error("Gelen veri dizisi değil:", response.data);
+        return;
+      }
+      // Gelen veriyi düzleştiriyoruz (flatten)
+      const flattenedData = response.data.flat();
+      const data = formatReservationData(flattenedData);
+      console.log("Formatted monthly reservation data:", data); // DEBUG
+      setMonthlyReservations(data);
+    } catch (error) {
+      console.error("Error fetching monthly reservations:", error);
+    }
+  };
 
+  // Gelen veriyi, her ay için tüm şehirleri içeren nesnelere dönüştürme:
+  const formatReservationData = (data) => {
+    // Beklenen giriş: [{month: "2025-11", city: "Bali", totalReservations: 1}, ...]
+    const cities = [...new Set(data.map(item => item.city))];
+    const months = [...new Set(data.map(item => item.month))];
+    const formatted = months.map(month => {
+      const monthObj = { name: month };
+      cities.forEach(city => {
+        const record = data.find(item => item.month === month && item.city === city);
+        // Backend alanı "totalReservations" olarak geliyor:
+        monthObj[city] = record ? record.totalReservations : 0;
+      });
+      return monthObj;
+    });
+    return formatted;
+  };
+
+  // Eğer mobil görünümde isek, yalnızca bugüne kadar olan ayları gösterebiliriz:
+  const displayedData = isMobile 
+    ? monthlyReservations.slice(0, new Date().getMonth() + 1) 
+    : monthlyReservations;
+
+  // İstatistik kartlarının verileri
   const stats = [
     { title: "Total Hotels", value: totalHotels.toLocaleString() },
     { title: "Total Rooms", value: totalRooms.toLocaleString() },
     { title: "Managers", value: totalManagers.toLocaleString() },
-    { title: "Gain", value: gain.toLocaleString() },  // Gain burada gösterilecek
+    { title: "Gain", value: gain.toLocaleString() },
   ];
 
   return (
@@ -188,9 +221,7 @@ const AdminDashboard = () => {
                   <td>{mail.from}</td>
                   <td>{mail.email}</td>
                   <td>{mail.subject}</td>
-                  <td>
-                    <button className="reply-btn">Read</button>
-                  </td>
+                  <td><button className="reply-btn">Read</button></td>
                 </tr>
               ))}
             </tbody>
@@ -219,10 +250,13 @@ const AdminDashboard = () => {
             <YAxis stroke="#fff" tick={{ fill: "#fff" }} />
             <Tooltip contentStyle={{ backgroundColor: "#222", borderColor: "#222" }} labelStyle={{ color: "#fff" }} itemStyle={{ color: "#fff" }} />
             <Legend wrapperStyle={{ color: "#fff" }} />
-            <Line type="monotone" dataKey="Paris" stroke="#8884d8" />
-            <Line type="monotone" dataKey="Bali" stroke="#82ca9d" />
-            <Line type="monotone" dataKey="Tokyo" stroke="#ff7300" />
-            <Line type="monotone" dataKey="London" stroke="#d62728" />
+            {displayedData.length > 0 &&
+              Object.keys(displayedData[0])
+                .filter(key => key !== "name")
+                .map((city, index) => (
+                  <Line key={index} type="monotone" dataKey={city} stroke="#8884d8" />
+                ))
+            }
           </LineChart>
         </ResponsiveContainer>
       </div>

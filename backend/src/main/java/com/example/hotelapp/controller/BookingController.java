@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -101,4 +104,10 @@ public class BookingController {
 
         return ResponseEntity.ok(result);
     }
+    // Şehir bazında aylık rezervasyon sayısını döndüren metod
+    @GetMapping("/monthly-reservations")
+    public List<Object[]> getMonthlyReservationsByCity() {
+        return bookingRepository.getMonthlyReservationsByCity();
+    }
+
 }
