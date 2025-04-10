@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Anamakine: localhost
--- Üretim Zamanı: 10 Nis 2025, 19:51:09
--- Sunucu sürümü: 10.4.28-MariaDB
--- PHP Sürümü: 8.2.4
+-- Anamakine: 127.0.0.1
+-- Üretim Zamanı: 10 Nis 2025, 20:04:47
+-- Sunucu sürümü: 10.4.32-MariaDB
+-- PHP Sürümü: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -97,7 +97,7 @@ INSERT INTO `hotelamenities` (`amenity_id`, `name`, `icon_url`) VALUES
 (2, 'Breakfast Included', ''),
 (3, 'Swimming Pool', ''),
 (4, 'Gym', ''),
-(5, 'sezo', ''),
+(5, 'Private Beach', ''),
 (6, 'Bar', ''),
 (7, 'City View', ''),
 (8, 'Free Parking', ''),
@@ -116,25 +116,7 @@ INSERT INTO `hotelamenities` (`amenity_id`, `name`, `icon_url`) VALUES
 (21, 'Private Beach', ''),
 (22, 'Infinity Pool', ''),
 (23, 'Scuba Diving', ''),
-(24, 'Business Center', ''),
-(25, 'Free Shuttle', ''),
-(26, 'Meeting Rooms', ''),
-(27, 'Fast Wi-Fi', ''),
-(28, 'Traditional Spa', ''),
-(29, 'Tea Ceremony', ''),
-(30, 'Garden View', ''),
-(31, 'Penthouse Suites', ''),
-(32, 'Private Lounge', ''),
-(33, 'Michelin Star Restaurant', ''),
-(34, 'Eiffel Tower View', ''),
-(35, 'Fine Dining', ''),
-(36, 'Artistic Decor', ''),
-(37, 'Exclusive Bar', ''),
-(38, 'Gourmet Restaurant', ''),
-(39, 'Boat Rides', ''),
-(40, 'VIP Services', ''),
-(41, 'Exclusive Wine Cellar', ''),
-(42, 'Designer Suites', '');
+(24, 'Business Center', '');
 
 -- --------------------------------------------------------
 
@@ -152,13 +134,13 @@ CREATE TABLE `hotelamenityjunction` (
 --
 
 INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
-(1, 2),
+(1, 1),
 (1, 3),
 (1, 4),
-(2, 5),
-(2, 6),
+(2, 1),
 (2, 7),
 (2, 8),
+(2, 18),
 (3, 1),
 (3, 9),
 (3, 10),
@@ -173,26 +155,26 @@ INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
 (6, 19),
 (7, 14),
 (7, 21),
+(8, 14),
 (8, 20),
-(8, 22),
-(9, 24),
-(9, 27),
-(10, 25),
-(10, 26),
-(11, 28),
-(11, 29),
-(12, 31),
-(12, 32),
-(12, 33),
-(13, 34),
-(13, 35),
-(14, 36),
-(14, 37),
-(14, 38),
-(15, 39),
-(16, 40),
-(16, 41),
-(16, 42);
+(9, 11),
+(9, 20),
+(10, 1),
+(10, 15),
+(11, 5),
+(11, 6),
+(12, 1),
+(12, 2),
+(12, 14),
+(13, 17),
+(13, 20),
+(14, 8),
+(14, 11),
+(14, 13),
+(15, 1),
+(16, 1),
+(16, 2),
+(16, 15);
 
 -- --------------------------------------------------------
 
