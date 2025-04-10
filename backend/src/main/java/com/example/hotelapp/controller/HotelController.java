@@ -5,8 +5,9 @@ import com.example.hotelapp.model.Hotel;
 import com.example.hotelapp.model.Room;
 import com.example.hotelapp.repository.HotelRepository;
 import com.example.hotelapp.repository.RoomRepository;
-
+import com.example.hotelapp.service.AdminHotelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,14 +21,17 @@ public class HotelController {
 
     @Autowired
     private HotelRepository hotelRepository;
-
+    
+    @Autowired
+    private AdminHotelService adminHotelService;
+    
     @Autowired
     private RoomRepository roomRepository;
 
     @GetMapping("/{hotelId}/rooms")
     public ResponseEntity<List<Room>> getRoomsByHotelId(@PathVariable Long hotelId) {
         List<Room> rooms = roomRepository.findByHotelId(hotelId);
-        if(rooms.isEmpty()){
+        if (rooms.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(rooms);
@@ -51,7 +55,6 @@ public class HotelController {
         return ResponseEntity.ok(results);
     }
 
-    
     @GetMapping("/cities")
     public ResponseEntity<?> getAllCitiesWithHotels() {
         return ResponseEntity.ok(hotelRepository.findDistinctCityByStatus());
@@ -62,9 +65,8 @@ public class HotelController {
         List<HotelWithImageDTO> dtoList = hotelRepository.findHotelsWithPrimaryImageByCity(name);
         return ResponseEntity.ok(dtoList);
     }
-
     
-    // Endpoint: Otellerin amenity bilgilerini de getirir.
+    // Otellerin amenity bilgilerini de getiren endpoint
     @GetMapping("/withAmenities")
     public ResponseEntity<?> getAllHotelsWithAmenities() {
         List<Map<String, Object>> hotelsWithAmenities = hotelRepository.findAllWithAmenities();
@@ -78,23 +80,22 @@ public class HotelController {
         return ResponseEntity.ok(savedHotel);
     }
 
+    /**
+     * Update Hotel endpointi:
+     * Bu metod, sadece güncellenmek istenen alanları alır (name, city, country, address ve amenities) 
+     * ve AdminHotelService.updateHotel() çağrılarak hem hotel tablosu hem de amenity junctionları güncellenir.
+     */
     @PutMapping("/{hotelId}")
 public ResponseEntity<?> updateHotel(@PathVariable Long hotelId, @RequestBody Hotel hotelDetails) {
-    return hotelRepository.findById(hotelId)
-        .map(hotel -> {
-            // Sadece güncellenmek istenen alanlar:
-            hotel.setName(hotelDetails.getName());
-            hotel.setCity(hotelDetails.getCity());
-            hotel.setCountry(hotelDetails.getCountry());
-            hotel.setAddress(hotelDetails.getAddress());
-            hotel.setAmenities(hotelDetails.getAmenities());
-            
-            // Diğer alanlar olduğu gibi kalır.
-            Hotel updatedHotel = hotelRepository.save(hotel);
-            return ResponseEntity.ok(updatedHotel);
-        })
-        .orElse(ResponseEntity.notFound().build());
+    try {
+        Hotel updatedHotel = adminHotelService.updateHotel(hotelId, hotelDetails);
+        return ResponseEntity.ok(updatedHotel);
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body("Error updating hotel: " + e.getMessage());
+    }
 }
+
 
 
     @DeleteMapping("/{hotelId}")

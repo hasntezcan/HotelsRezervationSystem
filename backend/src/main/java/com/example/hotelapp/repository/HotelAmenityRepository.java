@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HotelAmenityRepository extends JpaRepository<HotelAmenity, Long> {
+    // Eski metodun yerine; sadece ilk eşleşeni döndürür.
+    HotelAmenity findTopByName(String name);
 }

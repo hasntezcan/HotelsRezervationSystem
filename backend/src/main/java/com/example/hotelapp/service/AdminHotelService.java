@@ -11,7 +11,6 @@ import com.example.hotelapp.repository.ManagerRepository;
 import com.example.hotelapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,12 +29,14 @@ public class AdminHotelService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private HotelAmenityJunctionService hotelAmenityJunctionService;
 
     public List<AdminHotelDTO> getAllAdminHotels() {
         List<Hotel> hotels = hotelRepository.findAll();
     
         return hotels.stream().map(hotel -> {
-            // Manager bilgisini al
             String managerName = "";
             if (hotel.getManagerId() != null) {
                 Optional<Manager> managerOpt = managerRepository.findById(hotel.getManagerId());
@@ -49,7 +50,6 @@ public class AdminHotelService {
                 }
             }
     
-            // Birincil fotoğraf URL'si
             String photoUrl = hotelImageRepository.findByHotel(hotel)
                     .stream()
                     .filter(img -> Boolean.TRUE.equals(img.isPrimary()))
@@ -57,17 +57,15 @@ public class AdminHotelService {
                     .findFirst()
                     .orElse("");
     
-            // Amenities bilgisi (örn: GROUP_CONCAT ile çekiliyor)
             String amenities = hotelRepository.findAmenitiesByHotelId(hotel.getHotelId());
             if (amenities == null) {
                 amenities = "";
             }
     
-            // Mapping: Burada address bilgisini de ekliyoruz.
             return new AdminHotelDTO(
                 hotel.getHotelId(),
                 hotel.getName(),
-                hotel.getAddress(),  // Address bilgisi burada ekleniyor
+                hotel.getAddress(),
                 hotel.getCity(),
                 hotel.getCountry(),
                 managerName,
@@ -76,5 +74,25 @@ public class AdminHotelService {
             );
         }).collect(Collectors.toList());
     }
-    
+
+    public Hotel updateHotel(Long hotelId, Hotel updatedHotel) {
+        Optional<Hotel> hotelOpt = hotelRepository.findById(hotelId);
+        if (!hotelOpt.isPresent()) {
+            throw new RuntimeException("Hotel not found with id: " + hotelId);
+        }
+        Hotel hotel = hotelOpt.get();
+        hotel.setName(updatedHotel.getName());
+        hotel.setCity(updatedHotel.getCity());
+        hotel.setCountry(updatedHotel.getCountry());
+        hotel.setAddress(updatedHotel.getAddress());
+        hotel.setAmenities(updatedHotel.getAmenities());
+        
+        Hotel savedHotel = hotelRepository.save(hotel);
+
+        // Amenity bilgilerini güncelleme
+        if (updatedHotel.getAmenities() != null) {
+            hotelAmenityJunctionService.updateHotelAmenities(hotelId, updatedHotel.getAmenities());
+        }
+        return savedHotel;
+    }
 }

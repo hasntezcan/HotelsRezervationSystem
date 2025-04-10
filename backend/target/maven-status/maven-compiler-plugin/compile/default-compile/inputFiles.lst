@@ -14,12 +14,14 @@ C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\controller\ManagerHotelController.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\RoomAmenity.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\Review.java
+C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\HotelAmenityJunction.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\HotelImage.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\controller\HotelController.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\config\WebConfig.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\ManagerRepository.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\HotelImageRepository.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\controller\AuthController.java
+C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\service\HotelAmenityJunctionService.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\HotelAmenity.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\dto\AdminHotelDTO.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\RoomAmenityRepository.java
@@ -37,6 +39,7 @@ C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\controller\ManagerController.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\dto\ReviewDTO.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\RoomImage.java
+C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\HotelAmenityJunctionRepository.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\controller\HotelAmenityController.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\UserRepository.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\dto\ManagerDTO.java
@@ -46,4 +49,5 @@ C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\User.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\RoomRepository.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\RoomAmenityJunctionRepository.java
+C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\HotelAmenityJunctionId.java
 C:\Users\esade\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\ReviewRepository.java
