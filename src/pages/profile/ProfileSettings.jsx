@@ -6,9 +6,9 @@ import { AuthContext } from '../../context/AuthContext';
 const Settings = () => {
   const { user, dispatch } = useContext(AuthContext);
 
+  // Save userId in localStorage when available
   useEffect(() => {
     if (user?.userId) {
-      // ✅ Save userId separately for booking/payment use
       localStorage.setItem('userId', user.userId.toString());
     }
   }, [user]);
@@ -16,15 +16,15 @@ const Settings = () => {
   if (!user) return <p>Please login first.</p>;
 
   const [formData, setFormData] = useState({
-    username: user.username,
-    email: user.email,
+    username: user.username || '',
+    email: user.email || '',
     password: user.password || '',
-    firstName: user.first_name || '',
-    lastName: user.last_name || '',
+    firstName: user.first_name || user.firstName || '',
+    lastName: user.last_name || user.lastName || '',
     phone: user.phone || ''
   });
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -36,7 +36,7 @@ const Settings = () => {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: user.userId, // ✅ Send to backend
+          userId: user.userId,
           username: formData.username,
           email: formData.email,
           password: formData.password,
@@ -52,11 +52,11 @@ const Settings = () => {
       }
 
       const updatedUser = await response.json();
-      dispatch({ type: "LOGIN_SUCCESS", payload: updatedUser });
 
-      // ✅ Update localStorage with new user data and userId
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      localStorage.setItem('userId', updatedUser.userId.toString());
+      // Update context and localStorage
+      dispatch({ type: "LOGIN_SUCCESS", payload: updatedUser });
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      localStorage.setItem("userId", updatedUser.userId.toString());
 
       alert("Profile updated!");
     } catch (err) {
@@ -78,6 +78,7 @@ const Settings = () => {
             required
           />
         </div>
+
         <div className="form-group">
           <label>Email</label>
           <input
@@ -88,6 +89,7 @@ const Settings = () => {
             required
           />
         </div>
+
         <div className="form-group">
           <label>Password</label>
           <input
@@ -98,6 +100,7 @@ const Settings = () => {
             required
           />
         </div>
+
         <div className="form-group">
           <label>First Name</label>
           <input
@@ -107,6 +110,7 @@ const Settings = () => {
             onChange={handleChange}
           />
         </div>
+
         <div className="form-group">
           <label>Last Name</label>
           <input
@@ -116,6 +120,7 @@ const Settings = () => {
             onChange={handleChange}
           />
         </div>
+
         <div className="form-group">
           <label>Phone</label>
           <input
@@ -125,6 +130,7 @@ const Settings = () => {
             onChange={handleChange}
           />
         </div>
+
         <button type="submit" className="btn btn-primary">
           Save Changes
         </button>

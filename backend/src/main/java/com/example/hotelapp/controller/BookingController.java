@@ -24,14 +24,14 @@ public class BookingController {
     @Autowired
     private RoomRepository roomRepository;
 
-    // Create a booking
+    // ✅ Create a booking
     @PostMapping
     public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
         Booking saved = bookingRepository.save(booking);
         return ResponseEntity.ok(saved);
     }
 
-    // Check room availability
+    // ✅ Check room availability
     @GetMapping("/check-availability")
     public ResponseEntity<Boolean> checkAvailability(
         @RequestParam Long roomId,
@@ -41,21 +41,23 @@ public class BookingController {
         LocalDate checkInDate = LocalDate.parse(checkIn);
         LocalDate checkOutDate = LocalDate.parse(checkOut);
 
-        // Count how many overlapping bookings exist
         int overlappingCount = bookingRepository.countOverlappingBookings(roomId, checkInDate, checkOutDate);
 
-        // Get total rooms from the room type definition
         Optional<Room> roomOpt = roomRepository.findById(roomId);
         if (roomOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         int totalRooms = roomOpt.get().getTotalRooms();
-
-        // ✅ Availability logic: only reject if ALL rooms are booked for that range
         boolean isAvailable = overlappingCount < totalRooms;
 
         return ResponseEntity.ok(isAvailable);
     }
 
+    // ✅ Get bookings for a specific user
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Booking>> getBookingsByUserId(@PathVariable Long userId) {
+        List<Booking> bookings = bookingRepository.findByUserId(userId);
+        return ResponseEntity.ok(bookings);
+    }
 }
