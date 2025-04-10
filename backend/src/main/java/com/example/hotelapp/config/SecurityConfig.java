@@ -38,18 +38,7 @@ public class SecurityConfig {
 
             )*/
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(
-                    "/api/auth/**",
-                    "/api/auth/login",
-                    "/api/auth/register",
-                    "/api/auth/logout",
-                    "/api/hotels/**",
-                    "/api/rooms/**",
-                    "/api/reviews/**",
-                    "/api/users/**",
-                    "/api/bookings/**"
-                ).permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .httpBasic(httpBasic -> httpBasic.disable())
             .formLogin(form -> form.disable())
