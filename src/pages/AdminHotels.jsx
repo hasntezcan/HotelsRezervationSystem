@@ -228,19 +228,28 @@ const AdminHotel = () => {
           value={newHotel.photo}
           onChange={handleChange}
         />
-        {/* Manager select alanı: Database'den çekilen manager verilerini listeliyoruz */}
-        <select
-          name="managerId"
-          value={newHotel.managerId}
-          onChange={handleChange}
-        >
-          <option value="">Select Manager</option>
-          {managers.map((manager) => (
-            <option key={manager.managerId} value={manager.managerId}>
-              {manager.managerId} - {manager.managerName}
+        {/* Manager select alanı: Edit modunda ise sadece otelin kendi manager bilgisi gösterilir ve değiştirilemez,
+            normal modda ise tüm manager listesi gösterilir */}
+        {editingHotel ? (
+          <select name="managerId" value={newHotel.managerId} disabled>
+            <option value={newHotel.managerId}>
+              {newHotel.managerId} - {editingHotel.managerName}
             </option>
-          ))}
-        </select>
+          </select>
+        ) : (
+          <select
+            name="managerId"
+            value={newHotel.managerId}
+            onChange={handleChange}
+          >
+            <option value="">Select Manager</option>
+            {managers.map((manager) => (
+              <option key={manager.managerId} value={manager.managerId}>
+                {manager.managerId} - {manager.managerName}
+              </option>
+            ))}
+          </select>
+        )}
 
         {editingHotel ? (
           <button id="admin-hotel-button" onClick={updateHotel}>
