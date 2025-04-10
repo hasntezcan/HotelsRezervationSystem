@@ -1,13 +1,17 @@
 package com.example.hotelapp.controller;
 
 import com.example.hotelapp.model.Booking;
+import com.example.hotelapp.model.Room;
 import com.example.hotelapp.repository.BookingRepository;
+import com.example.hotelapp.repository.RoomRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -16,6 +20,9 @@ public class BookingController {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
 
     // Create a booking
     @PostMapping
@@ -26,7 +33,7 @@ public class BookingController {
 
     // Check room availability
     @GetMapping("/check-availability")
-    public ResponseEntity<?> checkAvailability(
+    public ResponseEntity<Boolean> checkAvailability(
         @RequestParam Long roomId,
         @RequestParam String checkIn,
         @RequestParam String checkOut
@@ -34,12 +41,21 @@ public class BookingController {
         LocalDate checkInDate = LocalDate.parse(checkIn);
         LocalDate checkOutDate = LocalDate.parse(checkOut);
 
-        List<Booking> overlapping = bookingRepository
-            .findByRoomIdAndCheckInDateLessThanEqualAndCheckOutDateGreaterThanEqual(
-                roomId, checkOutDate, checkInDate
-            );
+        // Count how many overlapping bookings exist
+        int overlappingCount = bookingRepository.countOverlappingBookings(roomId, checkInDate, checkOutDate);
 
-        boolean isAvailable = overlapping.isEmpty();
+        // Get total rooms from the room type definition
+        Optional<Room> roomOpt = roomRepository.findById(roomId);
+        if (roomOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        int totalRooms = roomOpt.get().getTotalRooms();
+
+        // ✅ Availability logic: only reject if ALL rooms are booked for that range
+        boolean isAvailable = overlappingCount < totalRooms;
+
         return ResponseEntity.ok(isAvailable);
     }
+
 }

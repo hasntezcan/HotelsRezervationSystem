@@ -11,6 +11,7 @@ import com.example.hotelapp.repository.ManagerRepository;
 import com.example.hotelapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,14 +27,15 @@ public class AdminHotelService {
 
     @Autowired
     private ManagerRepository managerRepository;
-    
+
     @Autowired
     private UserRepository userRepository;
 
     public List<AdminHotelDTO> getAllAdminHotels() {
         List<Hotel> hotels = hotelRepository.findAll();
+    
         return hotels.stream().map(hotel -> {
-            // Manager bilgilerini çekmek:
+            // Manager bilgisini al
             String managerName = "";
             if (hotel.getManagerId() != null) {
                 Optional<Manager> managerOpt = managerRepository.findById(hotel.getManagerId());
@@ -46,17 +48,26 @@ public class AdminHotelService {
                     }
                 }
             }
-            // Primary fotoğrafı çekmek:
-            HotelImage primaryImage = hotelImageRepository.findByHotelAndIsPrimary(hotel, true);
-            String photoUrl = (primaryImage != null) ? primaryImage.getImageUrl() : "";
-            // Amenities bilgilerini HotelRepository üzerindeki yeni metottan alıyoruz:
+    
+            // Birincil fotoğraf URL'si
+            String photoUrl = hotelImageRepository.findByHotel(hotel)
+                    .stream()
+                    .filter(img -> Boolean.TRUE.equals(img.isPrimary()))
+                    .map(HotelImage::getImageUrl)
+                    .findFirst()
+                    .orElse("");
+    
+            // Amenities bilgisi (örn: GROUP_CONCAT ile çekiliyor)
             String amenities = hotelRepository.findAmenitiesByHotelId(hotel.getHotelId());
-            if(amenities == null) {
+            if (amenities == null) {
                 amenities = "";
             }
+    
+            // Mapping: Burada address bilgisini de ekliyoruz.
             return new AdminHotelDTO(
                 hotel.getHotelId(),
                 hotel.getName(),
+                hotel.getAddress(),  // Address bilgisi burada ekleniyor
                 hotel.getCity(),
                 hotel.getCountry(),
                 managerName,
@@ -65,4 +76,5 @@ public class AdminHotelService {
             );
         }).collect(Collectors.toList());
     }
+    
 }

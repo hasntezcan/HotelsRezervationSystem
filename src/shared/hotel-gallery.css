@@ -1,0 +1,80 @@
+/* HotelGallery container */
+.hotel-gallery {
+    max-width: 900px;      /* Or whatever width you like */
+    margin: 0 auto;        /* Center on page */
+    text-align: center;
+    position: relative;
+    border:#ff914d;
+  }
+  
+  /* Main image container: fixed size for consistent ratio */
+  .hotel-gallery__main-wrapper {
+    width: 100%;
+    max-width: 900px;     /* match .hotel-gallery */
+    height: 450px;        /* pick a suitable height */
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;     /* hide cropped edges */
+    margin: 0 auto;
+  }
+  
+  /* Main image forcibly fills container, cropped if needed */
+  .hotel-gallery__main {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;    /* ensures uniform coverage */
+  }
+  
+  /* Left/right arrow buttons */
+  .hotel-gallery__nav-button {
+    background-color: rgba(0,0,0,0.3);
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    padding: 0.2rem 0.6rem;
+    cursor: pointer;
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute;
+    z-index: 2;
+  }
+  .hotel-gallery__nav-button.left {
+    left: 0.6rem;
+  }
+  .hotel-gallery__nav-button.right {
+    right: 0.6rem;
+  }
+  
+  /* Thumbnail strip: single row, horizontal scroll */
+  .hotel-gallery__thumbnails {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 10px;
+    margin: 1rem auto 0;  /* top margin for spacing */
+    max-width: 700px;
+    padding-bottom: 0.5rem; 
+    justify-content: center;
+  }
+  
+  /* Thumbnails: fixed size, same ratio for all */
+  .hotel-gallery__thumb {
+    flex: 0 0 auto;       /* Do not shrink or grow */
+    width: 200px!important;         /* pick your width */
+    height: 70px;         /* pick your height */
+    border-radius: 4px;
+    border: 2px solid transparent;
+    object-fit: cover;    /* fill the bounding box while cropping */
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+  }
+  
+  .hotel-gallery__thumb:hover {
+    opacity: 1;
+  }
+  
+  .hotel-gallery__thumb.active {
+    border-color: var(--secondary-color, #ff914d);
+    opacity: 1;
+  }
