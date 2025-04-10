@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 10 Nis 2025, 15:15:43
+-- Üretim Zamanı: 10 Nis 2025, 19:11:28
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -40,6 +40,18 @@ CREATE TABLE `bookings` (
   `status` varchar(20) DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Tablo döküm verisi `bookings`
+--
+
+INSERT INTO `bookings` (`booking_id`, `user_id`, `room_id`, `check_in_date`, `check_out_date`, `quantity`, `num_guests`, `price_per_night`, `total_price`, `status`, `created_at`) VALUES
+(1, 1, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07'),
+(2, 2, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07'),
+(3, 3, 1, '2025-04-15', '2025-04-17', 1, 3, 100.00, 230.00, 'confirmed', '2025-04-10 13:22:07'),
+(4, 4, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07'),
+(5, 5, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07'),
+(9, 2, 1, '2025-04-18', '2025-04-22', 1, 3, 150.00, 1510.00, 'pending', '2025-04-10 17:04:45');
 
 -- --------------------------------------------------------
 
@@ -702,7 +714,7 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `contact_messages`
