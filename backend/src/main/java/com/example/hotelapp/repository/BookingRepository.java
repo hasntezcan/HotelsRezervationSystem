@@ -29,7 +29,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByUserId(Long userId);
     @Query("SELECT SUM(b.totalPrice) FROM Booking b")
-BigDecimal sumTotalPrice();
+    BigDecimal sumTotalPrice();
 
 
 }
