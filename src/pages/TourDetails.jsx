@@ -8,6 +8,7 @@ import avatar from '../assets/images/avatar.jpg';
 import Booking from '../components/Booking/Booking';
 import { AuthContext } from '../context/AuthContext';
 import Room from '../components/Room/Room';
+import HotelGallery from '../shared/HotelGallery';
 
 const TourDetails = () => {
   const { id } = useParams();
@@ -51,10 +52,6 @@ const TourDetails = () => {
   if (!tour) {
     return <h4>Loading hotel data...</h4>;
   }
-
-  const primaryImageUrl = tour.images?.find(img => img.isPrimary)?.imageUrl ||
-                          tour.images?.[0]?.imageUrl ||
-                          'https://via.placeholder.com/400x300?text=No+Image';
 
   const name = tour.name;
   const desc = tour.description;
@@ -116,7 +113,8 @@ const TourDetails = () => {
         <Row>
           <Col lg="8">
             <div className="tour__content">
-              <img src={primaryImageUrl} alt="Hotel" />
+
+              <HotelGallery images={tour.images} />
 
               <div className="tour__info">
                 <h2>{name}</h2>

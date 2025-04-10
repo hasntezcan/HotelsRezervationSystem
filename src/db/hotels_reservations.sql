@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Anamakine: 127.0.0.1
--- Üretim Zamanı: 10 Nis 2025, 10:21:16
--- Sunucu sürümü: 10.4.32-MariaDB
--- PHP Sürümü: 8.2.12
+-- Anamakine: localhost
+-- Üretim Zamanı: 10 Nis 2025, 14:21:00
+-- Sunucu sürümü: 10.4.28-MariaDB
+-- PHP Sürümü: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -208,8 +208,24 @@ INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VA
 ('14', 14, '/hotel_images/hotel-img14.jpg', 1),
 ('15', 15, '/hotel_images/hotel-img15.jpg', 1),
 ('16', 16, '/hotel_images/hotel-img16.jpg', 1),
+('17', 1, '/hotel_images/hotel-img10.jpg', 1),
+('18', 2, '/hotel_images/hotel-img11.jpg', 1),
+('19', 3, '/hotel_images/hotel-img12.jpg', 1),
 ('2', 2, '/hotel_images/hotel-img02.jpg', 1),
+('20', 4, '/hotel_images/hotel-img13.jpg', 1),
+('21', 5, '/hotel_images/hotel-img14.jpg', 1),
+('22', 6, '/hotel_images/hotel-img15.jpg', 1),
+('23', 7, '/hotel_images/hotel-img16.jpg', 1),
+('24', 8, '/hotel_images/hotel-img01.jpg', 1),
+('25', 9, '/hotel_images/hotel-img02.jpg', 1),
+('26', 10, '/hotel_images/hotel-img03.jpg', 1),
+('27', 11, '/hotel_images/hotel-img04.jpg', 1),
+('28', 12, '/hotel_images/hotel-img05.jpg', 1),
+('29', 13, '/hotel_images/hotel-img06.jpg', 1),
 ('3', 3, '/hotel_images/hotel-img03.jpg', 1),
+('30', 14, '/hotel_images/hotel-img07.jpg', 1),
+('31', 15, '/hotel_images/hotel-img08.jpg', 1),
+('32', 16, '/hotel_images/hotel-img09.jpg', 1),
 ('4', 4, '/hotel_images/hotel-img04.jpg', 1),
 ('5', 5, '/hotel_images/hotel-img05.jpg', 1),
 ('6', 6, '/hotel_images/hotel-img06.jpg', 1),
@@ -440,7 +456,30 @@ INSERT INTO `roomimages` (`image_id`, `room_id`, `image_url`, `is_primary`) VALU
 (5, 1, '/assets/room_images/room-img01.jpg', 1),
 (6, 1, '/assets/room_images/room-img02.jpg', 0),
 (7, 2, '/assets/room_images/room-img03.jpg', 1),
-(8, 2, '/assets/room_images/room-img04.jpg', 0);
+(8, 2, '/assets/room_images/room-img04.jpg', 0),
+(9, 5, '/public/room_images/room-img01.jpg', 1),
+(10, 6, '/assets/room_images/room-img02.jpg', 0),
+(11, 3, '/public/room_images/room-img02.jpg', 1),
+(12, 4, '/assets/room_images/room-img01.jpg', 1),
+(13, 7, '/assets/room_images/room-img01.jpg', 1),
+(14, 8, '/assets/room_images/room-img02.jpg', 1),
+(15, 9, '/public/room_images/room-img01.jpg', 1),
+(16, 10, '/assets/room_images/room-img02.jpg', 1),
+(17, 11, '/assets/room_images/room-img01.jpg', 1),
+(18, 12, '/public/room_images/room-img01.jpg', 1),
+(19, 13, '/assets/room_images/room-img01.jpg', 1),
+(20, 14, '/assets/room_images/room-img01.jpg', 1),
+(21, 15, '/assets/room_images/room-img01.jpg', 1),
+(22, 16, '/public/room_images/room-img01.jpg', 1),
+(23, 17, '/assets/room_images/room-img01.jpg', 1),
+(24, 17, '/assets/room_images/room-img01.jpg', 1),
+(25, 18, '/assets/room_images/room-img01.jpg', 1),
+(26, 19, '/public/room_images/room-img01.jpg', 1),
+(27, 20, '/assets/room_images/room-img01.jpg', 1),
+(28, 21, '/assets/room_images/room-img01.jpg', 1),
+(29, 22, '/assets/room_images/room-img02.jpg', 1),
+(30, 23, '/public/room_images/room-img02.jpg', 1),
+(31, 24, '/assets/room_images/room-img02.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -459,22 +498,40 @@ CREATE TABLE `rooms` (
   `size` varchar(20) DEFAULT NULL,
   `bed_type` varchar(50) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `image_id` int(11) DEFAULT NULL,
   `name` varchar(100) NOT NULL,
-  `room_size` int(11) NOT NULL
+  `room_size` int(11) NOT NULL,
+  `image_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Tablo döküm verisi `rooms`
 --
 
-INSERT INTO `rooms` (`room_id`, `hotel_id`, `room_type`, `description`, `price_per_night`, `capacity`, `total_rooms`, `size`, `bed_type`, `created_at`, `image_id`, `name`, `room_size`) VALUES
-(1, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:38:04', NULL, 'Deluxe Sea View', 35),
-(2, 2, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:38:04', NULL, 'Standard Comfort', 25),
-(3, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:40:01', NULL, 'Deluxe Sea View', 35),
-(4, 2, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:01', NULL, 'Standard Comfort', 25),
-(7, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:40:20', NULL, 'Deluxe Sea View', 35),
-(8, 2, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', NULL, 'Standard Comfort', 25);
+INSERT INTO `rooms` (`room_id`, `hotel_id`, `room_type`, `description`, `price_per_night`, `capacity`, `total_rooms`, `size`, `bed_type`, `created_at`, `name`, `room_size`, `image_id`) VALUES
+(1, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:38:04', 'Deluxe Sea View', 35, NULL),
+(2, 1, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:38:04', 'Standard Comfort', 25, NULL),
+(3, 2, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:40:01', 'Deluxe Sea View', 35, NULL),
+(4, 2, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:01', 'Standard Comfort', 25, NULL),
+(5, 3, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:40:20', 'Deluxe Sea View', 35, NULL),
+(6, 3, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(7, 4, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(8, 4, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
+(9, 5, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(10, 5, 'Family Room', 'Comfortable room for your family peace', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
+(11, 6, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(12, 7, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(13, 8, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(14, 9, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(15, 10, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(16, 11, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(17, 12, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(18, 14, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(19, 15, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(20, 16, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(21, 16, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(22, 6, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
+(23, 7, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
+(24, 8, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL);
 
 -- --------------------------------------------------------
 
@@ -505,7 +562,7 @@ INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_
 (2, 'sezo', 'user', 'sezo@sezo.com', '123456', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-10 06:49:57', 1),
 (3, 'dede', 'user', 'dede@dede.com', '123456', 'dede', 'dede', '05313313131', '2025-04-03 17:57:28', '2025-04-10 06:50:00', 0),
 (4, 'admin', 'admin', 'admin@admin.com', '1234567', 'admin', 'admin', '05467897895', '2025-04-03 18:54:48', '2025-04-10 06:50:02', 0),
-(5, 'deneme', 'user', 'esad.emir34@stu.khas.edu.tr', '123456', 'emir', 'şahin', '05512024369', '2025-04-05 10:50:27', '2025-04-10 06:50:04', 0),
+(5, 'deneme', 'user', 'hasantezcan@gmail.com', '123456', 'emir', 'şahin', '05512024369', '2025-04-05 10:50:27', '2025-04-10 11:51:10', 0),
 (16, 'manager_royal_palace', 'manager', 'royal.manager@example.com', 'password', 'Royalaaaa', 'Manager', '0000000001', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
 (17, 'manager_london_river', 'manager', 'london.manager@example.com', 'password', 'London', 'Manager', '0000000002', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
 (18, 'manager_bali_beach', 'manager', 'bali.manager@example.com', 'password', 'Bali', 'Manager', '0000000003', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
@@ -699,13 +756,13 @@ ALTER TABLE `roomamenities`
 -- Tablo için AUTO_INCREMENT değeri `roomimages`
 --
 ALTER TABLE `roomimages`
-  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `room_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `room_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `users`

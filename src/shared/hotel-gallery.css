@@ -1,0 +1,71 @@
+.hotel-gallery {
+    margin-bottom: 2rem;
+    position: relative;
+    text-align: center;
+  }
+  
+  /* Main image and navigation arrows */
+  .hotel-gallery__main-wrapper {
+    display: inline-block;
+    position: relative;
+  }
+  .hotel-gallery__main {
+    width: 100%;
+    max-width: 900px;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  /* Left/right arrows */
+  .hotel-gallery__nav-button {
+    background-color: rgba(0,0,0,0.3);
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    padding: 0.2rem 0.6rem;
+    cursor: pointer;
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute;
+    z-index: 2;
+  }
+  .hotel-gallery__nav-button.left {
+    left: 0.6rem;
+  }
+  .hotel-gallery__nav-button.right {
+    right: 0.6rem;
+  }
+  
+  /* Thumbnails row - single line, horizontal scroll if needed */
+  .hotel-gallery__thumbnails {
+    display: flex;
+    flex-wrap: nowrap;          /* Do NOT wrap to next line */
+    gap: 10px;
+    justify-content: center;
+    margin: 1rem auto 0;       /* some spacing */
+    max-width: 900px;          /* match the main image width */
+    overflow-x: auto;          /* horizontal scroll if there's many images */
+    padding-bottom: 0.5rem;    /* extra space so the scrollbar doesn't overlap thumbnails */
+  }
+  
+  /* Thumbnails themselves */
+  .hotel-gallery__thumb {
+    flex: 0 0 auto;        /* each thumbnail keeps its size, no shrinking */
+    width: 200px!important;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    align-self: center;
+  }
+  .hotel-gallery__thumb:hover {
+    opacity: 1;
+  }
+  .hotel-gallery__thumb.active {
+    border-color: var(--secondary-color, #ff914d);
+    opacity: 1;
+  }
