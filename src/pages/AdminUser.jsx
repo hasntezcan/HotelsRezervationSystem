@@ -6,6 +6,46 @@ const AdminUser = () => {
   const [managers, setManagers] = useState([]);
   const [users, setUsers] = useState([]);
 
+  // 🔧 Form için gerekli state
+  const [manager, setManager] = useState({
+    isim: '',
+    soyisim: '',
+    telNo: '',
+    mail: '',
+    username: '',
+    password: '',
+  });
+
+  // 🔧 Form için input değişikliklerini handle et
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setManager({ ...manager, [name]: value });
+  };
+
+  // 🔧 Manager ekleme fonksiyonu
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:8080/api/users", {
+        ...manager,
+        role: "manager",
+      });
+      alert("Manager added successfully!");
+      setManager({
+        isim: '',
+        soyisim: '',
+        telNo: '',
+        mail: '',
+        username: '',
+        password: '',
+      });
+      fetchManagersWithHotelInfo(); // Listeyi güncelle
+    } catch (error) {
+      console.error("Error adding manager:", error);
+      alert("Failed to add manager.");
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
     fetchManagersWithHotelInfo();
@@ -24,15 +64,12 @@ const AdminUser = () => {
   const fetchManagersWithHotelInfo = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/users?role=manager");
-      const managersData = response.data; // Örnek veri: [{ userId, first_name, last_name, ... }, ...]
-      
+      const managersData = response.data;
+
       const managersWithHotelInfo = await Promise.all(
         managersData.map(async (manager) => {
           try {
-            // Burada parametreyi kontrol edin: userId yerine managerId vs. olması gerekebilir.
             const hotelResponse = await axios.get(`http://localhost:8080/api/hotels/manager?userId=${manager.userId}`);
-            console.log(`Hotel response for manager ${manager.userId}:`, hotelResponse.data);
-            // Eğer backend liste döndürüyorsa, ilk elemanı alıyoruz; eğer nesne dönerse doğrudan eşliyoruz.
             const hotelData = Array.isArray(hotelResponse.data)
               ? (hotelResponse.data.length > 0 ? hotelResponse.data[0] : null)
               : hotelResponse.data;
@@ -70,9 +107,20 @@ const AdminUser = () => {
 
   return (
     <div className="admin-user-page-container">
+
       <h1 className="admin-user-title">Admin User Management</h1>
+      <h2>Add Manager</h2>
+      <form className="admin-user-form" onSubmit={handleSubmit}>
+        <input type="text" className="admin-user-input" name="isim" placeholder="İsim" value={manager.isim} onChange={handleChange} required />
+        <input type="text" className="admin-user-input" name="soyisim" placeholder="Soyisim" value={manager.soyisim} onChange={handleChange} required />
+        <input type="tel" className="admin-user-input" name="telNo" placeholder="Telefon Numarası" value={manager.telNo} onChange={handleChange} required />
+        <input type="email" className="admin-user-input" name="mail" placeholder="Email" value={manager.mail} onChange={handleChange} required />
+        <input type="text" className="admin-user-input" name="username" placeholder="Username" value={manager.username} onChange={handleChange} required />
+        <input type="password" className="admin-user-input" name="password" placeholder="Password" value={manager.password} onChange={handleChange} required />
+        <button type="submit" className="admin-user-button">Add Manager</button>
+      </form>
       <div className="admin-user-management-section">
-        <div className="admin-user-section" style={{ color: "white" }}>
+        <div className="admin-user-section">
           <h2>Managers List</h2>
           {managers.length > 0 ? (
             <table className="admin-user-list-table">
@@ -93,10 +141,7 @@ const AdminUser = () => {
                     <td>{manager.hotelName}</td>
                     <td>{manager.city}</td>
                     <td>
-                      <button
-                        className="admin-user-delete-btn"
-                        onClick={() => deleteManager(manager.userId)}
-                      >
+                      <button className="admin-user-delete-btn" onClick={() => deleteManager(manager.userId)}>
                         Delete
                       </button>
                     </td>
@@ -108,8 +153,8 @@ const AdminUser = () => {
             <p>No managers found with role=manager.</p>
           )}
         </div>
-        {/* Users list bölümü olduğu gibi kalıyor */}
-        <div className="admin-user-section" style={{ color: "white" }}>
+
+        <div className="admin-user-section">
           <h2>Users List</h2>
           {users.length > 0 ? (
             <table className="admin-user-list-table">
@@ -126,10 +171,7 @@ const AdminUser = () => {
                     <td>{u.first_name}</td>
                     <td>{u.last_name}</td>
                     <td>
-                      <button
-                        className="admin-user-delete-btn"
-                        onClick={() => { /* deleteUser fonksiyonunuz */ }}
-                      >
+                      <button className="admin-user-delete-btn">
                         Delete
                       </button>
                     </td>
