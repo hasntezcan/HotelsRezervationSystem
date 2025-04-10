@@ -1,17 +1,13 @@
-.tour__content img {
-   width        : 100%;
-   border-radius: 0.5rem;
-   margin-bottom: 1rem;
-}
 
 .tour__gallery {
-  border: 1px solid var(--secondary-color);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  padding-bottom: 0;
-  background-color: #fff; /* same as .tour__info or .tour__reviews */
-  margin-bottom: 1.5rem;  /* optional spacing below */
-}
+   border: 1px solid var(--secondary-color);
+   border-radius: 0.6rem;
+   background-color: #fff; /* match your other sections */
+   padding: 0;
+   padding-bottom: 10px;            /* let the image fill the top edge */
+   margin-bottom: 1.5rem; /* optional spacing below */
+   /* no top margin, or do margin-top if you prefer */
+ }
 
 .tour__info,
 .tour__reviews {

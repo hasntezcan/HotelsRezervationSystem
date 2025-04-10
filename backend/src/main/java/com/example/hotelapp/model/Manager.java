@@ -16,7 +16,7 @@ public class Manager {
     private Long userId;  // User ID
 
     @Column(name = "hotel_id", nullable = false)
-    private String hotelId;  // Manager'ın bağlı olduğu otelin ID'si, veritabanındaki char(36) için String
+    private Long hotelId;  // Manager'ın bağlı olduğu otelin ID'si, veritabanındaki char(36) için String
 
     @Column(name = "assigned_at")
     private LocalDateTime assignedAt;  // Atama zamanı
@@ -44,11 +44,11 @@ public class Manager {
         this.userId = userId;
     }
 
-    public String getHotelId() {
+    public Long getHotelId() {
         return hotelId;
     }
 
-    public void setHotelId(String hotelId) {
+    public void setHotelId(Long hotelId) {
         this.hotelId = hotelId;
     }
 
