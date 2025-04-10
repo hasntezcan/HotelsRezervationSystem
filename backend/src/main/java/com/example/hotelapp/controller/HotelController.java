@@ -79,34 +79,23 @@ public class HotelController {
     }
 
     @PutMapping("/{hotelId}")
-    public ResponseEntity<?> updateHotel(@PathVariable Long hotelId, @RequestBody Hotel hotelDetails) {
-        return hotelRepository.findById(hotelId)
-            .map(hotel -> {
-                hotel.setName(hotelDetails.getName());
-                hotel.setCity(hotelDetails.getCity());
-                hotel.setCountry(hotelDetails.getCountry());
-                hotel.setAddress(hotelDetails.getAddress());
-                hotel.setPricePerNight(hotelDetails.getPricePerNight());
-                hotel.setCapacity(hotelDetails.getCapacity());
-                hotel.setAmenities(hotelDetails.getAmenities());
-                //hotel.setPhoto(hotelDetails.getPhoto());
-                hotel.setFeatured(hotelDetails.isFeatured());
-                // Diğer alanları da güncelleyebilirsiniz, örneğin:
-                hotel.setCountry(hotelDetails.getCountry());
-                //hotel.setPhoto(hotelDetails.getPhoto());
-                hotel.setLatitude(hotelDetails.getLatitude());
-                hotel.setLongitude(hotelDetails.getLongitude());
-                hotel.setDescription(hotelDetails.getDescription());
-                hotel.setStarRating(hotelDetails.getStarRating());
-                hotel.setCheckInTime(hotelDetails.getCheckInTime());
-                hotel.setCheckOutTime(hotelDetails.getCheckOutTime());
-                hotel.setCancellationPolicy(hotelDetails.getCancellationPolicy());
-                hotel.setStatus(hotelDetails.getStatus());
-                Hotel updatedHotel = hotelRepository.save(hotel);
-                return ResponseEntity.ok(updatedHotel);
-            })
-            .orElse(ResponseEntity.notFound().build());
-    }
+public ResponseEntity<?> updateHotel(@PathVariable Long hotelId, @RequestBody Hotel hotelDetails) {
+    return hotelRepository.findById(hotelId)
+        .map(hotel -> {
+            // Sadece güncellenmek istenen alanlar:
+            hotel.setName(hotelDetails.getName());
+            hotel.setCity(hotelDetails.getCity());
+            hotel.setCountry(hotelDetails.getCountry());
+            hotel.setAddress(hotelDetails.getAddress());
+            hotel.setAmenities(hotelDetails.getAmenities());
+            
+            // Diğer alanlar olduğu gibi kalır.
+            Hotel updatedHotel = hotelRepository.save(hotel);
+            return ResponseEntity.ok(updatedHotel);
+        })
+        .orElse(ResponseEntity.notFound().build());
+}
+
 
     @DeleteMapping("/{hotelId}")
     public ResponseEntity<?> deleteHotel(@PathVariable Long hotelId) {
