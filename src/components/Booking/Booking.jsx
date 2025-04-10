@@ -1,33 +1,35 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import './booking.css';
 import { Form, FormGroup, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 
-const Booking = ({ tour, avgRating, selectedRoom }) => {
+const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChildren = 0 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useContext(AuthContext);
-
-  const roomName = selectedRoom ? selectedRoom.name : tour.title;
-  const roomPrice = selectedRoom ? selectedRoom.pricePerNight : tour.price;
-  const reviews = tour.reviews || [];
 
   const queryParams = new URLSearchParams(location.search);
   const defaultStartDate = queryParams.get('startDate') || '';
   const defaultEndDate = queryParams.get('endDate') || '';
 
+  const roomName = selectedRoom ? selectedRoom.name : tour.title;
+  const roomPrice = selectedRoom ? selectedRoom.pricePerNight : tour.price;
+  const reviews = tour.reviews || [];
+
   const [booking, setBooking] = useState({
-    userId: user && user.userId, // ✅ Corrected from _id to userId
+    userId: user && user.userId,
     userEmail: user && user.email,
     tourName: roomName,
     fullName: '',
     phone: '',
-    adultCount: 1,
-    childCount: 0,
+    adultCount: initialAdults,
+    childCount: initialChildren,
     startDate: defaultStartDate,
-    endDate: defaultEndDate,
+    endDate: defaultEndDate
   });
+
+  const today = new Date().toISOString().split('T')[0];
 
   const handleChange = (e) => {
     setBooking((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -64,20 +66,18 @@ const Booking = ({ tour, avgRating, selectedRoom }) => {
       return;
     }
 
-    if (Number(booking.adultCount) < 1 && Number(booking.childCount) < 1) {
+    const numGuests = Number(booking.adultCount) + Number(booking.childCount);
+    if (numGuests > selectedRoom.capacity) {
+      alert(`This room can only accommodate up to ${selectedRoom.capacity} guests.`);
+      return;
+    }
+
+    if (numGuests < 1) {
       alert('At least 1 adult or child is required.');
       return;
     }
 
-    const msPerNight = 1000 * 60 * 60 * 24;
-    const nights = Math.round((eDate - sDate) / msPerNight);
-
-    const roomPrice = selectedRoom.pricePerNight;
-    const serviceFee = 10;
-    const totalAmount =
-      (Number(roomPrice) * nights * Number(booking.adultCount)) +
-      (Number(roomPrice) * nights * Number(booking.childCount) * 0.5) +
-      serviceFee;
+    const nights = Math.round((eDate - sDate) / (1000 * 60 * 60 * 24));
 
     try {
       const availabilityRes = await fetch(
@@ -86,7 +86,7 @@ const Booking = ({ tour, avgRating, selectedRoom }) => {
       const isAvailable = await availabilityRes.json();
 
       if (!isAvailable) {
-        alert('The selected room is not available for the chosen date range. Please choose a different room or date.');
+        alert('The selected room is not available for the chosen date range. Please choose another.');
         return;
       }
     } catch (err) {
@@ -94,8 +94,6 @@ const Booking = ({ tour, avgRating, selectedRoom }) => {
       alert('Something went wrong during availability check.');
       return;
     }
-
-    const numGuests = Number(booking.adultCount) + Number(booking.childCount);
 
     const bookingPayload = {
       ...booking,
@@ -108,14 +106,11 @@ const Booking = ({ tour, avgRating, selectedRoom }) => {
       pricePerNight: roomPrice
     };
 
-    // ✅ Save both userId and pending booking
     localStorage.setItem('userId', user.userId);
     localStorage.setItem('pendingBooking', JSON.stringify(bookingPayload));
 
     navigate('/payment');
   };
-
-  const today = new Date().toISOString().split('T')[0];
 
   return (
     <div className="booking">
@@ -162,7 +157,7 @@ const Booking = ({ tour, avgRating, selectedRoom }) => {
               <input
                 type="number"
                 id="adultCount"
-                min="1"
+                min="0"
                 onChange={handleChange}
                 value={booking.adultCount}
               />

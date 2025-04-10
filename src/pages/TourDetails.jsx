@@ -21,8 +21,17 @@ const TourDetails = () => {
   const reviewMsgRef = useRef('');
   const { user } = useContext(AuthContext);
 
-  const handleRoomSelect = (room) => {
-    setSelectedRoom(prev => (prev && prev.id === room.id) ? null : room);
+  const [initialAdults, setInitialAdults] = useState(1);
+  const [initialChildren, setInitialChildren] = useState(0);
+
+  const handleRoomSelect = async (room) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/rooms/${room.id}`);
+      const fullRoom = response.data;
+      setSelectedRoom(fullRoom);
+    } catch (err) {
+      console.error('Error fetching room details:', err);
+    }
   };
 
   useEffect(() => {
@@ -49,16 +58,22 @@ const TourDetails = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  if (!tour) {
-    return <h4>Loading hotel data...</h4>;
-  }
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const adults = parseInt(queryParams.get('adults'));
+    const children = parseInt(queryParams.get('children'));
+
+    if (!isNaN(adults)) setInitialAdults(adults);
+    if (!isNaN(children)) setInitialChildren(children);
+  }, [location.search]);
+
+  if (!tour) return <h4>Loading hotel data...</h4>;
 
   const name = tour.name;
   const desc = tour.description;
   const price = tour.pricePerNight;
   const city = tour.city;
   const address = tour.address;
-  const capacity = tour.capacity;
 
   const dummyAmenities = tour.amenities 
     ? tour.amenities.split(',').map(a => a.trim())
@@ -114,11 +129,10 @@ const TourDetails = () => {
           <Col lg="8">
             <div className="tour__content">
 
-            <div className="tour__gallery">
-              
-              <HotelGallery images={tour.images} />
-            </div>
- 
+              <div className="tour__gallery">
+                <HotelGallery images={tour.images} />
+              </div>
+
               <div className="tour__info">
                 <h2>{name}</h2>
                 <div className="d-flex align-items-center gap-5">
@@ -148,7 +162,7 @@ const TourDetails = () => {
                 <h5>Description</h5>
                 <p>{desc}</p>
               </div>
-              
+
               <div className="tour__rooms mt-4">
                 <h4 className="mb-3">Select Your Room</h4>
                 <Room
@@ -217,6 +231,8 @@ const TourDetails = () => {
               tour={{ ...tour, price: actualPrice }}
               avgRating={avgRating}
               selectedRoom={selectedRoom}
+              initialAdults={initialAdults}
+              initialChildren={initialChildren}
             />
           </Col>
         </Row>

@@ -44,12 +44,12 @@ const SearchBar = ({ onSearch }) => {
     
     const checkIn = formatDateLocal(dates[0]);
     const checkOut = formatDateLocal(dates[1]);
-    
 
     if (onSearch) {
-      onSearch(destination, checkIn, checkOut);
+      onSearch(destination, checkIn, checkOut, adults, children);
     } else {
-      navigate(`/hotels?city=${destination}&startDate=${checkIn}&endDate=${checkOut}`);
+      navigate(`/hotels?city=${destination}&startDate=${checkIn}&endDate=${checkOut}&adults=${adults}&children=${children}`);
+
     }
   };
 
