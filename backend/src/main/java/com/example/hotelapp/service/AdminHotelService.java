@@ -33,9 +33,9 @@ public class AdminHotelService {
 
     public List<AdminHotelDTO> getAllAdminHotels() {
         List<Hotel> hotels = hotelRepository.findAll();
-
+    
         return hotels.stream().map(hotel -> {
-            // Manager bilgisini al: Hotel'deki manager_id üzerinden Manager, ardından User bilgilerine erişerek ad-soyadı oluştur.
+            // Manager bilgisini al
             String managerName = "";
             if (hotel.getManagerId() != null) {
                 Optional<Manager> managerOpt = managerRepository.findById(hotel.getManagerId());
@@ -48,31 +48,33 @@ public class AdminHotelService {
                     }
                 }
             }
-
-            // Primary fotoğraf URL'sini elde et: Tüm fotoğrafları getiren metodu kullanıp, isPrimary == true olan ilk elemanı seçiyoruz.
+    
+            // Birincil fotoğraf URL'si
             String photoUrl = hotelImageRepository.findByHotel(hotel)
                     .stream()
                     .filter(img -> Boolean.TRUE.equals(img.isPrimary()))
                     .map(HotelImage::getImageUrl)
                     .findFirst()
                     .orElse("");
-
-            // Amenities bilgisini almak için: Bu örnekte, HotelRepository’de custom bir metod kullanılmış
-            // (örneğin: findAmenitiesByHotelId) veya amenity isimlerini başka bir yolla toplayabilirsiniz.
+    
+            // Amenities bilgisi (örn: GROUP_CONCAT ile çekiliyor)
             String amenities = hotelRepository.findAmenitiesByHotelId(hotel.getHotelId());
             if (amenities == null) {
                 amenities = "";
             }
-
+    
+            // Mapping: Burada address bilgisini de ekliyoruz.
             return new AdminHotelDTO(
-                    hotel.getHotelId(),
-                    hotel.getName(),
-                    hotel.getCity(),
-                    hotel.getCountry(),
-                    managerName,
-                    photoUrl,
-                    amenities
+                hotel.getHotelId(),
+                hotel.getName(),
+                hotel.getAddress(),  // Address bilgisi burada ekleniyor
+                hotel.getCity(),
+                hotel.getCountry(),
+                managerName,
+                photoUrl,
+                amenities
             );
         }).collect(Collectors.toList());
     }
+    
 }
