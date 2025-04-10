@@ -1,39 +1,52 @@
 // src/pages/profile/Overview.jsx
-import React, { useContext, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Link } from 'react-router-dom'
-import { AuthContext } from '../../context/AuthContext'
-import hotelsData from '../../assets/data/hotels'
-import '../../styles/profile.css'
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
+import hotelsData from '../../assets/data/hotels';
+import '../../styles/profile.css';
 
 const Overview = () => {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const [myBookings, setMyBookings] = useState([]);
+  const [lastBookingDate, setLastBookingDate] = useState(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const { user } = useContext(AuthContext)
-  const navigate = useNavigate()
 
-  // Load all bookings from localStorage
-  const bookings = JSON.parse(localStorage.getItem('bookings')) || []
+  // Fetch user bookings from backend using userId
+  useEffect(() => {
+    const fetchBookings = async () => {
+      if (!user?.userId) return;
 
-  // Filter bookings belonging to the current user
-  const myBookings = user ? bookings.filter((b) => b.userEmail === user.email) : []
+      try {
+        const res = await fetch(`http://localhost:8080/api/bookings/user/${user.userId}`);
+        if (!res.ok) throw new Error('Failed to fetch bookings');
 
-  // Determine the date of the last booking
-  // Here we use the booking's `createdAt` to indicate when the user last booked.
-  // If you prefer the trip's start date, use `startDate` instead.
-  let lastBookingDate = null
-  if (myBookings.length > 0) {
-    const sorted = [...myBookings].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    )
-    lastBookingDate = sorted[0].createdAt // or .startDate if you prefer
-  }
+        const data = await res.json();
+        setMyBookings(data);
 
-  // Randomly pick 3 featured hotels for the user
-  const featuredHotels = hotelsData.filter((h) => h.featured)
-  const shuffleArray = [...featuredHotels].sort(() => 0.5 - Math.random())
-  const randomThree = shuffleArray.slice(0, 3)
+        // Sort and find latest booking date
+        if (data.length > 0) {
+          const sorted = [...data].sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
+          setLastBookingDate(sorted[0].createdAt);
+        }
+      } catch (err) {
+        console.error('Error fetching user bookings:', err.message);
+      }
+    };
+
+    fetchBookings();
+  }, [user]);
+
+  // Random featured hotel logic (static)
+  const featuredHotels = hotelsData.filter((h) => h.featured);
+  const shuffleArray = [...featuredHotels].sort(() => 0.5 - Math.random());
+  const randomThree = shuffleArray.slice(0, 3);
 
   return (
     <div>
@@ -67,24 +80,19 @@ const Overview = () => {
             </div>
           </div>
 
-
           <hr />
           <p>Explore more tours and plan your next adventure!</p>
 
-          {/* ======== Featured hotels section ========== */}
+          {/* Featured Hotels Section */}
           <div className="featured-hotels">
             <h5>Special Featured Hotels (10% off)</h5>
             <div className="featured-list">
               {randomThree.map((hotel) => {
-                const discountedPrice = (hotel.price * 0.9).toFixed(2)
+                const discountedPrice = (hotel.price * 0.9).toFixed(2);
 
                 return (
                   <div className="featured-item" key={hotel._id}>
                     <div className="featured-img">
-                      {/* 
-                        Link to detail page with discount param, 
-                        so we can apply discount on TourDetails 
-                      */}
                       <Link to={`/hotels/${hotel._id}?discount=0.9`}>
                         <img src={hotel.photo} alt={hotel.title} />
                       </Link>
@@ -101,7 +109,7 @@ const Overview = () => {
                       </p>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
@@ -112,7 +120,7 @@ const Overview = () => {
         </p>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Overview
+export default Overview;
