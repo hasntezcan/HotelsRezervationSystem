@@ -17,6 +17,10 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
   const roomPrice = selectedRoom ? selectedRoom.pricePerNight : tour.price;
   const reviews = tour.reviews || [];
 
+  const today = new Date().toISOString().split('T')[0];
+
+  const [nights, setNights] = useState(1);
+
   const [booking, setBooking] = useState({
     userId: user && user.userId,
     userEmail: user && user.email,
@@ -29,7 +33,14 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
     endDate: defaultEndDate
   });
 
-  const today = new Date().toISOString().split('T')[0];
+  useEffect(() => {
+    if (booking.startDate && booking.endDate) {
+      const sDate = new Date(booking.startDate);
+      const eDate = new Date(booking.endDate);
+      const calculatedNights = Math.max(1, Math.round((eDate - sDate) / (1000 * 60 * 60 * 24)));
+      setNights(calculatedNights);
+    }
+  }, [booking.startDate, booking.endDate]);
 
   const handleChange = (e) => {
     setBooking((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -37,8 +48,8 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
 
   const serviceFee = 10;
   const totalAmount =
-    Number(roomPrice) * Number(booking.adultCount) +
-    Number(roomPrice) * Number(booking.childCount) * 0.5 +
+    (Number(roomPrice) * nights * Number(booking.adultCount)) +
+    (Number(roomPrice) * nights * Number(booking.childCount) * 0.5) +
     serviceFee;
 
   const handleClick = async (e) => {
@@ -77,8 +88,6 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
       return;
     }
 
-    const nights = Math.round((eDate - sDate) / (1000 * 60 * 60 * 24));
-
     try {
       const availabilityRes = await fetch(
         `http://localhost:8080/api/bookings/check-availability?roomId=${selectedRoom.id}&checkIn=${booking.startDate}&checkOut=${booking.endDate}`
@@ -98,12 +107,12 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
     const bookingPayload = {
       ...booking,
       numGuests,
+      nights,
       totalAmount: totalAmount.toFixed(2),
       roomId: selectedRoom.id,
       hotelId: tour.hotelId,
       roomName: selectedRoom.name,
-      nights,
-      pricePerNight: roomPrice
+      pricePerNight: roomPrice,
     };
 
     localStorage.setItem('userId', user.userId);
