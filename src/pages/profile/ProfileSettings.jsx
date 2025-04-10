@@ -1,17 +1,24 @@
 // src/pages/profile/Settings.jsx
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 
 const Settings = () => {
   const { user, dispatch } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (user?.userId) {
+      // ✅ Save userId separately for booking/payment use
+      localStorage.setItem('userId', user.userId.toString());
+    }
+  }, [user]);
+
   if (!user) return <p>Please login first.</p>;
 
   const [formData, setFormData] = useState({
     username: user.username,
     email: user.email,
     password: user.password || '',
-    // Backend'den dönen JSON'da alan isimleri "first_name" ve "last_name" ise:
     firstName: user.first_name || '',
     lastName: user.last_name || '',
     phone: user.phone || ''
@@ -29,11 +36,10 @@ const Settings = () => {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: user.userId, // Backend için userId gönderimi çok önemli!
+          userId: user.userId, // ✅ Send to backend
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          // Backend'in beklediği snake_case alan isimlerini gönderiyoruz:
           first_name: formData.firstName,
           last_name: formData.lastName,
           phone: formData.phone
@@ -47,6 +53,11 @@ const Settings = () => {
 
       const updatedUser = await response.json();
       dispatch({ type: "LOGIN_SUCCESS", payload: updatedUser });
+
+      // ✅ Update localStorage with new user data and userId
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      localStorage.setItem('userId', updatedUser.userId.toString());
+
       alert("Profile updated!");
     } catch (err) {
       alert(err.message);
@@ -54,12 +65,12 @@ const Settings = () => {
   };
 
   return (
-    <div>
-      <h2>Settings</h2>
+    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+      <h2 style={{ marginBottom: '20px' }}>Settings</h2>
       <form className="settings-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Username</label>
-          <input 
+          <input
             type="text"
             name="username"
             value={formData.username}
@@ -69,7 +80,7 @@ const Settings = () => {
         </div>
         <div className="form-group">
           <label>Email</label>
-          <input 
+          <input
             type="email"
             name="email"
             value={formData.email}
@@ -79,7 +90,7 @@ const Settings = () => {
         </div>
         <div className="form-group">
           <label>Password</label>
-          <input 
+          <input
             type="password"
             name="password"
             value={formData.password}
@@ -89,7 +100,7 @@ const Settings = () => {
         </div>
         <div className="form-group">
           <label>First Name</label>
-          <input 
+          <input
             type="text"
             name="firstName"
             value={formData.firstName}
@@ -98,7 +109,7 @@ const Settings = () => {
         </div>
         <div className="form-group">
           <label>Last Name</label>
-          <input 
+          <input
             type="text"
             name="lastName"
             value={formData.lastName}
@@ -107,7 +118,7 @@ const Settings = () => {
         </div>
         <div className="form-group">
           <label>Phone</label>
-          <input 
+          <input
             type="text"
             name="phone"
             value={formData.phone}

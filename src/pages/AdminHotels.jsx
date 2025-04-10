@@ -1,40 +1,30 @@
 import React, { useState, useEffect } from "react";
-import "../styles/AdminHotels.css";  // CSS dosyanız
+import "../styles/AdminHotels.css";  // Mevcut CSS dosyanız
 import axios from "axios";
-
-// Sabit amenity başlıkları (daha sonrasında backend'den gelen amenity bilgileri kullanılacak)
-const AMENITIES_LIST = [
-  "Free Wi-Fi",
-  "Parking",
-  "Swimming Pool",
-  "Fitness Center",
-  "Spa",
-  "Restaurant",
-  "Bar",
-  "Airport Shuttle"
-];
 
 const AdminHotel = () => {
   const [hotels, setHotels] = useState([]);
   const [managers, setManagers] = useState([]);
+  // Yeni eklenen state: backend'den çekilecek amenity verileri (örneğin, amenityId ve name)
+  const [amenities, setAmenities] = useState([]);
   
-  // Ekstra form alanları, otel ekleme/düzenleme için kullanılıyor fakat listeleme kısmında önemli değil.
   const [newHotel, setNewHotel] = useState({
     name: "",
     city: "",
     country: "",
     address: "",
-    amenities: "", // Checkbox'lardan gelen amenity bilgileri virgülle ayrılmış string olarak tutulacak.
+    amenities: "", // Checkbox'lardan seçilen amenity bilgileri virgülle ayrılmış string olarak tutulacak.
     photo: "",
     managerId: ""
   });
-  
-  // Modal durumları (amenity seçimi için)
+
+  // Modal açma/kapatma için state
   const [showAmenitiesModal, setShowAmenitiesModal] = useState(false);
+  // Seçili amenity’leri ayrı bir dizi olarak saklıyoruz (backend'den gelen amenity "name" bilgisi üzerinden işlem yapılıyor)
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [editingHotel, setEditingHotel] = useState(null);
 
-  // Otelleri çekme: Yönetici paneli için hazırlanan endpoint'ten AdminHotelDTO listesi alınıyor.
+  // Otelleri çekme (Admin endpoint)
   const fetchHotels = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/admin/hotels");
@@ -44,7 +34,7 @@ const AdminHotel = () => {
     }
   };
 
-  // (Duruma göre kullanılır) Manager listesini çekme
+  // Manager listesini çekme (veritabanından)
   const fetchManagers = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/managers");
@@ -54,14 +44,25 @@ const AdminHotel = () => {
     }
   };
 
+  // Yeni eklenen: Hotel Amenities tablosundaki verileri çeken metot
+  const fetchAmenities = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/hotelamenities");
+      // Backend'in amenity objelerini { amenityId, name } şeklinde döndüğünü varsayıyoruz.
+      setAmenities(response.data);
+    } catch (error) {
+      console.error("Error fetching hotel amenities:", error);
+    }
+  };
+
   useEffect(() => {
     fetchHotels();
-    // Manager seçimleri gerekiyorsa aşağıdaki satırı aktif edebilirsiniz:
-    // fetchManagers();
+    fetchAmenities();
+    // Manager listesini çekmek için fetchManagers() aktif hale getirildi.
+    fetchManagers();
   }, []);
 
-  // ----- Aşağıdaki kısım otel ekleme/düzenleme işlemleri içindir. Eğer sadece listeleme yapacaksanız, bu kısımları devre dışı bırakabilirsiniz. -----
-
+  // Form verilerinde değişiklik olduğunda newHotel state'ini güncelleme
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setNewHotel((prev) => ({
@@ -70,18 +71,21 @@ const AdminHotel = () => {
     }));
   };
 
-  const handleAmenityChange = (amenity) => {
-    if (selectedAmenities.includes(amenity)) {
-      setSelectedAmenities(selectedAmenities.filter((a) => a !== amenity));
+  // Amenity checkbox değişikliklerini yönetme
+  const handleAmenityChange = (amenityName) => {
+    if (selectedAmenities.includes(amenityName)) {
+      setSelectedAmenities(selectedAmenities.filter((a) => a !== amenityName));
     } else {
-      setSelectedAmenities([...selectedAmenities, amenity]);
+      setSelectedAmenities([...selectedAmenities, amenityName]);
     }
   };
 
+  // Modal'ı açma
   const openAmenitiesModal = () => {
     setShowAmenitiesModal(true);
   };
 
+  // "Done" butonuna basınca amenity’leri birleştir ve formdaki amenity alanını güncelle
   const handleAmenitiesDone = () => {
     setNewHotel((prev) => ({
       ...prev,
@@ -90,11 +94,13 @@ const AdminHotel = () => {
     setShowAmenitiesModal(false);
   };
 
+  // Otel ekleme
   const addHotel = async () => {
     if (!newHotel.name || !newHotel.city || !newHotel.address) return;
     try {
       const response = await axios.post("http://localhost:8080/api/hotels", newHotel);
       setHotels([...hotels, response.data]);
+      // Formu sıfırla
       setNewHotel({
         name: "",
         city: "",
@@ -110,6 +116,7 @@ const AdminHotel = () => {
     }
   };
 
+  // Otel silme
   const deleteHotel = async (id) => {
     try {
       await axios.delete(`http://localhost:8080/api/hotels/${id}`);
@@ -119,6 +126,7 @@ const AdminHotel = () => {
     }
   };
 
+  // Otel düzenleme moduna geçme
   const editHotel = (hotel) => {
     setEditingHotel(hotel);
     setNewHotel({
@@ -127,7 +135,7 @@ const AdminHotel = () => {
       country: hotel.country || "",
       address: hotel.address || "",
       amenities: hotel.amenities || "",
-      photo: hotel.photoUrl || "", // photoUrl alanı backend'den geliyor
+      photo: hotel.photoUrl || "", // Yeni DTO'da photoUrl alanı kullanılacak
       managerId: hotel.managerId || ""
     });
     if (hotel.amenities) {
@@ -138,12 +146,14 @@ const AdminHotel = () => {
     }
   };
 
+  // Otel güncelleme
   const updateHotel = async () => {
     try {
       const { hotelId, createdAt, ...editingData } = editingHotel;
       const updatedData = { ...editingData };
       Object.keys(newHotel).forEach((key) => {
-        updatedData[key] = newHotel[key] !== undefined && newHotel[key] !== null ? newHotel[key] : "";
+        updatedData[key] =
+          newHotel[key] !== undefined && newHotel[key] !== null ? newHotel[key] : "";
       });
       const response = await axios.put(
         `http://localhost:8080/api/hotels/${editingHotel.hotelId}`,
@@ -170,13 +180,10 @@ const AdminHotel = () => {
     }
   };
 
-  // ----- Listeleme kısmı ----- 
-  // Backend'den dönen verilerde; hotel.name, hotel.city, hotel.country, hotel.managerName, hotel.photoUrl ve hotel.amenities alanları vardır.
   return (
     <div id="admin-hotel-container">
       <div id="admin-hotel-management-title">Hotel Management</div>
 
-      {/* Otel ekleme/düzenleme formu (isteğe bağlı) */}
       <div id="admin-hotel-form">
         <input
           type="text"
@@ -206,6 +213,7 @@ const AdminHotel = () => {
           value={newHotel.address}
           onChange={handleChange}
         />
+        {/* Amenities seçimi için buton */}
         <button
           type="button"
           className="select-amenities-btn"
@@ -214,24 +222,36 @@ const AdminHotel = () => {
           Select Amenities
         </button>
         <input
-          type="text"
-          name="photo"
-          placeholder="Photo URL"
-          value={newHotel.photo}
-          onChange={handleChange}
-        />
-        <select
-          name="managerId"
-          value={newHotel.managerId}
-          onChange={handleChange}
-        >
-          <option value="">Select Manager</option>
-          {managers.map((manager) => (
-            <option key={manager.managerId} value={manager.managerId}>
-              {manager.managerName}
+  type="text"
+  name="photo"
+  placeholder="Photo URL"
+  value={newHotel.photo}
+  onChange={handleChange}
+  readOnly={editingHotel ? true : false}  // Düzenleme modunda okunamaz olacak
+/>
+        {/* Manager select alanı: Edit modunda ise sadece otelin kendi manager bilgisi gösterilir ve değiştirilemez,
+            normal modda ise tüm manager listesi gösterilir */}
+        {editingHotel ? (
+          <select name="managerId" value={newHotel.managerId} disabled>
+            <option value={newHotel.managerId}>
+              {newHotel.managerId} - {editingHotel.managerName}
             </option>
-          ))}
-        </select>
+          </select>
+        ) : (
+          <select
+            name="managerId"
+            value={newHotel.managerId}
+            onChange={handleChange}
+          >
+            <option value="">Select Manager</option>
+            {managers.map((manager) => (
+              <option key={manager.managerId} value={manager.managerId}>
+                {manager.managerId} - {manager.managerName}
+              </option>
+            ))}
+          </select>
+        )}
+
         {editingHotel ? (
           <button id="admin-hotel-button" onClick={updateHotel}>
             Update Hotel
@@ -249,12 +269,10 @@ const AdminHotel = () => {
         </div>
       )}
 
-      {/* Otellerin listelenmesi */}
       <div id="admin-hotel-list">
         {hotels.map((hotel) => (
           <div className="admin-hotel-item" key={hotel.hotelId} id={hotel.hotelId}>
             <div className="admin-hotel-title">{hotel.name}</div>
-            {/* Otelin birincil fotoğrafı, photoUrl alanı kullanılarak gösterilir */}
             {hotel.photoUrl && (
               <img
                 src={hotel.photoUrl}
@@ -293,21 +311,24 @@ const AdminHotel = () => {
         ))}
       </div>
 
-      {/* Amenities seçimi için modal */}
+      {/* Amenities seçimi için modal (tasarım formatı korunuyor) */}
       {showAmenitiesModal && (
         <>
-          <div className="amenities-overlay" onClick={() => setShowAmenitiesModal(false)} />
+          <div
+            className="amenities-overlay"
+            onClick={() => setShowAmenitiesModal(false)}
+          />
           <div className="amenities-modal">
             <h2>Select Amenities</h2>
             <div className="amenities-list">
-              {AMENITIES_LIST.map((amenity) => (
-                <label key={amenity} className="amenity-item">
+              {amenities.map((amenity) => (
+                <label key={amenity.amenityId} className="amenity-item">
                   <input
                     type="checkbox"
-                    checked={selectedAmenities.includes(amenity)}
-                    onChange={() => handleAmenityChange(amenity)}
+                    checked={selectedAmenities.includes(amenity.name)}
+                    onChange={() => handleAmenityChange(amenity.name)}
                   />
-                  {amenity}
+                  {amenity.name}
                 </label>
               ))}
             </div>

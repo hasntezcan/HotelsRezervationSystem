@@ -91,6 +91,9 @@ const Header = () => {
             {/* Right Section (Login/Register or User) */}
             <div className="nav__right d-flex align-items-center gap-3">
               <div className="nav__btns d-flex align-items-center gap-2">
+                  <span className="mobile__menu" onClick={toggleMenu}>
+                    <i className="ri-menu-line"></i>
+                </span>
                 {user ? (
                   <div className="user-dropdown">
                     <h6 className="mb-0 user__name">{user.username}</h6>
@@ -122,13 +125,9 @@ const Header = () => {
                     </Button>
                   </>
                 )}
-              </div>
-
-              {/* Mobile menu icon (hamburger) */}
-              <span className="mobile__menu" onClick={toggleMenu}>
-                <i className="ri-menu-line"></i>
-              </span>
-            </div>
+                </div>
+                {/* Mobile menu icon (hamburger) */}
+                </div>
           </div>
         </Row>
       </Container>
