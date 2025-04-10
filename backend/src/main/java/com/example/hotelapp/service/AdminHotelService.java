@@ -11,6 +11,7 @@ import com.example.hotelapp.repository.ManagerRepository;
 import com.example.hotelapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,14 +27,15 @@ public class AdminHotelService {
 
     @Autowired
     private ManagerRepository managerRepository;
-    
+
     @Autowired
     private UserRepository userRepository;
 
     public List<AdminHotelDTO> getAllAdminHotels() {
         List<Hotel> hotels = hotelRepository.findAll();
+
         return hotels.stream().map(hotel -> {
-            // Manager bilgilerini çekmek:
+            // Manager bilgisini al: Hotel'deki manager_id üzerinden Manager, ardından User bilgilerine erişerek ad-soyadı oluştur.
             String managerName = "";
             if (hotel.getManagerId() != null) {
                 Optional<Manager> managerOpt = managerRepository.findById(hotel.getManagerId());
@@ -46,22 +48,30 @@ public class AdminHotelService {
                     }
                 }
             }
-            // Primary fotoğrafı çekmek:
-            HotelImage primaryImage = hotelImageRepository.findByHotelAndIsPrimary(hotel, true);
-            String photoUrl = (primaryImage != null) ? primaryImage.getImageUrl() : "";
-            // Amenities bilgilerini HotelRepository üzerindeki yeni metottan alıyoruz:
+
+            // Primary fotoğraf URL'sini elde et: Tüm fotoğrafları getiren metodu kullanıp, isPrimary == true olan ilk elemanı seçiyoruz.
+            String photoUrl = hotelImageRepository.findByHotel(hotel)
+                    .stream()
+                    .filter(img -> Boolean.TRUE.equals(img.isPrimary()))
+                    .map(HotelImage::getImageUrl)
+                    .findFirst()
+                    .orElse("");
+
+            // Amenities bilgisini almak için: Bu örnekte, HotelRepository’de custom bir metod kullanılmış
+            // (örneğin: findAmenitiesByHotelId) veya amenity isimlerini başka bir yolla toplayabilirsiniz.
             String amenities = hotelRepository.findAmenitiesByHotelId(hotel.getHotelId());
-            if(amenities == null) {
+            if (amenities == null) {
                 amenities = "";
             }
+
             return new AdminHotelDTO(
-                hotel.getHotelId(),
-                hotel.getName(),
-                hotel.getCity(),
-                hotel.getCountry(),
-                managerName,
-                photoUrl,
-                amenities
+                    hotel.getHotelId(),
+                    hotel.getName(),
+                    hotel.getCity(),
+                    hotel.getCountry(),
+                    managerName,
+                    photoUrl,
+                    amenities
             );
         }).collect(Collectors.toList());
     }
