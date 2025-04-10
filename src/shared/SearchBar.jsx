@@ -14,7 +14,6 @@ const SearchBar = ({ onSearch }) => {
   const [calendarKey, setCalendarKey] = useState(0);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
-  const [pets, setPets] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -102,7 +101,7 @@ const SearchBar = ({ onSearch }) => {
           className={`passenger-select ${dropdownOpen ? "active" : ""}`}
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
-          {adults} Adults - {children} Children {pets ? " - With Pets" : ""}
+          {adults} Adults - {children} Children
         </div>
 
         <button onClick={handleSearch} className="search-button">
@@ -129,17 +128,6 @@ const SearchBar = ({ onSearch }) => {
                 <span>{children}</span>
                 <button onClick={() => setChildren(children + 1)}>+</button>
               </div>
-            </div>
-
-            <div className="guest-option pet-option">
-              <label>
-                <span>With Pets</span>
-                <input
-                  type="checkbox"
-                  checked={pets}
-                  onChange={() => setPets(!pets)}
-                />
-              </label>
             </div>
 
             <button className="guest-close" onClick={() => setDropdownOpen(false)}>
