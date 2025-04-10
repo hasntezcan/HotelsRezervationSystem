@@ -89,7 +89,13 @@ button.select-amenities-btn:hover {
 #admin-hotel-button:hover {
     background: var(--hover-color);
 }
-
+.hotel-photo {
+    max-width: 100%;
+    max-height: 150px; /* İstediğiniz maksimum yüksekliği belirleyin */
+    object-fit: cover; /* Fotoğrafın kesilerek uygun oranda doldurulmasını sağlar */
+    border-radius: 4px; /* İsteğe bağlı: hafif yuvarlatılmış köşeler */
+  }
+  
 #admin-hotel-list {
     margin-top: 20px;
     display: grid;

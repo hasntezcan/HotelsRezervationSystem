@@ -22,32 +22,28 @@ const AdminHotel = () => {
     city: "",
     country: "",
     address: "",
-    pricePerNight: "",
-    capacity: "",
-    amenities: "", // Burada string olarak tutulacak (örneğin "Wi-Fi, Parking, ...")
+    amenities: "", // Checkbox'lardan gelen amenity bilgileri virgülle ayrılmış string olarak tutulacak.
     photo: "",
     managerId: ""
   });
 
-  // Modal açıp kapamak için gereken state
+  // Modal açma/kapatma için state
   const [showAmenitiesModal, setShowAmenitiesModal] = useState(false);
-
-  // Seçili amenity’leri ayrı bir dizi olarak tutuyoruz
+  // Seçili amenity’leri ayrı bir dizi olarak saklıyoruz
   const [selectedAmenities, setSelectedAmenities] = useState([]);
-
   const [editingHotel, setEditingHotel] = useState(null);
 
-  // Otelleri fetchleyen fonksiyon
+  // Otelleri çekme: Yeni endpoint üzerinden verileri alıyoruz.
   const fetchHotels = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/hotels/withAmenities");
+      const response = await axios.get("http://localhost:8080/api/admin/hotels");
       setHotels(response.data);
     } catch (error) {
       console.error("Error fetching hotels:", error);
     }
   };
 
-  // Manager listesini çekme
+  // Manager listesini çekme (duruma göre kullanılacak)
   const fetchManagers = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/managers");
@@ -59,21 +55,21 @@ const AdminHotel = () => {
 
   useEffect(() => {
     fetchHotels();
-    fetchManagers();
+    // Eğer manager seçimleri gerekiyorsa
+    // fetchManagers();
   }, []);
 
-  // newHotel state'ini güncelleme
+  // Form verilerinde değişiklik olduğunda newHotel state'ini güncelleme
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setNewHotel({
-      ...newHotel,
+    setNewHotel((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
   };
 
-  // Amenity checkbox değişimlerini yönetme
+  // Amenity checkbox değişikliklerini yönetme
   const handleAmenityChange = (amenity) => {
-    // Zaten seçiliyse çıkar, değilse ekle
     if (selectedAmenities.includes(amenity)) {
       setSelectedAmenities(selectedAmenities.filter((a) => a !== amenity));
     } else {
@@ -86,9 +82,8 @@ const AdminHotel = () => {
     setShowAmenitiesModal(true);
   };
 
-  // "Done" butonuna basılınca amenity'leri birleştirip kapatma
+  // "Done" butonuna basınca amenity’leri birleştir ve formdaki amenity alanını güncelle
   const handleAmenitiesDone = () => {
-    // Seçili amenityleri virgülle birleştirerek newHotel.amenities’e atayalım
     setNewHotel((prev) => ({
       ...prev,
       amenities: selectedAmenities.join(", "),
@@ -100,23 +95,19 @@ const AdminHotel = () => {
   const addHotel = async () => {
     if (!newHotel.name || !newHotel.city || !newHotel.address) return;
     try {
-      // newHotel.amenities alanında checkbox’tan gelen değerler virgüllü string olarak olacak
       const response = await axios.post("http://localhost:8080/api/hotels", newHotel);
       setHotels([...hotels, response.data]);
-
-      // Formu resetle
+      // Formu sıfırla
       setNewHotel({
         name: "",
         city: "",
         country: "",
         address: "",
-        pricePerNight: "",
-        capacity: "",
         amenities: "",
         photo: "",
         managerId: ""
       });
-      setSelectedAmenities([]); // Seçili amenity’leri de sıfırla
+      setSelectedAmenities([]);
     } catch (error) {
       console.error("Error adding hotel:", error);
     }
@@ -135,21 +126,15 @@ const AdminHotel = () => {
   // Otel düzenleme moduna geçme
   const editHotel = (hotel) => {
     setEditingHotel(hotel);
-
-    // Mevcut verileri newHotel’e ve selectedAmenities’e taşıyalım
     setNewHotel({
       name: hotel.name || "",
       city: hotel.city || "",
       country: hotel.country || "",
       address: hotel.address || "",
-      pricePerNight: hotel.pricePerNight || "",
-      capacity: hotel.capacity || "",
       amenities: hotel.amenities || "",
-      photo: hotel.photo || "",
+      photo: hotel.photoUrl || "", // Yeni DTO'da photoUrl alanı kullanılacak
       managerId: hotel.managerId || ""
     });
-
-    // Database'de virgüllü string olarak duruyorsa, array'e çevir
     if (hotel.amenities) {
       const splitted = hotel.amenities.split(",").map((item) => item.trim());
       setSelectedAmenities(splitted);
@@ -163,17 +148,13 @@ const AdminHotel = () => {
     try {
       const { hotelId, createdAt, ...editingData } = editingHotel;
       const updatedData = { ...editingData };
-
-      // newHotel objemiz ile updatedData'yı birleştir
       Object.keys(newHotel).forEach((key) => {
         updatedData[key] = newHotel[key] !== undefined && newHotel[key] !== null ? newHotel[key] : "";
       });
-
       const response = await axios.put(
         `http://localhost:8080/api/hotels/${editingHotel.hotelId}`,
         updatedData
       );
-
       setHotels(
         hotels.map((hotel) =>
           hotel.hotelId === editingHotel.hotelId ? response.data : hotel
@@ -185,8 +166,6 @@ const AdminHotel = () => {
         city: "",
         country: "",
         address: "",
-        pricePerNight: "",
-        capacity: "",
         amenities: "",
         photo: "",
         managerId: ""
@@ -230,21 +209,8 @@ const AdminHotel = () => {
           value={newHotel.address}
           onChange={handleChange}
         />
-        <input
-          type="number"
-          name="pricePerNight"
-          placeholder="Price per night"
-          value={newHotel.pricePerNight}
-          onChange={handleChange}
-        />
-        <input
-          type="number"
-          name="capacity"
-          placeholder="Capacity"
-          value={newHotel.capacity}
-          onChange={handleChange}
-        />
-        {/* "Amenities" input'unu kaldırıp yerine buton koyduk */}
+        {/* Artık pricePerNight ve capacity alanları kaldırıldı */}
+        {/* Amenities seçimi için buton */}
         <button
           type="button"
           className="select-amenities-btn"
@@ -282,7 +248,6 @@ const AdminHotel = () => {
         )}
       </div>
 
-      {/* Mevcut seçilen amenity’leri formun üzerinde gösterelim (opsiyonel) */}
       {newHotel.amenities && (
         <div style={{ margin: "10px", color: "#fff" }}>
           <strong>Selected Amenities:</strong> {newHotel.amenities}
@@ -293,12 +258,18 @@ const AdminHotel = () => {
         {hotels.map((hotel) => (
           <div className="admin-hotel-item" key={hotel.hotelId} id={hotel.hotelId}>
             <div className="admin-hotel-title">{hotel.name}</div>
+            {/* Otelin fotoğrafı varsa; artık photoUrl üzerinden gösteriyoruz */}
+            {hotel.photoUrl && (
+              <img
+                src={hotel.photoUrl}
+                alt={hotel.name}
+                className="hotel-photo"
+              />
+            )}
             <p>
               {hotel.city}, {hotel.country} - {hotel.address}
             </p>
-            <p>
-              Price: ${hotel.pricePerNight} | Capacity: {hotel.capacity}
-            </p>
+            {/* Price ve Capacity alanları listeden kaldırıldı */}
             <p>Amenities: {hotel.amenities}</p>
             {hotel.managerName && <p>Manager: {hotel.managerName}</p>}
             <button
@@ -318,37 +289,36 @@ const AdminHotel = () => {
       </div>
 
       {showAmenitiesModal && (
-  <>
-    <div className="amenities-overlay" onClick={() => setShowAmenitiesModal(false)} />
-    <div className="amenities-modal">
-      <h2>Select Amenities</h2>
-      <div className="amenities-list">
-        {AMENITIES_LIST.map((amenity) => (
-          <label key={amenity} className="amenity-item">
-            <input
-              type="checkbox"
-              checked={selectedAmenities.includes(amenity)}
-              onChange={() => handleAmenityChange(amenity)}
-            />
-            {amenity}
-          </label>
-        ))}
-      </div>
-      {/* Butonları bir container içine koyup yan yana konumlandırdık */}
-      <div className="amenities-button-container">
-        <button className="amenities-done-btn" onClick={handleAmenitiesDone}>
-          Done
-        </button>
-        <button
-          className="amenities-cancel-btn"
-          onClick={() => setShowAmenitiesModal(false)}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  </>
-)}
+        <>
+          <div className="amenities-overlay" onClick={() => setShowAmenitiesModal(false)} />
+          <div className="amenities-modal">
+            <h2>Select Amenities</h2>
+            <div className="amenities-list">
+              {AMENITIES_LIST.map((amenity) => (
+                <label key={amenity} className="amenity-item">
+                  <input
+                    type="checkbox"
+                    checked={selectedAmenities.includes(amenity)}
+                    onChange={() => handleAmenityChange(amenity)}
+                  />
+                  {amenity}
+                </label>
+              ))}
+            </div>
+            <div className="amenities-button-container">
+              <button className="amenities-done-btn" onClick={handleAmenitiesDone}>
+                Done
+              </button>
+              <button
+                className="amenities-cancel-btn"
+                onClick={() => setShowAmenitiesModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
