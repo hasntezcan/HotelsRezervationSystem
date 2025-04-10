@@ -55,6 +55,22 @@ const Bookings = () => {
     alert('Phone updated!')
   }
 
+  const handleCancel = async (bookingId) => {
+    try {
+      await fetch(`http://localhost:8080/api/bookings/${bookingId}`, {
+        method: 'DELETE'
+      })
+
+      setAllBookings(prev =>
+        prev.filter(b => b.booking.bookingId !== bookingId)
+      )
+      alert('Booking canceled successfully.')
+    } catch (err) {
+      console.error('Cancel failed:', err)
+      alert('Cancelation failed.')
+    }
+  }
+
   const canCancel = (bk) => {
     const diff = new Date(bk.booking.checkInDate).getTime() - now
     const days = diff / (1000 * 3600 * 24)
@@ -80,6 +96,7 @@ const Bookings = () => {
                 setEditPhone={setEditPhone}
                 onEditPhone={handleEditPhone}
                 onSavePhone={handleSavePhone}
+                onCancel={handleCancel}
                 canCancel={canCancel(bk)}
                 isPast={false}
               />
@@ -103,6 +120,7 @@ const Bookings = () => {
                 setEditPhone={setEditPhone}
                 onEditPhone={handleEditPhone}
                 onSavePhone={handleSavePhone}
+                onCancel={handleCancel}
                 canCancel={false}
                 isPast={true}
               />
@@ -121,6 +139,7 @@ const BookingCard = ({
   setEditPhone,
   onEditPhone,
   onSavePhone,
+  onCancel,
   canCancel,
   isPast
 }) => {
@@ -187,7 +206,7 @@ const BookingCard = ({
             )}
 
             {canCancel && booking.status !== 'canceled' && !isPast && (
-              <button onClick={() => alert('Cancel feature coming soon.')}>Cancel</button>
+              <button onClick={() => onCancel(booking.bookingId)}>Cancel</button>
             )}
           </div>
         )}

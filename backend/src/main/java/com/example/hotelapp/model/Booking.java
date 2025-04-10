@@ -11,7 +11,7 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")
-    private Long bookingId;
+    private Long bookingId;    
 
     @Column(name = "user_id")
     private Long userId;
