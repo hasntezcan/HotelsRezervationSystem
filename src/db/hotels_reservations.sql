@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Anamakine: 127.0.0.1
--- Üretim Zamanı: 10 Nis 2025, 15:15:43
--- Sunucu sürümü: 10.4.32-MariaDB
--- PHP Sürümü: 8.2.12
+-- Anamakine: localhost
+-- Üretim Zamanı: 10 Nis 2025, 19:51:09
+-- Sunucu sürümü: 10.4.28-MariaDB
+-- PHP Sürümü: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -189,8 +189,8 @@ INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
 --
 
 CREATE TABLE `hotelimages` (
-  `image_id` varchar(255) NOT NULL,
-  `hotel_id` bigint(20) DEFAULT NULL,
+  `image_id` bigint(255) NOT NULL,
+  `hotel_id` bigint(255) NOT NULL,
   `image_url` varchar(255) NOT NULL,
   `is_primary` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -200,38 +200,40 @@ CREATE TABLE `hotelimages` (
 --
 
 INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VALUES
-('1', 1, '/hotel_images/hotel-img01.jpg', 1),
-('10', 10, '/hotel_images/hotel-img10.jpg', 1),
-('11', 11, '/hotel_images/hotel-img11.jpg', 1),
-('12', 12, '/hotel_images/hotel-img12.jpg', 1),
-('13', 13, '/hotel_images/hotel-img13.jpg', 1),
-('14', 14, '/hotel_images/hotel-img14.jpg', 1),
-('15', 15, '/hotel_images/hotel-img15.jpg', 1),
-('16', 16, '/hotel_images/hotel-img16.jpg', 1),
-('17', 1, '/hotel_images/hotel-img10.jpg', 1),
-('18', 2, '/hotel_images/hotel-img11.jpg', 1),
-('19', 3, '/hotel_images/hotel-img12.jpg', 1),
-('2', 2, '/hotel_images/hotel-img02.jpg', 1),
-('20', 4, '/hotel_images/hotel-img13.jpg', 1),
-('21', 5, '/hotel_images/hotel-img14.jpg', 1),
-('22', 6, '/hotel_images/hotel-img15.jpg', 1),
-('23', 7, '/hotel_images/hotel-img16.jpg', 1),
-('24', 8, '/hotel_images/hotel-img01.jpg', 1),
-('25', 9, '/hotel_images/hotel-img02.jpg', 1),
-('26', 10, '/hotel_images/hotel-img03.jpg', 1),
-('27', 11, '/hotel_images/hotel-img04.jpg', 1),
-('28', 12, '/hotel_images/hotel-img05.jpg', 1),
-('29', 13, '/hotel_images/hotel-img06.jpg', 1),
-('3', 3, '/hotel_images/hotel-img03.jpg', 1),
-('30', 14, '/hotel_images/hotel-img07.jpg', 1),
-('31', 15, '/hotel_images/hotel-img08.jpg', 1),
-('32', 16, '/hotel_images/hotel-img09.jpg', 1),
-('4', 4, '/hotel_images/hotel-img04.jpg', 1),
-('5', 5, '/hotel_images/hotel-img05.jpg', 1),
-('6', 6, '/hotel_images/hotel-img06.jpg', 1),
-('7', 7, '/hotel_images/hotel-img07.jpg', 1),
-('8', 8, '/hotel_images/hotel-img08.jpg', 1),
-('9', 9, '/hotel_images/hotel-img09.jpg', 1);
+(1, 1, '/hotel_images/hotel-img01.jpg', 1),
+(2, 2, '/hotel_images/hotel-img02.jpg', 1),
+(3, 3, '/hotel_images/hotel-img03.jpg', 1),
+(4, 4, '/hotel_images/hotel-img04.jpg', 1),
+(5, 5, '/hotel_images/hotel-img05.jpg', 1),
+(6, 6, '/hotel_images/hotel-img06.jpg', 1),
+(7, 7, '/hotel_images/hotel-img07.jpg', 1),
+(8, 8, '/hotel_images/hotel-img08.jpg', 1),
+(9, 9, '/hotel_images/hotel-img09.jpg', 1),
+(10, 10, '/hotel_images/hotel-img10.jpg', 1),
+(11, 11, '/hotel_images/hotel-img11.jpg', 1),
+(12, 12, '/hotel_images/hotel-img12.jpg', 1),
+(13, 13, '/hotel_images/hotel-img13.jpg', 1),
+(14, 14, '/hotel_images/hotel-img14.jpg', 1),
+(15, 15, '/hotel_images/hotel-img15.jpg', 1),
+(16, 16, '/hotel_images/hotel-img16.jpg', 1),
+(17, 1, '/hotel_images/hotel-img10.jpg', 0),
+(18, 2, '/hotel_images/hotel-img11.jpg', 0),
+(19, 3, '/hotel_images/hotel-img12.jpg', 0),
+(20, 4, '/hotel_images/hotel-img13.jpg', 0),
+(21, 5, '/hotel_images/hotel-img14.jpg', 0),
+(22, 6, '/hotel_images/hotel-img15.jpg', 0),
+(23, 7, '/hotel_images/hotel-img16.jpg', 0),
+(24, 8, '/hotel_images/hotel-img01.jpg', 0),
+(25, 9, '/hotel_images/hotel-img02.jpg', 0),
+(26, 10, '/hotel_images/hotel-img03.jpg', 0),
+(27, 11, '/hotel_images/hotel-img04.jpg', 0),
+(28, 12, '/hotel_images/hotel-img05.jpg', 0),
+(29, 13, '/hotel_images/hotel-img06.jpg', 0),
+(30, 14, '/hotel_images/hotel-img07.jpg', 0),
+(31, 15, '/hotel_images/hotel-img08.jpg', 0),
+(32, 16, '/hotel_images/hotel-img09.jpg', 0),
+(33, 1, '/hotel_images/hotel-img15.jpg', 0),
+(34, 1, '/hotel_images/hotel-img08.jpg', 0);
 
 -- --------------------------------------------------------
 
@@ -265,11 +267,11 @@ CREATE TABLE `hotels` (
 --
 
 INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `country`, `latitude`, `longitude`, `description`, `star_rating`, `check_in_time`, `check_out_time`, `cancellation_policy`, `status`, `created_at`, `capacity`, `price_per_night`, `featured`) VALUES
-(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'anan', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style...', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'anannlar', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style...', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (2, 2, 'Royal Palace London', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (3, 3, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (4, 4, 'Skyline Tower London', '321 Skyline Avenue, London', 'London', 'United Kingdom', 51.515, -0.141, 'Reach new heights...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(5, 5, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bali', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(5, 5, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bacın', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (6, 6, 'Tropical Paradise Bali', '789 Island Street, Bali', 'Bali', 'Indonesia', -8.414, 115.195, 'Dive into luxury...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (7, 7, 'Golden Sands Resort', '999 Ocean Drive, Bali', 'Bali', 'Indonesia', -8.42, 115.2, 'Relax on golden sands...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (8, 8, 'Island Escape Hotel', '222 Paradise Lane, Bali', 'Bali', 'Indonesia', -8.43, 115.21, 'A secluded retreat...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
@@ -291,7 +293,7 @@ INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `coun
 CREATE TABLE `managers` (
   `manager_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
-  `hotel_id` varchar(255) NOT NULL,
+  `hotel_id` bigint(20) NOT NULL,
   `assigned_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -300,22 +302,22 @@ CREATE TABLE `managers` (
 --
 
 INSERT INTO `managers` (`manager_id`, `user_id`, `hotel_id`, `assigned_at`) VALUES
-(1, 16, '1', '2025-04-08 20:32:15'),
-(2, 17, '2', '2025-04-08 14:40:26'),
-(3, 18, '3', '2025-04-08 14:40:26'),
-(4, 19, '4', '2025-04-08 14:40:26'),
-(5, 20, '5', '2025-04-08 14:40:26'),
-(6, 21, '6', '2025-04-08 14:40:26'),
-(7, 22, '7', '2025-04-08 14:40:26'),
-(8, 23, '8', '2025-04-08 14:40:26'),
-(9, 24, '9', '2025-04-08 20:32:15'),
-(10, 25, '10', '2025-04-08 20:32:15'),
-(11, 26, '11', '2025-04-08 20:32:15'),
-(12, 27, '12', '2025-04-08 20:32:15'),
-(13, 28, '13', '2025-04-08 20:32:15'),
-(14, 29, '14', '2025-04-08 20:35:48'),
-(15, 30, '15', '2025-04-08 20:35:48'),
-(16, 31, '16', '2025-04-08 20:36:11');
+(1, 16, 1, '2025-04-08 20:32:15'),
+(2, 17, 2, '2025-04-08 14:40:26'),
+(3, 18, 3, '2025-04-08 14:40:26'),
+(4, 19, 4, '2025-04-08 14:40:26'),
+(5, 20, 5, '2025-04-08 14:40:26'),
+(6, 21, 6, '2025-04-08 14:40:26'),
+(7, 22, 7, '2025-04-08 14:40:26'),
+(8, 23, 8, '2025-04-08 14:40:26'),
+(9, 24, 9, '2025-04-08 20:32:15'),
+(10, 25, 10, '2025-04-08 20:32:15'),
+(11, 26, 11, '2025-04-08 20:32:15'),
+(12, 27, 12, '2025-04-08 20:32:15'),
+(13, 28, 13, '2025-04-08 20:32:15'),
+(14, 29, 14, '2025-04-08 20:35:48'),
+(15, 30, 15, '2025-04-08 20:35:48'),
+(16, 31, 16, '2025-04-08 20:36:11');
 
 -- --------------------------------------------------------
 
@@ -715,6 +717,12 @@ ALTER TABLE `contact_messages`
 --
 ALTER TABLE `hotelamenities`
   MODIFY `amenity_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `hotelimages`
+--
+ALTER TABLE `hotelimages`
+  MODIFY `image_id` bigint(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `hotels`

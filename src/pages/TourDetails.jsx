@@ -115,6 +115,7 @@ const TourDetails = () => {
             <div className="tour__content">
 
             <div className="tour__gallery">
+              
               <HotelGallery images={tour.images} />
             </div>
  

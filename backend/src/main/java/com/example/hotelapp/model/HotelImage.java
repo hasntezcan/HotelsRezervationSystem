@@ -1,5 +1,7 @@
 package com.example.hotelapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -7,13 +9,9 @@ import jakarta.persistence.*;
 public class HotelImage {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
-    private String imageId;
-
-    @ManyToOne
-    @JoinColumn(name = "hotel_id")
-    private Hotel hotel;
-    
+    private Long imageId;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -21,17 +19,23 @@ public class HotelImage {
     @Column(name = "is_primary")
     private boolean isPrimary;
 
-    // Getters & Setters
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id")
+    @JsonIgnore  
+    private Hotel hotel;
 
-    public String getImageId() { return imageId; }
-    public void setImageId(String imageId) { this.imageId = imageId; }
 
-    /*public String getHotelId() { return hotelId; }
-    public void setHotelId(String hotelId) { this.hotelId = hotelId; }*/
+    //        GETTERS/SETTERS
+
+    public Long getImageId() { return imageId; }
+    public void setImageId(Long imageId) { this.imageId = imageId; }
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public boolean isPrimary() { return isPrimary; }
     public void setPrimary(boolean primary) { isPrimary = primary; }
+
+    public Hotel getHotel() { return hotel; }
+    public void setHotel(Hotel hotel) { this.hotel = hotel; }
 }

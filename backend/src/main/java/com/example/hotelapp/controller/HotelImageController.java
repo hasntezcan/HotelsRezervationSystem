@@ -15,13 +15,17 @@ public class HotelImageController {
     @Autowired
     private HotelImageRepository hotelImageRepository;
 
-    /*@GetMapping("/{hotelId}")
-    public List<HotelImage> getImagesByHotel(@PathVariable String hotelId) {
-        return hotelImageRepository.findByHotelId(hotelId);
+    // GET all images for a specific hotel
+    @GetMapping("/{hotelId}")
+    public List<HotelImage> getImagesByHotelId(@PathVariable Long hotelId) {
+        return hotelImageRepository.findByHotel_HotelId(hotelId);
     }
 
+    // GET the primary image for a specific hotel
     @GetMapping("/{hotelId}/primary")
-    public HotelImage getPrimaryImage(@PathVariable String hotelId) {
-        return hotelImageRepository.findByHotelIdAndIsPrimary(hotelId, true);
-    }*/
+    public HotelImage getPrimaryImage(@PathVariable Long hotelId) {
+        return hotelImageRepository.findByHotel_HotelIdAndIsPrimary(hotelId, true);
+    }
+
+    // ... other CRUD methods if needed ...
 }

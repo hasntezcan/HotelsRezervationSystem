@@ -52,7 +52,7 @@
     overflow-x: auto;
     gap: 10px;
     margin: 1rem auto 0;  /* top margin for spacing */
-    max-width: 700px;
+    max-width: 900px;
     padding-bottom: 0.5rem; 
     justify-content: center;
   }
