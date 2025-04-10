@@ -1,23 +1,31 @@
+/* HotelGallery container */
 .hotel-gallery {
-    margin-bottom: 2rem;
-    position: relative;
+    max-width: 900px;      /* Or whatever width you like */
+    margin: 0 auto;        /* Center on page */
     text-align: center;
+    position: relative;
+    border:#ff914d;
   }
   
-  /* Main image and navigation arrows */
+  /* Main image container: fixed size for consistent ratio */
   .hotel-gallery__main-wrapper {
-    display: inline-block;
+    width: 100%;
+    max-width: 900px;     /* match .hotel-gallery */
+    height: 450px;        /* pick a suitable height */
     position: relative;
+    border-radius: 8px;
+    overflow: hidden;     /* hide cropped edges */
+    margin: 0 auto;
   }
+  
+  /* Main image forcibly fills container, cropped if needed */
   .hotel-gallery__main {
     width: 100%;
-    max-width: 900px;
-    height: 500px;
-    object-fit: cover;
-    border-radius: 8px;
+    height: 100%;
+    object-fit: cover;    /* ensures uniform coverage */
   }
   
-  /* Left/right arrows */
+  /* Left/right arrow buttons */
   .hotel-gallery__nav-button {
     background-color: rgba(0,0,0,0.3);
     border: none;
@@ -37,34 +45,35 @@
     right: 0.6rem;
   }
   
-  /* Thumbnails row - single line, horizontal scroll if needed */
+  /* Thumbnail strip: single row, horizontal scroll */
   .hotel-gallery__thumbnails {
     display: flex;
-    flex-wrap: nowrap;          /* Do NOT wrap to next line */
+    flex-wrap: nowrap;
+    overflow-x: auto;
     gap: 10px;
+    margin: 1rem auto 0;  /* top margin for spacing */
+    max-width: 700px;
+    padding-bottom: 0.5rem; 
     justify-content: center;
-    margin: 1rem auto 0;       /* some spacing */
-    max-width: 900px;          /* match the main image width */
-    overflow-x: auto;          /* horizontal scroll if there's many images */
-    padding-bottom: 0.5rem;    /* extra space so the scrollbar doesn't overlap thumbnails */
   }
   
-  /* Thumbnails themselves */
+  /* Thumbnails: fixed size, same ratio for all */
   .hotel-gallery__thumb {
-    flex: 0 0 auto;        /* each thumbnail keeps its size, no shrinking */
-    width: 200px!important;
-    height: 70px;
-    object-fit: cover;
+    flex: 0 0 auto;       /* Do not shrink or grow */
+    width: 200px!important;         /* pick your width */
+    height: 70px;         /* pick your height */
     border-radius: 4px;
     border: 2px solid transparent;
+    object-fit: cover;    /* fill the bounding box while cropping */
     cursor: pointer;
     opacity: 0.7;
     transition: all 0.2s ease;
-    align-self: center;
   }
+  
   .hotel-gallery__thumb:hover {
     opacity: 1;
   }
+  
   .hotel-gallery__thumb.active {
     border-color: var(--secondary-color, #ff914d);
     opacity: 1;
