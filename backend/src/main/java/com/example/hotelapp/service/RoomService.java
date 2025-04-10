@@ -25,6 +25,7 @@ public class RoomService {
         return roomRepository.findById(id);
     }
 
+    
     public Room createRoom(Room room) {
         return roomRepository.save(room);
     }
@@ -49,5 +50,10 @@ public class RoomService {
 
     public void deleteRoom(Long id) {
         roomRepository.deleteById(id);
+    }
+    public long getTotalRooms() {
+        return roomRepository.findAll().stream()
+                             .mapToLong(Room::getTotalRooms)  // total_rooms sütunundaki tüm verilerin toplamını al
+                             .sum();
     }
 }
