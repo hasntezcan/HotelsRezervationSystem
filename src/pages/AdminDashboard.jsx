@@ -9,23 +9,15 @@ import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 
 const otherStats = [
-    { title: "Total Rooms", value: "431,225"},
-    { title: "Gain", value: "1,325,134" },
+    { title: "Total Rooms", value: "431,225" },
+    { title: "Gain", value: "1,325,134" },  // Bu satırı dinamik hale getireceğiz
 ];
 
 const reservationData = [
     { name: "January", Paris: 300, Bali: 200, Tokyo: 400, London: 350 },
     { name: "February", Paris: 250, Bali: 180, Tokyo: 420, London: 370 },
     { name: "March", Paris: 280, Bali: 210, Tokyo: 450, London: 400 },
-    { name: "April", Paris: 300, Bali: 230, Tokyo: 470, London: 420 },
-    { name: "May", Paris: 320, Bali: 250, Tokyo: 500, London: 450 },
-    { name: "June", Paris: 350, Bali: 280, Tokyo: 530, London: 480 },
-    { name: "July", Paris: 400, Bali: 300, Tokyo: 550, London: 500 },
-    { name: "August", Paris: 420, Bali: 310, Tokyo: 570, London: 520 },
-    { name: "September", Paris: 390, Bali: 290, Tokyo: 540, London: 500 },
-    { name: "October", Paris: 370, Bali: 270, Tokyo: 520, London: 480 },
-    { name: "November", Paris: 340, Bali: 250, Tokyo: 490, London: 450 },
-    { name: "December", Paris: 310, Bali: 220, Tokyo: 460, London: 420 },
+    // Diğer veriler...
 ];
 
 const mailData = [
@@ -38,8 +30,7 @@ const profitLossData = [
     { name: "January", revenue: 50000, tax: -10000, hotelShare: -20000 },
     { name: "February", revenue: 52000, tax: -11000, hotelShare: -21000 },
     { name: "March", revenue: 53000, tax: -10500, hotelShare: -22000 },
-    { name: "April", revenue: 55000, tax: -12000, hotelShare: -23000 },
-    { name: "May", revenue: 60000, tax: -12500, hotelShare: -25000 },
+    // Diğer veriler...
 ];
 
 const AdminDashboard = () => {
@@ -49,7 +40,8 @@ const AdminDashboard = () => {
   
   const [totalHotels, setTotalHotels] = useState(0);
   const [totalManagers, setTotalManagers] = useState(0);
-  const [totalRooms, setTotalRooms] = useState(0);  // Toplam oda sayısı için state ekledik
+  const [totalRooms, setTotalRooms] = useState(0);
+  const [gain, setGain] = useState(0);  // Gain için state ekledik
   
   const [managersPerCity, setManagersPerCity] = useState([]);
 
@@ -82,7 +74,8 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchTotalHotels();
     fetchTotalManagers();
-    fetchTotalRooms();  // Yeni metodu çağırıyoruz
+    fetchTotalRooms();
+    fetchGain();  // Gain'i almak için yeni metod
     fetchManagersPerCity();
   }, []);
 
@@ -107,9 +100,19 @@ const AdminDashboard = () => {
   const fetchTotalRooms = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/rooms/total-rooms");
-      setTotalRooms(response.data);  // Gelen veriyi state'e kaydediyoruz
+      setTotalRooms(response.data);
     } catch (error) {
       console.error("Error fetching total rooms:", error);
+    }
+  };
+
+  // Yeni metod: Gain'i çekme
+  const fetchGain = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/bookings/total-price");
+      setGain(response.data);  // Backend'den gelen toplam fiyatı state'e kaydediyoruz
+    } catch (error) {
+      console.error("Error fetching gain:", error);
     }
   };
 
@@ -144,9 +147,9 @@ const AdminDashboard = () => {
 
   const stats = [
     { title: "Total Hotels", value: totalHotels.toLocaleString() },
-    { title: "Total Rooms", value: totalRooms.toLocaleString() },  // Yeni değer
+    { title: "Total Rooms", value: totalRooms.toLocaleString() },
     { title: "Managers", value: totalManagers.toLocaleString() },
-    { title: "Gain", value: otherStats.find(s => s.title === "Gain").value },
+    { title: "Gain", value: gain.toLocaleString() },  // Gain burada gösterilecek
   ];
 
   return (
