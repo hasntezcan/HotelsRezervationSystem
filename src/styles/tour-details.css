@@ -4,6 +4,15 @@
    margin-bottom: 1rem;
 }
 
+.tour__gallery {
+  border: 1px solid var(--secondary-color);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  padding-bottom: 0;
+  background-color: #fff; /* same as .tour__info or .tour__reviews */
+  margin-bottom: 1.5rem;  /* optional spacing below */
+}
+
 .tour__info,
 .tour__reviews {
    border-radius: 0.5rem;
