@@ -47,4 +47,14 @@ List<Booking> findAllByUserIdWithRoomImages(@Param("userId") Long userId);
            "ORDER BY month DESC, h.city")
     List<Object[]> getMonthlyReservationsByCity();
 
+
+
+    // Manager'ın bağlı olduğu otellerdeki rezervasyonları getiren native SQL sorgusu
+    @Query(value = "SELECT b.* " +
+                   "FROM bookings b " +
+                   "JOIN rooms r ON b.room_id = r.room_id " +
+                   "JOIN managers m ON m.hotel_id = r.hotel_id " +
+                   "WHERE m.manager_id = :managerId", nativeQuery = true)
+    List<Booking> findReservationsByManagerId(@Param("managerId") Long managerId);
+
 }
