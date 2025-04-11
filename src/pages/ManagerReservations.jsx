@@ -4,6 +4,28 @@ import SidebarManager from "../components/Sidebar_manager";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 
+// Tarih verisini "YYYY-MM-DD" formatına çevirmek için yardımcı fonksiyon.
+const formatDate = (dateValue) => {
+  if (!dateValue) return "";
+  
+  // Eğer tarih bir dizi olarak gelmişse (ör: [2025, 4, 11])
+  if (Array.isArray(dateValue)) {
+    const [year, month, day] = dateValue;
+    // Ay ve günü 2 hane olacak şekilde dolduralım
+    const m = month.toString().padStart(2, "0");
+    const d = day.toString().padStart(2, "0");
+    return `${year}-${m}-${d}`;
+  }
+  
+  // Eğer tarih string ise ve format zaten "yyyy-mm-dd" ise direk döndür.
+  if (typeof dateValue === "string" && dateValue.length === 10) {
+    return dateValue;
+  }
+  
+  // Diğer durumlarda, tarih değerini doğrudan string'e çevirir.
+  return dateValue.toString();
+};
+
 const ManagerReservations = () => {
   const { user } = useContext(AuthContext);
   const [managerId, setManagerId] = useState(null);
@@ -53,12 +75,12 @@ const ManagerReservations = () => {
     }
   }, [managerId]);
 
-  // Backend'de manager'a ait rezervasyonları getiren endpoint;
-  // Bu endpoint, ManagerReservationDTO nesnelerini (bookingId, roomId, roomName, checkInDate, checkOutDate, hotelName, numGuests, totalPrice, status) döndürür.
+  // Backend'de manager'a ait rezervasyonları getiren endpoint.
+  // Bu endpoint ManagerReservationDTO nesnelerini döndürmekte.
   const fetchReservations = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/reservations/manager?managerId=${managerId}`
+        `http://localhost:8080/api/bookings/manager-reservations?managerId=${managerId}`
       );
       setReservations(response.data);
     } catch (error) {
@@ -104,10 +126,10 @@ const ManagerReservations = () => {
                       Room ID: {reservation.roomId} - {reservation.roomName}
                     </Typography>
                     <Typography variant="body2">
-                      Check-in Date: {reservation.checkInDate}
+                      Check-in Date: {formatDate(reservation.checkInDate)}
                     </Typography>
                     <Typography variant="body2">
-                      Check-out Date: {reservation.checkOutDate}
+                      Check-out Date: {formatDate(reservation.checkOutDate)}
                     </Typography>
                     <Typography variant="body2">
                       Hotel Name: {reservation.hotelName}
