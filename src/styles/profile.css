@@ -192,125 +192,226 @@
   /* =========================================
      Bookings Page
      ========================================= */
-  .profile-bookings-container {
-    background: #f9fafc;
-    padding: 20px;
-    border-radius: 8px;
-    color: var(--text-color);
-  }
-  .profile-bookings-container h2 {
-    margin-bottom: 1rem;
-    color: var(--heading-color);
-  }
-  .booking-section h4 {
-    margin-bottom: 0.8rem;
-    color: var(--heading-color);
-  }
-  
-  /* Limit the height of the upcoming section so it scrolls when > 5 bookings */
-  .upcoming-list {
-    max-height: 400px;
-    overflow-y: auto;
+  /* 1) Container / Titles */
+  /**************************************
+ * Container & Titles
+ **************************************/
+.profile-bookings-container {
+  padding: 2rem 1rem;
+}
+
+.bookings-title {
+  font-size: 1.75rem;
+  margin-bottom: 2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.booking-section {
+  margin-bottom: 2.5rem;
+}
+
+.booking-section-title {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/**************************************
+ * Booking Card Container
+ **************************************/
+.booking-item {
+  background-color: #fff;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+/* Subtle shadow */
+.card-shadow {
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+/**************************************
+ * Booking Body: gallery + info side by side (desktop),
+ * but stack on mobile
+ **************************************/
+.booking-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.booking-gallery {
+  flex: 0 0 380px; 
+  max-width: 380px;
+  /* If the screen gets smaller, we want it to shrink or go full width. */
+}
+
+/**************************************
+ * Info Column
+ **************************************/
+.booking-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.booking-hotel-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.booking-room-type {
+  font-size: 1rem;
+  color: var(--secondary-color);
+  margin: 0 0 0.3rem;
+}
+
+.booking-city {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* If the backend returns address, show it a bit smaller or italic */
+.booking-address {
+  font-size: 0.85rem;
+  color: #999;
+  font-style: italic;
+}
+
+.canceled-label {
+  color: #d9534f;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+/**************************************
+ * Booking detail grid
+ **************************************/
+.booking-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.booking-edit-phone {
+  display: flex;
+  flex-direction: column;
+}
+
+.booking-edit-phone label {
+  font-size: 0.8rem;
+  margin-bottom: 0.2rem;
+}
+
+/**************************************
+ * Footer: "Booked on" at left,
+ * actions (3-dot) at right
+ **************************************/
+.booking-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1.5rem;
+  background-color: #f9f9f9;
+  border-top: 1px solid #eee;
+  position: relative;
+}
+
+.booked-date {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+/* Dots button */
+.dots-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #666;
+  padding: 0.3rem;
+}
+
+/* Actions menu is absolute in the .booking-footer */
+.actions-menu {
+  position: absolute;
+  top: -120%; /* or so, so it appears above the button */
+  right: 0.5rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.5rem;
+  min-width: 120px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  z-index: 2;
+}
+
+.actions-menu button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+}
+
+.actions-menu button:hover {
+  background: #f1f1f1;
+}
+
+.edit-btn {
+  color: var(--secondary-color);
+  font-weight: 500;
+}
+
+.cancel-btn {
+  color: #d9534f;
+  font-weight: 500;
+}
+
+/**************************************
+ * MEDIA QUERIES: RESPONSIVE
+ **************************************/
+
+/* For narrower screens (e.g. < 768px),
+   stack the booking-body columns vertically */
+@media (max-width: 768px) {
+  .booking-body {
+    flex-direction: column; /* stack vertically */
   }
 
-  
-  .booking-footer {
-    margin-top: 4px;
-    position: relative;
-    min-height: 25px; /* ensures space for booked-date */
+  .booking-gallery {
+    flex: 1 1 auto; 
+    max-width: 100%; 
+    margin-bottom: 1rem;
   }
-  
-  .booked-date {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    font-size: 0.9rem;
-    color: #555;
+
+  .booking-details-grid {
+    grid-template-columns: 1fr; /* phone/dates/total each row */
   }
-  
-  
-  /* Individual booking card */
-  .booking-item {
-    background: var(--background-color);
-    border: 1px solid var(--secondary-color);
-    border-radius: 6px;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    position: relative;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-  .booking-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-  }
-  .booking-header h5 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--heading-color);
-  }
-  .booking-header span {
-    font-size: 0.85rem;
-    color: #666;
-  }
-  .booking-body p {
-    margin: 3px 0;
-    font-size: 0.9rem;
-    color: #555;
-  }
-  .booking-body label {
-    font-size: 0.8rem;
-    font-weight: 500;
-    margin-right: 5px;
-  }
-  
-  /* 3-dot action menu */
-  .booking-actions {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
+
   .dots-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: #999;
-    outline: none;
-    padding: 4px;
+    /* slightly smaller on mobile */
+    font-size: 1.1rem;
   }
-  .dots-btn:hover {
-    color: var(--accent-color); /* Use the coral accent on hover */
-  }
-  .actions-menu {
-    background: var(--background-color);
-    border: 1px solid var(--secondary-color);
-    border-radius: 4px;
-    position: absolute;
-    right: 0;
-    top: 35px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  .actions-menu button {
-    background: transparent;
-    border: none;
-    padding: 8px 12px;
-    text-align: left;
-    width: 100%;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: var(--text-color);
-    transition: background-color 0.2s, color 0.2s;
-  }
-  .actions-menu button:hover {
-    background: var(--secondary-color);
-    color: #fff;
-  }
-  
+}
   /* =========================================
      Settings Page
      ========================================= */

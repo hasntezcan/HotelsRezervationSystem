@@ -2,6 +2,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import '../../styles/profile.css'
+import RoomGallery from '../../shared/RoomGallery/RoomGallery'
 
 const Bookings = () => {
   const { user } = useContext(AuthContext)
@@ -23,7 +24,9 @@ const Bookings = () => {
     fetchBookings()
   }, [])
 
-  if (!user) return <p>Please login first.</p>
+  if (!user) {
+    return <p>Please login first.</p>
+  }
 
   const now = new Date().setHours(0, 0, 0, 0)
 
@@ -45,7 +48,7 @@ const Bookings = () => {
       if (item.booking.bookingId === bk.booking.bookingId) {
         return {
           ...item,
-          booking: { ...item.booking, phone: editPhone }
+          booking: { ...item.booking, phone: editPhone },
         }
       }
       return item
@@ -58,11 +61,10 @@ const Bookings = () => {
   const handleCancel = async (bookingId) => {
     try {
       await fetch(`http://localhost:8080/api/bookings/${bookingId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       })
-
-      setAllBookings(prev =>
-        prev.filter(b => b.booking.bookingId !== bookingId)
+      setAllBookings((prev) =>
+        prev.filter((b) => b.booking.bookingId !== bookingId)
       )
       alert('Booking canceled successfully.')
     } catch (err) {
@@ -79,10 +81,11 @@ const Bookings = () => {
 
   return (
     <div className="profile-bookings-container">
-      <h2>My Bookings</h2>
+      <h2 className="bookings-title">My Bookings</h2>
 
+      {/* UPCOMING */}
       <div className="booking-section">
-        <h4>Upcoming</h4>
+        <h4 className="booking-section-title">Upcoming</h4>
         {upcoming.length === 0 ? (
           <p>No upcoming bookings.</p>
         ) : (
@@ -105,8 +108,9 @@ const Bookings = () => {
         )}
       </div>
 
+      {/* PAST */}
       <div className="booking-section">
-        <h4>Past</h4>
+        <h4 className="booking-section-title">Past</h4>
         {past.length === 0 ? (
           <p>No past bookings.</p>
         ) : (
@@ -141,11 +145,21 @@ const BookingCard = ({
   onSavePhone,
   onCancel,
   canCancel,
-  isPast
+  isPast,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false)
-  const { booking, hotelName, roomName, city, roomType } = data
-  const isEditing = editingId === booking.bookingId
+  const isEditing = editingId === data.booking.bookingId
+
+  const {
+    booking,
+    hotelName,
+    city,
+    roomName,
+    roomType,
+    hotelImages,
+    // If your backend also returns "hotelAddress", you can show it:
+    hotelAddress,
+  } = data
 
   const formatDate = (dateStr) =>
     new Date(dateStr).toLocaleDateString('en-GB')
@@ -156,60 +170,103 @@ const BookingCard = ({
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     })
 
   return (
-    <div className="booking-item">
-      <div className="booking-header">
-        <h5>
-          {hotelName} – {roomName} ({roomType}) in {city}{' '}
-          {booking.status === 'canceled' && '(Canceled)'}
-        </h5>
-      </div>
-
+    <div className="booking-item card-shadow">
       <div className="booking-body">
-        <p><strong>Total Guests:</strong> {booking.numGuests}</p>
-
-        {isEditing ? (
-          <div className="edit-phone">
-            <label>Phone:</label>
-            <input
-              type="text"
-              value={editPhone}
-              onChange={(e) => setEditPhone(e.target.value)}
-            />
+        {/* GALLERY */}
+        {hotelImages && hotelImages.length > 0 && (
+          <div className="booking-gallery">
+            <RoomGallery images={hotelImages} />
           </div>
-        ) : (
-          <p><strong>Phone:</strong> {booking.phone || '-'}</p>
         )}
 
-        <p><strong>Dates:</strong> {formatDate(booking.checkInDate)} – {formatDate(booking.checkOutDate)}</p>
+        {/* HOTEL INFO */}
+        <div className="booking-info">
+          <h5 className="booking-hotel-name">{hotelName}</h5>
+          <p className="booking-room-type">
+            {roomType} – {roomName}
+          </p>
+          <p className="booking-city">
+            {city}
+            {hotelAddress ? (
+              <>
+                <br />
+                <span className="booking-address">{hotelAddress}</span>
+              </>
+            ) : null}
+          </p>
 
-        <p><strong>Total:</strong> ${booking.totalPrice}</p>
+          {booking.status === 'canceled' && (
+            <span className="canceled-label">(Canceled)</span>
+          )}
 
-        <div className="booking-footer">
-          <p className="booked-date"><strong>Booked on:</strong> {formatDateTime(booking.createdAt)}</p>
+          {/* Booking details */}
+          <div className="booking-details-grid">
+            <div>
+              <strong>Total Guests:</strong> {booking.numGuests}
+            </div>
+
+            {isEditing ? (
+              <div className="booking-edit-phone">
+                <label>Phone:</label>
+                <input
+                  type="text"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                />
+              </div>
+            ) : (
+              <div>
+                <strong>Phone:</strong> {booking.phone || '-'}
+              </div>
+            )}
+
+            <div>
+              <strong>Dates:</strong> {formatDate(booking.checkInDate)} –{' '}
+              {formatDate(booking.checkOutDate)}
+            </div>
+
+            <div>
+              <strong>Total:</strong> ${booking.totalPrice}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="booking-actions">
-        <button className="dots-btn" onClick={() => setMenuOpen(!menuOpen)}>
-          <i className="ri-more-2-fill"></i>
-        </button>
-        {menuOpen && (
-          <div className="actions-menu">
-            {isEditing ? (
-              <button onClick={() => onSavePhone(data)}>Save Phone</button>
-            ) : (
-              <button onClick={() => onEditPhone(data)}>Edit Phone</button>
-            )}
-
-            {canCancel && booking.status !== 'canceled' && !isPast && (
-              <button onClick={() => onCancel(booking.bookingId)}>Cancel</button>
-            )}
-          </div>
-        )}
+      {/* FOOTER */}
+      <div className="booking-footer">
+        <div className="booked-date">
+          <strong>Booked on:</strong> {formatDateTime(booking.createdAt)}
+        </div>
+        <div>
+          <button className="dots-btn" onClick={() => setMenuOpen(!menuOpen)}>
+            <i className="ri-more-2-fill"></i>
+          </button>
+          {menuOpen && (
+            <div className="actions-menu">
+              {isEditing ? (
+                <button className="edit-btn" onClick={() => onSavePhone(data)}>
+                  Save Phone
+                </button>
+              ) : (
+                <button className="edit-btn" onClick={() => onEditPhone(data)}>
+                  Edit Phone
+                </button>
+              )}
+              {canCancel && booking.status !== 'canceled' && !isPast && (
+                <button
+                  className="cancel-btn"
+                  onClick={() => onCancel(booking.bookingId)}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

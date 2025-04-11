@@ -43,7 +43,16 @@ public class Booking {
     @Column(name = "created_at", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private java.sql.Timestamp createdAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="room_id", insertable=false, updatable=false)
+    private Room room;
+
     // Getters and Setters
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+    
     public Long getBookingId() {
         return bookingId;
     }

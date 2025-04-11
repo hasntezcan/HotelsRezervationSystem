@@ -74,34 +74,46 @@ public class BookingController {
         return ResponseEntity.ok(totalPrice);
     }
 
-    // ✅ Get detailed bookings for a specific user (without DTO)
+    /**
+     * This endpoint returns the same "map-based" JSON shape you had before, 
+     * but now also attaches the Room (with images loaded eagerly) 
+     * to the Booking object for front-end use (b.booking.room.images).
+     */
     @GetMapping("/user/{userId}/details")
     public ResponseEntity<List<Map<String, Object>>> getDetailedBookingsByUserId(@PathVariable Long userId) {
+        // 1) Fetch all bookings for the user
         List<Booking> bookings = bookingRepository.findByUserId(userId);
         List<Map<String, Object>> result = new ArrayList<>();
 
         for (Booking booking : bookings) {
-            Optional<Room> roomOpt = roomRepository.findById(booking.getRoomId());
-            if (roomOpt.isEmpty()) continue;
+            // 2) Manually load the Room (images are auto-fetched because of fetch=EAGER)
+            Room room = roomRepository.findById(booking.getRoomId()).orElse(null);
+            if (room == null) continue;
 
-            Room room = roomOpt.get();
-            Optional<Hotel> hotelOpt = hotelRepository.findById(room.getHotelId());
-            if (hotelOpt.isEmpty()) continue;
 
-            Hotel hotel = hotelOpt.get();
+            // 3) Also load the Hotel
+            Hotel hotel = hotelRepository.findById(room.getHotelId()).orElse(null);
+            if (hotel == null) continue;
 
+            // 4) Attach the room to the booking
+            //    so the JSON can include b.booking.room.images
+
+            // 5) Build your map-based response (same old shape)
             Map<String, Object> map = new HashMap<>();
-            map.put("booking", booking);
+            map.put("booking", booking);   // The entire booking object (with room inside)
             map.put("hotelName", hotel.getName());
             map.put("city", hotel.getCity());
             map.put("roomName", room.getName());
             map.put("roomType", room.getRoomType());
+
+            map.put("hotelImages", hotel.getImages());
 
             result.add(map);
         }
 
         return ResponseEntity.ok(result);
     }
+
     // Şehir bazında aylık rezervasyon sayısını döndüren metod
     @GetMapping("/monthly-reservations")
     public List<Object[]> getMonthlyReservationsByCity() {
@@ -111,7 +123,7 @@ public class BookingController {
     @DeleteMapping("/{bookingId}")
     public ResponseEntity<?> cancelBooking(@PathVariable Long bookingId) {
         System.out.println("Trying to cancel booking with ID: " + bookingId);
-    
+
         if (bookingRepository.existsById(bookingId)) {
             bookingRepository.deleteById(bookingId);
             return ResponseEntity.ok(Map.of("message", "Booking canceled successfully"));
@@ -119,7 +131,4 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found");
         }
     }
-    
-
-
 }

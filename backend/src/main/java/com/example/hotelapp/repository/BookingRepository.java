@@ -32,6 +32,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT SUM(b.totalPrice) FROM Booking b")
     BigDecimal sumTotalPrice();
 
+@Query("SELECT b FROM Booking b " +
+    "JOIN FETCH b.room r " +
+    "LEFT JOIN FETCH r.images " +
+    "WHERE b.userId = :userId")
+List<Booking> findAllByUserIdWithRoomImages(@Param("userId") Long userId);
 
 // Yıllık ve şehir bazında rezervasyon sayısını getiren sorgu
 @Query("SELECT new map(DATE_FORMAT(b.checkInDate, '%Y-%m') as month, h.city as city, COUNT(b.bookingId) as totalReservations) " +
