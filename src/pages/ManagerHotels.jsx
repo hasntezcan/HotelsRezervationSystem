@@ -38,18 +38,20 @@ const ManagerHotels = () => {
   });
   const [rooms, setRooms] = useState([]);
 
-  const amenitiesList = [
-    "Free Wi-Fi", "Swimming Pool", "Spa", "Gym", "Restaurant",
-    "Bar", "Parking", "Pet Friendly", "Room Service", "Airport Shuttle"
-  ];
+  // Tüm amenities verilerini backend'den çekmek için state
+  const [allAmenities, setAllAmenities] = useState([]);
 
-  const toggleAmenity = (amenity) => {
-    setSelectedAmenities((prev) =>
-      prev.includes(amenity)
-        ? prev.filter((a) => a !== amenity)
-        : [...prev, amenity]
-    );
-  };
+  // Backend'den tüm amenity verilerini çekiyoruz
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/hotelamenities")
+      .then((response) => {
+        setAllAmenities(response.data);  
+      })
+      .catch((err) => {
+        console.error("Error fetching hotel amenities:", err);
+      });
+  }, []);
 
   useEffect(() => {
     if (user && user.userId) {
@@ -67,7 +69,6 @@ const ManagerHotels = () => {
               .then((res) => {
                 // Çekilen amenities string'ini ilgili otelin objesine ekliyoruz.
                 const updatedHotel = { ...hotelsData[0], amenities: res.data };
-                // İlk otelin verisini güncelliyoruz.
                 setHotels((prevHotels) => {
                   const updatedHotels = [...prevHotels];
                   updatedHotels[0] = updatedHotel;
@@ -89,6 +90,7 @@ const ManagerHotels = () => {
   const hotelToEdit = hotels.length > 0 ? hotels[0] : null;
 
   const handleEdit = (hotel) => {
+    // Düzenleme sırasında, mevcut amenity bilgisi varsa string'i diziye çeviriyoruz.
     const amenitiesArray = hotel.amenities
       ? hotel.amenities.split(",").map((a) => a.trim())
       : [];
@@ -110,7 +112,7 @@ const ManagerHotels = () => {
         address: editHotel.address ?? "",
         pricePerNight: editHotel.pricePerNight ?? 0,
         capacity: editHotel.capacity ?? 0,
-        amenities: selectedAmenities.join(", "),
+        amenities: selectedAmenities.join(", "), // Seçili amenity'leri virgülle ayırıyoruz.
         managerId: editHotel.managerId ?? "",
         checkInTime: editHotel.checkInTime ?? "",
         checkOutTime: editHotel.checkOutTime ?? "",
@@ -214,31 +216,19 @@ const ManagerHotels = () => {
                   <Typography variant="h5" fontWeight="bold">
                     {hotelToEdit.name}
                   </Typography>
-                  <Typography>
-                    <strong>City:</strong> {hotelToEdit.city}
-                  </Typography>
-                  <Typography>
-                    <strong>Country:</strong> {hotelToEdit.country}
-                  </Typography>
-                  <Typography>
-                    <strong>Description:</strong> {hotelToEdit.description}
-                  </Typography>
-                  <Typography>
-                    <strong>Star Rating:</strong> {hotelToEdit.starRating}
-                  </Typography>
-                  <Typography>
-                    <strong>Address:</strong> {hotelToEdit.address}
-                  </Typography>
-                  <Typography>
-                    <strong>Amenities:</strong> {hotelToEdit.amenities}
-                  </Typography>
+                  <Typography><strong>City:</strong> {hotelToEdit.city}</Typography>
+                  <Typography><strong>Country:</strong> {hotelToEdit.country}</Typography>
+                  <Typography><strong>Description:</strong> {hotelToEdit.description}</Typography>
+                  <Typography><strong>Star Rating:</strong> {hotelToEdit.starRating}</Typography>
+                  <Typography><strong>Address:</strong> {hotelToEdit.address}</Typography>
+                  <Typography><strong>Amenities:</strong> {hotelToEdit.amenities}</Typography>
                   <Box display="flex" gap={2} mt={2}>
                     <Button variant="outlined" onClick={() => handleEdit(hotelToEdit)}>
                       Edit Hotel
                     </Button>
-                    <Button
-                      variant="outlined"
-                      color="error"
+                    <Button 
+                      variant="outlined" 
+                      color="error" 
                       onClick={() => {
                         setHotels(hotels.filter(h => h.hotelId !== hotelToEdit.hotelId));
                       }}
@@ -385,19 +375,35 @@ const ManagerHotels = () => {
             </Box>
 
             <Box marginTop={2}>
-              <Button variant="outlined" onClick={() => setShowAmenitySelector(!showAmenitySelector)}>
+              <Button 
+                variant="outlined" 
+                onClick={() => {
+                  // Düzenleme modunda amenity modalını açarken, mevcut editHotel içerisindeki
+                  // amenities bilgisi varsa, onu diziye dönüştürüp selectedAmenities state'ine set ediyoruz.
+                  if (editHotel && editHotel.amenities) {
+                    const preSelected = editHotel.amenities.split(",").map(a => a.trim());
+                    setSelectedAmenities(preSelected);
+                  } else {
+                    setSelectedAmenities([]);
+                  }
+                  setShowAmenitySelector(true);
+                }}
+              >
                 {showAmenitySelector ? "Close Amenities" : "Select Amenities"}
               </Button>
 
               {showAmenitySelector && (
                 <Box mt={2}>
-                  {amenitiesList.map((item) => (
+                  {allAmenities.map((amenity) => (
                     <FormControlLabel
-                      key={item}
+                      key={amenity.amenityId}
                       control={
-                        <Checkbox checked={selectedAmenities.includes(item)} onChange={() => toggleAmenity(item)} />
+                        <Checkbox 
+                          checked={selectedAmenities.includes(amenity.name)} 
+                          onChange={() => toggleAmenity(amenity.name)} 
+                        />
                       }
-                      label={item}
+                      label={amenity.name}
                     />
                   ))}
                   <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
