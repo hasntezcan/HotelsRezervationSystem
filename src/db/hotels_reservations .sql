@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 11 Nis 2025, 21:30:24
+-- Üretim Zamanı: 11 Nis 2025, 21:41:13
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -501,16 +501,16 @@ INSERT INTO `roomimages` (`image_id`, `room_id`, `image_url`, `is_primary`) VALU
 (6, 1, '/public/room_images/room-img03.jpg', 0),
 (7, 2, '/public/room_images/room-img03.jpg', 1),
 (8, 2, '/public/room_images/room-img04.jpg', 0),
-(9, 5, '/public/room_images/room-img03.jpg', 1),
+(9, 5, '/public/room_images/room-img01.jpg', 1),
 (10, 6, '/public/room_images/room-img03.jpg', 0),
 (11, 3, '/public/room_images/room-img01.jpg', 1),
 (12, 4, '/public/room_images/room-img03.jpg', 1),
-(13, 7, '/public/room_images/room-img01.jpg', 1),
+(13, 7, '/public/room_images/room-img03.jpg', 1),
 (14, 8, '/public/room_images/room-img01.jpg', 1),
-(15, 9, '/public/room_images/room-img01.jpg', 1),
+(15, 9, '/public/room_images/room-img03.jpg', 1),
 (16, 10, '/public/room_images/room-img01.jpg', 1),
 (17, 11, '/public/room_images/room-img03.jpg', 1),
-(18, 12, '/public/room_images/room-img01.jpg', 1),
+(18, 12, '/public/room_images/room-img03.jpg', 1),
 (19, 13, '/public/room_images/room-img03.jpg', 1),
 (20, 14, '/public/room_images/room-img03.jpg', 1),
 (21, 15, '/public/room_images/room-img03.jpg', 1),
@@ -518,12 +518,12 @@ INSERT INTO `roomimages` (`image_id`, `room_id`, `image_url`, `is_primary`) VALU
 (23, 17, '/public/room_images/room-img01.jpg', 1),
 (24, 17, '/public/room_images/room-img01.jpg', 1),
 (25, 18, '/public/room_images/room-img03.jpg', 1),
-(26, 19, '/public/room_images/room-img01.jpg', 1),
-(27, 20, '/public/room_images/room-img01.jpg', 1),
+(26, 19, '/public/room_images/room-img03.jpg', 1),
+(27, 20, '/public/room_images/room-img03.jpg', 1),
 (28, 21, '/public/room_images/room-img01.jpg', 1),
-(29, 22, '/public/room_images/room-img02.jpg', 1),
-(30, 23, '/public/room_images/room-img02.jpg', 1),
-(31, 24, '/public/room_images/room-img02.jpg', 1),
+(29, 22, '/public/room_images/room-img01.jpg', 1),
+(30, 23, '/public/room_images/room-img01.jpg', 1),
+(31, 24, '/public/room_images/room-img01.jpg', 1),
 (32, 25, '/public/room_images/room-img03.jpg', 1);
 
 -- --------------------------------------------------------
