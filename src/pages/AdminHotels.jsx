@@ -126,6 +126,17 @@ const AdminHotel = () => {
     }
   };
 
+  // DELETE işlemi: Oteli ve bağlı tüm kayıtları silen backend endpoint'ini çağırır.
+  const deleteHotel = async (hotelId) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/hotels/${hotelId}`);
+      // Otel silindikten sonra güncel listeyi çek:
+      await fetchHotels();
+    } catch (error) {
+      console.error("Error deleting hotel:", error);
+    }
+  };
+
   return (
     <div id="admin-hotel-container">
       <div id="admin-hotel-management-title">Hotel Management</div>
@@ -216,9 +227,7 @@ const AdminHotel = () => {
             </button>
             <button
               className="admin-hotel-delete-btn"
-              onClick={() => {
-                // Delete işlevi eklenebilir.
-              }}
+              onClick={() => deleteHotel(hotel.hotelId)}
             >
               Delete
             </button>

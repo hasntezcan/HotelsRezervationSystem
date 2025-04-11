@@ -6,10 +6,14 @@ import com.example.hotelapp.model.Room;
 import com.example.hotelapp.repository.HotelRepository;
 import com.example.hotelapp.repository.RoomRepository;
 import com.example.hotelapp.service.AdminHotelService;
+
+import jakarta.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +25,8 @@ public class HotelController {
 
     @Autowired
     private HotelRepository hotelRepository;
-    
+    @Autowired
+    private EntityManager entityManager;
     @Autowired
     private AdminHotelService adminHotelService;
     
@@ -98,13 +103,49 @@ public ResponseEntity<?> updateHotel(@PathVariable Long hotelId, @RequestBody Ho
 
 
 
-    @DeleteMapping("/{hotelId}")
-    public ResponseEntity<?> deleteHotel(@PathVariable Long hotelId) {
-        if (hotelRepository.existsById(hotelId)) {
-            hotelRepository.deleteById(hotelId);
-            return ResponseEntity.ok("Hotel deleted successfully.");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+@DeleteMapping("/{hotelId}")
+@Transactional
+public ResponseEntity<?> deleteHotel(@PathVariable Long hotelId) {
+    // 1. Otelle doğrudan ilişkili diğer tabloları silin:
+    entityManager.createNativeQuery("DELETE FROM reviews WHERE hotel_id = :hotelId")
+                 .setParameter("hotelId", hotelId)
+                 .executeUpdate();
+    entityManager.createNativeQuery("DELETE FROM promotions WHERE hotel_id = :hotelId")
+                 .setParameter("hotelId", hotelId)
+                 .executeUpdate();
+    entityManager.createNativeQuery("DELETE FROM hotelimages WHERE hotel_id = :hotelId")
+                 .setParameter("hotelId", hotelId)
+                 .executeUpdate();
+    entityManager.createNativeQuery("DELETE FROM hotelamenityjunction WHERE hotel_id = :hotelId")
+                 .setParameter("hotelId", hotelId)
+                 .executeUpdate();
+
+    // 2. Otelin odalarına ilişkin verileri silin:
+    // 2.a. Önce, odalara ait roomamenityjunction kayıtları:
+    entityManager.createNativeQuery(
+        "DELETE rm FROM roomamenityjunction rm JOIN rooms r ON rm.room_id = r.room_id WHERE r.hotel_id = :hotelId")
+                 .setParameter("hotelId", hotelId)
+                 .executeUpdate();
+    // 2.b. Odaya ait görseller:
+    entityManager.createNativeQuery(
+        "DELETE ri FROM roomimages ri JOIN rooms r ON ri.room_id = r.room_id WHERE r.hotel_id = :hotelId")
+                 .setParameter("hotelId", hotelId)
+                 .executeUpdate();
+    // 2.c. Rezervasyonlar (bookings):
+    entityManager.createNativeQuery(
+        "DELETE FROM bookings WHERE room_id IN (SELECT room_id FROM rooms WHERE hotel_id = :hotelId)")
+                 .setParameter("hotelId", hotelId)
+                 .executeUpdate();
+    // 2.d. Son olarak, rooms tablosundan otel odalarını silin:
+    entityManager.createNativeQuery("DELETE FROM rooms WHERE hotel_id = :hotelId")
+                 .setParameter("hotelId", hotelId)
+                 .executeUpdate();
+
+    // 3. Oteli silin:
+    entityManager.createNativeQuery("DELETE FROM hotels WHERE hotel_id = :hotelId")
+                 .setParameter("hotelId", hotelId)
+                 .executeUpdate();
+
+    return ResponseEntity.ok("Hotel deleted successfully.");
+}
 }
