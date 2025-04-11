@@ -55,7 +55,6 @@ public class Room {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<RoomImage> images;
-    
 
     public Room() {
     }
@@ -77,7 +76,7 @@ public class Room {
         this.createdAt = createdAt;
     }
 
-    // Getter ve Setterlar
+    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -190,5 +189,4 @@ public class Room {
     public void setImages(List<RoomImage> images) {
         this.images = images;
     }
-        
 }
