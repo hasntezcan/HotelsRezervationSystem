@@ -148,4 +148,5 @@ public ResponseEntity<?> deleteHotel(@PathVariable Long hotelId) {
 
     return ResponseEntity.ok("Hotel deleted successfully.");
 }
+
 }

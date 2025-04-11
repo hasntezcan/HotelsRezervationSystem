@@ -30,13 +30,12 @@ const ManagerHotels = () => {
   const [showAmenitySelector, setShowAmenitySelector] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   
-  // Room detayları için state
+  // Room detayları için state (room alanı dokunulmamış)
   const [roomData, setRoomData] = useState({
     roomType: "",
     pricePerNight: "",
     totalRoom: ""
   });
-  // Eklenen odaların listesini tutan state
   const [rooms, setRooms] = useState([]);
 
   const amenitiesList = [
@@ -54,10 +53,31 @@ const ManagerHotels = () => {
 
   useEffect(() => {
     if (user && user.userId) {
+      // Manager'a ait otelleri çekiyoruz.
       axios
         .get(`http://localhost:8080/api/hotels/manager?userId=${user.userId}`)
         .then((response) => {
-          setHotels(response.data);
+          const hotelsData = response.data;
+          setHotels(hotelsData);
+          // Eğer listede en az bir otel varsa, amenities bilgilerini ayrı endpoint'ten getiriyoruz.
+          if (hotelsData.length > 0) {
+            const firstHotelId = hotelsData[0].hotelId;
+            axios
+              .get(`http://localhost:8080/api/hotels/${firstHotelId}/amenities`)
+              .then((res) => {
+                // Çekilen amenities string'ini ilgili otelin objesine ekliyoruz.
+                const updatedHotel = { ...hotelsData[0], amenities: res.data };
+                // İlk otelin verisini güncelliyoruz.
+                setHotels((prevHotels) => {
+                  const updatedHotels = [...prevHotels];
+                  updatedHotels[0] = updatedHotel;
+                  return updatedHotels;
+                });
+              })
+              .catch((err) => {
+                console.error("Error fetching amenities:", err);
+              });
+          }
         })
         .catch((err) => {
           console.error("Error fetching hotels:", err);
@@ -132,7 +152,7 @@ const ManagerHotels = () => {
     setEditHotel({ ...editHotel, [field]: value });
   };
 
-  // Yeni oda eklemek için fonksiyon
+  // Oda işlemleri aynı kalıyor
   const handleAddRoom = () => {
     if (!roomData.roomType || roomData.pricePerNight === "" || roomData.totalRoom === "") {
       alert("Please fill in all room details before adding.");
@@ -146,7 +166,6 @@ const ManagerHotels = () => {
     });
   };
 
-  // Listedeki odayı silmek için fonksiyon
   const handleDeleteRoom = (index) => {
     const updatedRooms = rooms.filter((_, i) => i !== index);
     setRooms(updatedRooms);
@@ -158,13 +177,11 @@ const ManagerHotels = () => {
     <div className="dashboard" style={{ display: "flex" }}>
       <SidebarManager />
       <div className="content" style={{ padding: "40px", width: "100%" }}>
-        {/* Hotel ve Room başlıkları aynı satırda */}
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
           <Typography variant="h4" fontWeight="bold">Hotel</Typography>
           <Typography variant="h4" fontWeight="bold">Room</Typography>
         </Box>
 
-        {/* Add Hotel butonu: sadece hiç otel yoksa gösterilir */}
         {hotels.length === 0 && (
           <Box mb={3}>
             <Button
@@ -189,29 +206,52 @@ const ManagerHotels = () => {
         )}
 
         <Grid container spacing={4}>
+          {/* Hotel Alanı */}
           <Grid item xs={12} sm={6}>
             {hotelToEdit && (
               <Card style={{ borderRadius: "50px", padding: "20px" }}>
                 <CardContent>
-                  <Typography variant="h5" fontWeight="bold">{hotelToEdit.name}</Typography>
-                  <Typography><strong>City:</strong> {hotelToEdit.city}</Typography>
-                  <Typography><strong>Country:</strong> {hotelToEdit.country}</Typography>
-                  <Typography><strong>Description:</strong> {hotelToEdit.description}</Typography>
-                  <Typography><strong>Star Rating:</strong> {hotelToEdit.starRating}</Typography>
-                  <Typography><strong>Address:</strong> {hotelToEdit.address}</Typography>
-                  <Typography><strong>Amenities:</strong> {hotelToEdit.amenities}</Typography>
+                  <Typography variant="h5" fontWeight="bold">
+                    {hotelToEdit.name}
+                  </Typography>
+                  <Typography>
+                    <strong>City:</strong> {hotelToEdit.city}
+                  </Typography>
+                  <Typography>
+                    <strong>Country:</strong> {hotelToEdit.country}
+                  </Typography>
+                  <Typography>
+                    <strong>Description:</strong> {hotelToEdit.description}
+                  </Typography>
+                  <Typography>
+                    <strong>Star Rating:</strong> {hotelToEdit.starRating}
+                  </Typography>
+                  <Typography>
+                    <strong>Address:</strong> {hotelToEdit.address}
+                  </Typography>
+                  <Typography>
+                    <strong>Amenities:</strong> {hotelToEdit.amenities}
+                  </Typography>
                   <Box display="flex" gap={2} mt={2}>
-                    <Button variant="outlined" onClick={() => handleEdit(hotelToEdit)}>Edit Hotel</Button>
-                    <Button variant="outlined" color="error" onClick={() => {
-                      setHotels(hotels.filter(h => h.hotelId !== hotelToEdit.hotelId));
-                    }}>Delete Hotel</Button>
+                    <Button variant="outlined" onClick={() => handleEdit(hotelToEdit)}>
+                      Edit Hotel
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => {
+                        setHotels(hotels.filter(h => h.hotelId !== hotelToEdit.hotelId));
+                      }}
+                    >
+                      Delete Hotel
+                    </Button>
                   </Box>
                 </CardContent>
               </Card>
             )}
           </Grid>
 
-          {/* Room detaylarını içeren bölüm */}
+          {/* Room Alanı - Dokunulmuyor */}
           <Grid item xs={12} sm={6}>
             <Card style={{ borderRadius: "50px", padding: "20px" }}>
               <CardContent>
@@ -246,7 +286,6 @@ const ManagerHotels = () => {
                   fullWidth 
                   margin="normal"
                 />
-                {/* Add Room butonu */}
                 <Box mt={2}>
                   <Button 
                     variant="contained" 
@@ -256,7 +295,6 @@ const ManagerHotels = () => {
                     Add Room
                   </Button>
                 </Box>
-                {/* Oda listesinin görüntülendiği alan */}
                 {rooms.length > 0 && (
                   <Box mt={3}>
                     <Typography variant="h6" align="center" gutterBottom>
@@ -292,7 +330,7 @@ const ManagerHotels = () => {
           </Grid>
         </Grid>
 
-        {/* POPUP MODAL */}
+        {/* Otel Düzenleme Modal'ı */}
         <Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth maxWidth="sm">
           <DialogTitle>
             Hotel Form
@@ -356,7 +394,9 @@ const ManagerHotels = () => {
                   {amenitiesList.map((item) => (
                     <FormControlLabel
                       key={item}
-                      control={<Checkbox checked={selectedAmenities.includes(item)} onChange={() => toggleAmenity(item)} />}
+                      control={
+                        <Checkbox checked={selectedAmenities.includes(item)} onChange={() => toggleAmenity(item)} />
+                      }
                       label={item}
                     />
                   ))}
