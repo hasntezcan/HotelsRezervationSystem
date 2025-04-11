@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 11 Nis 2025, 15:12:53
+-- Üretim Zamanı: 11 Nis 2025, 15:36:39
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -50,7 +50,8 @@ INSERT INTO `bookings` (`booking_id`, `user_id`, `room_id`, `check_in_date`, `ch
 (2, 2, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07'),
 (3, 3, 1, '2025-04-15', '2025-04-17', 1, 3, 100.00, 230.00, 'confirmed', '2025-04-10 13:22:07'),
 (4, 4, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07'),
-(9, 2, 1, '2025-04-18', '2025-04-22', 1, 3, 150.00, 1510.00, 'pending', '2025-04-10 17:04:45');
+(9, 2, 1, '2025-04-18', '2025-04-22', 1, 3, 150.00, 1510.00, 'pending', '2025-04-10 17:04:45'),
+(10, 1, 20, '2025-04-11', '2025-04-12', 1, 1, 100.00, 110.00, 'pending', '2025-04-11 13:33:47');
 
 -- --------------------------------------------------------
 
@@ -133,9 +134,7 @@ CREATE TABLE `hotelamenityjunction` (
 --
 
 INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
-(1, 1),
-(1, 3),
-(1, 4),
+(1, 7),
 (2, 1),
 (2, 7),
 (2, 8),
@@ -306,7 +305,7 @@ CREATE TABLE `hotels` (
 --
 
 INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `country`, `latitude`, `longitude`, `description`, `star_rating`, `check_in_time`, `check_out_time`, `cancellation_policy`, `status`, `created_at`, `capacity`, `price_per_night`, `featured`) VALUES
-(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'London', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style...', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'Londona', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style...', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (2, 2, 'Royal Palace London', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (3, 3, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (4, 4, 'Skyline Tower London', '321 Skyline Avenue, London', 'London', 'United Kingdom', 51.515, -0.141, 'Reach new heights...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
@@ -491,18 +490,18 @@ CREATE TABLE `roomimages` (
 
 INSERT INTO `roomimages` (`image_id`, `room_id`, `image_url`, `is_primary`) VALUES
 (1, 1, '/public/room_images/room-img01.jpg', 1),
-(2, 1, '/assets/room_images/room-img02.jpg', 0),
+(2, 1, '/public/room_images/room-img02.jpg', 0),
 (3, 2, '/public/room_images/room-img03.jpg', 1),
-(4, 2, '/assets/room_images/room-img04.jpg', 0),
+(4, 2, '/public/room_images/room-img04.jpg', 0),
 (5, 1, '/public/room_images/room-img01.jpg', 1),
 (6, 1, '/public/room_images/room-img03.jpg', 0),
 (7, 2, '/public/room_images/room-img03.jpg', 1),
-(8, 2, '/assets/room_images/room-img04.jpg', 0),
+(8, 2, '/public/room_images/room-img04.jpg', 0),
 (9, 5, '/public/room_images/room-img03.jpg', 1),
 (10, 6, '/public/room_images/room-img03.jpg', 0),
 (11, 3, '/public/room_images/room-img01.jpg', 1),
 (12, 4, '/public/room_images/room-img03.jpg', 1),
-(13, 7, '/assets/room_images/room-img01.jpg', 1),
+(13, 7, '/public/room_images/room-img01.jpg', 1),
 (14, 8, '/public/room_images/room-img01.jpg', 1),
 (15, 9, '/public/room_images/room-img01.jpg', 1),
 (16, 10, '/public/room_images/room-img01.jpg', 1),
@@ -512,15 +511,15 @@ INSERT INTO `roomimages` (`image_id`, `room_id`, `image_url`, `is_primary`) VALU
 (20, 14, '/public/room_images/room-img03.jpg', 1),
 (21, 15, '/public/room_images/room-img03.jpg', 1),
 (22, 16, '/public/room_images/room-img03.jpg', 1),
-(23, 17, '/assets/room_images/room-img01.jpg', 1),
+(23, 17, '/public/room_images/room-img01.jpg', 1),
 (24, 17, '/public/room_images/room-img01.jpg', 1),
 (25, 18, '/public/room_images/room-img03.jpg', 1),
 (26, 19, '/public/room_images/room-img01.jpg', 1),
-(27, 20, '/assets/room_images/room-img01.jpg', 1),
-(28, 21, '/assets/room_images/room-img01.jpg', 1),
-(29, 22, '/assets/room_images/room-img02.jpg', 1),
+(27, 20, '/public/room_images/room-img01.jpg', 1),
+(28, 21, '/public/room_images/room-img01.jpg', 1),
+(29, 22, '/public/room_images/room-img02.jpg', 1),
 (30, 23, '/public/room_images/room-img02.jpg', 1),
-(31, 24, '/assets/room_images/room-img02.jpg', 1);
+(31, 24, '/public/room_images/room-img02.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -569,7 +568,7 @@ INSERT INTO `rooms` (`room_id`, `hotel_id`, `room_type`, `description`, `price_p
 (18, 14, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
 (19, 15, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
 (20, 16, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
-(21, 16, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(21, 9, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
 (22, 6, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
 (23, 7, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
 (24, 8, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL);
@@ -742,7 +741,7 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `contact_messages`
