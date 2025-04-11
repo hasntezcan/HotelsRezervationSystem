@@ -40,7 +40,7 @@ const SearchBar = ({ onSearch }) => {
       const localDate = new Date(date.getTime() - offset * 60000);
       return localDate.toISOString().split("T")[0];
     };
-    
+
     const checkIn = formatDateLocal(dates[0]);
     const checkOut = formatDateLocal(dates[1]);
 
@@ -48,7 +48,6 @@ const SearchBar = ({ onSearch }) => {
       onSearch(destination, checkIn, checkOut, adults, children);
     } else {
       navigate(`/hotels?city=${destination}&startDate=${checkIn}&endDate=${checkOut}&adults=${adults}&children=${children}`);
-
     }
   };
 
@@ -91,6 +90,7 @@ const SearchBar = ({ onSearch }) => {
               setDefaultViewDate(startOfMonth(new Date()));
             }}
             onCalendarClose={() => setCalendarOpen(false)}
+            onKeyDown={(e) => e.preventDefault()}
           />
           {dates[0] && dates[1] && (
             <IoClose className="clear-date-btn" onClick={clearDates} />

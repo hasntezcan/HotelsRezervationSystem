@@ -146,6 +146,7 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
                 onChange={handleChange}
                 value={booking.startDate}
                 min={today}
+                onKeyDown={(e) => e.preventDefault()}
               />
             </div>
             <div className="date-box">
@@ -156,6 +157,7 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
                 onChange={handleChange}
                 value={booking.endDate}
                 min={booking.startDate || today}
+                onKeyDown={(e) => e.preventDefault()}
               />
             </div>
           </FormGroup>
