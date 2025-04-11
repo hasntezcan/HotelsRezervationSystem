@@ -10,6 +10,7 @@ const ManagerReservations = () => {
   const [loading, setLoading] = useState(true);
   const [reservations, setReservations] = useState([]);
 
+  // Backend'den manager profilini çekip managerId'yi elde ediyoruz.
   const fetchManagerId = async () => {
     try {
       if (user && user.userId) {
@@ -52,6 +53,8 @@ const ManagerReservations = () => {
     }
   }, [managerId]);
 
+  // Backend'de manager'a ait rezervasyonları getiren endpoint;
+  // Bu endpoint, ManagerReservationDTO nesnelerini (bookingId, roomId, roomName, checkInDate, checkOutDate, hotelName, numGuests, totalPrice, status) döndürür.
   const fetchReservations = async () => {
     try {
       const response = await axios.get(
@@ -91,38 +94,32 @@ const ManagerReservations = () => {
         <Grid container spacing={4}>
           {reservations && reservations.length > 0 ? (
             reservations.map((reservation, index) => (
-              <Grid item xs={12} key={reservation.booking_id || index}>
+              <Grid item xs={12} key={reservation.bookingId || index}>
                 <Card style={{ borderRadius: "15px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)", padding: "20px" }}>
                   <CardContent>
                     <Typography variant="h6">
-                      Booking ID: {reservation.booking_id}
+                      Booking ID: {reservation.bookingId}
                     </Typography>
                     <Typography variant="body2">
-                      Room ID: {reservation.room_id}
+                      Room ID: {reservation.roomId} - {reservation.roomName}
                     </Typography>
                     <Typography variant="body2">
-                      Check-in: {reservation.check_in_date}
+                      Check-in Date: {reservation.checkInDate}
                     </Typography>
                     <Typography variant="body2">
-                      Check-out: {reservation.check_out_date}
+                      Check-out Date: {reservation.checkOutDate}
                     </Typography>
                     <Typography variant="body2">
-                      Quantity: {reservation.quantity}
+                      Hotel Name: {reservation.hotelName}
                     </Typography>
                     <Typography variant="body2">
-                      Guests: {reservation.num_guests}
+                      Number of Guests: {reservation.numGuests}
                     </Typography>
                     <Typography variant="body2">
-                      Price/Night: {reservation.price_per_night}
-                    </Typography>
-                    <Typography variant="body2">
-                      Total Price: {reservation.total_price}
+                      Total Price: {reservation.totalPrice}
                     </Typography>
                     <Typography variant="body2">
                       Status: {reservation.status}
-                    </Typography>
-                    <Typography variant="body2">
-                      Created At: {reservation.created_at}
                     </Typography>
                   </CardContent>
                 </Card>

@@ -1,5 +1,6 @@
 package com.example.hotelapp.controller;
 
+import com.example.hotelapp.dto.ManagerReservationDTO;
 import com.example.hotelapp.model.Booking;
 import com.example.hotelapp.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,11 @@ public class ManagerReservationsController {
     @Autowired
     private BookingRepository bookingRepository;
 
-    // ManagerReservationsController.java
-@GetMapping("/manager")
-public ResponseEntity<List<Map<String, Object>>> getReservationsByManager(@RequestParam Long managerId) {
-    List<Map<String, Object>> reservations = bookingRepository.findReservationsByManagerId(managerId);
+    @GetMapping("/manager")
+public ResponseEntity<List<ManagerReservationDTO>> getReservationsByManager(@RequestParam Long managerId) {
+    List<ManagerReservationDTO> reservations = bookingRepository.findReservationsByManagerId(managerId);
     return ResponseEntity.ok(reservations);
 }
+
 
 }
