@@ -30,7 +30,7 @@ const ManagerHotels = () => {
   const [showAmenitySelector, setShowAmenitySelector] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   
-  // Room detayları için state (room alanı dokunulmamış)
+  // Room detayları için state (bu alan dokunulmamış)
   const [roomData, setRoomData] = useState({
     roomType: "",
     pricePerNight: "",
@@ -38,15 +38,15 @@ const ManagerHotels = () => {
   });
   const [rooms, setRooms] = useState([]);
 
-  // Tüm amenities verilerini backend'den çekmek için state
+  // Backend'den çekilecek tüm amenity kayıtları için state
   const [allAmenities, setAllAmenities] = useState([]);
 
-  // Backend'den tüm amenity verilerini çekiyoruz
+  // Tüm amenities listesini backend'den çekiyoruz
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/hotelamenities")
       .then((response) => {
-        setAllAmenities(response.data);  
+        setAllAmenities(response.data);
       })
       .catch((err) => {
         console.error("Error fetching hotel amenities:", err);
@@ -55,19 +55,18 @@ const ManagerHotels = () => {
 
   useEffect(() => {
     if (user && user.userId) {
-      // Manager'a ait otelleri çekiyoruz.
+      // Manager'a ait otelleri çekiyoruz
       axios
         .get(`http://localhost:8080/api/hotels/manager?userId=${user.userId}`)
         .then((response) => {
           const hotelsData = response.data;
           setHotels(hotelsData);
-          // Eğer listede en az bir otel varsa, amenities bilgilerini ayrı endpoint'ten getiriyoruz.
+          // Otel listesinde en az bir kayıt varsa, amenities bilgisini ayrı endpoint'ten çekiyoruz
           if (hotelsData.length > 0) {
             const firstHotelId = hotelsData[0].hotelId;
             axios
               .get(`http://localhost:8080/api/hotels/${firstHotelId}/amenities`)
               .then((res) => {
-                // Çekilen amenities string'ini ilgili otelin objesine ekliyoruz.
                 const updatedHotel = { ...hotelsData[0], amenities: res.data };
                 setHotels((prevHotels) => {
                   const updatedHotels = [...prevHotels];
@@ -89,8 +88,19 @@ const ManagerHotels = () => {
 
   const hotelToEdit = hotels.length > 0 ? hotels[0] : null;
 
+  // Güncellenen amenity seçimlerini event parametresiyle kontrol eden fonksiyon
+  const toggleAmenity = (amenity, checked) => {
+    if (checked) {
+      // Eğer seçili değilse ekle
+      setSelectedAmenities((prev) => [...prev, amenity]);
+    } else {
+      // Seçiliyse listeden çıkar
+      setSelectedAmenities((prev) => prev.filter((a) => a !== amenity));
+    }
+  };
+
   const handleEdit = (hotel) => {
-    // Düzenleme sırasında, mevcut amenity bilgisi varsa string'i diziye çeviriyoruz.
+    // Otelin amenities bilgisi varsa, bunları virgülle ayrılmış string'den diziye çeviriyoruz.
     const amenitiesArray = hotel.amenities
       ? hotel.amenities.split(",").map((a) => a.trim())
       : [];
@@ -112,7 +122,7 @@ const ManagerHotels = () => {
         address: editHotel.address ?? "",
         pricePerNight: editHotel.pricePerNight ?? 0,
         capacity: editHotel.capacity ?? 0,
-        amenities: selectedAmenities.join(", "), // Seçili amenity'leri virgülle ayırıyoruz.
+        amenities: selectedAmenities.join(", "),  // Seçili amenity'leri virgülle ayırarak gönderiyoruz.
         managerId: editHotel.managerId ?? "",
         checkInTime: editHotel.checkInTime ?? "",
         checkOutTime: editHotel.checkOutTime ?? "",
@@ -154,7 +164,7 @@ const ManagerHotels = () => {
     setEditHotel({ ...editHotel, [field]: value });
   };
 
-  // Oda işlemleri aynı kalıyor
+  // Oda işlemleri (dokunulmuyor)
   const handleAddRoom = () => {
     if (!roomData.roomType || roomData.pricePerNight === "" || roomData.totalRoom === "") {
       alert("Please fill in all room details before adding.");
@@ -375,11 +385,10 @@ const ManagerHotels = () => {
             </Box>
 
             <Box marginTop={2}>
-              <Button 
-                variant="outlined" 
+              <Button
+                variant="outlined"
                 onClick={() => {
-                  // Düzenleme modunda amenity modalını açarken, mevcut editHotel içerisindeki
-                  // amenities bilgisi varsa, onu diziye dönüştürüp selectedAmenities state'ine set ediyoruz.
+                  // Modal açılırken, editHotel'den gelen amenities varsa diziye dönüştür
                   if (editHotel && editHotel.amenities) {
                     const preSelected = editHotel.amenities.split(",").map(a => a.trim());
                     setSelectedAmenities(preSelected);
@@ -399,8 +408,8 @@ const ManagerHotels = () => {
                       key={amenity.amenityId}
                       control={
                         <Checkbox 
-                          checked={selectedAmenities.includes(amenity.name)} 
-                          onChange={() => toggleAmenity(amenity.name)} 
+                          checked={selectedAmenities.includes(amenity.name)}
+                          onChange={(e) => toggleAmenity(amenity.name, e.target.checked)}
                         />
                       }
                       label={amenity.name}
