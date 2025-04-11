@@ -21,31 +21,32 @@ public class HotelAmenityJunctionService {
     private HotelAmenityJunctionRepository hotelAmenityJunctionRepository;
 
     /**
-     * Güncelleme sırasında, formdan gelen virgülle ayrılmış amenity isimlerini alıp,
-     * ilgili otelin amenity junction kayıtlarını günceller.
+     * Belirli bir otel için amenity ilişkilerini günceller.
+     * Gelen amenities string'ini virgülle ayrılmış amenity isimlerine çevirir,
+     * mevcut junction kayıtlarını siler ve yeni kayıtları ekler.
      *
      * @param hotelId Otelin ID'si.
-     * @param amenitiesStr Virgülle ayrılmış amenity isimleri (ör. "Free Wi-Fi, Swimming Pool").
+     * @param amenitiesStr Virgülle ayrılmış amenity isimleri (ör. "Free Wi-Fi, Gym, Restaurant").
      */
     @Transactional
     public void updateHotelAmenities(Long hotelId, String amenitiesStr) {
+        // Gelen string boşsa mevcut junction kayıtlarını temizle
         if (amenitiesStr == null || amenitiesStr.trim().isEmpty()) {
-            // Eğer boş geliyorsa, mevcut amenity junction kayıtlarını temizle
             hotelAmenityJunctionRepository.deleteByHotelId(hotelId);
             return;
         }
 
-        // Amenity isimlerini ayır, boşluklardan temizle ve tekrarlayanları çıkart:
+        // Amenity isimlerini virgül ile ayır, boşlukları temizle ve tekrar edenleri kaldır
         List<String> amenityNames = Arrays.stream(amenitiesStr.split(","))
                                           .map(String::trim)
                                           .filter(s -> !s.isEmpty())
-                                          .distinct() // yalnızca benzersiz değerler
+                                          .distinct()
                                           .collect(Collectors.toList());
 
-        // Önce mevcut junction kayıtlarını siliyoruz
+        // Önce mevcut junction kayıtlarını sil
         hotelAmenityJunctionRepository.deleteByHotelId(hotelId);
 
-        // Her amenity ismi için:
+        // Her amenity ismi için, amenity kaydını bul ve junction kaydı oluştur
         for (String name : amenityNames) {
             HotelAmenity amenity = hotelAmenityRepository.findTopByName(name);
             if (amenity != null) {
@@ -54,7 +55,7 @@ public class HotelAmenityJunctionService {
                 junction.setAmenityId(amenity.getAmenityId());
                 hotelAmenityJunctionRepository.save(junction);
             } else {
-                // İlgili amenity adı bulunamazsa, log’a yazıyoruz
+                // Eğer amenity bulunamazsa, log kayıtlarına yazılabilir
                 System.err.println("Amenity not found for name: " + name);
             }
         }

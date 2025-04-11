@@ -50,8 +50,12 @@ public class ManagerHotel {
     // Nullable false ve varsayılan değeri false olarak ayarlandı
     @Column(nullable = false, columnDefinition = "boolean default false")
     private Boolean featured = false;
+    
+    // Otelin amenity bilgilerini virgülle ayrılmış string olarak saklamak için alan
+    @Column(columnDefinition = "TEXT")
+    private String amenities;
 
-    // Getters and setters
+    // Getters and Setters
 
     public Long getHotelId() {
         return hotelId;
@@ -149,8 +153,6 @@ public class ManagerHotel {
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
-    
-    
     public Double getPricePerNight() {
         return pricePerNight;
     }
@@ -162,5 +164,13 @@ public class ManagerHotel {
     }
     public void setFeatured(Boolean featured) {
         this.featured = featured;
+    }
+    
+    // Yeni eklenen amenity alanı için getter & setter
+    public String getAmenities() {
+        return amenities;
+    }
+    public void setAmenities(String amenities) {
+        this.amenities = amenities;
     }
 }
