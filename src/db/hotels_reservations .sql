@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 11 Nis 2025, 15:36:39
+-- Üretim Zamanı: 11 Nis 2025, 20:03:09
 -- Sunucu sürümü: 10.4.32-MariaDB
--- PHP Sürümü: 8.2.12
+-- PHP Sürümü: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -46,12 +46,15 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`booking_id`, `user_id`, `room_id`, `check_in_date`, `check_out_date`, `quantity`, `num_guests`, `price_per_night`, `total_price`, `status`, `created_at`) VALUES
-(1, 1, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07'),
-(2, 2, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 13:22:07'),
-(3, 3, 1, '2025-04-15', '2025-04-17', 1, 3, 100.00, 230.00, 'confirmed', '2025-04-10 13:22:07'),
-(4, 4, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 13:22:07'),
-(9, 2, 1, '2025-04-18', '2025-04-22', 1, 3, 150.00, 1510.00, 'pending', '2025-04-10 17:04:45'),
-(10, 1, 20, '2025-04-11', '2025-04-12', 1, 1, 100.00, 110.00, 'pending', '2025-04-11 13:33:47');
+(1, 1, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 10:22:07'),
+(2, 2, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 10:22:07'),
+(3, 3, 1, '2025-04-15', '2025-04-17', 1, 3, 100.00, 230.00, 'confirmed', '2025-04-10 10:22:07'),
+(4, 4, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 10:22:07'),
+(9, 2, 1, '2025-04-18', '2025-04-22', 1, 3, 150.00, 1510.00, 'pending', '2025-04-10 14:04:45'),
+(10, 1, 20, '2025-04-11', '2025-04-12', 1, 1, 100.00, 110.00, 'confirmed', '2025-04-11 10:33:47'),
+(11, 1, 20, '2025-04-30', '2025-05-01', 1, 1, 100.00, 110.00, 'rejected', '2025-04-11 13:03:17'),
+(12, 31, 20, '2025-04-12', '2025-04-13', 1, 2, 100.00, 210.00, 'pending', '2025-04-11 17:01:16'),
+(13, 31, 16, '2025-04-12', '2025-04-13', 1, 2, 100.00, 210.00, 'pending', '2025-04-11 17:02:17');
 
 -- --------------------------------------------------------
 
@@ -207,12 +210,12 @@ INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VA
 (13, 3, '/hotel_images/hotel-img13.jpg', 0),
 (14, 3, '/hotel_images/hotel-img14.jpg', 0),
 (15, 3, '/hotel_images/hotel-img15.jpg', 0),
-(16, 4, '/hotel_images/hotel-img16.jpg', 1),
-(17, 4, '/hotel_images/hotel-img17.jpg', 0),
+(16, 4, '/hotel_images/hotel-img16.jpg', 0),
+(17, 4, '/hotel_images/hotel-img17.jpg', 1),
 (18, 4, '/hotel_images/hotel-img18.jpg', 0),
 (19, 4, '/hotel_images/hotel-img19.jpg', 0),
-(20, 5, '/hotel_images/hotel-img20.jpg', 1),
-(21, 5, '/hotel_images/hotel-img21.jpg', 0),
+(20, 5, '/hotel_images/hotel-img20.jpg', 0),
+(21, 5, '/hotel_images/hotel-img21.jpg', 1),
 (22, 5, '/hotel_images/hotel-img22.jpg', 0),
 (23, 5, '/hotel_images/hotel-img23.jpg', 0),
 (24, 5, '/hotel_images/hotel-img24.jpg', 0),
@@ -305,7 +308,7 @@ CREATE TABLE `hotels` (
 --
 
 INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `country`, `latitude`, `longitude`, `description`, `star_rating`, `check_in_time`, `check_out_time`, `cancellation_policy`, `status`, `created_at`, `capacity`, `price_per_night`, `featured`) VALUES
-(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'Londona', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style...', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
+(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'London', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style...', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (2, 2, 'Royal Palace London', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (3, 3, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
 (4, 4, 'Skyline Tower London', '321 Skyline Avenue, London', 'London', 'United Kingdom', 51.515, -0.141, 'Reach new heights...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
@@ -741,7 +744,7 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `contact_messages`
