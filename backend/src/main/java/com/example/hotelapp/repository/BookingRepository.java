@@ -50,11 +50,14 @@ List<Booking> findAllByUserIdWithRoomImages(@Param("userId") Long userId);
 
 
     // Manager'ın bağlı olduğu otellerdeki rezervasyonları getiren native SQL sorgusu
-    @Query(value = "SELECT b.* " +
-                   "FROM bookings b " +
-                   "JOIN rooms r ON b.room_id = r.room_id " +
-                   "JOIN managers m ON m.hotel_id = r.hotel_id " +
-                   "WHERE m.manager_id = :managerId", nativeQuery = true)
-    List<Booking> findReservationsByManagerId(@Param("managerId") Long managerId);
+    // BookingRepository.java
+@Query(value = "SELECT b.booking_id, b.room_id, b.check_in_date, b.check_out_date, " +
+"b.quantity, b.num_guests, b.price_per_night, b.total_price, " +
+"b.status, b.created_at " +
+"FROM bookings b " +
+"JOIN rooms r ON b.room_id = r.room_id " +
+"JOIN managers m ON m.hotel_id = r.hotel_id " +
+"WHERE m.manager_id = :managerId", nativeQuery = true)
+List<Map<String, Object>> findReservationsByManagerId(@Param("managerId") Long managerId);
 
 }
