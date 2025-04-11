@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 11 Nis 2025, 20:03:09
+-- Üretim Zamanı: 11 Nis 2025, 21:30:24
 -- Sunucu sürümü: 10.4.32-MariaDB
--- PHP Sürümü: 8.1.25
+-- PHP Sürümü: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -300,30 +300,31 @@ CREATE TABLE `hotels` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `capacity` int(11) DEFAULT NULL,
   `price_per_night` double DEFAULT NULL,
-  `featured` tinyint(1) NOT NULL DEFAULT 0
+  `featured` tinyint(1) NOT NULL DEFAULT 0,
+  `amenities` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Tablo döküm verisi `hotels`
 --
 
-INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `country`, `latitude`, `longitude`, `description`, `star_rating`, `check_in_time`, `check_out_time`, `cancellation_policy`, `status`, `created_at`, `capacity`, `price_per_night`, `featured`) VALUES
-(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'London', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style...', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(2, 2, 'Royal Palace London', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(3, 3, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(4, 4, 'Skyline Tower London', '321 Skyline Avenue, London', 'London', 'United Kingdom', 51.515, -0.141, 'Reach new heights...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(5, 5, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bali', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(6, 6, 'Tropical Paradise Bali', '789 Island Street, Bali', 'Bali', 'Indonesia', -8.414, 115.195, 'Dive into luxury...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(7, 7, 'Golden Sands Resort', '999 Ocean Drive, Bali', 'Bali', 'Indonesia', -8.42, 115.2, 'Relax on golden sands...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(8, 8, 'Island Escape Hotel', '222 Paradise Lane, Bali', 'Bali', 'Indonesia', -8.43, 115.21, 'A secluded retreat...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(9, 9, 'Tokyo Sky Hotel', '789 Shibuya, Tokyo', 'Tokyo', 'Japan', 35.658, 139.7016, 'Enjoy panoramic city views...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(10, 10, 'Shinjuku Business Hotel', '45 Business Street, Tokyo', 'Tokyo', 'Japan', 35.6938, 139.7034, 'Perfect for business travelers...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(11, 11, 'Cherry Blossom Resort', '22 Sakura Avenue, Tokyo', 'Tokyo', 'Japan', 35.6895, 139.6917, 'Experience traditional Japanese hospitality...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(12, 12, 'Luxury Tower Tokyo', '567 Ginza Road, Tokyo', 'Tokyo', 'Japan', 0, 0, 'Enjoy penthouse suites...', 5, '14:00:00', '12:00:00', 'Free cancellation...', NULL, '2025-04-06 13:58:50', 0, 0, 0),
-(13, 13, 'Eiffel Grand Hotel', '123 Champs Elysees, Paris', 'Paris', 'France', 48.8566, 2.3522, 'Stay steps away from the Eiffel Tower...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(14, 14, 'Louvre Palace Hotel', '89 Louvre Street, Paris', 'Paris', 'France', 48.8606, 2.3376, 'Discover art and culture...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0),
-(15, 15, 'Seine River Hotel', '456 Riverfront, Paris', 'Paris', 'France', 48.857, 2.354, 'Enjoy riverside dining...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0),
-(16, 16, 'Parisian Royal Suites', '777 Palace Road, Paris', 'Paris', 'France', 48.8582, 2.35, 'Royal treatment...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0);
+INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `country`, `latitude`, `longitude`, `description`, `star_rating`, `check_in_time`, `check_out_time`, `cancellation_policy`, `status`, `created_at`, `capacity`, `price_per_night`, `featured`, `amenities`) VALUES
+(1, 1, 'The Great London Hotel', '123 Oxford Street, London', 'London', 'United Kingdom', 51.5074, -0.1278, 'Experience the heart of London in style...', 5, '14:00:00', '12:00:00', 'Free cancellation up to 24 hours.', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(2, 2, 'Royal Palace London', '10 Downing Street, London', 'London', 'United Kingdom', 51.5034, -0.1276, 'Stay like royalty...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(3, 3, 'London River Hotel', '567 River Road, London', 'London', 'United Kingdom', 51.509, -0.118, 'Wake up to stunning river views...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(4, 4, 'Skyline Tower London', '321 Skyline Avenue, London', 'London', 'United Kingdom', 51.515, -0.141, 'Reach new heights...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(5, 5, 'Bali Beach Resort', '456 Sunset Road, Bali', 'Bali', 'Indonesia', -8.4095, 115.1889, 'Enjoy tropical paradise...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(6, 6, 'Tropical Paradise Bali', '789 Island Street, Bali', 'Bali', 'Indonesia', -8.414, 115.195, 'Dive into luxury...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(7, 7, 'Golden Sands Resort', '999 Ocean Drive, Bali', 'Bali', 'Indonesia', -8.42, 115.2, 'Relax on golden sands...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(8, 8, 'Island Escape Hotel', '222 Paradise Lane, Bali', 'Bali', 'Indonesia', -8.43, 115.21, 'A secluded retreat...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(9, 9, 'Tokyo Sky Hotel', '789 Shibuya, Tokyo', 'Tokyo', 'Japan', 35.658, 139.7016, 'Enjoy panoramic city views...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(10, 10, 'Shinjuku Business Hotel', '45 Business Street, Tokyo', 'Tokyo', 'Japan', 35.6938, 139.7034, 'Perfect for business travelers...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(11, 11, 'Cherry Blossom Resort', '22 Sakura Avenue, Tokyo', 'Tokyo', 'Japan', 35.6895, 139.6917, 'Experience traditional Japanese hospitality...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(12, 12, 'Luxury Tower Tokyo', '567 Ginza Road, Tokyo', 'Tokyo', 'Japan', 0, 0, 'Enjoy penthouse suites...', 5, '14:00:00', '12:00:00', 'Free cancellation...', NULL, '2025-04-06 13:58:50', 0, 0, 0, NULL),
+(13, 13, 'Eiffel Grand Hotel', '123 Champs Elysees, Paris', 'Paris', 'France', 48.8566, 2.3522, 'Stay steps away from the Eiffel Tower...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(14, 14, 'Louvre Palace Hotel', '89 Louvre Street, Paris', 'Paris', 'France', 48.8606, 2.3376, 'Discover art and culture...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
+(15, 15, 'Seine River Hotel', '456 Riverfront, Paris', 'Paris', 'France', 48.857, 2.354, 'Enjoy riverside dining...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0, NULL),
+(16, 16, 'Parisian Royal Suites', '777 Palace Road, Paris', 'Paris', 'France', 48.8582, 2.35, 'Royal treatment...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -522,7 +523,8 @@ INSERT INTO `roomimages` (`image_id`, `room_id`, `image_url`, `is_primary`) VALU
 (28, 21, '/public/room_images/room-img01.jpg', 1),
 (29, 22, '/public/room_images/room-img02.jpg', 1),
 (30, 23, '/public/room_images/room-img02.jpg', 1),
-(31, 24, '/public/room_images/room-img02.jpg', 1);
+(31, 24, '/public/room_images/room-img02.jpg', 1),
+(32, 25, '/public/room_images/room-img03.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -551,30 +553,31 @@ CREATE TABLE `rooms` (
 --
 
 INSERT INTO `rooms` (`room_id`, `hotel_id`, `room_type`, `description`, `price_per_night`, `capacity`, `total_rooms`, `size`, `bed_type`, `created_at`, `name`, `room_size`, `image_id`) VALUES
-(1, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:38:04', 'Deluxe Sea View', 35, NULL),
-(2, 1, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:38:04', 'Standard Comfort', 25, NULL),
+(1, 1, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 160.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:38:04', 'Deluxe Sea View', 35, NULL),
+(2, 1, 'Standard Room', 'Comfortable room with essential facilities.', 120.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:38:04', 'Standard Comfort', 25, NULL),
 (3, 2, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:40:01', 'Deluxe Sea View', 35, NULL),
-(4, 2, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:01', 'Standard Comfort', 25, NULL),
-(5, 3, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 150.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:40:20', 'Deluxe Sea View', 35, NULL),
-(6, 3, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(4, 2, 'Standard Room', 'Comfortable room with essential facilities.', 90.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:01', 'Standard Comfort', 25, NULL),
+(5, 3, 'Deluxe Room', 'Spacious room with sea view and modern amenities.', 130.00, 2, 5, '35 sqm', 'King Size', '2025-04-09 13:40:20', 'Deluxe Sea View', 35, NULL),
+(6, 3, 'Standard Room', 'Comfortable room with essential facilities.', 70.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
 (7, 4, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
 (8, 4, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
 (9, 5, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
 (10, 5, 'Family Room', 'Comfortable room for your family peace', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
-(11, 6, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
-(12, 7, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
-(13, 8, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
-(14, 9, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
-(15, 10, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
-(16, 11, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
-(17, 12, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
-(18, 14, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
-(19, 15, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(11, 6, 'Standard Room', 'Comfortable room with essential facilities.', 90.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(12, 7, 'Standard Room', 'Comfortable room with essential facilities.', 110.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(13, 8, 'Standard Room', 'Comfortable room with essential facilities.', 115.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(14, 9, 'Standard Room', 'Comfortable room with essential facilities.', 175.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(15, 10, 'Standard Room', 'Comfortable room with essential facilities.', 90.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(16, 11, 'Standard Room', 'Comfortable room with essential facilities.', 75.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(17, 12, 'Standard Room', 'Comfortable room with essential facilities.', 160.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(18, 14, 'Standard Room', 'Comfortable room with essential facilities.', 140.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(19, 15, 'Standard Room', 'Comfortable room with essential facilities.', 65.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
 (20, 16, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
-(21, 9, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(21, 9, 'Deluxe Room', 'Comfortable room with essential facilities.', 250.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Deluxe Room', 25, NULL),
 (22, 6, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
 (23, 7, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
-(24, 8, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL);
+(24, 8, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
+(25, 13, 'Standard Room', 'Comfortable room with essential facilities.', 125.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL);
 
 -- --------------------------------------------------------
 
@@ -804,13 +807,13 @@ ALTER TABLE `roomamenities`
 -- Tablo için AUTO_INCREMENT değeri `roomimages`
 --
 ALTER TABLE `roomimages`
-  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `room_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `room_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `users`

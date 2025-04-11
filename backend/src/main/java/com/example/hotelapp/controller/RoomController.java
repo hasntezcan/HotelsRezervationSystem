@@ -1,12 +1,14 @@
 package com.example.hotelapp.controller;
 
 import com.example.hotelapp.model.Room;
+import com.example.hotelapp.repository.RoomRepository;
 import com.example.hotelapp.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,9 @@ import java.util.Optional;
 @RequestMapping("/api/rooms")
 public class RoomController {
 
+    @Autowired
+    private RoomRepository roomRepository;
+    
     @Autowired
     private RoomService roomService;
 
@@ -86,6 +91,20 @@ public class RoomController {
         long totalRooms = roomService.getTotalRooms();
         return ResponseEntity.ok(totalRooms);
     }
+
+
+
+    @GetMapping("/hotel/{hotelId}/min-price")
+    public ResponseEntity<?> getMinRoomPriceByHotelId(@PathVariable Long hotelId) {
+        BigDecimal minPrice = roomRepository.findMinPriceByHotelId(hotelId);
+        if (minPrice != null) {
+            return ResponseEntity.ok(Map.of("minPrice", minPrice));
+        } else {
+            return ResponseEntity.status(404).body(Map.of("message", "No rooms found for this hotel."));
+        }
+    }
+    
+
 
     // ✅ Oda kapasite kontrolü (adult + children)
     @GetMapping("/{roomId}/check-capacity")

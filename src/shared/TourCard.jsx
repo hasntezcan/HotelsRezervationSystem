@@ -4,63 +4,72 @@ import { Link } from 'react-router-dom';
 import './tour-card.css';
 
 const TourCard = ({ tour, checkIn, checkOut }) => {
-  // tour nesnesinde hotelId veya _id olabilir, hangisi varsa onu kullanıyoruz.
   const { hotelId, _id } = tour;
-  const id = hotelId || _id; // ID değeri
+  const id = hotelId || _id;
 
-  // Otel bilgilerini state'e alıyoruz.
   const [hotel, setHotel] = useState(tour);
+  const [price, setPrice] = useState(null); // ✅ separate price state
 
-  // Eğer tour prop’u değişirse, state’i güncelleyelim.
   useEffect(() => {
     setHotel(tour);
   }, [tour]);
 
+  // ✅ Get primary hotel image
   useEffect(() => {
-    // Eğer id tanımlı değilse isteği göndermiyoruz.
-    if (!id) {
-      console.error("Hotel ID bulunamadı. tour nesnesi:", tour);
-      return;
-    }
+    if (!id) return;
 
-    // Backend'deki HotelImageController'dan primary resmi getiren endpoint çağrılıyor.
     fetch(`http://localhost:8080/api/hotel-images/${id}/primary`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Hata: ${response.status}`);
-        }
-        return response.json();
+      .then(res => {
+        if (!res.ok) throw new Error("Resim yüklenemedi");
+        return res.json();
       })
       .then(data => {
-        if (data && data.imageUrl) {
-          // Mevcut otel verilerine primaryImageUrl bilgisini ekliyoruz.
-          setHotel(prevHotel => ({ ...prevHotel, primaryImageUrl: data.imageUrl }));
+        if (data?.imageUrl) {
+          setHotel(prev => ({ ...prev, primaryImageUrl: data.imageUrl }));
         }
       })
-      .catch(error => console.error('Primary resim alınırken hata oluştu:', error));
-  }, [id, tour]);
+      .catch(err => console.error("Primary resim hatası:", err));
+  }, [id]);
 
-  // Otelin tam bilgilerini getirmek için yeni bir fetch isteği.
+  // ✅ Get full hotel info
   useEffect(() => {
     if (!id) return;
     fetch(`http://localhost:8080/api/hotels/${id}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Hata: ${response.status}`);
-        }
-        return response.json();
+      .then(res => {
+        if (!res.ok) throw new Error("Hotel verisi alınamadı");
+        return res.json();
       })
       .then(data => {
-        // Önceki primaryImageUrl bilgisini korumak için mevcut state ile birleştiriyoruz.
-        setHotel(prevHotel => ({ ...data, primaryImageUrl: prevHotel.primaryImageUrl }));
+        setHotel(prev => ({ ...data, primaryImageUrl: prev.primaryImageUrl }));
       })
-      .catch(error => console.error('Otel bilgileri alınırken hata oluştu:', error));
+      .catch(err => console.error("Otel detay hatası:", err));
   }, [id]);
 
-  // Tarihler varsa, booking URL'si buna göre oluşturuluyor.
-  const bookingUrl = checkIn && checkOut
-    ? `/hotels/${id}?startDate=${checkIn}&endDate=${checkOut}`
-    : `/hotels/${id}`;
+  // ✅ Get min room price
+  useEffect(() => {
+    if (!id) return;
+    fetch(`http://localhost:8080/api/rooms/hotel/${id}/min-price`)
+      .then(res => {
+        if (!res.ok) throw new Error("Fiyat alınamadı");
+        return res.json();
+      })
+      .then(data => {
+        if (data.minPrice !== undefined && data.minPrice !== null) {
+          setPrice(data.minPrice);
+        } else {
+          setPrice(null);
+        }
+      })
+      .catch(err => {
+        console.error("Fiyat hatası:", err);
+        setPrice(null);
+      });
+  }, [id]);
+
+  const bookingUrl =
+    checkIn && checkOut
+      ? `/hotels/${id}?startDate=${checkIn}&endDate=${checkOut}`
+      : `/hotels/${id}`;
 
   return (
     <div className='tour__card'>
@@ -69,7 +78,13 @@ const TourCard = ({ tour, checkIn, checkOut }) => {
           {hotel.primaryImageUrl ? (
             <img src={hotel.primaryImageUrl} alt="hotel-img" />
           ) : (
-            <div style={{ height: '200px', backgroundColor: '#eee', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{
+              height: '200px',
+              backgroundColor: '#eee',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
               Yükleniyor...
             </div>
           )}
@@ -92,7 +107,12 @@ const TourCard = ({ tour, checkIn, checkOut }) => {
           </h5>
 
           <div className="card__bottom d-flex align-items-center justify-content-between mt-3">
-            <h5>${hotel.pricePerNight} <span>/per night</span></h5>
+            <h5>
+              {price !== null && !isNaN(price)
+                ? `$${parseFloat(price).toFixed(2)}`
+                : 'No rooms available'}
+              <span>/per night</span>
+            </h5>
             <Link to={bookingUrl}>
               <button className='booking__btn'>Book Now</button>
             </Link>
