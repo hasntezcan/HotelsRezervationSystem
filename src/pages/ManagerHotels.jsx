@@ -38,7 +38,7 @@ const ManagerHotels = () => {
   });
   const [rooms, setRooms] = useState([]);
 
-  // Backend'den çekilecek tüm amenity kayıtları için state
+  // Backend'den çekilecek tüm amenity kayıtlarını tutmak için state
   const [allAmenities, setAllAmenities] = useState([]);
 
   // Tüm amenities listesini backend'den çekiyoruz
@@ -88,19 +88,16 @@ const ManagerHotels = () => {
 
   const hotelToEdit = hotels.length > 0 ? hotels[0] : null;
 
-  // Güncellenen amenity seçimlerini event parametresiyle kontrol eden fonksiyon
+  // Seçili amenity'leri kontrol eden fonksiyon; checkBox event'inden değeri alır.
   const toggleAmenity = (amenity, checked) => {
     if (checked) {
-      // Eğer seçili değilse ekle
       setSelectedAmenities((prev) => [...prev, amenity]);
     } else {
-      // Seçiliyse listeden çıkar
       setSelectedAmenities((prev) => prev.filter((a) => a !== amenity));
     }
   };
 
   const handleEdit = (hotel) => {
-    // Otelin amenities bilgisi varsa, bunları virgülle ayrılmış string'den diziye çeviriyoruz.
     const amenitiesArray = hotel.amenities
       ? hotel.amenities.split(",").map((a) => a.trim())
       : [];
@@ -122,7 +119,7 @@ const ManagerHotels = () => {
         address: editHotel.address ?? "",
         pricePerNight: editHotel.pricePerNight ?? 0,
         capacity: editHotel.capacity ?? 0,
-        amenities: selectedAmenities.join(", "),  // Seçili amenity'leri virgülle ayırarak gönderiyoruz.
+        amenities: selectedAmenities.join(", "),
         managerId: editHotel.managerId ?? "",
         checkInTime: editHotel.checkInTime ?? "",
         checkOutTime: editHotel.checkOutTime ?? "",
@@ -183,6 +180,18 @@ const ManagerHotels = () => {
     setRooms(updatedRooms);
   };
 
+  // Delete Hotel butonunun işlevini yerine getiren fonksiyon
+  const deleteHotel = async (hotelId) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/hotels/${hotelId}`);
+      setHotels(hotels.filter((h) => h.hotelId !== hotelId));
+      alert("Hotel deleted successfully!");
+    } catch (err) {
+      console.error("Error deleting hotel:", err);
+      alert("Error deleting hotel");
+    }
+  };
+
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (
@@ -220,28 +229,26 @@ const ManagerHotels = () => {
         <Grid container spacing={4}>
           {/* Hotel Alanı */}
           <Grid item xs={12} sm={6}>
-            {hotelToEdit && (
+            {hotels.length > 0 && (
               <Card style={{ borderRadius: "50px", padding: "20px" }}>
                 <CardContent>
                   <Typography variant="h5" fontWeight="bold">
-                    {hotelToEdit.name}
+                    {hotels[0].name}
                   </Typography>
-                  <Typography><strong>City:</strong> {hotelToEdit.city}</Typography>
-                  <Typography><strong>Country:</strong> {hotelToEdit.country}</Typography>
-                  <Typography><strong>Description:</strong> {hotelToEdit.description}</Typography>
-                  <Typography><strong>Star Rating:</strong> {hotelToEdit.starRating}</Typography>
-                  <Typography><strong>Address:</strong> {hotelToEdit.address}</Typography>
-                  <Typography><strong>Amenities:</strong> {hotelToEdit.amenities}</Typography>
+                  <Typography><strong>City:</strong> {hotels[0].city}</Typography>
+                  <Typography><strong>Country:</strong> {hotels[0].country}</Typography>
+                  <Typography><strong>Description:</strong> {hotels[0].description}</Typography>
+                  <Typography><strong>Star Rating:</strong> {hotels[0].starRating}</Typography>
+                  <Typography><strong>Address:</strong> {hotels[0].address}</Typography>
+                  <Typography><strong>Amenities:</strong> {hotels[0].amenities}</Typography>
                   <Box display="flex" gap={2} mt={2}>
-                    <Button variant="outlined" onClick={() => handleEdit(hotelToEdit)}>
+                    <Button variant="outlined" onClick={() => handleEdit(hotels[0])}>
                       Edit Hotel
                     </Button>
                     <Button 
                       variant="outlined" 
                       color="error" 
-                      onClick={() => {
-                        setHotels(hotels.filter(h => h.hotelId !== hotelToEdit.hotelId));
-                      }}
+                      onClick={() => deleteHotel(hotels[0].hotelId)}
                     >
                       Delete Hotel
                     </Button>
@@ -388,7 +395,6 @@ const ManagerHotels = () => {
               <Button
                 variant="outlined"
                 onClick={() => {
-                  // Modal açılırken, editHotel'den gelen amenities varsa diziye dönüştür
                   if (editHotel && editHotel.amenities) {
                     const preSelected = editHotel.amenities.split(",").map(a => a.trim());
                     setSelectedAmenities(preSelected);
