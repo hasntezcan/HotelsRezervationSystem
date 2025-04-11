@@ -129,4 +129,21 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found");
         }
     }
+
+
+    @PutMapping("/{bookingId}/status")
+public ResponseEntity<Booking> updateBookingStatus(
+        @PathVariable Long bookingId, 
+        @RequestParam String status) {
+    Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+    if (optionalBooking.isPresent()) {
+        Booking booking = optionalBooking.get();
+        booking.setStatus(status);
+        Booking updated = bookingRepository.save(booking);
+        return ResponseEntity.ok(updated);
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+}
+
 }

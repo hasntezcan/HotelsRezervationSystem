@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Grid, Card, CardContent, Typography, Box } from "@mui/material";
+import { Grid, Card, CardContent, Typography, Box, Button } from "@mui/material";
+import { FaCheck, FaTimes } from "react-icons/fa";
 import SidebarManager from "../components/Sidebar_manager";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
@@ -7,22 +8,15 @@ import { AuthContext } from "../context/AuthContext";
 // Tarih verisini "YYYY-MM-DD" formatına çevirmek için yardımcı fonksiyon.
 const formatDate = (dateValue) => {
   if (!dateValue) return "";
-  
-  // Eğer tarih bir dizi olarak gelmişse (ör: [2025, 4, 11])
   if (Array.isArray(dateValue)) {
     const [year, month, day] = dateValue;
-    // Ay ve günü 2 hane olacak şekilde dolduralım
     const m = month.toString().padStart(2, "0");
     const d = day.toString().padStart(2, "0");
     return `${year}-${m}-${d}`;
   }
-  
-  // Eğer tarih string ise ve format zaten "yyyy-mm-dd" ise direk döndür.
   if (typeof dateValue === "string" && dateValue.length === 10) {
     return dateValue;
   }
-  
-  // Diğer durumlarda, tarih değerini doğrudan string'e çevirir.
   return dateValue.toString();
 };
 
@@ -32,7 +26,6 @@ const ManagerReservations = () => {
   const [loading, setLoading] = useState(true);
   const [reservations, setReservations] = useState([]);
 
-  // Backend'den manager profilini çekip managerId'yi elde ediyoruz.
   const fetchManagerId = async () => {
     try {
       if (user && user.userId) {
@@ -75,8 +68,6 @@ const ManagerReservations = () => {
     }
   }, [managerId]);
 
-  // Backend'de manager'a ait rezervasyonları getiren endpoint.
-  // Bu endpoint ManagerReservationDTO nesnelerini döndürmekte.
   const fetchReservations = async () => {
     try {
       const response = await axios.get(
@@ -88,6 +79,31 @@ const ManagerReservations = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Yeni güncelleme fonksiyonları: confirmed veya rejected için API çağrısı yapıyor.
+  const updateReservationStatus = async (bookingId, newStatus) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/bookings/${bookingId}/status?status=${newStatus}`
+      );
+      // Eğer API çağrısı başarılı ise, güncellenmiş rezervasyonu state'e ekleyelim:
+      const updatedReservation = response.data;
+      const updatedReservations = reservations.map((reservation) =>
+        reservation.bookingId === bookingId ? updatedReservation : reservation
+      );
+      setReservations(updatedReservations);
+    } catch (error) {
+      console.error(`Error updating reservation status to ${newStatus}:`, error);
+    }
+  };
+
+  const handleConfirm = (bookingId) => {
+    updateReservationStatus(bookingId, "confirmed");
+  };
+
+  const handleReject = (bookingId) => {
+    updateReservationStatus(bookingId, "rejected");
   };
 
   if (loading) {
@@ -143,6 +159,25 @@ const ManagerReservations = () => {
                     <Typography variant="body2">
                       Status: {reservation.status}
                     </Typography>
+                    <Box display="flex" justifyContent="flex-start" mt={2}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<FaCheck />}
+                        onClick={() => handleConfirm(reservation.bookingId)}
+                        style={{ marginRight: "10px" }}
+                      >
+                        Confirmed
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        startIcon={<FaTimes />}
+                        onClick={() => handleReject(reservation.bookingId)}
+                      >
+                        Rejected
+                      </Button>
+                    </Box>
                   </CardContent>
                 </Card>
               </Grid>
