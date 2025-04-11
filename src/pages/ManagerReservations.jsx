@@ -8,15 +8,18 @@ import { AuthContext } from "../context/AuthContext";
 // Tarih verisini "YYYY-MM-DD" formatına çevirmek için yardımcı fonksiyon.
 const formatDate = (dateValue) => {
   if (!dateValue) return "";
+  
   if (Array.isArray(dateValue)) {
     const [year, month, day] = dateValue;
     const m = month.toString().padStart(2, "0");
     const d = day.toString().padStart(2, "0");
     return `${year}-${m}-${d}`;
   }
+  
   if (typeof dateValue === "string" && dateValue.length === 10) {
     return dateValue;
   }
+  
   return dateValue.toString();
 };
 
@@ -26,6 +29,7 @@ const ManagerReservations = () => {
   const [loading, setLoading] = useState(true);
   const [reservations, setReservations] = useState([]);
 
+  // Backend'den manager profilini çekip managerId'yi elde ediyoruz.
   const fetchManagerId = async () => {
     try {
       if (user && user.userId) {
@@ -68,6 +72,7 @@ const ManagerReservations = () => {
     }
   }, [managerId]);
 
+  // Backend'de manager'a ait rezervasyonları getiren endpoint.
   const fetchReservations = async () => {
     try {
       const response = await axios.get(
@@ -81,18 +86,14 @@ const ManagerReservations = () => {
     }
   };
 
-  // Yeni güncelleme fonksiyonları: confirmed veya rejected için API çağrısı yapıyor.
+  // 1. Çözüm: Güncellemeden sonra tüm rezervasyonları yeniden fetch ediyoruz.
   const updateReservationStatus = async (bookingId, newStatus) => {
     try {
-      const response = await axios.put(
+      await axios.put(
         `http://localhost:8080/api/bookings/${bookingId}/status?status=${newStatus}`
       );
-      // Eğer API çağrısı başarılı ise, güncellenmiş rezervasyonu state'e ekleyelim:
-      const updatedReservation = response.data;
-      const updatedReservations = reservations.map((reservation) =>
-        reservation.bookingId === bookingId ? updatedReservation : reservation
-      );
-      setReservations(updatedReservations);
+      // Durum güncellendikten sonra verileri tekrar çekiyoruz.
+      fetchReservations();
     } catch (error) {
       console.error(`Error updating reservation status to ${newStatus}:`, error);
     }
