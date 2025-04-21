@@ -81,8 +81,7 @@ const PaymentPay = ({
     
     // Payment card details
     doc.text(`Card Holder: ${cardName} ${cardSurname}`, 20, 80);
-    doc.text(`Card Number: ${cardNumber}`, 20, 90);
-    doc.text(`Expiry: ${expiryMonth}/${expiryYear}`, 20, 100);
+
     
     // Hotel and reservation details
     doc.text(`Hotel: ${hotelName}`, 20, 120);

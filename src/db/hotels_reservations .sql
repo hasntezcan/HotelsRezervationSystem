@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 11 Nis 2025, 21:41:13
+-- Üretim Zamanı: 21 Nis 2025, 10:41:05
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -46,15 +46,16 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`booking_id`, `user_id`, `room_id`, `check_in_date`, `check_out_date`, `quantity`, `num_guests`, `price_per_night`, `total_price`, `status`, `created_at`) VALUES
-(1, 1, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 10:22:07'),
-(2, 2, 1, '2025-04-15', '2025-04-17', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 10:22:07'),
-(3, 3, 1, '2025-04-15', '2025-04-17', 1, 3, 100.00, 230.00, 'confirmed', '2025-04-10 10:22:07'),
-(4, 4, 1, '2025-04-15', '2025-04-17', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 10:22:07'),
-(9, 2, 1, '2025-04-18', '2025-04-22', 1, 3, 150.00, 1510.00, 'pending', '2025-04-10 14:04:45'),
+(1, 1, 1, '2025-04-24', '2025-04-26', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 10:22:07'),
+(2, 2, 1, '2025-04-24', '2025-04-26', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 10:22:07'),
+(3, 3, 1, '2025-04-24', '2025-04-26', 1, 3, 100.00, 230.00, 'confirmed', '2025-04-10 10:22:07'),
+(4, 4, 1, '2025-04-24', '2025-04-26', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 10:22:07'),
 (10, 1, 20, '2025-04-11', '2025-04-12', 1, 1, 100.00, 110.00, 'confirmed', '2025-04-11 10:33:47'),
 (11, 1, 20, '2025-04-30', '2025-05-01', 1, 1, 100.00, 110.00, 'rejected', '2025-04-11 13:03:17'),
 (12, 31, 20, '2025-04-12', '2025-04-13', 1, 2, 100.00, 210.00, 'pending', '2025-04-11 17:01:16'),
-(13, 31, 16, '2025-04-12', '2025-04-13', 1, 2, 100.00, 210.00, 'pending', '2025-04-11 17:02:17');
+(13, 31, 16, '2025-04-12', '2025-04-13', 1, 2, 100.00, 210.00, 'pending', '2025-04-11 17:02:17'),
+(15, 2, 1, '2025-03-05', '2025-04-04', 1, 1, 160.00, 330.00, 'pending', '2025-04-11 20:10:37'),
+(16, 2, 1, '2025-04-24', '2025-04-26', 1, 1, 160.00, 330.00, 'pending', '2025-04-21 08:38:50');
 
 -- --------------------------------------------------------
 
@@ -71,13 +72,6 @@ CREATE TABLE `contact_messages` (
   `sent_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `is_read` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Tablo döküm verisi `contact_messages`
---
-
-INSERT INTO `contact_messages` (`message_id`, `sender_name`, `sender_email`, `phone`, `message`, `sent_at`, `is_read`) VALUES
-(1, 'Emir Esad Şahin', 'esad.emir34@gmail.com', '05438813007', 'anan', '2025-04-09 14:07:07', 0);
 
 -- --------------------------------------------------------
 
@@ -137,7 +131,17 @@ CREATE TABLE `hotelamenityjunction` (
 --
 
 INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
+(1, 5),
 (1, 7),
+(1, 8),
+(1, 9),
+(1, 15),
+(1, 16),
+(1, 17),
+(1, 18),
+(1, 19),
+(1, 23),
+(1, 24),
 (2, 1),
 (2, 7),
 (2, 8),
@@ -747,7 +751,7 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `booking_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `contact_messages`
@@ -819,7 +823,7 @@ ALTER TABLE `rooms`
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- Dökümü yapılmış tablolar için kısıtlamalar
