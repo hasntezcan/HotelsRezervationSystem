@@ -58,19 +58,26 @@ public class RoomController {
     // Odayı güncelle
     @PutMapping("/{id}")
     public ResponseEntity<Room> updateRoom(@PathVariable Long id, @RequestBody Room room) {
-        Room updatedRoom = roomService.updateRoom(id, room);
-        if (updatedRoom == null) {
-            return ResponseEntity.notFound().build();
+        Optional<Room> existing = roomService.getRoomById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
         }
+        Room updatedRoom = roomService.updateRoom(id, room);
         return ResponseEntity.ok(updatedRoom);
     }
 
-    // Odayı sil
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> deleteRoom(@PathVariable Long id) {
-        roomService.deleteRoom(id);
-        return ResponseEntity.ok(Map.of("message", "Room deleted successfully"));
-    }
+        // Odayı sil (ilgili tüm detaylarıyla birlikte)
+        @DeleteMapping("/{id}")
+        public ResponseEntity<Map<String, String>> deleteRoom(@PathVariable Long id) {
+            // önce gerçekten var mı diye bak
+            if (roomService.getRoomById(id).isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of("message", "Room not found"));
+            }
+            // burada eski deleteRoom(id) yerine tüm ilişkili kayıtları da silecek deleteRoomWithDetails'i çağırıyoruz
+            roomService.deleteRoomWithDetails(id);
+            return ResponseEntity.ok(Map.of("message", "Room and its related data deleted successfully"));
+        }
+    
 
     // Müsaitlik Kontrolü Endpoint
     @GetMapping("/check-availability")
@@ -125,4 +132,5 @@ public class RoomController {
                 "capacity", room.getCapacity()
         ));
     }
+    
 }

@@ -37,6 +37,56 @@ const ManagerHotels = () => {
     totalRoom: ""
   });
   const [rooms, setRooms] = useState([]);
+  // Düzenleme modu için
+const [editingRoomId, setEditingRoomId] = useState(null);
+const [editingRoomData, setEditingRoomData] = useState({
+  roomType: "",
+  pricePerNight: "",
+  totalRooms: 0
+});
+
+// Düzenlemeyi başlat
+const startEditRoom = (room) => {
+  setEditingRoomId(room.id);
+  setEditingRoomData({
+    roomType: room.roomType,
+    pricePerNight: room.pricePerNight,
+    totalRooms: room.totalRooms
+  });
+};
+
+// Güncelleme isteği
+const updateRoom = async (id) => {
+  try {
+    const payload = {
+      hotelId: hotels[0].hotelId,
+      roomType: editingRoomData.roomType,
+      pricePerNight: editingRoomData.pricePerNight,
+      totalRooms: editingRoomData.totalRooms
+    };
+    const res = await axios.put(`http://localhost:8080/api/rooms/${id}`, payload);
+    // state’i güncelle
+    setRooms((prev) =>
+      prev.map((r) => (r.id === id ? res.data : r))
+    );
+    setEditingRoomId(null);
+  } catch (err) {
+    console.error("Error updating room:", err);
+    alert("Room update failed");
+  }
+};
+
+// Silme isteği
+const deleteRoomRemote = async (id) => {
+  try {
+    await axios.delete(`http://localhost:8080/api/rooms/${id}`);
+    setRooms((prev) => prev.filter((r) => r.id !== id));
+  } catch (err) {
+    console.error("Error deleting room:", err);
+    alert("Room delete failed");
+  }
+};
+
 
   // Backend'den çekilecek tüm amenity kayıtlarını tutmak için state
   const [allAmenities, setAllAmenities] = useState([]);
@@ -85,6 +135,22 @@ const ManagerHotels = () => {
         });
     }
   }, [user]);
+  // ————————————————
+// Otel verisi geldikten sonra odaları çekmek için:
+useEffect(() => {
+  if (!hotels.length) return;                           // eğer otel yoksa çık
+  const hotelId = hotels[0].hotelId;
+  axios
+    .get(`http://localhost:8080/api/rooms/hotel/${hotelId}`)
+    .then(res => {
+      // mutlaka dizi olarak set et
+      const list = Array.isArray(res.data) ? res.data : [];
+      setRooms(list);
+    })
+    .catch(err => console.error("Error fetching rooms:", err));
+}, [hotels]);
+// ————————————————
+
 
   const hotelToEdit = hotels.length > 0 ? hotels[0] : null;
 
@@ -263,75 +329,108 @@ const ManagerHotels = () => {
             <Card style={{ borderRadius: "50px", padding: "20px" }}>
               <CardContent>
                 <Typography variant="h5" fontWeight="bold">Room Details</Typography>
-                <Box mt={2}>
-                  <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
-                    Room Type
-                  </label>
-                  <select 
-                    value={roomData.roomType} 
-                    onChange={(e) => setRoomData({ ...roomData, roomType: e.target.value })}
-                    style={{ width: "100%", padding: "8px", marginBottom: "16px" }}
-                  >
-                    <option value="">Select Room Type</option>
-                    <option value="Deluxe room">Deluxe room</option>
-                    <option value="Standart room">Standart room</option>
-                  </select>
-                </Box>
-                <TextField 
-                  label="Price per Night" 
-                  type="number"
-                  value={roomData.pricePerNight} 
-                  onChange={(e) => setRoomData({ ...roomData, pricePerNight: e.target.value })}
-                  fullWidth 
-                  margin="normal"
-                />
-                <TextField 
-                  label="Total Room" 
-                  type="number"
-                  value={roomData.totalRoom} 
-                  onChange={(e) => setRoomData({ ...roomData, totalRoom: e.target.value })}
-                  fullWidth 
-                  margin="normal"
-                />
-                <Box mt={2}>
-                  <Button 
-                    variant="contained" 
-                    onClick={handleAddRoom} 
-                    style={{ margin: "0 auto", display: "block" }}
-                  >
-                    Add Room
-                  </Button>
-                </Box>
-                {rooms.length > 0 && (
-                  <Box mt={3}>
-                    <Typography variant="h6" align="center" gutterBottom>
-                      Rooms List
-                    </Typography>
-                    {rooms.map((room, index) => (
-                      <Box 
-                        key={index} 
-                        display="flex" 
-                        justifyContent="space-between" 
-                        alignItems="center" 
-                        p={1} 
-                        border="1px solid #ccc" 
-                        borderRadius="4px" 
-                        mb={1}
-                      >
-                        <Typography variant="body1">
-                          Type: {room.roomType}, Price: {room.pricePerNight}, Total: {room.totalRoom}
-                        </Typography>
-                        <Button 
-                          variant="outlined" 
-                          color="error" 
-                          onClick={() => handleDeleteRoom(index)}
-                        >
-                          Delete
-                        </Button>
-                      </Box>
-                    ))}
-                  </Box>
-                )}
+                
+                
+                {Array.isArray(rooms) && rooms.length > 0 ? (
+  rooms.map((room) => (
+    <Box
+      key={room.id}
+      mt={2}
+      p={2}
+      border="1px solid #ccc"
+      borderRadius="8px"
+      display="flex"
+      flexDirection="column"
+      gap={1}
+    >
+      {editingRoomId === room.id ? (
+        <>
+          <TextField
+            label="Room Type"
+            value={editingRoomData.roomType}
+            onChange={(e) =>
+              setEditingRoomData((prev) => ({
+                ...prev,
+                roomType: e.target.value
+              }))
+            }
+            fullWidth
+            size="small"
+          />
+          <TextField
+            label="Price"
+            type="number"
+            value={editingRoomData.pricePerNight}
+            onChange={(e) =>
+              setEditingRoomData((prev) => ({
+                ...prev,
+                pricePerNight: e.target.value
+              }))
+            }
+            fullWidth
+            size="small"
+          />
+          <TextField
+            label="Total Rooms"
+            type="number"
+            value={editingRoomData.totalRooms}
+            onChange={(e) =>
+              setEditingRoomData((prev) => ({
+                ...prev,
+                totalRooms: e.target.value
+              }))
+            }
+            fullWidth
+            size="small"
+          />
+          <Box mt={1} display="flex" gap={1}>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => updateRoom(room.id)}
+            >
+              Save
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => setEditingRoomId(null)}
+            >
+              Cancel
+            </Button>
+          </Box>
+        </>
+      ) : (
+        <>
+          <Typography><strong>Type:</strong> {room.roomType}</Typography>
+          <Typography><strong>Price:</strong> {room.pricePerNight}</Typography>
+          <Typography><strong>Total Rooms:</strong> {room.totalRooms}</Typography>
+          <Box mt={1} display="flex" gap={1}>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => startEditRoom(room)}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              size="small"
+              onClick={() => deleteRoomRemote(room.id)}
+            >
+              Delete
+            </Button>
+          </Box>
+        </>
+      )}
+    </Box>
+  ))
+) : (
+  <Typography mt={2}>No rooms available for this hotel.</Typography>
+)}
+
+
               </CardContent>
             </Card>
           </Grid>
