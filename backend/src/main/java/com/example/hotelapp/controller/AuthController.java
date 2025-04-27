@@ -60,30 +60,40 @@ public class AuthController {
 
     // Login endpoint
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
-        try {
-            Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
-            if (optionalUser.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username or password is incorrect.");
-            }
-            User user = optionalUser.get();
-
-            // Parola eşleştirme
-            if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username or password is incorrect.");
-            }
-
-            // Başarılı giriş -> session'a kaydet
-            request.getSession().setAttribute("user", user);
-            // Oturum bilgisini döndürmeden önce şifreyi temizle
-            user.setPassword(null);
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            logger.error("Error during login", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Internal server error: " + e.getMessage());
-        }
+public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
+    if (optionalUser.isEmpty()) {
+        return ResponseEntity.status(401).body("Invalid credentials.");
     }
+    User user = optionalUser.get();
+    String raw = loginRequest.getPassword();
+    String stored = user.getPassword();
+
+    boolean authenticated = false;
+    // 1) Eğer zaten hash’lenmişse
+    if (stored != null && stored.startsWith("$2")) {
+        if (passwordEncoder.matches(raw, stored)) {
+            authenticated = true;
+        }
+    } 
+    // 2) Yok, düz metinse (legacy user)
+    else if (raw.equals(stored)) {
+        authenticated = true;
+        // İlk başarılı girişte şifreyi hash’leyip güncelle
+        user.setPassword(passwordEncoder.encode(raw));
+        userRepository.save(user);
+    }
+
+    if (!authenticated) {
+        return ResponseEntity.status(401).body("Invalid credentials.");
+    }
+
+    // Login başarılı → session’a koy, password alanını null’la
+    request.getSession().setAttribute("user", user);
+    user.setPassword(null);
+    return ResponseEntity.ok(user);
+}
+
 
     // Profile update endpoint
     @PutMapping("/profile")

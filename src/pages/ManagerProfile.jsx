@@ -15,7 +15,7 @@ import SidebarManager from "../components/Sidebar_manager";
 import { AuthContext } from '../context/AuthContext';
 
 const ManagerProfile = () => {
-  const { user } = useContext(AuthContext); // Login olmuş kullanıcı (user nesnesi)
+  const { user } = useContext(AuthContext);
   const [managerData, setManagerData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -23,7 +23,7 @@ const ManagerProfile = () => {
   const [error, setError] = useState({ phone: "" });
 
   useEffect(() => {
-    if (!user || !user.userId) {
+    if (!user?.userId) {
       setLoading(false);
       return;
     }
@@ -35,12 +35,12 @@ const ManagerProfile = () => {
           userId: data.user.userId,
           username: data.user.username,
           email: data.user.email,
-          password: data.user.password,
           firstName: data.user.first_name || data.user.firstName,
           lastName: data.user.last_name || data.user.lastName,
           phone: data.user.phone,
           managerId: data.managerId,
           hotelId: data.hotelId,
+          password: "" // do not expose hashed password
         });
         setLoading(false);
       })
@@ -54,53 +54,52 @@ const ManagerProfile = () => {
     const { name, value } = e.target;
     if (name === "phone") {
       const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
-      setError((prevError) => ({
-        ...prevError,
+      setError((prev) => ({
+        ...prev,
         phone: phoneRegex.test(value) ? "" : "Format: (123) 456-7890",
       }));
     }
-    setManagerData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setManagerData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSaveChanges = async () => {
-    if (!managerData) return;
-    if (error.phone) return;
+    if (!managerData || error.phone) return;
 
     const payload = {
       userId: managerData.userId,
       username: managerData.username,
       email: managerData.email,
-      password: managerData.password,
       first_name: managerData.firstName,
       last_name: managerData.lastName,
       phone: managerData.phone,
     };
+    // include new password only if entered
+    if (managerData.password.trim() !== "") {
+      payload.password = managerData.password;
+    }
 
     try {
       const response = await axios.put(
         "http://localhost:8080/api/auth/profile",
         payload
       );
-      const updatedData = response.data;
+      const updated = response.data;
       setManagerData({
-        userId: updatedData.userId,
-        username: updatedData.username,
-        email: updatedData.email,
-        password: updatedData.password,
-        firstName: updatedData.first_name,
-        lastName: updatedData.last_name,
-        phone: updatedData.phone,
-        managerId: managerData.managerId, // ManagerID ve hotelID sabit kalır
+        userId: updated.userId,
+        username: updated.username,
+        email: updated.email,
+        firstName: updated.first_name,
+        lastName: updated.last_name,
+        phone: updated.phone,
+        managerId: managerData.managerId,
         hotelId: managerData.hotelId,
+        password: "" // reset password field after update
       });
       setIsEditing(false);
       alert("Profile updated successfully!");
-    } catch (error) {
-      console.error("Error updating manager profile:", error);
-      alert(error.response ? error.response.data : error.message);
+    } catch (err) {
+      console.error("Error updating manager profile:", err);
+      alert(err.response?.data || err.message);
     }
   };
 
@@ -180,7 +179,7 @@ const ManagerProfile = () => {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="Password"
+                label="New Password (leave blank to keep current)"
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
