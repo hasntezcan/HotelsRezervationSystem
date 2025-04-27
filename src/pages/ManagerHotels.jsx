@@ -33,13 +33,15 @@ const ManagerHotels = () => {
   // Room detayları için state (bu alan dokunulmamış)
   const [roomData, setRoomData] = useState({
     roomType: "",
+    name: "",
     pricePerNight: "",
-    totalRoom: ""
+    totalRooms: ""
   });
   const [rooms, setRooms] = useState([]);
   // Düzenleme modu için
 const [editingRoomId, setEditingRoomId] = useState(null);
 const [editingRoomData, setEditingRoomData] = useState({
+  name: "",
   roomType: "",
   pricePerNight: "",
   totalRooms: 0
@@ -49,17 +51,20 @@ const [editingRoomData, setEditingRoomData] = useState({
 const startEditRoom = (room) => {
   setEditingRoomId(room.id);
   setEditingRoomData({
+    name: room.name,
     roomType: room.roomType,
     pricePerNight: room.pricePerNight,
     totalRooms: room.totalRooms
   });
 };
 
+
 // Güncelleme isteği
 const updateRoom = async (id) => {
   try {
     const payload = {
       hotelId: hotels[0].hotelId,
+      name: editingRoomData.name,
       roomType: editingRoomData.roomType,
       pricePerNight: editingRoomData.pricePerNight,
       totalRooms: editingRoomData.totalRooms
@@ -229,7 +234,7 @@ useEffect(() => {
 
   // Oda işlemleri (dokunulmuyor)
   const handleAddRoom = () => {
-    if (!roomData.roomType || roomData.pricePerNight === "" || roomData.totalRoom === "") {
+    if (!roomData.name || !roomData.roomType || roomData.pricePerNight === "" || roomData.totalRoom === "") {
       alert("Please fill in all room details before adding.");
       return;
     }
@@ -237,7 +242,8 @@ useEffect(() => {
     setRoomData({
       roomType: "",
       pricePerNight: "",
-      totalRoom: ""
+      name: "",
+      totalRooms: ""
     });
   };
 
@@ -324,117 +330,128 @@ useEffect(() => {
             )}
           </Grid>
 
-          {/* Room Alanı - Dokunulmuyor */}
-          <Grid item xs={12} sm={6}>
-            <Card style={{ borderRadius: "50px", padding: "20px" }}>
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold">Room Details</Typography>
-                
-                
-                {Array.isArray(rooms) && rooms.length > 0 ? (
-  rooms.map((room) => (
-    <Box
-      key={room.id}
-      mt={2}
-      p={2}
-      border="1px solid #ccc"
-      borderRadius="8px"
-      display="flex"
-      flexDirection="column"
-      gap={1}
-    >
-      {editingRoomId === room.id ? (
-        <>
-          <TextField
-            label="Room Type"
-            value={editingRoomData.roomType}
-            onChange={(e) =>
-              setEditingRoomData((prev) => ({
-                ...prev,
-                roomType: e.target.value
-              }))
-            }
-            fullWidth
-            size="small"
-          />
-          <TextField
-            label="Price"
-            type="number"
-            value={editingRoomData.pricePerNight}
-            onChange={(e) =>
-              setEditingRoomData((prev) => ({
-                ...prev,
-                pricePerNight: e.target.value
-              }))
-            }
-            fullWidth
-            size="small"
-          />
-          <TextField
-            label="Total Rooms"
-            type="number"
-            value={editingRoomData.totalRooms}
-            onChange={(e) =>
-              setEditingRoomData((prev) => ({
-                ...prev,
-                totalRooms: e.target.value
-              }))
-            }
-            fullWidth
-            size="small"
-          />
-          <Box mt={1} display="flex" gap={1}>
-            <Button
-              variant="contained"
-              size="small"
-              onClick={() => updateRoom(room.id)}
-            >
-              Save
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => setEditingRoomId(null)}
-            >
-              Cancel
-            </Button>
+          {/* Room Alanı */}
+<Grid item xs={12} sm={6}>
+  <Card style={{ borderRadius: "50px", padding: "20px" }}>
+    <CardContent>
+      <Typography variant="h5" fontWeight="bold">Room Details</Typography>
+
+      {Array.isArray(rooms) && rooms.length > 0 ? (
+        rooms.map((room) => (
+          <Box
+            key={room.id}
+            mt={2}
+            p={2}
+            border="1px solid #ccc"
+            borderRadius="8px"
+            display="flex"
+            flexDirection="column"
+            gap={1}
+          >
+            {editingRoomId === room.id ? (
+              <>
+                <TextField
+                  label="Room Name"
+                  value={editingRoomData.name}
+                  onChange={(e) =>
+                    setEditingRoomData((prev) => ({
+                      ...prev,
+                      name: e.target.value
+                    }))
+                  }
+                  fullWidth
+                  size="small"
+                />
+                <TextField
+                  label="Room Type"
+                  value={editingRoomData.roomType}
+                  onChange={(e) =>
+                    setEditingRoomData((prev) => ({
+                      ...prev,
+                      roomType: e.target.value
+                    }))
+                  }
+                  fullWidth
+                  size="small"
+                />
+                <TextField
+                  label="Price"
+                  type="number"
+                  value={editingRoomData.pricePerNight}
+                  onChange={(e) =>
+                    setEditingRoomData((prev) => ({
+                      ...prev,
+                      pricePerNight: e.target.value
+                    }))
+                  }
+                  fullWidth
+                  size="small"
+                />
+                <TextField
+                  label="Total Rooms"
+                  type="number"
+                  value={editingRoomData.totalRooms}
+                  onChange={(e) =>
+                    setEditingRoomData((prev) => ({
+                      ...prev,
+                      totalRooms: e.target.value
+                    }))
+                  }
+                  fullWidth
+                  size="small"
+                />
+                <Box mt={1} display="flex" gap={1}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => updateRoom(room.id)}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => setEditingRoomId(null)}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </>
+            ) : (
+              <>
+                <Typography><strong>Name:</strong> {room.name}</Typography>
+                <Typography><strong>Type:</strong> {room.roomType}</Typography>
+                <Typography><strong>Price:</strong> {room.pricePerNight}</Typography>
+                <Typography><strong>Total Rooms:</strong> {room.totalRooms}</Typography>
+                <Box mt={1} display="flex" gap={1}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => startEditRoom(room)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    size="small"
+                    onClick={() => deleteRoomRemote(room.id)}
+                  >
+                    Delete
+                  </Button>
+                </Box>
+              </>
+            )}
           </Box>
-        </>
+        ))
       ) : (
-        <>
-          <Typography><strong>Type:</strong> {room.roomType}</Typography>
-          <Typography><strong>Price:</strong> {room.pricePerNight}</Typography>
-          <Typography><strong>Total Rooms:</strong> {room.totalRooms}</Typography>
-          <Box mt={1} display="flex" gap={1}>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => startEditRoom(room)}
-            >
-              Edit
-            </Button>
-            <Button
-              variant="outlined"
-              color="error"
-              size="small"
-              onClick={() => deleteRoomRemote(room.id)}
-            >
-              Delete
-            </Button>
-          </Box>
-        </>
+        <Typography mt={2}>No rooms available for this hotel.</Typography>
       )}
-    </Box>
-  ))
-) : (
-  <Typography mt={2}>No rooms available for this hotel.</Typography>
-)}
+    </CardContent>
+  </Card>
+</Grid>
+</Grid>   {/* <-- closes the container */}
 
-
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
 
         {/* Otel Düzenleme Modal'ı */}
         <Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth maxWidth="sm">
