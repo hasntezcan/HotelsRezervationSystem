@@ -23,249 +23,214 @@ import { AuthContext } from "../context/AuthContext";
 
 const ManagerHotels = () => {
   const { user } = useContext(AuthContext);
+
+  // ─────────── State ───────────
+  const [managerId, setManagerId] = useState(null);
   const [hotels, setHotels] = useState([]);
   const [editHotel, setEditHotel] = useState(null);
-  const [error, setError] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [showAmenitySelector, setShowAmenitySelector] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
-  
-  // Room detayları için state (bu alan dokunulmamış)
+
+  const [rooms, setRooms] = useState([]);
   const [roomData, setRoomData] = useState({
-    roomType: "",
     name: "",
+    roomType: "",
     pricePerNight: "",
     totalRooms: ""
   });
-  const [rooms, setRooms] = useState([]);
-  // Düzenleme modu için
-const [editingRoomId, setEditingRoomId] = useState(null);
-const [editingRoomData, setEditingRoomData] = useState({
-  name: "",
-  roomType: "",
-  pricePerNight: "",
-  totalRooms: 0
-});
-
-// Düzenlemeyi başlat
-const startEditRoom = (room) => {
-  setEditingRoomId(room.id);
-  setEditingRoomData({
-    name: room.name,
-    roomType: room.roomType,
-    pricePerNight: room.pricePerNight,
-    totalRooms: room.totalRooms
+  const [editingRoomId, setEditingRoomId] = useState(null);
+  const [editingRoomData, setEditingRoomData] = useState({
+    name: "",
+    roomType: "",
+    pricePerNight: "",
+    totalRooms: 0
   });
-};
-
-
-// Güncelleme isteği
-const updateRoom = async (id) => {
-  try {
-    const payload = {
-      hotelId: hotels[0].hotelId,
-      name: editingRoomData.name,
-      roomType: editingRoomData.roomType,
-      pricePerNight: editingRoomData.pricePerNight,
-      totalRooms: editingRoomData.totalRooms
-    };
-    const res = await axios.put(`http://localhost:8080/api/rooms/${id}`, payload);
-    // state’i güncelle
-    setRooms((prev) =>
-      prev.map((r) => (r.id === id ? res.data : r))
-    );
-    setEditingRoomId(null);
-  } catch (err) {
-    console.error("Error updating room:", err);
-    alert("Room update failed");
-  }
-};
-
-// Silme isteği
-const deleteRoomRemote = async (id) => {
-  try {
-    await axios.delete(`http://localhost:8080/api/rooms/${id}`);
-    setRooms((prev) => prev.filter((r) => r.id !== id));
-  } catch (err) {
-    console.error("Error deleting room:", err);
-    alert("Room delete failed");
-  }
-};
-
-
-  // Backend'den çekilecek tüm amenity kayıtlarını tutmak için state
   const [allAmenities, setAllAmenities] = useState([]);
 
-  // Tüm amenities listesini backend'den çekiyoruz
+  // ─────────── Effects ───────────
+  // 1) Fetch hotels (and derive managerId + amenities)
+  useEffect(() => {
+    if (!user?.userId) return;
+    axios
+      .get(`http://localhost:8080/api/hotels/manager?userId=${user.userId}`)
+      .then(res => {
+        const list = res.data;
+        setHotels(list);
+        if (list.length > 0) {
+          setManagerId(list[0].managerId);
+          // fetch amenities for first hotel
+          return axios.get(
+            `http://localhost:8080/api/hotels/${list[0].hotelId}/amenities`
+          );
+        }
+      })
+      .then(ares => {
+        if (ares) {
+          setHotels(prev => {
+            const copy = [...prev];
+            copy[0] = { ...copy[0], amenities: ares.data };
+            return copy;
+          });
+        }
+      })
+      .catch(() => alert("Error fetching hotels or amenities"));
+  }, [user]);
+
+  // 2) Fetch all available amenities
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/hotelamenities")
-      .then((response) => {
-        setAllAmenities(response.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching hotel amenities:", err);
-      });
+      .then(res => setAllAmenities(res.data))
+      .catch(() => alert("Error fetching hotel amenities"));
   }, []);
 
+  // 3) Fetch rooms when hotels change
   useEffect(() => {
-    if (user && user.userId) {
-      // Manager'a ait otelleri çekiyoruz
-      axios
-        .get(`http://localhost:8080/api/hotels/manager?userId=${user.userId}`)
-        .then((response) => {
-          const hotelsData = response.data;
-          setHotels(hotelsData);
-          // Otel listesinde en az bir kayıt varsa, amenities bilgisini ayrı endpoint'ten çekiyoruz
-          if (hotelsData.length > 0) {
-            const firstHotelId = hotelsData[0].hotelId;
-            axios
-              .get(`http://localhost:8080/api/hotels/${firstHotelId}/amenities`)
-              .then((res) => {
-                const updatedHotel = { ...hotelsData[0], amenities: res.data };
-                setHotels((prevHotels) => {
-                  const updatedHotels = [...prevHotels];
-                  updatedHotels[0] = updatedHotel;
-                  return updatedHotels;
-                });
-              })
-              .catch((err) => {
-                console.error("Error fetching amenities:", err);
-              });
-          }
-        })
-        .catch((err) => {
-          console.error("Error fetching hotels:", err);
-          setError("Error fetching hotels");
-        });
-    }
-  }, [user]);
-  // ————————————————
-// Otel verisi geldikten sonra odaları çekmek için:
-useEffect(() => {
-  if (!hotels.length) return;                           // eğer otel yoksa çık
-  const hotelId = hotels[0].hotelId;
-  axios
-    .get(`http://localhost:8080/api/rooms/hotel/${hotelId}`)
-    .then(res => {
-      // mutlaka dizi olarak set et
-      const list = Array.isArray(res.data) ? res.data : [];
-      setRooms(list);
-    })
-    .catch(err => console.error("Error fetching rooms:", err));
-}, [hotels]);
-// ————————————————
+    if (!hotels.length) return;
+    const hotelId = hotels[0].hotelId;
+    axios
+      .get(`http://localhost:8080/api/rooms/hotel/${hotelId}`)
+      .then(res => setRooms(Array.isArray(res.data) ? res.data : []))
+      .catch(() => alert("Error fetching rooms"));
+  }, [hotels]);
 
+  // ─────────── Handlers ───────────
+  const toggleAmenity = (amenity, checked) =>
+    setSelectedAmenities(prev =>
+      checked ? [...prev, amenity] : prev.filter(a => a !== amenity)
+    );
 
-  const hotelToEdit = hotels.length > 0 ? hotels[0] : null;
-
-  // Seçili amenity'leri kontrol eden fonksiyon; checkBox event'inden değeri alır.
-  const toggleAmenity = (amenity, checked) => {
-    if (checked) {
-      setSelectedAmenities((prev) => [...prev, amenity]);
-    } else {
-      setSelectedAmenities((prev) => prev.filter((a) => a !== amenity));
-    }
-  };
-
-  const handleEdit = (hotel) => {
-    const amenitiesArray = hotel.amenities
-      ? hotel.amenities.split(",").map((a) => a.trim())
-      : [];
-    setSelectedAmenities(amenitiesArray);
-
-    setEditHotel({
-      ...hotel,
-      featured: hotel.featured ?? false,
-    });
+  const handleEdit = hotel => {
+    setSelectedAmenities(
+      hotel.amenities
+        ? hotel.amenities.split(",").map(a => a.trim())
+        : []
+    );
+    setEditHotel({ ...hotel, featured: hotel.featured ?? false });
     setOpenModal(true);
   };
 
-  const handleSave = async () => {
-    try {
-      const payload = {
-        name: editHotel.name ?? "",
-        city: editHotel.city ?? "",
-        country: editHotel.country ?? "",
-        address: editHotel.address ?? "",
-        pricePerNight: editHotel.pricePerNight ?? 0,
-        capacity: editHotel.capacity ?? 0,
-        amenities: selectedAmenities.join(", "),
-        managerId: editHotel.managerId ?? "",
-        checkInTime: editHotel.checkInTime ?? "",
-        checkOutTime: editHotel.checkOutTime ?? "",
-        cancellationPolicy: editHotel.cancellationPolicy ?? "",
-        description: editHotel.description ?? "",
-        starRating: editHotel.starRating ?? 0,
-        featured: editHotel.featured ?? false,
-      };
-
-      const config = {
-        headers: {
-          Authorization: user?.token ? `Bearer ${user.token}` : "",
-          "Content-Type": "application/json",
-        },
-      };
-
-      const response = await axios.put(
-        `http://localhost:8080/api/hotels/${editHotel.hotelId}`,
-        payload,
-        config
-      );
-
-      const updatedHotel = response.data;
-      const updatedHotels = hotels.map((hotel) =>
-        hotel.hotelId === updatedHotel.hotelId ? updatedHotel : hotel
-      );
-      setHotels(updatedHotels);
-      setEditHotel(null);
-      setOpenModal(false);
-      alert("Hotel updated successfully!");
-    } catch (err) {
-      console.error("Error updating hotel:", err);
-      alert(err.response ? err.response.data : "Error updating hotel");
-    }
-  };
-
-  const handleChange = (e, field) => {
-    const value = field === "featured" ? e.target.checked : e.target.value;
-    setEditHotel({ ...editHotel, [field]: value });
-  };
-
-  // Oda işlemleri (dokunulmuyor)
-  const handleAddRoom = () => {
-    if (!roomData.name || !roomData.roomType || roomData.pricePerNight === "" || roomData.totalRoom === "") {
-      alert("Please fill in all room details before adding.");
-      return;
-    }
-    setRooms([...rooms, roomData]);
-    setRoomData({
-      roomType: "",
-      pricePerNight: "",
-      name: "",
-      totalRooms: ""
+  const startEditRoom = room => {
+    setEditingRoomId(room.id);
+    setEditingRoomData({
+      name: room.name,
+      roomType: room.roomType,
+      pricePerNight: room.pricePerNight,
+      totalRooms: room.totalRooms
     });
   };
 
-  const handleDeleteRoom = (index) => {
-    const updatedRooms = rooms.filter((_, i) => i !== index);
-    setRooms(updatedRooms);
-  };
+  // Otel kaydet (update veya create)
+  const handleSave = async () => {
+    const base = {
+      name: editHotel.name || "",
+      city: editHotel.city || "",
+      country: editHotel.country || "",
+      address: editHotel.address || "",
+      pricePerNight: editHotel.pricePerNight || 0,
+      capacity: editHotel.capacity || 0,
+      amenities: selectedAmenities.join(", "),
+      managerId: managerId,
+      description: editHotel.description || "",
+      starRating: editHotel.starRating || 0,
+      featured: editHotel.featured || false
+    };
 
-  // Delete Hotel butonunun işlevini yerine getiren fonksiyon
-  const deleteHotel = async (hotelId) => {
+    const config = {
+      headers: {
+        Authorization: user?.token ? `Bearer ${user.token}` : "",
+        "Content-Type": "application/json"
+      }
+    };
+
     try {
-      await axios.delete(`http://localhost:8080/api/hotels/${hotelId}`);
-      setHotels(hotels.filter((h) => h.hotelId !== hotelId));
-      alert("Hotel deleted successfully!");
-    } catch (err) {
-      console.error("Error deleting hotel:", err);
-      alert("Error deleting hotel");
+      if (editHotel?.hotelId) {
+        // Update
+        const res = await axios.put(
+          `http://localhost:8080/api/hotels/${editHotel.hotelId}`,
+          base,
+          config
+        );
+        const updated = res.data;
+        setHotels(prev =>
+          prev.map(h => (h.hotelId === updated.hotelId ? updated : h))
+        );
+        alert("Hotel updated successfully!");
+      } else {
+        // Create
+        const payload = {
+          ...base,
+          status: "approved",
+          checkInTime: "14:00:00",
+          checkOutTime: "12:00:00",
+          cancellationPolicy: "Free cancellation..."
+        };
+        const res = await axios.post(
+          "http://localhost:8080/api/hotels",
+          payload,
+          config
+        );
+        setHotels(prev => [...prev, res.data]);
+        alert("Hotel added successfully!");
+      }
+      setOpenModal(false);
+    } catch {
+      alert(editHotel?.hotelId ? "Error updating hotel" : "Error adding hotel");
     }
   };
 
-  if (error) return <Typography color="error">{error}</Typography>;
 
+
+  const handleChange = (e, field) => {
+    const val = field === "featured" ? e.target.checked : e.target.value;
+    setEditHotel(prev => ({ ...prev, [field]: val }));
+  };
+
+  const handleAddRoom = () => {
+    if (!roomData.name || !roomData.roomType || roomData.pricePerNight === "" || roomData.totalRooms === "") {
+      alert("Please fill in all room details before adding.");
+      return;
+    }
+    setRooms(prev => [...prev, roomData]);
+    setRoomData({ name: "", roomType: "", pricePerNight: "", totalRooms: "" });
+  };
+
+  const updateRoom = async id => {
+    try {
+      const payload = {
+        hotelId: hotels[0].hotelId,
+        name: editingRoomData.name,
+        roomType: editingRoomData.roomType,
+        pricePerNight: editingRoomData.pricePerNight,
+        totalRooms: editingRoomData.totalRooms
+      };
+      const res = await axios.put(`http://localhost:8080/api/rooms/${id}`, payload);
+      setRooms(prev => prev.map(r => (r.id === id ? res.data : r)));
+      setEditingRoomId(null);
+    } catch {
+      alert("Room update failed");
+    }
+  };
+
+  const deleteRoomRemote = async id => {
+    try {
+      await axios.delete(`http://localhost:8080/api/rooms/${id}`);
+      setRooms(prev => prev.filter(r => r.id !== id));
+    } catch {
+      alert("Room delete failed");
+    }
+  };
+
+  const deleteHotel = async hotelId => {
+    try {
+      await axios.delete(`http://localhost:8080/api/hotels/${hotelId}`);
+      setHotels(prev => prev.filter(h => h.hotelId !== hotelId));
+      alert("Hotel deleted successfully!");
+    } catch {
+      alert("Error deleting hotel");
+    }
+  };
   return (
     <div className="dashboard" style={{ display: "flex" }}>
       <SidebarManager />
