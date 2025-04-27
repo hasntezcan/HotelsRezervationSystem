@@ -9,7 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -25,52 +27,61 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
-    
+
     @Autowired
     private ManagerRepository managerRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Register endpoint
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User userData) {
         if (userRepository.existsByEmail(userData.getEmail())) {
-            return ResponseEntity.status(409).body("Email already exists.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists.");
         }
-        
+
         User user = new User();
         user.setUsername(userData.getUsername());
         user.setEmail(userData.getEmail());
-        // Plain text password (test amaçlı)
-        user.setPassword(userData.getPassword());
+        // Şifreyi hash'le
+        String rawPassword = userData.getPassword();
+        user.setPassword(passwordEncoder.encode(rawPassword));
         user.setRole(userData.getRole() != null ? userData.getRole() : "user");
         user.setFirstName(userData.getFirstName());
         user.setLastName(userData.getLastName());
         user.setPhone(userData.getPhone());
 
-        userRepository.save(user);
-        return ResponseEntity.ok("User registered successfully.");
+        User saved = userRepository.save(user);
+        // Güvenlik için şifreyi cevapta temizle
+        saved.setPassword(null);
+        return ResponseEntity.ok(saved);
     }
 
-    // Login endpoint: Plain text şifre karşılaştırması
+    // Login endpoint
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         try {
             Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
             if (optionalUser.isEmpty()) {
-                return ResponseEntity.status(401).body("Username is incorrect.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username or password is incorrect.");
             }
             User user = optionalUser.get();
-            
-            String incomingPassword = loginRequest.getPassword();
-            String dbPassword = user.getPassword();
-            
-            if (!incomingPassword.equals(dbPassword)) {
-                return ResponseEntity.status(401).body("Password is incorrect.");
+
+            // Parola eşleştirme
+            if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username or password is incorrect.");
             }
-            // Kullanıcı başarılı giriş yaptıysa, HTTP session'ına kullanıcıyı ekleyelim.
+
+            // Başarılı giriş -> session'a kaydet
             request.getSession().setAttribute("user", user);
+            // Oturum bilgisini döndürmeden önce şifreyi temizle
+            user.setPassword(null);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
+            logger.error("Error during login", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Internal server error: " + e.getMessage());
         }
     }
 
@@ -80,24 +91,28 @@ public class AuthController {
         if (updatedUser.getUserId() == null) {
             return ResponseEntity.badRequest().body("User ID is required.");
         }
-        
+
         Optional<User> optionalUser = userRepository.findById(updatedUser.getUserId());
         if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(404).body("User not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
-        
+
         User user = optionalUser.get();
         user.setUsername(updatedUser.getUsername());
         user.setEmail(updatedUser.getEmail());
-        user.setPassword(updatedUser.getPassword());
+        // Şifre güncellemesi yapılmışsa hash'le
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
         user.setFirstName(updatedUser.getFirstName());
         user.setLastName(updatedUser.getLastName());
         user.setPhone(updatedUser.getPhone());
-        
-        userRepository.save(user);
-        return ResponseEntity.ok(user);
+
+        User saved = userRepository.save(user);
+        saved.setPassword(null);
+        return ResponseEntity.ok(saved);
     }
-    
+
     // Admin profilini döndüren GET endpoint
     @GetMapping("/profile/admin")
     public ResponseEntity<?> getAdminProfile() {
@@ -106,32 +121,35 @@ public class AuthController {
                 .filter(user -> "admin".equalsIgnoreCase(user.getRole()))
                 .findFirst();
         if (adminOpt.isEmpty()) {
-            return ResponseEntity.status(404).body("Admin user not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Admin user not found.");
         }
-        return ResponseEntity.ok(adminOpt.get());
+        User admin = adminOpt.get();
+        admin.setPassword(null);
+        return ResponseEntity.ok(admin);
     }
-    
+
     // Manager profilini döndüren GET endpoint
     @GetMapping("/profile/manager")
     public ResponseEntity<?> getManagerProfile(@RequestParam Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty() || !"manager".equalsIgnoreCase(optionalUser.get().getRole())) {
-            return ResponseEntity.status(404).body("Manager not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Manager not found.");
         }
         User managerUser = optionalUser.get();
         Optional<Manager> managerOpt = managerRepository.findByUserId(managerUser.getUserId());
         if (managerOpt.isEmpty()) {
-            return ResponseEntity.status(404).body("Manager record not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Manager record not found.");
         }
         Manager manager = managerOpt.get();
         Map<String, Object> response = new HashMap<>();
+        managerUser.setPassword(null);
         response.put("user", managerUser);
         response.put("managerId", manager.getManagerId());
         response.put("hotelId", manager.getHotelId());
         return ResponseEntity.ok(response);
     }
-    
-    // Logout endpoint: Oturumu geçersiz kılarak çıkış yapar.
+
+    // Logout endpoint
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         request.getSession().invalidate();
