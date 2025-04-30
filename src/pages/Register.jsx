@@ -1,14 +1,16 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { Container, Row, Col, Form, FormGroup, Button } from 'reactstrap'
-import { useNavigate } from 'react-router-dom'
-import '../styles/login.css'
-import registerImg from '../assets/images/login.png'
-import { AuthContext } from '../context/AuthContext'
+import React, { useState, useContext, useEffect } from 'react';
+import { Container, Row, Col, Form, FormGroup, Button } from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
+import '../styles/login.css';
+import registerImg from '../assets/images/login.png';
+import { AuthContext } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const Register = () => {
+  const { t } = useTranslation();
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
   const [credentials, setCredentials] = useState({
     username: '',
@@ -17,90 +19,83 @@ const Register = () => {
     first_name: '',
     last_name: '',
     phone: ''
-  })
+  });
 
-  const [errors, setErrors] = useState({})
-  const { dispatch } = useContext(AuthContext)
-  const navigate = useNavigate()
+  const [errors, setErrors] = useState({});
+  const { dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setCredentials((prev) => ({
       ...prev,
       [e.target.id]: e.target.value
-    }))
+    }));
     setErrors((prev) => ({
       ...prev,
       [e.target.id]: ''
-    }))
-  }
+    }));
+  };
 
   const validateFields = () => {
-    const newErrors = {}
+    const newErrors = {};
 
-    if (!credentials.username.trim()) newErrors.username = 'Username is required.'
-    if (!credentials.first_name.trim()) newErrors.first_name = 'First name is required.'
-    if (!credentials.last_name.trim()) newErrors.last_name = 'Last name is required.'
-    if (!credentials.phone.trim()) newErrors.phone = 'Phone number is required.'
+    if (!credentials.username.trim()) newErrors.username = t('register.errors.username');
+    if (!credentials.first_name.trim()) newErrors.first_name = t('register.errors.first_name');
+    if (!credentials.last_name.trim()) newErrors.last_name = t('register.errors.last_name');
+    if (!credentials.phone.trim()) newErrors.phone = t('register.errors.phone');
 
     if (!credentials.email.trim()) {
-      newErrors.email = 'Email is required.'
+      newErrors.email = t('register.errors.email_required');
     } else {
-      const emailRegex = /^\S+@\S+\.\S+$/
+      const emailRegex = /^\S+@\S+\.\S+$/;
       if (!emailRegex.test(credentials.email.trim())) {
-        newErrors.email = 'Invalid email address.'
+        newErrors.email = t('register.errors.email_invalid');
       }
     }
 
     if (!credentials.password.trim()) {
-      newErrors.password = 'Password is required.'
+      newErrors.password = t('register.errors.password_required');
     } else if (credentials.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters.'
+      newErrors.password = t('register.errors.password_length');
     }
 
-    return newErrors
-  }
+    return newErrors;
+  };
 
   const handleClick = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const newErrors = validateFields()
+    const newErrors = validateFields();
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
+      setErrors(newErrors);
+      return;
     }
 
-    dispatch({ type: 'REGISTER_START' })
+    dispatch({ type: 'REGISTER_START' });
 
     try {
       const res = await fetch('http://localhost:8080/api/auth/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          ...credentials,
-          role: 'user'
-        })
-      })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...credentials, role: 'user' })
+      });
 
       if (res.status === 409) {
-        alert('Email already exists.')
-        dispatch({ type: 'REGISTER_FAILURE', payload: 'Email already exists' })
-        return
+        alert(t('register.errors.duplicate_email'));
+        dispatch({ type: 'REGISTER_FAILURE', payload: 'Email already exists' });
+        return;
       }
 
-      if (!res.ok) {
-        throw new Error('Registration failed.')
-      }
+      if (!res.ok) throw new Error('Registration failed.');
 
-      dispatch({ type: 'REGISTER_SUCCESS' })
-      alert('Account created! You can now log in.')
-      navigate('/login')
+      dispatch({ type: 'REGISTER_SUCCESS' });
+      alert(t('register.success'));
+      navigate('/login');
     } catch (err) {
-      dispatch({ type: 'REGISTER_FAILURE', payload: err.message })
-      alert('Something went wrong. Please try again.')
+      dispatch({ type: 'REGISTER_FAILURE', payload: err.message });
+      alert(t('register.errors.generic'));
     }
-  }
+  };
 
   return (
     <section className="auth-section">
@@ -115,88 +110,42 @@ const Register = () => {
               </div>
 
               <div className="auth-right">
-                <h2 className="auth-title">Join Us</h2>
-                <p className="auth-subtitle">Start your booking adventure!</p>
+                <h2 className="auth-title">{t('register.title')}</h2>
+                <p className="auth-subtitle">{t('register.subtitle')}</p>
 
                 <Form noValidate onSubmit={handleClick}>
-                  <FormGroup>
-                    <input
-                      type="text"
-                      id="username"
-                      placeholder="Username"
-                      value={credentials.username}
-                      onChange={handleChange}
-                    />
-                    {errors.username && <p className="error-text">{errors.username}</p>}
-                  </FormGroup>
-
-                  <FormGroup>
-                    <input
-                      type="text"
-                      id="first_name"
-                      placeholder="First Name"
-                      value={credentials.first_name}
-                      onChange={handleChange}
-                    />
-                    {errors.first_name && <p className="error-text">{errors.first_name}</p>}
-                  </FormGroup>
-
-                  <FormGroup>
-                    <input
-                      type="text"
-                      id="last_name"
-                      placeholder="Last Name"
-                      value={credentials.last_name}
-                      onChange={handleChange}
-                    />
-                    {errors.last_name && <p className="error-text">{errors.last_name}</p>}
-                  </FormGroup>
-
-                  <FormGroup>
-                    <input
-                      type="text"
-                      id="phone"
-                      placeholder="Phone Number"
-                      value={credentials.phone}
-                      onChange={handleChange}
-                    />
-                    {errors.phone && <p className="error-text">{errors.phone}</p>}
-                  </FormGroup>
-
-                  <FormGroup>
-                    <input
-                      type="email"
-                      id="email"
-                      placeholder="Email"
-                      value={credentials.email}
-                      onChange={handleChange}
-                    />
-                    {errors.email && <p className="error-text">{errors.email}</p>}
-                  </FormGroup>
-
-                  <FormGroup>
-                    <input
-                      type="password"
-                      id="password"
-                      placeholder="Password"
-                      value={credentials.password}
-                      onChange={handleChange}
-                    />
-                    {errors.password && <p className="error-text">{errors.password}</p>}
-                  </FormGroup>
+                  {[
+                    ['username', 'text'],
+                    ['first_name', 'text'],
+                    ['last_name', 'text'],
+                    ['phone', 'text'],
+                    ['email', 'email'],
+                    ['password', 'password']
+                  ].map(([field, type]) => (
+                    <FormGroup key={field}>
+                      <input
+                        type={type}
+                        id={field}
+                        placeholder={t(`register.placeholders.${field}`)}
+                        value={credentials[field]}
+                        onChange={handleChange}
+                      />
+                      {errors[field] && <p className="error-text">{errors[field]}</p>}
+                    </FormGroup>
+                  ))}
 
                   <Button type="submit" className="btn auth-btn w-100">
-                    CREATE ACCOUNT
+                    {t('register.button')}
                   </Button>
                 </Form>
 
                 <p className="auth-footer" style={{ marginTop: '1rem' }}>
-                  Already have an account?{' '}
+                  {t('register.have_account')}{' '}
                   <span
                     style={{ cursor: 'pointer', textDecoration: 'underline' }}
                     onClick={() => navigate('/login')}
                   >
-                    Login
+                    {t('register.login')}
                   </span>
                 </p>
               </div>
@@ -205,7 +154,7 @@ const Register = () => {
         </Row>
       </Container>
     </section>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;

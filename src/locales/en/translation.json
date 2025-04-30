@@ -1,0 +1,367 @@
+{
+  "home": "Home",
+  "about_button": "About",
+  "hotels": "Hotels",
+  "contact": "Contact",
+  "login_button": "Login",
+  "register_button": "Register",
+  "book_now": "Book Now",
+  
+  "welcome_message": "Welcome to Stay Inn!",
+  "footer_description": "Your gateway to unforgettable travel experiences. Discover and book the perfect place to stay, anywhere in the world.",
+  "footer_address": "Cibali, Kadir Has Cd, 34083 Fatih/İstanbul",
+  "footer_rights": "All rights reserved.",
+
+  "info": "Information",
+  "start_date": "Start Date",
+  "end_date": "End Date",
+  "adults": "Adults",
+  "children": "Children",
+  "service_charge": "Service charge",
+  "total": "Total",
+  "per_night": "/per night",
+  "alert_login_required": "Please sign in first.",
+  "alert_fields_required": "All fields are required! Please select room type, check-in and check-out dates.",
+  "alert_invalid_dates": "Please select valid dates.",
+  "alert_checkout_after_checkin": "Check-out date must be after check-in date.",
+  "alert_guest_limit": "This room can only accommodate up to {{capacity}} guests.",
+  "alert_minimum_guests": "At least 1 adult or child is required.",
+  "alert_room_unavailable": "The selected room is not available for the chosen date range. Please choose another.",
+  "alert_check_error": "Something went wrong during availability check.",
+
+  "marketing": {
+    "heading": "Find Your Perfect Stay & Book Instantly!",
+    "title1": "Earn Rewards for Every Night",
+    "title2": "Exclusive Member Discounts",
+    "title3": "Flexible Cancellation Options"
+  },
+
+  "room": {
+    "per_night": "/ night",
+    "max_people": "Max {{count}} people",
+    "free_wifi": "Free Wi-Fi"
+  },
+
+  "access_denied": {
+    "title": "Access Denied",
+    "message": "You do not have permission to access this page."
+  },
+
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "reservations": "Reservations",
+    "hotel": "Hotel",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+
+  "admin_sidebar": {
+    "dashboard": "Dashboard",
+    "contact": "Contact Us",
+    "user": "User",
+    "hotels": "Hotels",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+
+  "about": {
+    "title": "About Us",
+    "description": "This project is built by four passionate developers studying at Kadir Has University aiming to provide every convenience a traveler might desire. From exploring exotic tours to booking the perfect accommodation we strive to make every journey memorable.",
+    "roles": {
+      "fullstack": "Full Stack Developer",
+      "backend": "Backend Developer",
+      "frontend": "Frontend Developer",
+      "design": "Design / UX"
+    }
+  },
+
+  "admin_contact": {
+    "title": "Incoming Messages",
+    "unread_title": "Unread Messages",
+    "read_title": "Read Messages",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "reply": "Reply",
+    "mark_read": "Mark as Read",
+    "mark_unread": "Mark as Unread",
+    "delete": "Delete",
+    "no_unread": "No new messages.",
+    "no_read": "No read messages."
+  },
+
+  "admin_dashboard": {
+    "title": "Admin Dashboard",
+    "calendar": "Calendar",
+    "selected_date": "Selected Date",
+    "mailbox": "Company Mailbox",
+    "from": "From",
+    "email": "Email",
+    "subject": "Subject",
+    "read": "Read",
+    "read_button": "Read",
+    "weather": "Today's Weather",
+    "loading_weather": "Loading weather...",
+    "reservations_chart": "Monthly Reservations by City",
+    "managers_per_city": "Managers Per City",
+    "profit_loss": "Profit & Loss",
+    "total_hotels": "Total Hotels",
+    "total_rooms": "Total Rooms",
+    "managers": "Managers",
+    "gain": "Gain",
+    "managers_label": "Managers"
+  },
+
+  "admin_hotels": {
+  "title": "Hotel Management",
+  "name": "Hotel Name",
+  "city": "City",
+  "country": "Country",
+  "address": "Address",
+  "amenities": "Amenities",
+  "manager": "Manager",
+  "edit": "Edit",
+  "delete": "Delete",
+  "update": "Update Hotel",
+  "select_amenities": "Select Amenities",
+  "selected_amenities": "Selected Amenities",
+  "done": "Done",
+  "cancel": "Cancel"
+  },
+
+  "admin_profile": {
+  "title": "Your Profile",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "username": "Username",
+  "email": "Email",
+  "new_password": "New Password (leave blank to keep current)",
+  "password_placeholder": "Enter new password",
+  "save_changes": "Save Changes",
+  "loading": "Loading...",
+  "no_data": "No admin profile data available.",
+  "success": "Profile updated successfully!",
+  "error": "Error updating profile"
+  },
+
+  "admin_user": {
+  "title": "Admin User Management",
+  "add_manager": "Add Manager",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "phone": "Phone",
+  "email": "Email",
+  "username": "Username",
+  "password": "Password",
+  "add": "Add Manager",
+  "manager_list": "Managers List",
+  "user_list": "Users List",
+  "hotel_name": "Hotel Name",
+  "city": "City",
+  "action": "Action",
+  "delete": "Delete",
+  "no_managers": "No managers found.",
+  "no_users": "No users found.",
+  "unknown": "Unknown",
+  "success": {
+    "added": "✅ Manager successfully added!",
+    "deleted": "✅ {{name}} was deleted successfully!"
+  },
+  "errors": {
+    "invalid_email": "⚠️ Invalid email address.",
+    "invalid_phone": "⚠️ Invalid phone number.",
+    "invalid_password": "⚠️ Password must be at least 6 characters.",
+    "add_failed": "❌ Failed to add manager.",
+    "fetch_users": "❌ Failed to fetch users.",
+    "fetch_managers": "❌ Failed to fetch managers.",
+    "delete_failed": "❌ Deletion failed. Please try again."
+  }
+  },
+
+  "contact_page": {
+  "title": "Get in Touch With Us",
+  "description": "Get in touch with us, ask your questions, or share your thoughts.\nWe’ll get back to you as soon as possible!",
+  "name": "Name",
+  "email": "Email",
+  "phone": "Phone",
+  "message": "Message",
+  "name_placeholder": "Your Name",
+  "email_placeholder": "Your Email",
+  "phone_placeholder": "Your Phone Number",
+  "message_placeholder": "Write your message...",
+  "send": "Send",
+  "success": "Your message has been sent!",
+  "error": "Error sending message. Please try again."
+  },
+
+  "home_page": {
+  "hero_title": "Your Next Adventure Awaits",
+  "explore": "Explore",
+  "featured_title": "Handpicked Destinations"
+  },
+
+  "hotels_page": {
+  "hotels": "Hotels",
+  "all_cities": "All Cities",
+  "select_city": "Select a City",
+  "see_hotels": "See Hotels",
+  "loading": "Loading hotels...",
+  "not_rated": "Not rated",
+  "back": "Back to Cities"
+  },
+
+  "login": {
+  "title": "Hello Stay Inn User",
+  "subtitle": "Welcome back! Please log in.",
+  "placeholders": {
+    "email": "Email",
+    "password": "Password"
+  },
+  "button": "LOGIN",
+  "no_account": "Don't have an account?",
+  "register": "Create now",
+  "errors": {
+    "email_required": "Email is required.",
+    "email_invalid": "Please enter a valid email.",
+    "password_required": "Password is required.",
+    "generic": "Something went wrong."
+  },
+  "success": {
+    "manager": "Welcome, {{name}}! Your user ID is {{id}}.",
+    "user": "Welcome, {{name}}!"
+  }
+  },
+
+  "manager": {
+  "revenue": "Revenue Generated",
+  "ratings": "Customer Ratings",
+  "reservations": {
+    "title": "Reservations",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  }
+  },
+
+  "register": {
+  "title": "Join Us",
+  "subtitle": "Start your booking adventure!",
+  "button": "CREATE ACCOUNT",
+  "placeholders": {
+    "username": "Username",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "phone": "Phone Number",
+    "email": "Email",
+    "password": "Password"
+  },
+  "have_account": "Already have an account?",
+  "login": "Login",
+  "success": "Account created! You can now log in.",
+  "errors": {
+    "username": "Username is required.",
+    "first_name": "First name is required.",
+    "last_name": "Last name is required.",
+    "phone": "Phone number is required.",
+    "email_required": "Email is required.",
+    "email_invalid": "Invalid email address.",
+    "password_required": "Password is required.",
+    "password_length": "Password must be at least 6 characters.",
+    "duplicate_email": "Email already exists.",
+    "generic": "Something went wrong. Please try again."
+  }
+  },
+
+  "search_results": {
+  "title": "Search Results",
+  "destination": "Destination",
+  "dates": "Dates",
+  "guests": "Guests",
+  "unspecified": "Not Specified",
+  "loading": "Loading hotels...",
+  "no_results": "No results found."
+  },
+
+  "thank_you": {
+  "title": "Thank You",
+  "subtitle": "Your room is reserved",
+  "description": "We appreciate your trust in us. A confirmation email has been sent to you. We look forward to providing an amazing experience!",
+  "details": "See Reservation Details",
+  "home": "Back To Home"
+  },
+
+  "tour_details": {
+  "not_rated": "Not rated",
+  "description": "Description",
+  "select_room": "Select Your Room",
+  "reviews": "Reviews ({{count}})",
+  "placeholder_review": "Share your thoughts",
+  "submit_review": "Submit",
+  "just_now": "Just now"
+  },
+
+  "manager_hotels": {
+  "hotel": "Hotel",
+  "room": "Room",
+  "add_hotel": "Add Hotel",
+  "hotel_name": "Hotel Name",
+  "city": "City",
+  "country": "Country",
+  "address": "Address",
+  "description": "Description",
+  "star_rating": "Star Rating",
+  "room_details": "Room Details",
+  "room_name": "Room Name",
+  "room_type": "Room Type",
+  "price": "Price",
+  "total_rooms": "Total Rooms",
+  "select_amenities": "Select Amenities",
+  "close_amenities": "Close Amenities",
+  "edit_hotel": "Edit Hotel",
+  "delete_hotel": "Delete Hotel"
+  },
+  "common": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "done": "Done",
+    "save_changes": "Save Changes",
+    "loading": "Loading..."
+  },
+
+  "manager_profile": {
+  "title": "Your Profile",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "username": "Username",
+  "email": "Email",
+  "phone": "Phone",
+  "new_password": "New Password (leave blank to keep current)",
+  "save_changes": "Save Changes",
+  "edit": "Edit Profile",
+  "no_data": "No manager profile data available."
+  },
+
+  "manager_reservations": {
+  "title": "Manager Reservations",
+  "user_id": "User ID: {{id}}",
+  "manager_id": "Manager ID: {{id}}",
+  "booking_id": "Booking ID",
+  "room_id": "Room ID",
+  "checkin": "Check-in Date",
+  "checkout": "Check-out Date",
+  "hotel_name": "Hotel Name",
+  "guests": "Number of Guests",
+  "total_price": "Total Price",
+  "status": "Status",
+  "confirmed": "Confirm",
+  "rejected": "Reject",
+  "no_reservations": "No reservations found.",
+  "loading": "Loading...",
+  "no_manager": "Manager ID is not available. Please ensure you have manager access."
+  }
+
+
+}
+

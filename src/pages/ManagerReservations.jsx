@@ -4,6 +4,8 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 import SidebarManager from "../components/Sidebar_manager";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
+
 
 // Tarih verisini "YYYY-MM-DD" formatına çevirmek için yardımcı fonksiyon.
 const formatDate = (dateValue) => {
@@ -24,6 +26,7 @@ const formatDate = (dateValue) => {
 };
 
 const ManagerReservations = () => {
+  const { t } = useTranslation();
   const { user } = useContext(AuthContext);
   const [managerId, setManagerId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -108,13 +111,13 @@ const ManagerReservations = () => {
   };
 
   if (loading) {
-    return <Typography variant="body1">Loading...</Typography>;
+    return <Typography variant="body1">{t("manager_reservations.loading")}</Typography>;
   }
 
   if (!managerId) {
     return (
       <Typography variant="body1" color="error">
-        Manager ID is not available. Please ensure you have manager access.
+        {t("manager_reservations.no_manager")}
       </Typography>
     );
   }
@@ -124,11 +127,11 @@ const ManagerReservations = () => {
       <SidebarManager />
       <div className="content" style={{ padding: "40px", width: "100%", maxWidth: "1200px" }}>
         <Box display="flex" flexDirection="column" alignItems="center" mb={4}>
-          <Typography variant="h4" gutterBottom>
-            Manager Reservations
-          </Typography>
-          <Typography variant="body1">User ID: {user.userId}</Typography>
-          <Typography variant="body1">Manager ID: {managerId}</Typography>
+        <Typography variant="h4" gutterBottom>
+          {t("manager_reservations.title")}
+        </Typography>
+        <Typography variant="body1">{t("manager_reservations.user_id", { id: user.userId })}</Typography>
+        <Typography variant="body1">{t("manager_reservations.manager_id", { id: managerId })}</Typography>
         </Box>
         <Grid container spacing={4}>
           {reservations && reservations.length > 0 ? (
@@ -137,29 +140,30 @@ const ManagerReservations = () => {
                 <Card style={{ borderRadius: "15px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)", padding: "20px" }}>
                   <CardContent>
                     <Typography variant="h6">
-                      Booking ID: {reservation.bookingId}
+                      {t("manager_reservations.booking_id")}: {reservation.bookingId}
                     </Typography>
                     <Typography variant="body2">
-                      Room ID: {reservation.roomId} - {reservation.roomName}
+                    {t("manager_reservations.room_id")}: {reservation.roomId} - {reservation.roomName}
                     </Typography>
                     <Typography variant="body2">
-                      Check-in Date: {formatDate(reservation.checkInDate)}
+                      {t("manager_reservations.checkin")}: {formatDate(reservation.checkInDate)}
                     </Typography>
                     <Typography variant="body2">
-                      Check-out Date: {formatDate(reservation.checkOutDate)}
+                      {t("manager_reservations.checkout")}: {formatDate(reservation.checkOutDate)}
                     </Typography>
                     <Typography variant="body2">
-                      Hotel Name: {reservation.hotelName}
+                      {t("manager_reservations.hotel_name")}: {reservation.hotelName}
                     </Typography>
                     <Typography variant="body2">
-                      Number of Guests: {reservation.numGuests}
+                      {t("manager_reservations.guests")}: {reservation.numGuests}
                     </Typography>
                     <Typography variant="body2">
-                      Total Price: {reservation.totalPrice}
+                      {t("manager_reservations.total_price")}: {reservation.totalPrice}
                     </Typography>
                     <Typography variant="body2">
-                      Status: {reservation.status}
+                      {t("manager_reservations.status")}: {reservation.status}
                     </Typography>
+
                     <Box display="flex" justifyContent="flex-start" mt={2}>
                       <Button
                         variant="contained"
@@ -168,7 +172,7 @@ const ManagerReservations = () => {
                         onClick={() => handleConfirm(reservation.bookingId)}
                         style={{ marginRight: "10px" }}
                       >
-                        Confirmed
+                        {t("manager_reservations.confirmed")}
                       </Button>
                       <Button
                         variant="outlined"
@@ -176,7 +180,7 @@ const ManagerReservations = () => {
                         startIcon={<FaTimes />}
                         onClick={() => handleReject(reservation.bookingId)}
                       >
-                        Rejected
+                        {t("manager_reservations.rejected")}
                       </Button>
                     </Box>
                   </CardContent>
@@ -186,7 +190,7 @@ const ManagerReservations = () => {
           ) : (
             <Grid item xs={12}>
               <Typography variant="h6" color="textSecondary">
-                No reservations found.
+                {t("manager_reservations.no_reservations")}
               </Typography>
             </Grid>
           )}

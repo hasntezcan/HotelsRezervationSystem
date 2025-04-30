@@ -3,8 +3,10 @@ import "../styles/AdminProfile.css";
 import defaultAvatar from "../assets/images/avatar.jpg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const AdminProfile = () => {
+  const { t } = useTranslation();
   const [admin, setAdmin] = useState({
     userId: null,
     username: "",
@@ -13,7 +15,7 @@ const AdminProfile = () => {
     lastName: "",
     phone: "",
     avatar: defaultAvatar,
-    password: "" // for new password entry only
+    password: ""
   });
   const [loading, setLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +34,7 @@ const AdminProfile = () => {
           lastName: data.last_name,
           phone: data.phone,
           avatar: data.avatar || defaultAvatar,
-          password: "" // do not expose hashed password
+          password: ""
         }));
         setLoading(false);
       })
@@ -49,7 +51,6 @@ const AdminProfile = () => {
 
   const handleSaveChanges = async () => {
     try {
-      // Build payload; include password only if a new one was entered
       const payload = {
         userId: admin.userId,
         username: admin.username,
@@ -75,23 +76,23 @@ const AdminProfile = () => {
         lastName: updated.last_name,
         phone: updated.phone,
         avatar: updated.avatar || defaultAvatar,
-        password: "" // reset password field
+        password: ""
       });
-      alert("Profile updated successfully!");
+      alert(t("admin_profile.success"));
     } catch (error) {
       alert(
-        error.response?.data || error.message || "Error updating profile"
+        error.response?.data || error.message || t("admin_profile.error")
       );
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (!admin.userId) return <p>No admin profile data available.</p>;
+  if (loading) return <p>{t("admin_profile.loading")}</p>;
+  if (!admin.userId) return <p>{t("admin_profile.no_data")}</p>;
 
   return (
     <div className="admin-profile-page">
       <div className="admin-profile-container">
-        <h2 className="admin-profile-title">Your Profile</h2>
+        <h2 className="admin-profile-title">{t("admin_profile.title")}</h2>
         <div className="admin-profile-section">
           <img
             src={admin.avatar}
@@ -100,10 +101,9 @@ const AdminProfile = () => {
           />
         </div>
         <div className="admin-profile-info">
-          {/* Name and username/email rows */}
           <div className="admin-profile-row">
             <div>
-              <label>First Name</label>
+              <label>{t("admin_profile.first_name")}</label>
               <input
                 type="text"
                 name="firstName"
@@ -113,7 +113,7 @@ const AdminProfile = () => {
               />
             </div>
             <div>
-              <label>Last Name</label>
+              <label>{t("admin_profile.last_name")}</label>
               <input
                 type="text"
                 name="lastName"
@@ -125,7 +125,7 @@ const AdminProfile = () => {
           </div>
           <div className="admin-profile-row">
             <div>
-              <label>Username</label>
+              <label>{t("admin_profile.username")}</label>
               <input
                 type="text"
                 name="username"
@@ -135,7 +135,7 @@ const AdminProfile = () => {
               />
             </div>
             <div>
-              <label>Email</label>
+              <label>{t("admin_profile.email")}</label>
               <input
                 type="email"
                 name="email"
@@ -145,15 +145,13 @@ const AdminProfile = () => {
               />
             </div>
           </div>
-
-          {/* Password field for new password only */}
           <div className="admin-profile-password-wrapper">
-            <label>New Password (leave blank to keep current)</label>
+            <label>{t("admin_profile.new_password")}</label>
             <div className="admin-profile-password-input-container">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Enter new password"
+                placeholder={t("admin_profile.password_placeholder")}
                 value={admin.password}
                 onChange={handleInputChange}
                 className="admin-profile-password-input"
@@ -172,7 +170,7 @@ const AdminProfile = () => {
           onClick={handleSaveChanges}
           className="admin-profile-button"
         >
-          Save Changes
+          {t("admin_profile.save_changes")}
         </button>
       </div>
     </div>

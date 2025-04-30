@@ -20,9 +20,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import SidebarManager from "../components/Sidebar_manager";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
+
 
 const ManagerHotels = () => {
   const { user } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   // ─────────── State ───────────
   const [managerId, setManagerId] = useState(null);
@@ -236,8 +239,8 @@ const ManagerHotels = () => {
       <SidebarManager />
       <div className="content" style={{ padding: "40px", width: "100%" }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-          <Typography variant="h4" fontWeight="bold">Hotel</Typography>
-          <Typography variant="h4" fontWeight="bold">Room</Typography>
+          <Typography variant="h4" fontWeight="bold">{t("manager_hotels.hotel")}</Typography>
+          <Typography variant="h4" fontWeight="bold">{t("manager_hotels.room")}</Typography>
         </Box>
 
         {hotels.length === 0 && (
@@ -258,7 +261,7 @@ const ManagerHotels = () => {
                 boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
               }}
             >
-              ADD HOTEL
+              {t("manager_hotels.add_hotel")}
             </Button>
           </Box>
         )}
@@ -272,22 +275,22 @@ const ManagerHotels = () => {
                   <Typography variant="h5" fontWeight="bold">
                     {hotels[0].name}
                   </Typography>
-                  <Typography><strong>City:</strong> {hotels[0].city}</Typography>
-                  <Typography><strong>Country:</strong> {hotels[0].country}</Typography>
-                  <Typography><strong>Description:</strong> {hotels[0].description}</Typography>
+                  <Typography><strong>{t("manager_hotels.city")}:</strong> {hotels[0].city}</Typography>
+                  <Typography><strong>{t("manager_hotels.country")}:</strong> {hotels[0].country}</Typography>
+                  <Typography><strong>{t("manager_hotels.description")}:</strong> {hotels[0].description}</Typography>
                   <Typography><strong>Star Rating:</strong> {hotels[0].starRating}</Typography>
                   <Typography><strong>Address:</strong> {hotels[0].address}</Typography>
                   <Typography><strong>Amenities:</strong> {hotels[0].amenities}</Typography>
                   <Box display="flex" gap={2} mt={2}>
                     <Button variant="outlined" onClick={() => handleEdit(hotels[0])}>
-                      Edit Hotel
+                      {t("manager_hotels.edit_hotel")}
                     </Button>
                     <Button 
                       variant="outlined" 
                       color="error" 
                       onClick={() => deleteHotel(hotels[0].hotelId)}
                     >
-                      Delete Hotel
+                      {t("manager_hotels.delete_hotel")}
                     </Button>
                   </Box>
                 </CardContent>
@@ -299,7 +302,8 @@ const ManagerHotels = () => {
 <Grid item xs={12} sm={6}>
   <Card style={{ borderRadius: "50px", padding: "20px" }}>
     <CardContent>
-      <Typography variant="h5" fontWeight="bold">Room Details</Typography>
+      <Typography variant="h5" fontWeight="bold">{t("manager_hotels.room_details")}</Typography>
+
 
       {Array.isArray(rooms) && rooms.length > 0 ? (
         rooms.map((room) => (
@@ -316,7 +320,7 @@ const ManagerHotels = () => {
             {editingRoomId === room.id ? (
               <>
                 <TextField
-                  label="Room Name"
+                  label={t("manager_hotels.room_name")}
                   value={editingRoomData.name}
                   onChange={(e) =>
                     setEditingRoomData((prev) => ({
@@ -328,7 +332,7 @@ const ManagerHotels = () => {
                   size="small"
                 />
                 <TextField
-                  label="Room Type"
+                  label={t("manager_hotels.room_type")}
                   value={editingRoomData.roomType}
                   onChange={(e) =>
                     setEditingRoomData((prev) => ({
@@ -340,7 +344,7 @@ const ManagerHotels = () => {
                   size="small"
                 />
                 <TextField
-                  label="Price"
+                  label={t("manager_hotels.price")}
                   type="number"
                   value={editingRoomData.pricePerNight}
                   onChange={(e) =>
@@ -353,7 +357,7 @@ const ManagerHotels = () => {
                   size="small"
                 />
                 <TextField
-                  label="Total Rooms"
+                  label={t("manager_hotels.total_rooms")}
                   type="number"
                   value={editingRoomData.totalRooms}
                   onChange={(e) =>
@@ -371,14 +375,14 @@ const ManagerHotels = () => {
                     size="small"
                     onClick={() => updateRoom(room.id)}
                   >
-                    Save
+                    {t("common.save")}
                   </Button>
                   <Button
                     variant="outlined"
                     size="small"
                     onClick={() => setEditingRoomId(null)}
                   >
-                    Cancel
+                    {t("common.cancel")}
                   </Button>
                 </Box>
               </>
@@ -394,7 +398,7 @@ const ManagerHotels = () => {
                     size="small"
                     onClick={() => startEditRoom(room)}
                   >
-                    Edit
+                    {t("common.edit")}
                   </Button>
                   <Button
                     variant="outlined"
@@ -402,7 +406,7 @@ const ManagerHotels = () => {
                     size="small"
                     onClick={() => deleteRoomRemote(room.id)}
                   >
-                    Delete
+                    {t("common.delete")}
                   </Button>
                 </Box>
               </>
@@ -428,35 +432,35 @@ const ManagerHotels = () => {
           </DialogTitle>
           <DialogContent dividers>
             <TextField 
-              label="Hotel Name" 
+              label={t("manager_hotels.hotel_name")}
               value={editHotel?.name || ""} 
               onChange={(e) => handleChange(e, "name")} 
               fullWidth 
               margin="normal" 
             />
             <TextField 
-              label="City" 
+              label={t("manager_hotels.city")}
               value={editHotel?.city || ""} 
               onChange={(e) => handleChange(e, "city")} 
               fullWidth 
               margin="normal" 
             />
             <TextField 
-              label="Country" 
+              label={t("manager_hotels.country")}
               value={editHotel?.country || ""} 
               onChange={(e) => handleChange(e, "country")} 
               fullWidth 
               margin="normal" 
             />
             <TextField 
-              label="Address" 
+              label={t("manager_hotels.address")}
               value={editHotel?.address || ""} 
               onChange={(e) => handleChange(e, "address")} 
               fullWidth 
               margin="normal" 
             />
             <TextField 
-              label="Description" 
+              label={t("manager_hotels.description")} 
               value={editHotel?.description || ""} 
               onChange={(e) => handleChange(e, "description")} 
               fullWidth 
@@ -464,7 +468,7 @@ const ManagerHotels = () => {
             />
 
             <Box marginY={2}>
-              <Typography variant="subtitle1">Star Rating</Typography>
+              <Typography variant="subtitle1">{t("manager_hotels.star_rating")}</Typography>
               <Rating
                 value={Number(editHotel?.starRating) || 0}
                 onChange={(e, newValue) => setEditHotel({ ...editHotel, starRating: newValue })}
@@ -485,7 +489,7 @@ const ManagerHotels = () => {
                   setShowAmenitySelector(true);
                 }}
               >
-                {showAmenitySelector ? "Close Amenities" : "Select Amenities"}
+                {showAmenitySelector ? t("manager_hotels.close_amenities") : t("manager_hotels.select_amenities")}
               </Button>
 
               {showAmenitySelector && (
@@ -504,10 +508,10 @@ const ManagerHotels = () => {
                   ))}
                   <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
                     <Button variant="outlined" onClick={() => setShowAmenitySelector(false)}>
-                      Cancel
+                      {t("common.cancel")}
                     </Button>
                     <Button variant="contained" onClick={() => setShowAmenitySelector(false)}>
-                      Done
+                      {t("common.done")}
                     </Button>
                   </Box>
                 </Box>
@@ -516,7 +520,7 @@ const ManagerHotels = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleSave} variant="contained" color="primary">
-              Save Changes
+              {t("common.save_changes")}
             </Button>
           </DialogActions>
         </Dialog>

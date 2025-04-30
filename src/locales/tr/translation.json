@@ -1,0 +1,366 @@
+{
+  "home": "Anasayfa",
+  "about_button": "Hakkımızda",
+  "hotels": "Oteller",
+  "contact": "İletişim",
+  "login_button": "Giriş Yap",
+  "register_button": "Kayıt Ol",
+  "book_now": "Hemen Rezervasyon Yap",
+  "welcome_message": "Stay Inn'e Hoşgeldiniz!",
+  "footer_description": "Unutulmaz seyahat deneyimlerine açılan kapınız. Dünyanın her yerinde mükemmel konaklama yerlerini keşfedin ve rezerve edin.",
+  "footer_address": "Cibali, Kadir Has Cd, 34083 Fatih/İstanbul",
+  "footer_rights": "Tüm hakları saklıdır.",
+
+  "info": "Bilgiler",
+  "start_date": "Giriş Tarihi",
+  "end_date": "Çıkış Tarihi",
+  "adults": "Yetişkin",
+  "children": "Çocuk",
+  "service_charge": "Hizmet Bedeli",
+  "total": "Toplam",
+  "per_night": "/gecelik",
+  "alert_login_required": "Lütfen önce giriş yapın.",
+  "alert_fields_required": "Tüm alanlar gereklidir! Lütfen oda tipi, giriş ve çıkış tarihlerini seçin.",
+  "alert_invalid_dates": "Lütfen geçerli tarihler seçin.",
+  "alert_checkout_after_checkin": "Çıkış tarihi giriş tarihinden sonra olmalıdır.",
+  "alert_guest_limit": "Bu oda en fazla {{capacity}} kişiyi ağırlayabilir.",
+  "alert_minimum_guests": "En az 1 yetişkin veya çocuk gerekli.",
+  "alert_room_unavailable": "Seçilen tarihlerde bu oda uygun değil. Lütfen başka bir tarih aralığı seçin.",
+  "alert_check_error": "Uygunluk kontrolü sırasında bir hata oluştu.",
+
+  "marketing": {
+    "heading": "Mükemmel Konaklamanı Bul ve Hemen Rezerve Et!",
+    "title1": "Her Geceye Ödül Kazanın",
+    "title2": "Üyelere Özel İndirimler",
+    "title3": "Esnek İptal Seçenekleri"
+
+  },
+
+  "room": {
+    "per_night": "/ gece",
+    "max_people": "En fazla {{count}} kişi",
+    "free_wifi": "Ücretsiz Wi-Fi"
+  },
+
+  "access_denied": {
+    "title": "Erişim Engellendi",
+    "message": "Bu sayfaya erişim izniniz yok."
+  },
+
+  "sidebar": {
+    "dashboard": "Kontrol Paneli",
+    "reservations": "Rezervasyonlar",
+    "hotel": "Otel",
+    "profile": "Profil",
+    "logout": "Çıkış Yap"
+  },
+
+  "admin_sidebar": {
+    "dashboard": "Kontrol Paneli",
+    "contact": "Bize Ulaşın",
+    "user": "Kullanıcılar",
+    "hotels": "Oteller",
+    "profile": "Profil",
+    "logout": "Çıkış Yap"
+  },
+
+  "about": {
+    "title": "Hakkımızda",
+    "description": "Bu proje, Kadir Has Üniversitesi'nde okuyan dört tutkulu geliştirici tarafından, gezginlerin ihtiyaç duyabileceği her şeyi sağlamak amacıyla oluşturulmuştur. Egzotik turları keşfetmekten mükemmel konaklamayı ayarlamaya kadar her yolculuğu unutulmaz kılmak için buradayız.",
+    "roles": {
+      "fullstack": "Full Stack Geliştirici",
+      "backend": "Backend Geliştirici",
+      "frontend": "Frontend Geliştirici",
+      "design": "Tasarım / UX"
+    }
+  },
+
+  "admin_contact": {
+    "title": "Gelen Mesajlar",
+    "unread_title": "Okunmamış Mesajlar",
+    "read_title": "Okunmuş Mesajlar",
+    "name": "Ad",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "message": "Mesaj",
+    "reply": "Yanıtla",
+    "mark_read": "Okundu Olarak İşaretle",
+    "mark_unread": "Okunmadı Olarak İşaretle",
+    "delete": "Sil",
+    "no_unread": "Yeni mesaj yok.",
+    "no_read": "Okunmuş mesaj yok."
+  },
+
+  "admin_dashboard": {
+    "title": "Yönetici Paneli",
+    "calendar": "Takvim",
+    "selected_date": "Seçilen Tarih",
+    "mailbox": "Şirket E-Postaları",
+    "from": "Kimden",
+    "email": "E-posta",
+    "subject": "Konu",
+    "read": "Oku",
+    "read_button": "Oku",
+    "weather": "Bugünün Hava Durumu",
+    "loading_weather": "Hava durumu yükleniyor...",
+    "reservations_chart": "Şehirlere Göre Aylık Rezervasyonlar",
+    "managers_per_city": "Şehirlere Göre Müdür Dağılımı",
+    "profit_loss": "Kar / Zarar",
+    "total_hotels": "Toplam Otel",
+    "total_rooms": "Toplam Oda",
+    "managers": "Müdürler",
+    "gain": "Kazanç",
+    "managers_label": "Müdür"
+  },
+
+  "admin_hotels": {
+  "title": "Otel Yönetimi",
+  "name": "Otel Adı",
+  "city": "Şehir",
+  "country": "Ülke",
+  "address": "Adres",
+  "amenities": "Olanaklar",
+  "manager": "Yönetici",
+  "edit": "Düzenle",
+  "delete": "Sil",
+  "update": "Oteli Güncelle",
+  "select_amenities": "Olanakları Seç",
+  "selected_amenities": "Seçilen Olanaklar",
+  "done": "Tamam",
+  "cancel": "İptal"
+  },
+
+  "admin_profile": {
+  "title": "Profiliniz",
+  "first_name": "Ad",
+  "last_name": "Soyad",
+  "username": "Kullanıcı Adı",
+  "email": "E-posta",
+  "new_password": "Yeni Şifre (boş bırakırsanız mevcut şifre korunur)",
+  "password_placeholder": "Yeni şifre girin",
+  "save_changes": "Değişiklikleri Kaydet",
+  "loading": "Yükleniyor...",
+  "no_data": "Yönetici profili verisi bulunamadı.",
+  "success": "Profil başarıyla güncellendi!",
+  "error": "Profil güncellenirken bir hata oluştu"
+  },
+
+  "admin_user": {
+  "title": "Kullanıcı Yönetimi",
+  "add_manager": "Yönetici Ekle",
+  "first_name": "Ad",
+  "last_name": "Soyad",
+  "phone": "Telefon",
+  "email": "E-posta",
+  "username": "Kullanıcı Adı",
+  "password": "Şifre",
+  "add": "Yönetici Ekle",
+  "manager_list": "Yöneticiler Listesi",
+  "user_list": "Kullanıcılar Listesi",
+  "hotel_name": "Otel Adı",
+  "city": "Şehir",
+  "action": "İşlem",
+  "delete": "Sil",
+  "no_managers": "Kayıtlı yönetici bulunamadı.",
+  "no_users": "Kayıtlı kullanıcı bulunamadı.",
+  "unknown": "Bilinmiyor",
+  "success": {
+    "added": "✅ Yönetici başarıyla eklendi!",
+    "deleted": "✅ {{name}} başarıyla silindi!"
+  },
+  "errors": {
+    "invalid_email": "⚠️ Geçersiz e-posta adresi.",
+    "invalid_phone": "⚠️ Geçersiz telefon numarası.",
+    "invalid_password": "⚠️ Şifre en az 6 karakter olmalı.",
+    "add_failed": "❌ Yönetici eklenemedi.",
+    "fetch_users": "❌ Kullanıcılar alınamadı.",
+    "fetch_managers": "❌ Yöneticiler alınamadı.",
+    "delete_failed": "❌ Silme işlemi başarısız. Lütfen tekrar deneyin."
+  }
+  },
+
+  "contact_page": {
+  "title": "Bizimle İletişime Geçin",
+  "description": "Sorularınızı sormak veya düşüncelerinizi paylaşmak için bizimle iletişime geçin.\nEn kısa sürede size geri döneceğiz!",
+  "name": "Ad",
+  "email": "E-posta",
+  "phone": "Telefon",
+  "message": "Mesaj",
+  "name_placeholder": "Adınız",
+  "email_placeholder": "E-posta adresiniz",
+  "phone_placeholder": "Telefon numaranız",
+  "message_placeholder": "Mesajınızı yazın...",
+  "send": "Gönder",
+  "success": "Mesajınız başarıyla gönderildi!",
+  "error": "Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin."
+  },
+
+  "home_page": {
+  "hero_title": "Sıradaki Maceran Sizi Bekliyor",
+  "explore": "Keşfet",
+  "featured_title": "Özenle Seçilmiş Rotalar"
+  },
+
+  "hotels_page": {
+  "hotels": "Otelleri",
+  "all_cities": "Tüm Şehirler",
+  "select_city": "Bir şehir seçin",
+  "see_hotels": "Otellere Bak",
+  "loading": "Oteller yükleniyor...",
+  "not_rated": "Puanlanmamış",
+  "back": "Şehirlere Geri Dön"
+  },
+
+  "login": {
+  "title": "Stay Inn Kullanıcısı Merhaba",
+  "subtitle": "Tekrar hoş geldiniz! Lütfen giriş yapın.",
+  "placeholders": {
+    "email": "E-posta",
+    "password": "Şifre"
+  },
+  "button": "GİRİŞ YAP",
+  "no_account": "Hesabınız yok mu?",
+  "register": "Şimdi oluştur",
+  "errors": {
+    "email_required": "E-posta zorunludur.",
+    "email_invalid": "Geçerli bir e-posta girin.",
+    "password_required": "Şifre zorunludur.",
+    "generic": "Bir hata oluştu."
+  },
+  "success": {
+    "manager": "Hoş geldin {{name}}! Kullanıcı ID'n: {{id}}.",
+    "user": "Hoş geldin {{name}}!"
+  }
+  },
+
+  "manager": {
+  "revenue": "Elde Edilen Gelir",
+  "ratings": "Müşteri Puanları",
+  "reservations": {
+    "title": "Rezervasyonlar",
+    "approved": "Onaylananlar",
+    "rejected": "Reddedilenler"
+  }
+  },
+
+  "register": {
+  "title": "Aramıza Katıl",
+  "subtitle": "Rezervasyon macerana şimdi başla!",
+  "button": "HESAP OLUŞTUR",
+  "placeholders": {
+    "username": "Kullanıcı Adı",
+    "first_name": "Ad",
+    "last_name": "Soyad",
+    "phone": "Telefon Numarası",
+    "email": "E-posta",
+    "password": "Şifre"
+  },
+  "have_account": "Zaten bir hesabınız var mı?",
+  "login": "Giriş Yap",
+  "success": "Hesap oluşturuldu! Giriş yapabilirsiniz.",
+  "errors": {
+    "username": "Kullanıcı adı zorunludur.",
+    "first_name": "Ad zorunludur.",
+    "last_name": "Soyad zorunludur.",
+    "phone": "Telefon numarası zorunludur.",
+    "email_required": "E-posta zorunludur.",
+    "email_invalid": "Geçersiz e-posta adresi.",
+    "password_required": "Şifre zorunludur.",
+    "password_length": "Şifre en az 6 karakter olmalı.",
+    "duplicate_email": "E-posta zaten kayıtlı.",
+    "generic": "Bir hata oluştu. Lütfen tekrar deneyin."
+  }
+  },
+
+  "search_results": {
+  "title": "Arama Sonuçları",
+  "destination": "Gidilecek Yer",
+  "dates": "Tarihler",
+  "guests": "Misafir Sayısı",
+  "unspecified": "Belirtilmedi",
+  "loading": "Oteller yükleniyor...",
+  "no_results": "Sonuç bulunamadı."
+  },
+
+  "thank_you": {
+  "title": "Teşekkürler",
+  "subtitle": "Odanız rezerve edildi",
+  "description": "Bize güvendiğiniz için teşekkür ederiz. Onay e-postası size gönderildi. Harika bir deneyim sunmayı dört gözle bekliyoruz!",
+  "details": "Rezervasyon Detaylarını Gör",
+  "home": "Ana Sayfaya Dön"
+  },
+
+  "tour_details": {
+  "not_rated": "Henüz puanlanmamış",
+  "description": "Açıklama",
+  "select_room": "Odanızı Seçin",
+  "reviews": "Yorumlar ({{count}})",
+  "placeholder_review": "Düşüncelerinizi paylaşın",
+  "submit_review": "Gönder",
+  "just_now": "Şimdi"
+  },
+
+  "manager_hotels": {
+  "hotel": "Otel",
+  "room": "Oda",
+  "add_hotel": "Otel Ekle",
+  "hotel_name": "Otel Adı",
+  "city": "Şehir",
+  "country": "Ülke",
+  "address": "Adres",
+  "description": "Açıklama",
+  "star_rating": "Yıldız Puanı",
+  "room_details": "Oda Detayları",
+  "room_name": "Oda Adı",
+  "room_type": "Oda Türü",
+  "price": "Fiyat",
+  "total_rooms": "Toplam Oda",
+  "select_amenities": "Olanakları Seç",
+  "close_amenities": "Olanakları Kapat",
+  "edit_hotel": "Oteli Düzenle",
+  "delete_hotel": "Oteli Sil"
+  },
+  "common": {
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "done": "Tamam",
+    "save_changes": "Değişiklikleri Kaydet",
+    "loading": "Yükleniyor..."
+  },
+
+  "manager_profile": {
+  "title": "Profiliniz",
+  "first_name": "Ad",
+  "last_name": "Soyad",
+  "username": "Kullanıcı Adı",
+  "email": "E-posta",
+  "phone": "Telefon",
+  "new_password": "Yeni Şifre (boş bırakırsanız mevcut şifre korunur)",
+  "save_changes": "Değişiklikleri Kaydet",
+  "edit": "Profili Düzenle",
+  "no_data": "Yönetici profili verisi bulunamadı."
+  },
+
+  "manager_reservations": {
+  "title": "Yönetici Rezervasyonları",
+  "user_id": "Kullanıcı ID: {{id}}",
+  "manager_id": "Yönetici ID: {{id}}",
+  "booking_id": "Rezervasyon ID",
+  "room_id": "Oda ID",
+  "checkin": "Giriş Tarihi",
+  "checkout": "Çıkış Tarihi",
+  "hotel_name": "Otel Adı",
+  "guests": "Misafir Sayısı",
+  "total_price": "Toplam Ücret",
+  "status": "Durum",
+  "confirmed": "Onayla",
+  "rejected": "Reddet",
+  "no_reservations": "Rezervasyon bulunamadı.",
+  "loading": "Yükleniyor...",
+  "no_manager": "Yönetici kimliği bulunamadı. Lütfen yönetici erişiminiz olduğundan emin olun."
+  }
+
+
+}

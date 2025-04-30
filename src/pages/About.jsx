@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Container, Row, Col } from 'reactstrap';
+import { useTranslation } from 'react-i18next';
 import '../styles/about.css';
 
 import hasanImg from '../assets/images/hasan.jpg';
@@ -8,7 +9,8 @@ import sezaiImg from '../assets/images/sezai.jpg';
 import dedeImg from '../assets/images/dede.jpg';
 
 const About = () => {
-  // Scroll to top when the component mounts
+  const { t } = useTranslation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -19,13 +21,8 @@ const About = () => {
         <Row>
           <Col lg="12">
             <div className="about__header text-center">
-              <h2>About Us</h2>
-              <p>
-                This project is built by four passionate developers studying at Kadir Has University
-                aiming to provide every convenience a traveler might desire.
-                From exploring exotic tours to booking the perfect accommodation —
-                we strive to make every journey memorable.
-              </p>
+              <h2>{t('about.title')}</h2>
+              <p>{t('about.description')}</p>
             </div>
           </Col>
         </Row>
@@ -35,22 +32,12 @@ const About = () => {
             <div className="team__member">
               <img src={hasanImg} alt="Hasan" className="team__member-img" />
               <h5 className="team__member-name">Hasan Tezcan</h5>
-              <p className="team__member-role">Full Stack Developer</p>
+              <p className="team__member-role">{t('about.roles.fullstack')}</p>
               <div className="team__member-links">
-                <a 
-                  href="https://www.linkedin.com/in/hasan-tezcan0/" 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="social-link"
-                >
+                <a href="https://www.linkedin.com/in/hasan-tezcan0/" target="_blank" rel="noreferrer" className="social-link">
                   <i className="ri-linkedin-box-fill"></i>
                 </a>
-                <a 
-                  href="https://github.com/hasntezcan" 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="social-link"
-                >
+                <a href="https://github.com/hasntezcan" target="_blank" rel="noreferrer" className="social-link">
                   <i className="ri-github-fill"></i>
                 </a>
               </div>
@@ -61,22 +48,12 @@ const About = () => {
             <div className="team__member">
               <img src={emirImg} alt="Emir" className="team__member-img" />
               <h5 className="team__member-name">Emir Esad Şahin</h5>
-              <p className="team__member-role">Backend Developer</p>
+              <p className="team__member-role">{t('about.roles.backend')}</p>
               <div className="team__member-links">
-                <a 
-                  href="https://www.linkedin.com/in/emir%C5%9Fahin/" 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="social-link"
-                >
+                <a href="https://www.linkedin.com/in/emir%C5%9Fahin/" target="_blank" rel="noreferrer" className="social-link">
                   <i className="ri-linkedin-box-fill"></i>
                 </a>
-                <a 
-                  href="https://github.com/iamsahinemir" 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="social-link"
-                >
+                <a href="https://github.com/iamsahinemir" target="_blank" rel="noreferrer" className="social-link">
                   <i className="ri-github-fill"></i>
                 </a>
               </div>
@@ -87,22 +64,12 @@ const About = () => {
             <div className="team__member">
               <img src={sezaiImg} alt="Sezai" className="team__member-img" />
               <h5 className="team__member-name">Sezai Araplarlı</h5>
-              <p className="team__member-role">Frontend Developer</p>
+              <p className="team__member-role">{t('about.roles.frontend')}</p>
               <div className="team__member-links">
-                <a 
-                  href="https://www.linkedin.com/in/sezowastaken" 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="social-link"
-                >
+                <a href="https://www.linkedin.com/in/sezowastaken" target="_blank" rel="noreferrer" className="social-link">
                   <i className="ri-linkedin-box-fill"></i>
                 </a>
-                <a 
-                  href="https://github.com/sezowastaken" 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="social-link"
-                >
+                <a href="https://github.com/sezowastaken" target="_blank" rel="noreferrer" className="social-link">
                   <i className="ri-github-fill"></i>
                 </a>
               </div>
@@ -113,22 +80,12 @@ const About = () => {
             <div className="team__member">
               <img src={dedeImg} alt="Dede" className="team__member-img" />
               <h5 className="team__member-name">Tunahan Tuze</h5>
-              <p className="team__member-role">Design / UX</p>
+              <p className="team__member-role">{t('about.roles.design')}</p>
               <div className="team__member-links">
-                <a 
-                  href="https://www.linkedin.com/in/tunahantuze/" 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="social-link"
-                >
+                <a href="https://www.linkedin.com/in/tunahantuze/" target="_blank" rel="noreferrer" className="social-link">
                   <i className="ri-linkedin-box-fill"></i>
                 </a>
-                <a 
-                  href="https://github.com/TunahanTuze" 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="social-link"
-                >
+                <a href="https://github.com/TunahanTuze" target="_blank" rel="noreferrer" className="social-link">
                   <i className="ri-github-fill"></i>
                 </a>
               </div>

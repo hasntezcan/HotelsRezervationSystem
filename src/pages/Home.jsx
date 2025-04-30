@@ -5,9 +5,9 @@ import Subtitle from './../shared/subtitle';
 import SearchBar from './../shared/SearchBar';
 import FeaturedTourList from '../components/Featured-tours/FeaturedTourList';
 import MarketingSection from '../components/MarketingSection/MarketingSection';
-import backGround from '../assets/images/bg.png'
+import { useTranslation } from 'react-i18next';
 
-// Import images from the folder
+// Images
 import image1 from '../assets/images/homePage/image1.jpg';
 import image2 from '../assets/images/homePage/image2.jpg';
 import image3 from '../assets/images/homePage/image3.jpg';
@@ -16,25 +16,20 @@ import image5 from '../assets/images/homePage/image5.jpg';
 import image6 from '../assets/images/homePage/image6.jpg';
 import image7 from '../assets/images/homePage/image7.jpg';
 
-
 const Home = () => {
-  // Scroll to top when the component mounts
+  const { t } = useTranslation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Slideshow state
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Use the imported images
   const images = [image1, image2, image3, image4, image5, image6, image7];
 
-  // Automatically change images every 5 seconds with a fade effect
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 5000);
-
     return () => clearInterval(interval);
   }, [images]);
 
@@ -42,7 +37,6 @@ const Home = () => {
     <>
       {/* Hero Section */}
       <section className="hero__section">
-        {/* Slideshow Container */}
         <div className="hero__slideshow">
           {images.map((image, index) => (
             <img
@@ -54,12 +48,11 @@ const Home = () => {
           ))}
         </div>
 
-        {/* Hero Content */}
         <Container>
           <Row className="align-items-center text-center">
             <Col lg="12">
               <div className="hero__content">
-                <h1 className="hero__title">Your Next Adventure Awaits</h1>
+                <h1 className="hero__title">{t("home_page.hero_title")}</h1>
               </div>
             </Col>
             <Col lg="12">
@@ -69,16 +62,14 @@ const Home = () => {
         </Container>
       </section>
 
-      {/* Marketing Section */}
       <MarketingSection />
 
-      {/* Featured Tours */}
       <section className="featured__tours">
         <Container>
           <Row className="text-center">
             <Col lg="12">
-              <Subtitle subtitle={'Explore'} />
-              <h2 className="featured__tour-title">Handpicked Destinations</h2>
+              <Subtitle subtitle={t("home_page.explore")} />
+              <h2 className="featured__tour-title">{t("home_page.featured_title")}</h2>
             </Col>
             <FeaturedTourList />
           </Row>

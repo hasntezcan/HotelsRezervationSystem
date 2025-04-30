@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react'
-import { Container, Row, Col } from 'reactstrap'
-import { Link } from 'react-router-dom'
-import '../styles/thank-you.css'
+import React, { useEffect } from 'react';
+import { Container, Row, Col } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import '../styles/thank-you.css';
+import { useTranslation } from 'react-i18next';
 
 const ThankYou = () => {
+  const { t } = useTranslation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   return (
     <section className="thank-you-section">
       <Container>
@@ -16,19 +20,18 @@ const ThankYou = () => {
               <div className="check-icon">
                 <i className="ri-checkbox-circle-line"></i>
               </div>
-              <h1 className="thank-you-title">Thank You</h1>
-              <h3 className="thank-you-subtitle">Your room is reserved</h3>
+              <h1 className="thank-you-title">{t('thank_you.title')}</h1>
+              <h3 className="thank-you-subtitle">{t('thank_you.subtitle')}</h3>
               <p className="thank-you-text">
-                We appreciate your trust in us. A confirmation email has been
-                sent to you. <br/>We look forward to providing an amazing experience!
+                {t('thank_you.description')}
               </p>
 
               <div className="btn-group-thank">
                 <Link to="/profile/bookings" className="btn see-details-btn">
-                  See Reservation Details
+                  {t('thank_you.details')}
                 </Link>
                 <Link to="/home" className="btn home-btn">
-                  Back To Home
+                  {t('thank_you.home')}
                 </Link>
               </div>
             </div>
@@ -36,7 +39,7 @@ const ThankYou = () => {
         </Row>
       </Container>
     </section>
-  )
-}
+  );
+};
 
-export default ThankYou
+export default ThankYou;

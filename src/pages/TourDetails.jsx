@@ -9,10 +9,13 @@ import Booking from '../components/Booking/Booking';
 import { AuthContext } from '../context/AuthContext';
 import Room from '../components/Room/Room';
 import HotelGallery from '../shared/HotelGallery';
+import { useTranslation } from 'react-i18next';
+
 
 const TourDetails = () => {
   const { id } = useParams();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const [tour, setTour] = useState(null);
   const [tourRating, setTourRating] = useState(null);
@@ -139,7 +142,7 @@ const TourDetails = () => {
                   <span className="tour__rating d-flex align-items-center gap-1">
                     <i className="ri-star-fill" style={{ color: 'var(--secondary-color)' }}></i>
                     {avgRating === 0 ? null : avgRating}
-                    {avgRating === 0 ? 'Not rated' : <span>({reviews.length})</span>}
+                    {avgRating === 0 ? t("tour_details.not_rated") : <span>({reviews.length})</span>}
                   </span>
                   <span>
                     <i className="ri-map-pin-fill"></i> {address}
@@ -159,12 +162,13 @@ const TourDetails = () => {
                   </ul>
                 </div>
 
-                <h5>Description</h5>
+                <h5 className="mt-3">{t("tour_details.description")}</h5>
                 <p>{desc}</p>
               </div>
 
               <div className="tour__rooms mt-4">
-                <h4 className="mb-3">Select Your Room</h4>
+                <h4 className="mb-3">{t("tour_details.select_room")}</h4>
+
                 <Room
                   hotelId={tour.hotelId}
                   selectedRoom={selectedRoom}
@@ -173,7 +177,8 @@ const TourDetails = () => {
               </div>
 
               <div className="tour__reviews mt-4">
-                <h4>Reviews ({reviews.length})</h4>
+                <h4>{t("tour_details.reviews", { count: reviews.length })}</h4>
+
                 <Form onSubmit={submitHandler}>
                   <div className="d-flex align-items-center gap-3 mb-4 rating__group">
                     {[1, 2, 3, 4, 5].map((num) => (
@@ -187,15 +192,17 @@ const TourDetails = () => {
                     ))}
                   </div>
                   <div className="review__input">
-                    <input
-                      type="text"
-                      ref={reviewMsgRef}
-                      placeholder="Share your thoughts"
-                      required
-                    />
+                  <input
+                    type="text"
+                    ref={reviewMsgRef}
+                    placeholder={t("tour_details.placeholder_review")}
+                    required
+                  />
+
                     <button className="btn primary__btn text-white" type="submit">
-                      Submit
+                      {t("tour_details.submit_review")}
                     </button>
+
                   </div>
                 </Form>
                 <ListGroup className="user__reviews">
@@ -207,9 +214,10 @@ const TourDetails = () => {
                           <div>
                             <h5>{review.username}</h5>
                             <p>
-                              {typeof review.createdAt === 'string'
-                                ? new Date(review.createdAt.replace(' ', 'T')).toLocaleDateString()
-                                : 'Just now'}
+                            {typeof review.createdAt === 'string'// TODO created at tam çalışmıyor her daim just now yazıyor, yorumlara tarih bilgisi ekleyecek şekilde düzenle
+                              ? new Date(review.createdAt.replace(' ', 'T')).toLocaleDateString()
+                              : t("tour_details.just_now")}
+                            
                             </p>
                           </div>
                           <span className="d-flex align-items-center">

@@ -13,9 +13,13 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from 'axios';
 import SidebarManager from "../components/Sidebar_manager";
 import { AuthContext } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+
 
 const ManagerProfile = () => {
   const { user } = useContext(AuthContext);
+  const { t } = useTranslation();
+
   const [managerData, setManagerData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -103,8 +107,8 @@ const ManagerProfile = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (!managerData) return <p>No manager profile data available.</p>;
+  if (loading) return <p>{t("common.loading")}</p>;
+  if (!managerData) return <p>{t("manager_profile.no_data")}</p>;
 
   return (
     <div className="dashboard" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -119,7 +123,7 @@ const ManagerProfile = () => {
                 style={{ width: "100px", height: "100px", borderRadius: "50%", marginBottom: "15px" }}
               />
               <Typography variant="h4" style={{ fontWeight: 'bold' }}>
-                Your Profile
+                {t("manager_profile.title")}
               </Typography>
               <Typography variant="subtitle1">
                 Manager ID: {managerData.managerId} | User ID: {managerData.userId}
@@ -127,7 +131,7 @@ const ManagerProfile = () => {
             </Box>
             <Box display="flex" flexDirection="column" marginTop="20px">
               <TextField
-                label="First Name"
+                label={t("manager_profile.first_name")}
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
@@ -137,7 +141,7 @@ const ManagerProfile = () => {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="Last Name"
+                label={t("manager_profile.last_name")}
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
@@ -147,7 +151,7 @@ const ManagerProfile = () => {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="Username"
+                label={t("manager_profile.username")}
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
@@ -157,7 +161,7 @@ const ManagerProfile = () => {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="Email"
+                label={t("manager_profile.email")}
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
@@ -167,7 +171,7 @@ const ManagerProfile = () => {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="Phone"
+                label={t("manager_profile.phone")}
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
@@ -179,7 +183,7 @@ const ManagerProfile = () => {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="New Password (leave blank to keep current)"
+                label={t("manager_profile.new_password")}
                 variant="outlined"
                 fullWidth
                 disabled={!isEditing}
@@ -206,7 +210,7 @@ const ManagerProfile = () => {
               style={{ marginTop: '20px', backgroundColor: "#E07A5F", color: "#ffffff" }}
               onClick={handleSaveChanges}
             >
-              Save Changes
+              {t("manager_profile.save_changes")}
             </Button>
             <Button
               variant="outlined"
@@ -214,7 +218,7 @@ const ManagerProfile = () => {
               style={{ marginTop: '10px' }}
               onClick={() => setIsEditing(!isEditing)}
             >
-              {isEditing ? 'Cancel' : 'Edit Profile'}
+              {isEditing ? t("common.cancel") : t("manager_profile.edit")}
             </Button>
           </CardContent>
         </Card>

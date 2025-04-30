@@ -98,6 +98,69 @@
   gap: 0.5rem;
 }
 
+.language-dropdown {
+  position: relative;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.language-dropdown .dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: white;
+  border: 1px solid var(--secondary-color);
+  border-radius: 10px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  width: 100%;
+}
+
+.language-dropdown .dropdown-toggle:hover {
+  background-color: rgba(42, 157, 143, 0.1);
+}
+
+.language-dropdown .dropdown-caret {
+  font-size: 0.7rem;
+}
+
+.dropdown-menu-lang {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 6px 0;
+  min-width: 150px;
+  z-index: 100;
+}
+
+.dropdown-menu-lang li {
+  list-style: none;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s ease;
+}
+
+.dropdown-menu-lang li:hover {
+  background-color: #f0f0f0;
+}
+
+.flag-icon,
+.dropdown-menu-lang img {
+  width: 22px;
+  height: 15px;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
 /* Login and Register Buttons */
 .secondary__btn,
 .primary__btn {

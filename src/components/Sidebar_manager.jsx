@@ -1,16 +1,20 @@
 import "../styles/ManagerSideBar.css";
 import React, { useState, useEffect, useContext } from "react";
-import { NavLink, useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaTh, FaUserAlt, FaInfo, FaBars, FaSignOutAlt } from "react-icons/fa"; 
 import { BiSolidHotel } from "react-icons/bi";
 import logo from "../assets/images/SidebarLogo.png";
 import { AuthContext } from "../../src/context/AuthContext";
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "./LanguageSelector";
+
 
 const SidebarManager = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
   const [showLogo, setShowLogo] = useState(true);
-  const navigate = useNavigate(); // Initialize useNavigate hook
-  const { dispatch } = useContext(AuthContext); // AuthContext üzerinden dispatch'i ekledik
+  const navigate = useNavigate();
+  const { dispatch } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -32,30 +36,27 @@ const SidebarManager = () => {
   }, []);
 
   const menuItems = [
-    { path: "/manager", name: "Dashboard", icon: <FaTh /> },
-    { path: "/manager/reservations", name: "Reservations", icon: <FaInfo /> },
-    { path: "/manager/hotel", name: "Hotel", icon: <BiSolidHotel /> },
-    { path: "/manager/profile", name: "Profile", icon: <FaUserAlt /> },
+    { path: "/manager", name: t("sidebar.dashboard"), icon: <FaTh /> },
+    { path: "/manager/reservations", name: t("sidebar.reservations"), icon: <FaInfo /> },
+    { path: "/manager/hotel", name: t("sidebar.hotel"), icon: <BiSolidHotel /> },
+    { path: "/manager/profile", name: t("sidebar.profile"), icon: <FaUserAlt /> },
   ];
 
-  // Logout işlevselliği: localStorage, sessionStorage ve cookie'leri temizleyip, sunucuya logout isteği gönderir.
   const handleLogout = () => {
     dispatch({ type: "LOGOUT" });
     localStorage.removeItem("admin");
     localStorage.removeItem("token");
     sessionStorage.clear();
-    // Tüm cookie'leri temizle
     document.cookie.split(";").forEach((c) => {
       document.cookie = c
         .replace(/^ +/, "")
         .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
 
-    // Gerekirse logout API çağrısı
     fetch("/api/logout", { method: "POST", credentials: "include" })
       .catch((err) => console.error("Logout API error:", err));
 
-    navigate("/login"); // Kullanıcıyı giriş sayfasına yönlendir
+    navigate("/login");
   };
 
   return (
@@ -63,8 +64,11 @@ const SidebarManager = () => {
       <div className="top_section">
         {showLogo && <img src={logo} alt="Logo" className="logo" />}
         <div className="bars" onClick={toggleSidebar}>
-          <FaBars /> {/* Hamburger menü */}
+          <FaBars />
         </div>
+      </div>
+      <div className="language-section">
+        <LanguageSelector />
       </div>
       {menuItems.map((item, index) => (
         <NavLink
@@ -77,9 +81,8 @@ const SidebarManager = () => {
           {isOpen && <div className="link_text">{item.name}</div>}
         </NavLink>
       ))}
-      {/* Logout Butonu */}
       <button className="logout-btn" onClick={handleLogout}>
-        <FaSignOutAlt className="logout-icon" /> {isOpen && "Logout"}
+        <FaSignOutAlt className="logout-icon" /> {isOpen && t("sidebar.logout")}
       </button>
     </div>
   );

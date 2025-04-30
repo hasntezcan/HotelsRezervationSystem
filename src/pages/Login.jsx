@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/login.css';
 import loginImg from '../assets/images/login.png';
 import { AuthContext } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
+  const { t } = useTranslation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -23,15 +26,15 @@ const Login = () => {
   const validateFields = () => {
     const newErrors = {};
     if (!credentials.email.trim()) {
-      newErrors.email = 'Email is required.';
+      newErrors.email = t("login.errors.email_required");
     } else {
       const emailRegex = /^\S+@\S+\.\S+$/;
       if (!emailRegex.test(credentials.email.trim())) {
-        newErrors.email = 'Please enter a valid email.';
+        newErrors.email = t("login.errors.email_invalid");
       }
     }
     if (!credentials.password.trim()) {
-      newErrors.password = 'Password is required.';
+      newErrors.password = t("login.errors.password_required");
     }
     return newErrors;
   };
@@ -59,27 +62,24 @@ const Login = () => {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(errorText || 'Something went wrong');
+        throw new Error(errorText || t("login.errors.generic"));
       }
 
       const userData = await response.json();
 
-      // ✅ Store userId in localStorage for use in booking
       if (userData.user && userData.managerId) {
-        // Manager login
         localStorage.setItem("userId", userData.user.userId);
-        alert(`Welcome, ${userData.user.username}! Your user ID is ${userData.user.userId} and your manager ID is ${userData.managerId}.`);
+        alert(`${t("login.success.manager", { name: userData.user.username, id: userData.user.userId })}`);
       } else {
-        // Regular user login
         localStorage.setItem("userId", userData.userId);
-        alert(`Welcome, ${userData.username}!`);
+        alert(`${t("login.success.user", { name: userData.username })}`);
       }
 
       dispatch({ type: 'LOGIN_SUCCESS', payload: userData });
 
-      if (userData.role && userData.role.toLowerCase() === 'admin') {
+      if (userData.role?.toLowerCase() === 'admin') {
         navigate('/admin');
-      } else if (userData.role && userData.role.toLowerCase() === 'manager') {
+      } else if (userData.role?.toLowerCase() === 'manager') {
         navigate('/manager');
       } else {
         navigate('/');
@@ -107,14 +107,14 @@ const Login = () => {
                 </div>
               </div>
               <div className="auth-right">
-                <h2 className="auth-title">Hello Stay Inn User</h2>
-                <p className="auth-subtitle">Welcome back! Please log in.</p>
+                <h2 className="auth-title">{t("login.title")}</h2>
+                <p className="auth-subtitle">{t("login.subtitle")}</p>
                 <Form noValidate onSubmit={handleClick}>
                   <FormGroup>
                     <input
                       type="email"
                       id="email"
-                      placeholder="Email"
+                      placeholder={t("login.placeholders.email")}
                       value={credentials.email}
                       onChange={handleChange}
                     />
@@ -124,7 +124,7 @@ const Login = () => {
                     <input
                       type="password"
                       id="password"
-                      placeholder="Password"
+                      placeholder={t("login.placeholders.password")}
                       value={credentials.password}
                       onChange={handleChange}
                     />
@@ -133,16 +133,16 @@ const Login = () => {
                     )}
                   </FormGroup>
                   <Button type="submit" className="btn auth-btn w-100">
-                    LOGIN
+                    {t("login.button")}
                   </Button>
                 </Form>
                 <p className="auth-footer" style={{ marginTop: '1rem' }}>
-                  Don&apos;t have an account?{' '}
+                  {t("login.no_account")}{' '}
                   <span
                     style={{ cursor: 'pointer', textDecoration: 'underline' }}
                     onClick={goRegister}
                   >
-                    Create now
+                    {t("login.register")}
                   </span>
                 </p>
               </div>

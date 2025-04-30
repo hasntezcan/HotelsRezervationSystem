@@ -2,38 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import '../styles/contact.css';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 const Contact = () => {
+  const { t } = useTranslation();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     message: ''
-  })
-  // Sayfa yüklendiğinde en üste git
+  });
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Form alanlarındaki değişiklikleri kaydeder
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
-  // Form gönderimi
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // messageId gönderilmesine gerek yok, ID auto-increment
       const response = await axios.post("http://localhost:8080/api/contact", formData);
       console.log('Saved Message:', response.data);
-
-      alert('Your message has been sent!');
-      // Formu sıfırla
+      alert(t('contact_page.success'));
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (error) {
       console.error('Error sending message:', error);
-      alert('Error sending message. Please try again.');
+      alert(t('contact.error'));
     }
   };
 
@@ -58,18 +56,16 @@ const Contact = () => {
 
           <Col lg="6">
             <div className="contact__form">
-              <h2 className="mb-3">Get in Touch With Us</h2>
-              <p className="contact__text">
-                Get in touch with us, ask your questions, or share your thoughts.<br/>
-                We’ll get back to you as soon as possible!
-              </p>
+              <h2 className="mb-3">{t('contact_page.title')}</h2>
+              <p className="contact__text">{t('contact_page.description')}</p>
+
               <Form onSubmit={handleSubmit}>
                 <FormGroup>
-                  <Label for="name">Name</Label>
+                  <Label for="name">{t('contact_page.name')}</Label>
                   <Input
                     type="text"
                     id="name"
-                    placeholder="Your Name"
+                    placeholder={t('contact_page.name_placeholder')}
                     value={formData.name}
                     onChange={handleChange}
                     required
@@ -78,11 +74,11 @@ const Contact = () => {
                 <Row>
                   <Col md="6">
                     <FormGroup>
-                      <Label for="email">Email</Label>
+                      <Label for="email">{t('contact_page.email')}</Label>
                       <Input
                         type="email"
                         id="email"
-                        placeholder="Your Email"
+                        placeholder={t('contact_page.email_placeholder')}
                         value={formData.email}
                         onChange={handleChange}
                         required
@@ -91,11 +87,11 @@ const Contact = () => {
                   </Col>
                   <Col md="6">
                     <FormGroup>
-                      <Label for="phone">Phone</Label>
+                      <Label for="phone">{t('contact_page.phone')}</Label>
                       <Input
                         type="tel"
                         id="phone"
-                        placeholder="Your Phone Number"
+                        placeholder={t('contact_page.phone_placeholder')}
                         value={formData.phone}
                         onChange={handleChange}
                         required
@@ -104,25 +100,21 @@ const Contact = () => {
                   </Col>
                 </Row>
                 <FormGroup>
-                  <Label for="message">Message</Label>
+                  <Label for="message">{t('contact_page.message')}</Label>
                   <Input
                     type="textarea"
                     id="message"
                     rows="4"
-                    placeholder="Write your message..."
+                    placeholder={t('contact_page.message_placeholder')}
                     value={formData.message}
                     onChange={handleChange}
                     required
                   />
                 </FormGroup>
                 <Button type="submit" className="mt-3 btn primary__btn">
-                  Send
+                  {t('contact_page.send')}
                 </Button>
               </Form>
-
-              <div className="social__links mt-4">
-                {/* Sosyal medya linkleriniz */}
-              </div>
             </div>
           </Col>
         </Row>

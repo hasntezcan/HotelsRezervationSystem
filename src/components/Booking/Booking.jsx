@@ -3,8 +3,10 @@ import './booking.css';
 import { Form, FormGroup, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChildren = 0 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useContext(AuthContext);
@@ -56,35 +58,35 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
     e.preventDefault();
 
     if (!user) {
-      alert('Please sign in first.');
+      alert(t('alert_login_required'));
       return;
     }
 
     if (!booking.startDate || !booking.endDate || !selectedRoom) {
-      alert('All fields are required! Please select room type, check-in and check-out dates.');
+      alert(t('alert_fields_required'));
       return;
     }
 
     const sDate = new Date(booking.startDate);
     const eDate = new Date(booking.endDate);
     if (sDate.toString() === 'Invalid Date' || eDate.toString() === 'Invalid Date') {
-      alert('Please select valid dates.');
+      alert(t('alert_invalid_dates'));
       return;
     }
 
     if (sDate >= eDate) {
-      alert('Check-out date must be after check-in date.');
+      alert(t('alert_checkout_after_checkin'));
       return;
     }
 
     const numGuests = Number(booking.adultCount) + Number(booking.childCount);
     if (numGuests > selectedRoom.capacity) {
-      alert(`This room can only accommodate up to ${selectedRoom.capacity} guests.`);
+      alert(t('alert_guest_limit', { capacity: selectedRoom.capacity }));
       return;
     }
 
     if (numGuests < 1) {
-      alert('At least 1 adult or child is required.');
+      alert(t('alert_minimum_guests'));
       return;
     }
 
@@ -95,12 +97,12 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
       const isAvailable = await availabilityRes.json();
 
       if (!isAvailable) {
-        alert('The selected room is not available for the chosen date range. Please choose another.');
+        alert(t('alert_room_unavailable'));
         return;
       }
     } catch (err) {
       console.error('Error checking availability:', err);
-      alert('Something went wrong during availability check.');
+      alert(t('alert_check_error'));
       return;
     }
 
@@ -126,7 +128,7 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
       <div className="booking__top d-flex align-items-center justify-content-between">
         <h3>
           ${roomPrice}
-          <span>/per night</span>
+          <span>{t('per_night')}</span>
         </h3>
         <span className="tour__rating d-flex align-items-center">
           <i className="ri-star-fill" style={{ color: 'var(--secondary-color)' }}></i>
@@ -135,11 +137,11 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
       </div>
 
       <div className="booking__form">
-        <h5>Information</h5>
+        <h5>{t('info')}</h5>
         <Form className="booking__info-form" onSubmit={handleClick}>
           <FormGroup className="d-flex align-items-center gap-3">
             <div className="date-box">
-              <label>Start Date</label>
+              <label>{t('start_date')}</label>
               <input
                 type="date"
                 id="startDate"
@@ -150,7 +152,7 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
               />
             </div>
             <div className="date-box">
-              <label>End Date</label>
+              <label>{t('end_date')}</label>
               <input
                 type="date"
                 id="endDate"
@@ -164,7 +166,7 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
 
           <FormGroup className="d-flex align-items-center gap-3">
             <div className="count-box">
-              <label>Adults</label>
+              <label>{t('adults')}</label>
               <input
                 type="number"
                 id="adultCount"
@@ -174,7 +176,7 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
               />
             </div>
             <div className="count-box">
-              <label>Children</label>
+              <label>{t('children')}</label>
               <input
                 type="number"
                 id="childCount"
@@ -190,17 +192,17 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
       <div className="booking__bottom">
         <ListGroup>
           <ListGroupItem className="border-0 px-0">
-            <h5>Service charge</h5>
+            <h5>{t('service_charge')}</h5>
             <span>${serviceFee}</span>
           </ListGroupItem>
           <ListGroupItem className="border-0 px-0 total">
-            <h5>Total</h5>
+            <h5>{t('total')}</h5>
             <span>${totalAmount.toFixed(2)}</span>
           </ListGroupItem>
         </ListGroup>
 
         <Button className="btn primary__btn w-100 mt-4" onClick={handleClick}>
-          Book Now
+          {t('book_now')}
         </Button>
       </div>
     </div>

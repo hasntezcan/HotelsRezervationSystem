@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { Container, Row, Col } from "reactstrap";
+import { useTranslation } from "react-i18next";
 
 import CommonSection from "../shared/CommonSection";
 import TourCard from "../shared/TourCard";
@@ -9,6 +10,7 @@ import Newsletter from "../shared/Newsletter";
 import SearchBar from "../shared/SearchBar";
 
 const SearchResults = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
 
@@ -28,8 +30,7 @@ const SearchResults = () => {
           `http://localhost:8080/api/hotels/search?query=${destination}`
         );
         const groupSize = adults + children;
-        const data = response.data.filter(hotel => {
-          // Only return hotels with enough capacity (if available)
+        const data = response.data.filter((hotel) => {
           return hotel.capacity == null || hotel.capacity >= groupSize;
         });
 
@@ -48,7 +49,7 @@ const SearchResults = () => {
 
   return (
     <>
-      <CommonSection title="Search Results" />
+      <CommonSection title={t("search_results.title")} />
 
       <section>
         <Container>
@@ -65,22 +66,22 @@ const SearchResults = () => {
           <Row>
             <Col lg="12" className="mb-4">
               <p>
-                <strong>Destination:</strong> {destination} |{" "}
-                <strong>Dates:</strong>{" "}
+                <strong>{t("search_results.destination")}:</strong> {destination} |{" "}
+                <strong>{t("search_results.dates")}:</strong>{" "}
                 {startDate
                   ? new Date(startDate).toLocaleDateString()
-                  : "Not Specified"}{" "}
+                  : t("search_results.unspecified")}{" "}
                 -{" "}
                 {endDate
                   ? new Date(endDate).toLocaleDateString()
-                  : "Not Specified"}{" "}
-                | <strong>Guests:</strong> {adults + children}
+                  : t("search_results.unspecified")}{" "}
+                | <strong>{t("search_results.guests")}:</strong> {adults + children}
               </p>
             </Col>
 
             {loading ? (
               <Col lg="12">
-                <h5 className="text-center">Loading hotels...</h5>
+                <h5 className="text-center">{t("search_results.loading")}</h5>
               </Col>
             ) : filteredHotels.length > 0 ? (
               filteredHotels.map((hotel) => (
@@ -90,7 +91,7 @@ const SearchResults = () => {
               ))
             ) : (
               <Col lg="12">
-                <h4 className="text-center">No results found.</h4>
+                <h4 className="text-center">{t("search_results.no_results")}</h4>
               </Col>
             )}
           </Row>

@@ -1,39 +1,37 @@
 import React from 'react';
 import { Container, Row, Col } from 'reactstrap';
-import { NightsStay, LocalOffer, EventAvailable } from '@mui/icons-material'; // MUI Icons
+import { NightsStay, LocalOffer, EventAvailable } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import '../MarketingSection/Marketing.css';
 
-const marketingData = [
-  {
-    icon: <NightsStay fontSize="large" />,
-    title: 'Earn Rewards for Every Night',
-    
-  },
-  {
-    icon: <LocalOffer fontSize="large" />,
-    title: 'Exclusive Member Discounts',
-    
-  },
-  {
-    icon: <EventAvailable fontSize="large" />,
-    title: 'Flexible Cancellation Options',
-    
-  },
-];
-
 const MarketingSection = () => {
+  const { t } = useTranslation();
+
+  const marketingData = [
+    {
+      icon: <NightsStay fontSize="large" />,
+      title: t('marketing.title1'),
+    },
+    {
+      icon: <LocalOffer fontSize="large" />,
+      title: t('marketing.title2'),
+    },
+    {
+      icon: <EventAvailable fontSize="large" />,
+      title: t('marketing.title3'),
+    }
+  ];
+
   return (
     <section className="marketing__section">
       <Container>
         <Row className="align-items-center">
-          {/* Left Side - Text */}
           <Col lg="4">
             <h2 className="marketing__title">
-              Find Your Perfect Stay & Book Instantly!
+              {t('marketing.heading')}
             </h2>
           </Col>
 
-          {/* Right Side - Features */}
           <Col lg="8">
             <div className="marketing__features">
               {marketingData.map((item, index) => (

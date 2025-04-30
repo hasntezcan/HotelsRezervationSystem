@@ -21,18 +21,23 @@ import {
   Bar
 } from "recharts";
 import { styled } from "@mui/system";
-{/*dashboard design*/}
+import { useTranslation } from "react-i18next";
+
+// Dashboard styling
 const DashboardContainer = styled("div")({
   display: "flex",
   minHeight: "100vh",
 });
-{/*content*/}
+
 const ContentContainer = styled("div")({
   flexGrow: 1,
   padding: "20px",
 });
-{/*managerdashboard*/}
+
+// Manager dashboard component
 const ManagerDashboard = () => {
+  const { t } = useTranslation();
+
   const revenueData = [
     { name: "May", value: 150 },
     { name: "June", value: 200 },
@@ -43,8 +48,8 @@ const ManagerDashboard = () => {
   ];
 
   const reservationsData = [
-    { name: "Approved", value: 70 },
-    { name: "Rejected", value: 30 },
+    { name: t("manager.reservations.approved"), value: 70 },
+    { name: t("manager.reservations.rejected"), value: 30 },
   ];
 
   const ratingsData = [
@@ -58,10 +63,7 @@ const ManagerDashboard = () => {
 
   return (
     <DashboardContainer>
-      
       <SidebarManager />
-
-      
       <ContentContainer className="content">
         <Container>
           <Grid container spacing={3}>
@@ -69,7 +71,9 @@ const ManagerDashboard = () => {
             <Grid item xs={12} md={12} lg={8}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6">Revenue Generated</Typography>
+                  <Typography variant="h6">
+                    {t("manager.revenue")}
+                  </Typography>
                   <ResponsiveContainer width="100%" height={180}>
                     <LineChart data={revenueData}>
                       <XAxis dataKey="name" />
@@ -86,7 +90,9 @@ const ManagerDashboard = () => {
             <Grid item xs={12} md={6} lg={4}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6">Reservations</Typography>
+                  <Typography variant="h6">
+                    {t("manager.reservations.title")}
+                  </Typography>
                   <ResponsiveContainer width="100%" height={180}>
                     <PieChart>
                       <Pie
@@ -110,7 +116,9 @@ const ManagerDashboard = () => {
             <Grid item xs={12} md={12} lg={8}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6">Ratings</Typography>
+                  <Typography variant="h6">
+                    {t("manager.ratings")}
+                  </Typography>
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={ratingsData}>
                       <XAxis dataKey="month" />

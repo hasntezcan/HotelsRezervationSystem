@@ -1,29 +1,37 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useRef, useContext, useState } from 'react';
 import { Container, Row, Button } from 'reactstrap';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Logo from '../../assets/images/logo.png';
 import './header.css';
 import { AuthContext } from '../../context/AuthContext';
 
 const nav__links = [
-  { path: '/home', display: 'Home', icon: 'ri-home-2-line' },
-  { path: '/about', display: 'About', icon: 'ri-information-line' },
-  { path: '/hotels', display: 'Hotels', icon: 'ri-hotel-line' },
-  { path: '/contact', display: 'Contact', icon: 'ri-contacts-line' },
+  { path: '/home', key: 'home', icon: 'ri-home-2-line' },
+  { path: '/about', key: 'about_button', icon: 'ri-information-line' },
+  { path: '/hotels', key: 'hotels', icon: 'ri-hotel-line' },
+  { path: '/contact', key: 'contact', icon: 'ri-contacts-line' },
 ];
+
+const flagMap = {
+  en: '/flags/en.png',
+  tr: '/flags/tr.png'
+};
 
 const Header = () => {
   const headerRef = useRef(null);
   const menuRef = useRef(null);
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const { user, dispatch } = useContext(AuthContext);
+  const { t, i18n } = useTranslation();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const logout = () => {
     dispatch({ type: 'LOGOUT' });
     navigate('/');
   };
 
-  // Sticky effect
   const stickyHeaderFunc = () => {
     window.addEventListener('scroll', () => {
       if (window.scrollY > 80) {
@@ -39,16 +47,33 @@ const Header = () => {
     return () => window.removeEventListener('scroll', stickyHeaderFunc);
   }, []);
 
-  // Toggle menu (mobile)
+  // Click outside dropdown to close
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const toggleMenu = () => {
     menuRef.current.classList.toggle('show__menu');
   };
 
-  // Scroll to top if already on the same page
   const handleNavClick = (path) => {
     if (window.location.pathname === path) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+  };
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setDropdownOpen(false);
   };
 
   return (
@@ -56,17 +81,14 @@ const Header = () => {
       <Container>
         <Row>
           <div className="nav__wrapper d-flex align-items-center justify-content-between">
-            {/* Logo */}
             <div className="logo">
               <img src={Logo} alt="Stay Inn" />
             </div>
 
-            {/* Navigation */}
             <div className="navigation" ref={menuRef}>
               <span className="close__menu" onClick={toggleMenu}>
                 &times;
               </span>
-
               <ul className="menu d-flex align-items-center gap-4">
                 {nav__links.map((item, index) => (
                   <li className="nav__item" key={index}>
@@ -81,18 +103,44 @@ const Header = () => {
                       }}
                     >
                       <i className={`${item.icon} nav__icon`}></i>
-                      <span>{item.display}</span>
+                      <span>{t(item.key)}</span>
                     </NavLink>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Right Section (Login/Register or User) */}
             <div className="nav__right d-flex align-items-center gap-3">
+              {/* Dil Seçici */}
+              <div className="language-dropdown" ref={dropdownRef}>
+                <button
+                  className="dropdown-toggle"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                >
+                  <img
+                    src={flagMap[i18n.language]}
+                    alt={i18n.language}
+                    className="flag-icon"
+                  />
+                  {i18n.language === 'tr' ? 'Türkçe' : 'English'}
+                </button>
+                {dropdownOpen && (
+                  <ul className="dropdown-menu-lang">
+                    <li onClick={() => changeLanguage('en')}>
+                      <img src="/flags/en.png" alt="EN" />
+                      English
+                    </li>
+                    <li onClick={() => changeLanguage('tr')}>
+                      <img src="/flags/tr.png" alt="TR" />
+                      Türkçe
+                    </li>
+                  </ul>
+                )}
+              </div>
+
               <div className="nav__btns d-flex align-items-center gap-2">
-                  <span className="mobile__menu" onClick={toggleMenu}>
-                    <i className="ri-menu-line"></i>
+                <span className="mobile__menu" onClick={toggleMenu}>
+                  <i className="ri-menu-line"></i>
                 </span>
                 {user ? (
                   <div className="user-dropdown">
@@ -101,33 +149,23 @@ const Header = () => {
                       <Link to="/profile" className="dropdown-item">
                         Profile
                       </Link>
-                      <button
-                        className="dropdown-item logout-btn"
-                        onClick={logout}
-                      >
+                      <button className="dropdown-item logout-btn" onClick={logout}>
                         Logout
                       </button>
                     </div>
                   </div>
                 ) : (
                   <>
-                    <Button
-                      className="secondary__btn"
-                      onClick={() => navigate('/login')}
-                    >
-                      Login
+                    <Button className="secondary__btn" onClick={() => navigate('/login')}>
+                      {t('login_button')}
                     </Button>
-                    <Button
-                      className="primary__btn"
-                      onClick={() => navigate('/register')}
-                    >
-                      Register
+                    <Button className="primary__btn" onClick={() => navigate('/register')}>
+                      {t('register_button')}
                     </Button>
                   </>
                 )}
-                </div>
-                {/* Mobile menu icon (hamburger) */}
-                </div>
+              </div>
+            </div>
           </div>
         </Row>
       </Container>

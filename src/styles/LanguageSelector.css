@@ -1,0 +1,93 @@
+/* Container */
+.language-dropdown-sidebar {
+    position: relative;
+    margin: 12px 16px;
+    z-index: 1000;
+  }
+  
+  /* ========= BUTON ========= */
+  .dropdown-toggle-sidebar {
+    width: 100%;
+    background-color: #2a9d8f;
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    position: relative;      /* ok simgesi için */
+    display: flex;
+    align-items: center;      /* düşey ortala */
+    justify-content: center;  /* yazıyı ortaya al */
+    cursor: pointer;
+  }
+  
+  /* Butondaki bayrak */
+  .dropdown-toggle-sidebar .flag-icon-sidebar {
+    position: absolute;       /* en sola sabitle */
+    left: 12px;               /* butonun iç boşluğuna göre */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+  
+
+  /* Butondaki ok simgesi */
+  .dropdown-toggle-sidebar::after {
+    content: "";
+    position: absolute;
+    right: 12px;
+    top: 60%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-top-color: white;
+    pointer-events: none;
+  }
+  
+  /* ========= DROPDOWN ========= */
+  .dropdown-menu-lang-sidebar {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    margin-top: 6px;
+    padding: 6px 0;
+    list-style: none;
+    z-index: 999;
+  }
+  
+  /* Dropdown öğesi */
+  .dropdown-menu-lang-sidebar li {
+    padding: 10px 14px;
+    display: flex;           /* flex ile hizala */
+    align-items: center;     /* düşey ortala */
+    gap: 10px;               /* bayrak ile yazı arası */
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #2a2a2a;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  /* Menüde hover efekti */
+  .dropdown-menu-lang-sidebar li:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Dropdown bayrağı */
+  .dropdown-menu-lang-sidebar .flag-icon-sidebar {
+    position: static;       /* normal akışta */
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+  
+
+  

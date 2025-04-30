@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'reactstrap';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 const Room = ({ hotelId, selectedRoom, onRoomSelect }) => {
   const [rooms, setRooms] = useState([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -33,12 +35,12 @@ const Room = ({ hotelId, selectedRoom, onRoomSelect }) => {
           <Col lg="6" md="6" sm="12" className="mb-4" key={room.id}>
             <div
               className={`room-card ${isSelected ? 'selected' : ''}`}
-              onClick={() => onRoomSelect(room)} // pass entire room object
+              onClick={() => onRoomSelect(room)}
             >
               <img src={imageUrl} alt={room.name} className="room-image" />
               <h5 className="room-title">{room.name}</h5>
               <p className="room-price">
-                ${room.pricePerNight} <span>/ night</span>
+                ${room.pricePerNight} <span>{t('room.per_night')}</span>
               </p>
               <div className="room-desc-amenities">
                 <p className="room-desc">{room.description}</p>
@@ -47,13 +49,13 @@ const Room = ({ hotelId, selectedRoom, onRoomSelect }) => {
                     <i className="ri-ruler-line"></i> {room.roomSize} m²
                   </li>
                   <li>
-                    <i className="ri-user-line"></i> Max {room.capacity} people
+                    <i className="ri-user-line"></i> {t('room.max_people', { count: room.capacity })}
                   </li>
                   <li>
                     <i className="ri-hotel-bed-line"></i> {room.bedType}
                   </li>
                   <li>
-                    <i className="ri-wifi-line"></i> Free Wi-Fi
+                    <i className="ri-wifi-line"></i> {t('room.free_wifi')}
                   </li>
                 </ul>
               </div>
