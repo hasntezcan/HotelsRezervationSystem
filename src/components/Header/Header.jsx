@@ -32,19 +32,21 @@ const Header = () => {
     navigate('/');
   };
 
-  const stickyHeaderFunc = () => {
-    window.addEventListener('scroll', () => {
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!headerRef.current) return; // null kontrolü
       if (window.scrollY > 80) {
         headerRef.current.classList.add('sticky__header');
       } else {
         headerRef.current.classList.remove('sticky__header');
       }
-    });
-  };
-
-  useEffect(() => {
-    stickyHeaderFunc();
-    return () => window.removeEventListener('scroll', stickyHeaderFunc);
+    };
+  
+    window.addEventListener('scroll', handleScroll);
+  
+    return () => {
+      window.removeEventListener('scroll', handleScroll); // temizleme
+    };
   }, []);
 
   // Click outside dropdown to close
