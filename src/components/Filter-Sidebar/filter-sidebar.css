@@ -1,0 +1,103 @@
+/* MAIN CONTAINER */
+.filter-inline {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 280px;
+    height: calc(100vh - 80px);
+    background: #fff;
+    border-right: 1px solid #e0e0e0;
+    z-index: 999;
+    transition: transform 0.3s ease;
+  }
+  .filter-inline.collapsed {
+    transform: translateX(-300px);
+  }
+  
+  /* HEADER */
+  .filter-header {
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* BODY */
+  .filter-body {
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 140px);
+  }
+  
+  /* SLIDER */
+  .filter-slider .rc-slider-rail {
+    height: 4px;
+    background: #e0e0e0;
+  }
+  .filter-slider .rc-slider-track {
+    height: 4px;
+    background: var(--accent-color);
+  }
+  .filter-slider .rc-slider-handle {
+    width: 16px;
+    height: 16px;
+    margin-top: -6px;
+    background: #fff;
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  /* TOGGLE BUTTON */
+  .filter-toggle-btn {
+    position: fixed;
+    top: 150px;
+    left: 8px;
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    cursor: pointer;
+  }
+  .filter-toggle-btn:hover {
+    background: var(--accent-color);
+    color: white;
+  }
+  
+  /* MOBILE BUTTON */
+  .filter-btn-mobile {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    font-size: 1.3rem;
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    z-index: 1001;
+  }
+  @media (min-width: 992px) {
+    .filter-btn-mobile {
+      display: none;
+    }
+  }
+  
+  /* AMENITY SCROLL */
+  .amenity-list {
+    max-height: 180px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  
+  /* Offcanvas */
+  .offcanvas-sm {
+    width: 280px !important;
+  }

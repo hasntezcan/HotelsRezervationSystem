@@ -1,5 +1,6 @@
 package com.example.hotelapp.controller;
 
+import com.example.hotelapp.dto.HotelCardDTO;
 import com.example.hotelapp.dto.HotelWithImageDTO;
 import com.example.hotelapp.model.Hotel;
 import com.example.hotelapp.model.Room;
@@ -83,6 +84,36 @@ public class HotelController {
         // "featured" alanı kaldırıldı.
         Hotel savedHotel = hotelRepository.save(hotel);
         return ResponseEntity.ok(savedHotel);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<HotelCardDTO>> filterHotels(
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) Double priceMin,
+            @RequestParam(required = false) Double priceMax,
+            @RequestParam(required = false) Double minRating,
+            @RequestParam(required = false) List<Long> amenityIds) {
+
+        int count = amenityIds == null ? 0 : amenityIds.size();
+
+        List<HotelCardDTO> list = hotelRepository
+                .filterCards(city, priceMin, priceMax, minRating, amenityIds, count)
+                .stream()
+                .map(v -> new HotelCardDTO(
+                        v.getHotelId(),
+                        v.getName(),
+                        v.getCity(),
+                        v.getCountry(),
+                        v.getPrimaryImageUrl(),
+                        v.getMinPrice(),
+                        v.getAvgRating(),
+                        v.getAmenities() == null ? List.of()
+                                : List.of(v.getAmenities().split("\\s*,\\s*")),
+                        v.getLatitude(),
+                        v.getLongitude()))
+                .toList();
+
+        return ResponseEntity.ok(list);
     }
 
     /**

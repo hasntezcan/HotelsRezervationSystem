@@ -202,6 +202,7 @@
   },
 
   "hotels_page": {
+  "search_results": "Search Results for",
   "hotels": "Hotels",
   "all_cities": "All Cities",
   "select_city": "Select a City",

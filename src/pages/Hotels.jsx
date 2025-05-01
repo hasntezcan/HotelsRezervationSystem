@@ -1,206 +1,295 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CommonSection from '../shared/CommonSection';
-import TourCard from './../shared/TourCard';
-import SearchBar from './../shared/SearchBar';
+import TourCard from '../shared/TourCard';
+import SearchBar from '../shared/SearchBar';
+import FilterSidebar from '../components/Filter-Sidebar/FilterSidebar';
 import { Col, Container, Row } from 'reactstrap';
 import '../styles/hotel.css';
 import { useTranslation } from 'react-i18next';
 
-// Images
+// hero
 import londonImg from '../assets/images/homePage/image6.jpg';
 import parisImg from '../assets/images/homePage/image3.jpg';
 import baliImg from '../assets/images/homePage/image2.jpg';
 import tokyoImg from '../assets/images/homePage/image5.jpg';
 
+const BASE = 'http://localhost:8080/api/hotels';
+
+/* ------------------------------------------------------------------ */
+/* Utilities                                                          */
+/* ------------------------------------------------------------------ */
+const cityImages = { London: londonImg, Paris: parisImg, Bali: baliImg, Tokyo: tokyoImg };
+const parseNumber = v => (v == null ? null : Number(v));
+
+/** Map DTO → TourCard-friendly object */
+const mapDTO = h => ({
+  hotelId: h.hotelId,
+  name: h.name,
+  city: h.city,
+  pricePerNight: parseNumber(h.pricePerNight ?? h.minPrice),
+  starRating: parseNumber(h.starRating ?? h.avgRating),
+  imgUrl: h.imageUrl || h.primaryImageUrl || '',
+  amenities: h.amenities || '', // CSV
+});
+
+/** TRUE if hotel satisfies sidebar filters */
+const passLocalFilters = (h, f) => {
+  if (!f) return true;
+  const { priceMin, priceMax, minRating, amenityIds } = f;
+  if (priceMin != null && h.pricePerNight < priceMin) return false;
+  if (priceMax != null && h.pricePerNight > priceMax) return false;
+  if (minRating != null && (h.starRating ?? 0) < minRating) return false;
+  if (amenityIds && amenityIds.length) {
+    const ids = (h.amenities || '').split(',').map(s => s.trim());
+    if (!amenityIds.every(id => ids.includes(id.toString()))) return false;
+  }
+  return true;
+};
+
+/* ------------------------------------------------------------------ */
+/* Component                                                          */
+/* ------------------------------------------------------------------ */
 const Hotels = () => {
+  const { t } = useTranslation();
+  const loc = useLocation();
+  const navigate = useNavigate();
+
+  // master meta
   const [cities, setCities] = useState([]);
-  const [hotels, setHotels] = useState([]);
+  const [amenities, setAmenities] = useState([]);
+
+  // ui state
   const [selectedCity, setSelectedCity] = useState(null);
-  const [page, setPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({});
+  const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
 
-  const location = useLocation();
-  const { t } = useTranslation();
-  const BASE_URL = 'http://localhost:8080/api/hotels';
+  /* -----------------------   helper builders   -------------------- */
+  const cleaned = useCallback(() => {
+    const f = { ...filters };
+    if (f.priceMin === 0) delete f.priceMin;
+    if (f.priceMax === 1000) delete f.priceMax; // slider max
+    if (f.minRating === 0) delete f.minRating;
+    if (!f.amenityIds?.length) delete f.amenityIds;
+    return f;
+  }, [filters]);
 
-  const cityImages = {
-    London: londonImg,
-    Paris: parisImg,
-    Bali: baliImg,
-    Tokyo: tokyoImg
-  };
+  const filterQS = useCallback(() => {
+    const p = new URLSearchParams();
+    const f = cleaned();
+    if (selectedCity) p.append('city', selectedCity);
+    Object.entries(f).forEach(([k, v]) => {
+      if (k === 'amenityIds') v.forEach(id => p.append('amenityIds', id));
+      else p.append(k, v);
+    });
+    return p.toString();
+  }, [selectedCity, cleaned]);
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const cityParam = queryParams.get("city");
-    const checkInParam = queryParams.get("startDate");
-    const checkOutParam = queryParams.get("endDate");
+  /* -----------------------   data fetch   ------------------------- */
+  const fetchHotels = useCallback(async () => {
+    if (!selectedCity && !searchTerm) return;
+    setLoading(true);
 
-    if (cityParam && checkInParam && checkOutParam) {
-      setSelectedCity(cityParam);
-      setCheckIn(checkInParam);
-      setCheckOut(checkOutParam);
-      setPage(0);
-    }
-  }, [location.search]);
+    try {
+      let list = [];
+      const hasFilter = Object.keys(cleaned()).length > 0;
 
-  const handleSearch = (city, start, end) => {
-    setSelectedCity(city);
-    setCheckIn(start);
-    setCheckOut(end);
-    setPage(0);
-  };
-
-  useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        const res = await fetch(`${BASE_URL}/cities`);
-        const data = await res.json();
-        setCities(data);
-      } catch (error) {
-        console.error("Error fetching cities:", error);
+      if (searchTerm && !hasFilter) {
+        const r = await fetch(`${BASE}/search?query=${encodeURIComponent(searchTerm)}`);
+        list = (await r.json()).map(mapDTO);
+      } else if (searchTerm && hasFilter) {
+        const r = await fetch(`${BASE}/filter?${filterQS()}`);
+        list = (await r.json()).map(mapDTO)
+          .filter(h => h.name.toLowerCase().includes(searchTerm.toLowerCase()) || h.city.toLowerCase().includes(searchTerm.toLowerCase()));
+      } else {
+        const r = await fetch(`${BASE}/filter?${filterQS()}`);
+        list = (await r.json()).map(mapDTO);
       }
-    };
-    fetchCities();
+
+      if (searchTerm && !hasFilter && Object.keys(filters).length) {
+        list = list.filter(h => passLocalFilters(h, filters));
+      }
+
+      setHotels(list);
+      setPage(0);
+    } catch (e) {
+      console.error('fetchHotels', e);
+      setHotels([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedCity, searchTerm, filters, cleaned, filterQS]);
+
+  /* -----------------------   init meta   -------------------------- */
+  useEffect(() => {
+    fetch(`${BASE}/cities`).then(r => r.json()).then(setCities).catch(console.error);
+    fetch('http://localhost:8080/api/hotelamenities').then(r => r.json()).then(setAmenities).catch(() => setAmenities([]));
   }, []);
 
+  /* url params */
   useEffect(() => {
-    const fetchHotelsWithImages = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`${BASE_URL}/search?query=${selectedCity}`);
-        const hotelsData = await res.json();
-        const hotelsWithImages = hotelsData.map((hotel) => ({
-          ...hotel,
-          imgUrl: hotel.primaryImageUrl || ''
-        }));
-        setHotels(hotelsWithImages);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching hotels or images:', err);
-        setLoading(false);
-      }
-    };
+    const q = new URLSearchParams(loc.search);
+    if (q.get('city')) setSelectedCity(q.get('city'));
+    if (q.get('startDate')) setCheckIn(q.get('startDate'));
+    if (q.get('endDate')) setCheckOut(q.get('endDate'));
+  }, [loc.search]);
 
-    if (selectedCity) {
-      fetchHotelsWithImages();
+  /* watch deps */
+  useEffect(() => { fetchHotels(); }, [fetchHotels]);
+
+  /* -----------------------   handlers   --------------------------- */
+  const onSearch = (q, start, end) => {
+    setSearchTerm(q);
+    setSelectedCity(null);
+    setFilters({});
+    setCheckIn(start);
+    setCheckOut(end);
+  };
+  const back = () => { setSelectedCity(null); setSearchTerm(''); setFilters({}); setHotels([]); setPage(0); };
+
+  // hotelse tıklanınca resetle (örn. header'da /hotels linkiyle)
+  useEffect(() => {
+    if (loc.pathname === '/hotels' && !loc.search) {
+      back();
     }
-  }, [selectedCity]);
+  }, [loc.pathname, loc.search]);
 
-  const toursPerPage = 8;
-  const start = page * toursPerPage;
-  const end = start + toursPerPage;
-  const displayList = selectedCity ? hotels : [];
-  const currentTours = displayList.slice(start, end);
-  const pageCount = Math.ceil(displayList.length / toursPerPage);
+  /* -----------------------   pagination   ------------------------- */
+  const perPage = 8;
+  const slice = hotels.slice(page * perPage, page * perPage + perPage);
+  const pageCount = Math.ceil(hotels.length / perPage);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [page, selectedCity]);
+  /* -----------------------   render   ----------------------------- */
+  const gridMode = !selectedCity && !searchTerm;
+  const listMode = !gridMode;
+  const title = selectedCity ? `${selectedCity} ${t('hotels_page.hotels')}`
+    : searchTerm ? `${t('hotels_page.search_results')}: “${searchTerm}”`
+      : t('hotels_page.all_cities');
 
+        /* -----------------------   render   ----------------------------- */
   return (
     <>
       <CommonSection
-        title={selectedCity ? `${selectedCity} ${t("hotels_page.hotels")}` : t("hotels_page.all_cities")}
+        title={title}
         backgroundImage={selectedCity ? cityImages[selectedCity] : null}
       />
 
-      <section>
+      {/* search bar */}
+      <section className="search-section">
         <Container>
-          <Row>
-            <SearchBar onSearch={handleSearch} />
-          </Row>
+          <div className="search-bar-wrapper">
+            <SearchBar onSearch={onSearch} />
+          </div>
         </Container>
       </section>
 
-      <section className="pt-0">
-        <Container>
-          <Row>
-            {!selectedCity && (
-              <>
-                <h4>{t("hotels_page.select_city")}</h4>
-                <div className="city-grid">
-                  {cities.map((city) => (
-                    <div
-                      className="city-card"
-                      key={city}
-                      onClick={() => {
-                        setSelectedCity(city);
-                        setPage(0);
-                      }}
-                    >
-                      <div className="city-img">
-                        <img src={cityImages[city] || londonImg} alt={city} />
-                      </div>
-                      <div className="city-info">
-                        <h5>{city}</h5>
-                        <span className="see-hotels">{t("hotels_page.see_hotels")}</span>
-                      </div>
-                    </div>
-                  ))}
+      {/* 🏙  grid (şehir seçimi) */}
+      {gridMode && (
+        <section className="pt-0">
+          <Container>
+            <h4>{t('hotels_page.select_city')}</h4>
+            <div className="city-grid">
+              {cities.map((c) => (
+                <div
+                  key={c}
+                  className="city-card"
+                  onClick={() => {
+                    setSelectedCity(c);
+                    setPage(0);
+                  }}
+                >
+                  <div className="city-img">
+                    <img src={cityImages[c] || londonImg} alt={c} />
+                  </div>
+                  <div className="city-info">
+                    <h5>{c}</h5>
+                    <span className="see-hotels">
+                      {t('hotels_page.see_hotels')}
+                    </span>
+                  </div>
                 </div>
-                <div className="hotels-bottom-line"></div>
-              </>
-            )}
+              ))}
+            </div>
+          </Container>
+        </section>
+      )}
 
-            {selectedCity && (
-              <>
-                {loading ? (
-                  <h5 className="text-center">{t("hotels_page.loading")}</h5>
-                ) : (
-                  <>
-                    {currentTours.map((tour) => (
-                      <Col lg="3" md="6" sm="6" className="mb-4" key={tour.hotelId}>
+      {/* 📋  list (filtre + sonuçlar) */}
+      {listMode && (
+        <section className="pt-0 results-section">
+          <Container fluid="lg">
+            <div className="results-layout">
+              {/* sticky / collapse-able sidebar */}
+              <FilterSidebar
+                amenities={amenities}
+                onApply={setFilters}
+              />
+
+              {/* kartlar */}
+              <div className="hotel-list-wrapper">
+                <Row>
+                  {loading ? (
+                    <h5 className="text-center w-100 mt-5">
+                      {t('hotels_page.loading')}
+                    </h5>
+                  ) : slice.length === 0 ? (
+                    <h5 className="text-center w-100 mt-5">
+                      {t('hotels_page.no_results')}
+                    </h5>
+                  ) : (
+                    slice.map((h) => (
+                      <div
+                        className="col-lg-3 col-md-6 col-sm-6 mb-4"
+                        key={h.hotelId}
+                      >
                         <TourCard
                           tour={{
-                            ...tour,
-                            title: tour.name,
-                            imgUrl: tour.imgUrl,
-                            price: tour.pricePerNight,
-                            location: tour.city,
-                            rating: tour.starRating || t("hotels_page.not_rated")
+                            ...h,
+                            title: h.name,
+                            price: h.pricePerNight,
+                            location: h.city,
+                            rating:
+                              h.starRating ?? t('hotels_page.not_rated'),
                           }}
                           checkIn={checkIn}
                           checkOut={checkOut}
                         />
-                      </Col>
-                    ))}
+                      </div>
+                    ))
+                  )}
 
-                    <Col lg="12">
+                  {pageCount > 1 && !loading && (
+                    <div className="col-12">
                       <div className="pagination d-flex align-items-center justify-content-center mt-4 gap-3">
-                        {[...Array(pageCount).keys()].map((number) => (
+                        {[...Array(pageCount).keys()].map((i) => (
                           <span
-                            key={number}
-                            onClick={() => setPage(number)}
-                            className={page === number ? 'active__page' : ''}
+                            key={i}
+                            onClick={() => setPage(i)}
+                            className={page === i ? 'active__page' : ''}
                           >
-                            {number + 1}
+                            {i + 1}
                           </span>
                         ))}
                       </div>
-                    </Col>
+                    </div>
+                  )}
 
-                    <Col lg="12" className="mt-3">
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => {
-                          setSelectedCity(null);
-                          setPage(0);
-                        }}
-                      >
-                        {t("hotels_page.back")}
-                      </button>
-                    </Col>
-                  </>
-                )}
-              </>
-            )}
-          </Row>
-        </Container>
-      </section>
+                  <div className="col-12 mt-3 text-center">
+                    <button className="btn btn-secondary" onClick={back}>
+                      {t('hotels_page.back')}
+                    </button>
+                  </div>
+                </Row>
+              </div>
+            </div>
+          </Container>
+        </section>
+      )}
     </>
   );
 };
