@@ -11,7 +11,6 @@ import Room from '../components/Room/Room';
 import HotelGallery from '../shared/HotelGallery';
 import { useTranslation } from 'react-i18next';
 
-
 const TourDetails = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -30,8 +29,7 @@ const TourDetails = () => {
   const handleRoomSelect = async (room) => {
     try {
       const response = await axios.get(`http://localhost:8080/api/rooms/${room.id}`);
-      const fullRoom = response.data;
-      setSelectedRoom(fullRoom);
+      setSelectedRoom(response.data);
     } catch (err) {
       console.error('Error fetching room details:', err);
     }
@@ -50,6 +48,7 @@ const TourDetails = () => {
     const fetchReviews = async () => {
       try {
         const res = await axios.get(`http://localhost:8080/api/reviews/hotel/${id}`);
+        console.log('Fetched reviews:', res.data);
         setReviews(res.data);
       } catch (err) {
         console.error("Error fetching reviews:", err);
@@ -58,13 +57,18 @@ const TourDetails = () => {
 
     fetchHotel();
     fetchReviews();
+
+
+
+
+
     window.scrollTo(0, 0);
   }, [id]);
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const adults = parseInt(queryParams.get('adults'));
-    const children = parseInt(queryParams.get('children'));
+    const qp = new URLSearchParams(location.search);
+    const adults = parseInt(qp.get('adults'), 10);
+    const children = parseInt(qp.get('children'), 10);
 
     if (!isNaN(adults)) setInitialAdults(adults);
     if (!isNaN(children)) setInitialChildren(children);
@@ -72,27 +76,22 @@ const TourDetails = () => {
 
   if (!tour) return <h4>Loading hotel data...</h4>;
 
-  const name = tour.name;
-  const desc = tour.description;
-  const price = tour.pricePerNight;
-  const city = tour.city;
-  const address = tour.address;
+  const { name, description: desc, pricePerNight: price, city, address, amenities } = tour;
 
-  const dummyAmenities = tour.amenities 
-    ? tour.amenities.split(',').map(a => a.trim())
+  const dummyAmenities = amenities
+    ? amenities.split(',').map(a => a.trim())
     : ['Free Wi-Fi', 'Breakfast Included', 'Air Conditioning'];
 
-  const queryParams = new URLSearchParams(location.search);
-  const discountParam = queryParams.get('discount');
+  const discountParam = new URLSearchParams(location.search).get('discount');
   let actualPrice = price;
   if (discountParam) {
     const disc = parseFloat(discountParam);
     if (!isNaN(disc) && disc > 0 && disc < 1) {
-      actualPrice = parseFloat((price * disc).toFixed(2));
+      actualPrice = +(price * disc).toFixed(2);
     }
   }
 
-  const { totalRating, avgRating } = calculateAvgRating(reviews);
+  const { avgRating } = calculateAvgRating(reviews);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -102,26 +101,44 @@ const TourDetails = () => {
       alert('Please sign in');
       return;
     }
+    if (!tourRating) {
+      alert('Please select a rating');
+      return;
+    }
+
+    // 1) Inspect the AuthContext user object to find the correct ID field:
+    console.log('Auth user:', user);
+
+    // 2) Derive a numeric user ID (adjust property name if needed):
+    const rawUserId = user.id ?? user.userId ?? user._id;
+    const parsedUserId = parseInt(rawUserId, 10);
+
+    // 3) Build and log the payload once:
+    const newReview = {
+      userId: parsedUserId,
+      hotelId: parseInt(id, 10),
+      rating: tourRating,
+      comment: reviewText
+    };
+    console.log('🚀 Sending review:', newReview);
 
     try {
-      const newReview = {
-        userId: user.id,
-        hotelId: parseInt(id),
-        rating: tourRating,
-        comment: reviewText
-      };
-
-      const res = await axios.post("http://localhost:8080/api/reviews", newReview, {
-        withCredentials: true
-      });
+      const res = await axios.post(
+        'http://localhost:8080/api/reviews',
+        newReview,
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        }
+      );
       setReviews(prev => [...prev, res.data]);
-
+      
       alert('Review submitted successfully!');
       reviewMsgRef.current.value = '';
       setTourRating(null);
     } catch (error) {
-      console.error("Failed to submit review:", error);
-      alert("Failed to submit review.");
+      console.error('Failed to submit review:', error);
+      alert('Failed to submit review.');
     }
   };
 
@@ -131,7 +148,6 @@ const TourDetails = () => {
         <Row>
           <Col lg="8">
             <div className="tour__content">
-
               <div className="tour__gallery">
                 <HotelGallery images={tour.images} />
               </div>
@@ -140,35 +156,28 @@ const TourDetails = () => {
                 <h2>{name}</h2>
                 <div className="d-flex align-items-center gap-5">
                   <span className="tour__rating d-flex align-items-center gap-1">
-                    <i className="ri-star-fill" style={{ color: 'var(--secondary-color)' }}></i>
-                    {avgRating === 0 ? null : avgRating}
-                    {avgRating === 0 ? t("tour_details.not_rated") : <span>({reviews.length})</span>}
+                    <i className="ri-star-fill" style={{ color: 'var(--secondary-color)' }} />
+                    {avgRating > 0 && avgRating}
+                    {avgRating === 0 ? t('tour_details.not_rated') : <span>({reviews.length})</span>}
                   </span>
-                  <span>
-                    <i className="ri-map-pin-fill"></i> {address}
-                  </span>
-                  <span>
-                    <i className="ri-map-pin-2-line"></i> {city}
-                  </span>
+                  <span><i className="ri-map-pin-fill" /> {address}</span>
+                  <span><i className="ri-map-pin-2-line" /> {city}</span>
                 </div>
 
                 <div className="tour__amenities">
                   <ul>
-                    {dummyAmenities.map((amenity, index) => (
-                      <li key={index}>
-                        <i className="ri-checkbox-circle-line"></i> {amenity}
-                      </li>
+                    {dummyAmenities.map((amenity, i) => (
+                      <li key={i}><i className="ri-checkbox-circle-line" /> {amenity}</li>
                     ))}
                   </ul>
                 </div>
 
-                <h5 className="mt-3">{t("tour_details.description")}</h5>
+                <h5 className="mt-3">{t('tour_details.description')}</h5>
                 <p>{desc}</p>
               </div>
 
               <div className="tour__rooms mt-4">
-                <h4 className="mb-3">{t("tour_details.select_room")}</h4>
-
+                <h4 className="mb-3">{t('tour_details.select_room')}</h4>
                 <Room
                   hotelId={tour.hotelId}
                   selectedRoom={selectedRoom}
@@ -177,52 +186,47 @@ const TourDetails = () => {
               </div>
 
               <div className="tour__reviews mt-4">
-                <h4>{t("tour_details.reviews", { count: reviews.length })}</h4>
-
+                <h4>{t('tour_details.reviews', { count: reviews.length })}</h4>
                 <Form onSubmit={submitHandler}>
                   <div className="d-flex align-items-center gap-3 mb-4 rating__group">
-                    {[1, 2, 3, 4, 5].map((num) => (
+                    {[1,2,3,4,5].map(num => (
                       <span
                         key={num}
                         onClick={() => setTourRating(num)}
-                        className={tourRating === num ? "selected-rating" : ""}
+                        className={tourRating === num ? 'selected-rating' : ''}
                       >
-                        {num} <i className="ri-star-s-fill"></i>
+                        {num} <i className="ri-star-s-fill" />
                       </span>
                     ))}
                   </div>
                   <div className="review__input">
-                  <input
-                    type="text"
-                    ref={reviewMsgRef}
-                    placeholder={t("tour_details.placeholder_review")}
-                    required
-                  />
-
+                    <input
+                      type="text"
+                      ref={reviewMsgRef}
+                      placeholder={t('tour_details.placeholder_review')}
+                      required
+                    />
                     <button className="btn primary__btn text-white" type="submit">
-                      {t("tour_details.submit_review")}
+                      {t('tour_details.submit_review')}
                     </button>
-
                   </div>
                 </Form>
                 <ListGroup className="user__reviews">
-                  {reviews.map((review, index) => (
-                    <div className="review__item" key={index}>
+                  {reviews.map((review, idx) => (
+                    <div className="review__item" key={idx}>
                       <img src={avatar} alt="" />
                       <div className="w-100">
                         <div className="d-flex align-items-center justify-content-between">
                           <div>
                             <h5>{review.username}</h5>
                             <p>
-                            {typeof review.createdAt === 'string'// TODO created at tam çalışmıyor her daim just now yazıyor, yorumlara tarih bilgisi ekleyecek şekilde düzenle
-                              ? new Date(review.createdAt.replace(' ', 'T')).toLocaleDateString()
-                              : t("tour_details.just_now")}
-                            
+                              {typeof review.createdAt === 'string'
+                                ? new Date(review.createdAt.replace(' ', 'T')).toLocaleDateString()
+                                : t('tour_details.just_now')}
                             </p>
                           </div>
                           <span className="d-flex align-items-center">
-                            {review.rating}
-                            <i className="ri-star-s-fill"></i>
+                            {review.rating} <i className="ri-star-s-fill" />
                           </span>
                         </div>
                         <h6>{review.comment}</h6>
