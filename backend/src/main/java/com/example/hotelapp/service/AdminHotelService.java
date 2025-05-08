@@ -33,6 +33,9 @@ public class AdminHotelService {
     @Autowired
     private HotelAmenityJunctionService hotelAmenityJunctionService;
 
+    /* ------------------------------------------------------------------ */
+    /*   LIST FOR ADMIN PANEL                                             */
+    /* ------------------------------------------------------------------ */
     public List<AdminHotelDTO> getAllAdminHotels() {
         List<Hotel> hotels = hotelRepository.findAll();
     
@@ -75,21 +78,31 @@ public class AdminHotelService {
         }).collect(Collectors.toList());
     }
 
+    /* ------------------------------------------------------------------ */
+    /*   UPDATE HOTEL (admin)                                             */
+    /* ------------------------------------------------------------------ */
     public Hotel updateHotel(Long hotelId, Hotel updatedHotel) {
         Optional<Hotel> hotelOpt = hotelRepository.findById(hotelId);
         if (!hotelOpt.isPresent()) {
             throw new RuntimeException("Hotel not found with id: " + hotelId);
         }
         Hotel hotel = hotelOpt.get();
+
+        /* temel alanlar */
         hotel.setName(updatedHotel.getName());
         hotel.setCity(updatedHotel.getCity());
         hotel.setCountry(updatedHotel.getCountry());
         hotel.setAddress(updatedHotel.getAddress());
         hotel.setAmenities(updatedHotel.getAmenities());
-        
+
+        /* ---- yeni eklenen konum alanları ---- */
+        hotel.setLatitude(updatedHotel.getLatitude());
+        hotel.setLongitude(updatedHotel.getLongitude());
+        /* -------------------------------------- */
+
         Hotel savedHotel = hotelRepository.save(hotel);
 
-        // Amenity bilgilerini güncelleme
+        /* amenity – junction güncelle */
         if (updatedHotel.getAmenities() != null) {
             hotelAmenityJunctionService.updateHotelAmenities(hotelId, updatedHotel.getAmenities());
         }

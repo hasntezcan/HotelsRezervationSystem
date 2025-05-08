@@ -26,18 +26,19 @@ const ManagerHotels = () => {
   const { user } = useContext(AuthContext);
   const { t } = useTranslation();
 
-  // ─────────── State ───────────
+  /* ─────────── State ─────────── */
   const [managerId, setManagerId] = useState(null);
   const [hotels, setHotels] = useState([]);
   const [editHotel, setEditHotel] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [showAmenitySelector, setShowAmenitySelector] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
-  const [selectedImageFiles, setSelectedImageFiles] = useState([]); // çoklu dosya listesi
-  const [primaryImageIndex, setPrimaryImageIndex] = useState(null); // hangisi primary?
+  const [selectedImageFiles, setSelectedImageFiles] = useState([]);
+  const [primaryImageIndex, setPrimaryImageIndex] = useState(null);
   const [rooms, setRooms] = useState([]);
-  const [existingImages, setExistingImages] = useState([]);       // 🔸 NEW
-  const [primaryFromDb,  setPrimaryFromDb]  = useState(null); 
+  const [existingImages, setExistingImages] = useState([]);
+  const [primaryFromDb, setPrimaryFromDb] = useState(null);
+
   const [roomData, setRoomData] = useState({
     name: "",
     roomType: "",
@@ -53,9 +54,9 @@ const ManagerHotels = () => {
   });
   const [allAmenities, setAllAmenities] = useState([]);
 
-  // ─────────── Effects ───────────
+  /* ─────────── Effects ─────────── */
 
-  // 0) Profile’den managerId’yi çek
+  // 0) managerId
   useEffect(() => {
     if (!user?.userId) return;
     axios
@@ -66,7 +67,7 @@ const ManagerHotels = () => {
       .catch(() => console.error("Error fetching manager profile"));
   }, [user]);
 
-  // 1) Otelleri ve ilk otelin amenities’ini çek
+  // 1) hotels + first amenities
   useEffect(() => {
     if (!user?.userId) return;
     axios
@@ -92,7 +93,7 @@ const ManagerHotels = () => {
       .catch(() => alert("Error fetching hotels or amenities"));
   }, [user]);
 
-  // 2) Tüm amenity’leri çek
+  // 2) all amenities
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/hotelamenities")
@@ -100,7 +101,7 @@ const ManagerHotels = () => {
       .catch(() => alert("Error fetching hotel amenities"));
   }, []);
 
-  // 3) Oda listesini çek
+  // 3) room list
   useEffect(() => {
     if (!hotels.length) return;
     const hotelId = hotels[0].hotelId;
@@ -110,15 +111,27 @@ const ManagerHotels = () => {
       .catch(() => alert("Error fetching rooms"));
   }, [hotels]);
 
-  // ─────────── Handlers ───────────
+  /* ─────────── Handlers ─────────── */
+
   const toggleAmenity = (amenity, checked) =>
     setSelectedAmenities(prev =>
       checked ? [...prev, amenity] : prev.filter(a => a !== amenity)
     );
 
-  
+  const openAddHotelModal = () => {
+    setEditHotel({
+      latitude: "",
+      longitude: ""
+    });
+    setSelectedAmenities([]);
+    setSelectedImageFiles([]);
+    setPrimaryImageIndex(null);
+    setExistingImages([]);
+    setPrimaryFromDb(null);
+    setOpenModal(true);
+  };
 
-  const handleEdit = async hotel => {                             // 🔸 NEW  async oldu
+  const handleEdit = async hotel => {
     setSelectedAmenities(
       hotel.amenities
         ? hotel.amenities.split(",").map(a => a.trim())
@@ -126,18 +139,17 @@ const ManagerHotels = () => {
     );
     setEditHotel({ ...hotel, featured: hotel.featured ?? false });
 
-   /* DB'deki görselleri getir */                                // 🔸 NEW
-   try {
-     const res = await axios.get(
-       `http://localhost:8080/api/hotel-images/${hotel.hotelId}`
-     );
-     setExistingImages(res.data);                                // [{imageId, imageUrl, primary}, …]
-     const prim = res.data.find(i => i.primary);
-     setPrimaryFromDb(prim ? prim.imageId : null);
-   } catch {
-     setExistingImages([]);
-     setPrimaryFromDb(null);
-   }
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/api/hotel-images/${hotel.hotelId}`
+      );
+      setExistingImages(res.data);
+      const prim = res.data.find(i => i.primary);
+      setPrimaryFromDb(prim ? prim.imageId : null);
+    } catch {
+      setExistingImages([]);
+      setPrimaryFromDb(null);
+    }
 
     setSelectedImageFiles([]);
     setPrimaryImageIndex(null);
@@ -153,55 +165,55 @@ const ManagerHotels = () => {
       totalRooms: room.totalRooms
     });
   };
-  const deleteExistingImage = async imageId => {                   // 🔸 NEW
-    try {                                                          // 🔸 NEW
-      await axios.delete(                                          // 🔸 NEW
-        `http://localhost:8080/api/hotel-images/${imageId}`,       // 🔸 NEW
+
+  const deleteExistingImage = async imageId => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/hotel-images/${imageId}`,
         { headers: { Authorization: user?.token ? `Bearer ${user.token}` : "" } }
-      );                                                           // 🔸 NEW
-      setExistingImages(prev => prev.filter(i => i.imageId !== imageId)); // 🔸 NEW
-      if (primaryFromDb === imageId) setPrimaryFromDb(null);       // 🔸 NEW
-    } catch {                                                      // 🔸 NEW
-      alert("Image delete failed");                                // 🔸 NEW
-    }                                                              // 🔸 NEW
-  };  
-
-  // Otel kaydet (update veya create) & görsel upload
-  const handleSave = async () => {
-  // Validation checks
-  if (!editHotel?.name?.trim() || 
-      !editHotel?.city?.trim() || 
-      !editHotel?.country?.trim() || 
-      !editHotel?.address?.trim() || 
-      !editHotel?.description?.trim() || 
-      !editHotel?.starRating) {
-    alert(t("manager_hotels.fill_all_fields"));
-    return;
-  }
-
-  if (selectedAmenities.length === 0) {
-    alert(t("manager_hotels.select_at_least_one_amenity"));
-    return;
-  }
-
-  if (selectedImageFiles.length === 0) {
-    alert(t("manager_hotels.select_at_least_one_image"));
-    return;
-  }
-
-  const base = {
-    name: editHotel.name.trim(),
-    city: editHotel.city.trim(),
-    country: editHotel.country.trim(),
-    address: editHotel.address.trim(),
-    pricePerNight: editHotel.pricePerNight || 0,
-    capacity: editHotel.capacity || 0,
-    amenities: selectedAmenities.join(", "),
-    managerId: managerId,
-    description: editHotel.description.trim(),
-    starRating: editHotel.starRating,
-    featured: editHotel.featured || false
+      );
+      setExistingImages(prev => prev.filter(i => i.imageId !== imageId));
+      if (primaryFromDb === imageId) setPrimaryFromDb(null);
+    } catch {
+      alert("Image delete failed");
+    }
   };
+
+  /* ----------  SAVE HOTEL  ---------- */
+  const handleSave = async () => {
+    const latOk = editHotel?.latitude !== "" && !isNaN(parseFloat(editHotel.latitude));
+    const lngOk = editHotel?.longitude !== "" && !isNaN(parseFloat(editHotel.longitude));
+
+    if (
+      !editHotel?.name?.trim()     || !editHotel?.city?.trim()   ||
+      !editHotel?.country?.trim()  || !editHotel?.address?.trim()||
+      !editHotel?.description?.trim() || !editHotel?.starRating ||
+      !latOk || !lngOk
+    ) {
+      alert(t("manager_hotels.fill_all_fields"));
+      return;
+    }
+
+    if (selectedAmenities.length === 0) {
+      alert(t("manager_hotels.select_at_least_one_amenity"));
+      return;
+    }
+
+    const base = {
+      name          : editHotel.name.trim(),
+      city          : editHotel.city.trim(),
+      country       : editHotel.country.trim(),
+      address       : editHotel.address.trim(),
+      pricePerNight : editHotel.pricePerNight || 0,
+      capacity      : editHotel.capacity || 0,
+      amenities     : selectedAmenities.join(", "),
+      managerId     : managerId,
+      description   : editHotel.description.trim(),
+      starRating    : editHotel.starRating,
+      featured      : editHotel.featured || false,
+      latitude      : parseFloat(editHotel.latitude),
+      longitude     : parseFloat(editHotel.longitude)
+    };
 
     const configJson = {
       headers: {
@@ -211,7 +223,6 @@ const ManagerHotels = () => {
     };
 
     try {
-      // 1) Otel kaydet veya güncelle
       let hotelRes;
       if (editHotel?.hotelId) {
         hotelRes = await axios.put(
@@ -222,9 +233,9 @@ const ManagerHotels = () => {
       } else {
         const payload = {
           ...base,
-          status: "approved",
-          checkInTime: "14:00:00",
-          checkOutTime: "12:00:00",
+          status            : "approved",
+          checkInTime       : "14:00:00",
+          checkOutTime      : "12:00:00",
           cancellationPolicy: "Free cancellation..."
         };
         hotelRes = await axios.post(
@@ -235,39 +246,35 @@ const ManagerHotels = () => {
       }
       const savedHotel = hotelRes.data;
 
-      // 2) Eğer resim seçildiyse, tek tek upload yap
-for (let i = 0; i < selectedImageFiles.length; i++) {
-  const file = selectedImageFiles[i];
-  const form = new FormData();
-  form.append("hotelId", savedHotel.hotelId);
-  form.append("isPrimary", i === primaryImageIndex);
-  form.append("file", file);
-  await axios.post(
-    "http://localhost:8080/api/hotel-images/upload",
-    form,
-    {
-      headers: {
-        Authorization: user?.token ? `Bearer ${user.token}` : "",
-        "Content-Type": "multipart/form-data"
+      for (let i = 0; i < selectedImageFiles.length; i++) {
+        const file = selectedImageFiles[i];
+        const form = new FormData();
+        form.append("hotelId", savedHotel.hotelId);
+        form.append("isPrimary", i === primaryImageIndex);
+        form.append("file", file);
+        await axios.post(
+          "http://localhost:8080/api/hotel-images/upload",
+          form,
+          {
+            headers: {
+              Authorization: user?.token ? `Bearer ${user.token}` : "",
+              "Content-Type": "multipart/form-data"
+            }
+          }
+        );
       }
-    }
-  );
-}
-if (selectedImageFiles.length === 0 && primaryFromDb) {
-     await axios.patch(
-       `http://localhost:8080/api/hotel-images/${primaryFromDb}/primary`,
-       {},
-       { headers: { Authorization: user?.token ? `Bearer ${user.token}` : "" } }
-     ).catch(() => {});   // hata olursa sessiz geç
-   }
 
+      if (selectedImageFiles.length === 0 && primaryFromDb) {
+        await axios.patch(
+          `http://localhost:8080/api/hotel-images/${primaryFromDb}/primary`,
+          {},
+          { headers: { Authorization: user?.token ? `Bearer ${user.token}` : "" } }
+        ).catch(() => {});
+      }
 
-      // 3) State güncelle
       setHotels(prev => {
         if (editHotel?.hotelId) {
-          return prev.map(h =>
-            h.hotelId === savedHotel.hotelId ? savedHotel : h
-          );
+          return prev.map(h => h.hotelId === savedHotel.hotelId ? savedHotel : h);
         }
         return [...prev, savedHotel];
       });
@@ -285,6 +292,7 @@ if (selectedImageFiles.length === 0 && primaryFromDb) {
     setEditHotel(prev => ({ ...prev, [field]: val }));
   };
 
+  /* room CRUD helpers (unchanged) */
   const handleAddRoom = () => {
     if (
       !roomData.name ||
@@ -348,13 +356,7 @@ if (selectedImageFiles.length === 0 && primaryFromDb) {
           <Box mb={3}>
             <Button
               variant="contained"
-              onClick={() => {
-                setEditHotel({});
-                setSelectedAmenities([]);
-                setSelectedImageFiles([]);
-                setPrimaryImageIndex(null);
-                setOpenModal(true);
-              }}
+              onClick={openAddHotelModal}
               style={{
                 backgroundColor: "#9C27B0",
                 color: "#fff",
@@ -490,7 +492,7 @@ if (selectedImageFiles.length === 0 && primaryFromDb) {
           </Grid>
         </Grid>
 
-        {/* Modal */}
+        {/* --------------------  MODAL  -------------------- */}
         <Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth maxWidth="sm">
           <DialogTitle>
             {editHotel?.hotelId ? t("manager_hotels.edit_hotel") : t("manager_hotels.add_hotel")}
@@ -498,6 +500,7 @@ if (selectedImageFiles.length === 0 && primaryFromDb) {
               <CloseIcon />
             </IconButton>
           </DialogTitle>
+
           <DialogContent dividers>
             {["name","city","country","address","description"].map(field => (
               <TextField
@@ -509,6 +512,26 @@ if (selectedImageFiles.length === 0 && primaryFromDb) {
                 margin="normal"
               />
             ))}
+
+            {/* Latitude & Longitude */}
+            <TextField
+              label="Latitude"
+              type="number"
+              inputProps={{ step: "any" }}
+              value={editHotel?.latitude ?? ""}
+              onChange={e => handleChange(e, "latitude")}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Longitude"
+              type="number"
+              inputProps={{ step: "any" }}
+              value={editHotel?.longitude ?? ""}
+              onChange={e => handleChange(e, "longitude")}
+              fullWidth
+              margin="normal"
+            />
 
             <Box marginY={2}>
               <Typography variant="subtitle1">{t("manager_hotels.star_rating")}</Typography>
