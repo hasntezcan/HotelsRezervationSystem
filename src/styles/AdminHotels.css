@@ -30,6 +30,12 @@
     margin-bottom: 20px;
     font-family: var(--font-name);
 }
+.pagination-container {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 
 #admin-hotel-form {
     display: grid;
@@ -294,6 +300,33 @@ button.select-amenities-btn:hover {
     opacity: 0.7;
     transform: none;
     box-shadow: none;
+  }
+  .search-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 2px solid var(--admin-user-secondary-color);
+    border-radius: 8px;
+    background-color: white;
+    color: var(--admin-user-primary-color);
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: var(--admin-user-accent-color);
+    box-shadow: 0 0 5px rgba(231, 111, 81, 0.3);
+  }
+  
+  .search-input::placeholder {
+    color: #999;
   }
 
 /* Responsive ayarlar */
