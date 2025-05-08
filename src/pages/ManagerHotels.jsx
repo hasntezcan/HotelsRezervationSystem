@@ -141,7 +141,7 @@ const ManagerHotels = () => {
     });
   };
 
-  // Otel kaydet (update veya create)
+  // Otel kaydet (update veya create) & görsel upload
   const handleSave = async () => {
     const base = {
       name: editHotel.name || "",
@@ -157,7 +157,7 @@ const ManagerHotels = () => {
       featured: editHotel.featured || false
     };
 
-    const config = {
+    const configJson = {
       headers: {
         Authorization: user?.token ? `Bearer ${user.token}` : "",
         "Content-Type": "application/json"
@@ -165,16 +165,15 @@ const ManagerHotels = () => {
     };
 
     try {
+      // 1) Otel kaydet veya güncelle
       let hotelRes;
       if (editHotel?.hotelId) {
-        // Update
         hotelRes = await axios.put(
           `http://localhost:8080/api/hotels/${editHotel.hotelId}`,
           base,
-          config
+          configJson
         );
       } else {
-        // Create
         const payload = {
           ...base,
           status: "approved",
@@ -185,40 +184,44 @@ const ManagerHotels = () => {
         hotelRes = await axios.post(
           "http://localhost:8080/api/hotels",
           payload,
-          config
+          configJson
         );
       }
       const savedHotel = hotelRes.data;
 
-      // Eğer bir resim seçildiyse, aynı anda upload yerine yol kaydet
+      // 2) Eğer resim seçildiyse, multipart/form-data ile upload et
       if (selectedImageFile) {
-        const filename = selectedImageFile.name;
-        // frontend'de dosya fiziksel kaydetme yok; backend endpoint bekleniyor
+        const form = new FormData();
+        form.append("hotelId", savedHotel.hotelId);
+        form.append("isPrimary", "true");
+        form.append("file", selectedImageFile);
+
         await axios.post(
-          "http://localhost:8080/api/hotel-images",
+          "http://localhost:8080/api/hotel-images/upload",
+          form,
           {
-            hotelId: savedHotel.hotelId,
-            imageUrl: `/hotel_images/${filename}`,
-            isPrimary: true
-          },
-          config
+            headers: {
+              Authorization: user?.token ? `Bearer ${user.token}` : "",
+              "Content-Type": "multipart/form-data"
+            }
+          }
         );
       }
 
-      // State güncelle
+      // 3) State güncelle
       setHotels(prev => {
         if (editHotel?.hotelId) {
           return prev.map(h =>
             h.hotelId === savedHotel.hotelId ? savedHotel : h
           );
-        } else {
-          return [...prev, savedHotel];
         }
+        return [...prev, savedHotel];
       });
 
       alert(`Hotel ${editHotel?.hotelId ? "updated" : "added"} successfully!`);
       setOpenModal(false);
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert(editHotel?.hotelId ? "Error updating hotel" : "Error adding hotel");
     }
   };
@@ -303,7 +306,7 @@ const ManagerHotels = () => {
                 fontWeight: "bold",
                 padding: "8px 24px",
                 borderRadius: "8px",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
               }}
             >
               {t("manager_hotels.add_hotel")}
