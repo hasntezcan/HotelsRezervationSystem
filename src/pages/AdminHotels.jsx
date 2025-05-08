@@ -7,6 +7,9 @@ const AdminHotel = () => {
   const [hotels, setHotels] = useState([]);
   const [amenities, setAmenities] = useState([]);
   const { t } = useTranslation();
+   // Add pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Number of hotels per page
 
   const [newHotel, setNewHotel] = useState({
     name: "",
@@ -86,6 +89,10 @@ const AdminHotel = () => {
     } else {
       setSelectedAmenities([]);
     }
+    document.getElementById('admin-hotel-management-title').scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
   };
 
   const updateHotel = async () => {
@@ -112,9 +119,56 @@ const AdminHotel = () => {
       console.error("Error deleting hotel:", error);
     }
   };
+  // Add this new function after the existing state declarations
+const handlePageClick = (e) => {
+  // Check if click is on form, buttons, or modal
+  if (!e.target.closest('#admin-hotel-form') && 
+      !e.target.closest('.admin-hotel-edit-btn') && 
+      !e.target.closest('.admin-hotel-delete-btn') && 
+      !e.target.closest('.select-amenities-btn') && 
+      !e.target.closest('.amenities-modal')) {
+    // Clear the form
+    setNewHotel({ name: "", city: "", country: "", address: "", amenities: "" });
+    setSelectedAmenities([]);
+    setEditingHotel(null);
+  }
+};
+  // Pagination calculation
+  const indexOfLastHotel = currentPage * itemsPerPage;
+  const indexOfFirstHotel = indexOfLastHotel - itemsPerPage;
+  const currentHotels = hotels.slice(indexOfFirstHotel, indexOfLastHotel);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const Pagination = ({ currentPage, totalItems, onPageChange }) => {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    return (
+      <div className="pagination">
+        <button
+          className="pagination-button"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <button
+          className="pagination-button"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
+    );
+  };
 
   return (
-    <div id="admin-hotel-container">
+    <div id="admin-hotel-container"
+    onClick={handlePageClick}>
+      
       <div id="admin-hotel-management-title">{t("admin_hotels.title")}</div>
 
       <div id="admin-hotel-form">
@@ -167,18 +221,18 @@ const AdminHotel = () => {
         </div>
       )}
 
-      <div id="admin-hotel-list">
-        {hotels.map((hotel) => (
-          <div className="admin-hotel-item" key={hotel.hotelId} id={hotel.hotelId}>
-            <div className="admin-hotel-title">{hotel.name}</div>
-            {hotel.photoUrl && (
-              <img src={hotel.photoUrl} alt={hotel.name} className="hotel-photo" />
-            )}
-            <p>
-              <strong>{t("admin_hotels.city")}:</strong> {hotel.city} <br />
-              <strong>{t("admin_hotels.country")}:</strong> {hotel.country} <br />
-              <strong>{t("admin_hotels.address")}:</strong> {hotel.address}
-            </p>
+<div id="admin-hotel-list">
+  {currentHotels.map((hotel) => (
+    <div className="admin-hotel-item" key={hotel.hotelId} id={hotel.hotelId}>
+      <div className="admin-hotel-title">{hotel.name}</div>
+      {hotel.photoUrl && (
+        <img src={hotel.photoUrl} alt={hotel.name} className="hotel-photo" />
+      )}
+      <p>
+        <strong>{t("admin_hotels.city")}:</strong> {hotel.city} <br />
+        <strong>{t("admin_hotels.country")}:</strong> {hotel.country} <br />
+        <strong>{t("admin_hotels.address")}:</strong> {hotel.address}
+      </p>
             {hotel.amenities && (
               <p>
                 <strong>{t("admin_hotels.amenities")}:</strong> {hotel.amenities}
@@ -203,7 +257,12 @@ const AdminHotel = () => {
             </button>
           </div>
         ))}
-      </div>
+        <Pagination
+    currentPage={currentPage}
+    totalItems={hotels.length}
+    onPageChange={handlePageChange}
+  />
+    </div>
 
       {showAmenitiesModal && (
         <>
