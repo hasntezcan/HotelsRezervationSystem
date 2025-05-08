@@ -33,7 +33,8 @@ const ManagerHotels = () => {
   const [openModal, setOpenModal] = useState(false);
   const [showAmenitySelector, setShowAmenitySelector] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
-  const [selectedImageFile, setSelectedImageFile] = useState(null);
+  const [selectedImageFiles, setSelectedImageFiles] = useState([]); // çoklu dosya listesi
+  const [primaryImageIndex, setPrimaryImageIndex] = useState(null); // hangisi primary?
 
   const [rooms, setRooms] = useState([]);
   const [roomData, setRoomData] = useState({
@@ -114,11 +115,7 @@ const ManagerHotels = () => {
       checked ? [...prev, amenity] : prev.filter(a => a !== amenity)
     );
 
-  const handleImageChange = e => {
-    if (e.target.files?.length) {
-      setSelectedImageFile(e.target.files[0]);
-    }
-  };
+  
 
   const handleEdit = hotel => {
     setSelectedAmenities(
@@ -127,7 +124,8 @@ const ManagerHotels = () => {
         : []
     );
     setEditHotel({ ...hotel, featured: hotel.featured ?? false });
-    setSelectedImageFile(null);
+    setSelectedImageFiles([]);
+    setPrimaryImageIndex(null);
     setOpenModal(true);
   };
 
@@ -189,24 +187,25 @@ const ManagerHotels = () => {
       }
       const savedHotel = hotelRes.data;
 
-      // 2) Eğer resim seçildiyse, multipart/form-data ile upload et
-      if (selectedImageFile) {
-        const form = new FormData();
-        form.append("hotelId", savedHotel.hotelId);
-        form.append("isPrimary", "true");
-        form.append("file", selectedImageFile);
-
-        await axios.post(
-          "http://localhost:8080/api/hotel-images/upload",
-          form,
-          {
-            headers: {
-              Authorization: user?.token ? `Bearer ${user.token}` : "",
-              "Content-Type": "multipart/form-data"
-            }
-          }
-        );
+      // 2) Eğer resim seçildiyse, tek tek upload yap
+for (let i = 0; i < selectedImageFiles.length; i++) {
+  const file = selectedImageFiles[i];
+  const form = new FormData();
+  form.append("hotelId", savedHotel.hotelId);
+  form.append("isPrimary", i === primaryImageIndex);
+  form.append("file", file);
+  await axios.post(
+    "http://localhost:8080/api/hotel-images/upload",
+    form,
+    {
+      headers: {
+        Authorization: user?.token ? `Bearer ${user.token}` : "",
+        "Content-Type": "multipart/form-data"
       }
+    }
+  );
+}
+
 
       // 3) State güncelle
       setHotels(prev => {
@@ -297,7 +296,8 @@ const ManagerHotels = () => {
               onClick={() => {
                 setEditHotel({});
                 setSelectedAmenities([]);
-                setSelectedImageFile(null);
+                setSelectedImageFiles([]);
+                setPrimaryImageIndex(null);
                 setOpenModal(true);
               }}
               style={{
@@ -501,20 +501,38 @@ const ManagerHotels = () => {
             </Box>
 
             {/* Image selection */}
-            <Box mt={3}>
-              <Typography variant="subtitle1">{t("manager_hotels.select_image")}</Typography>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ marginTop: 8 }}
-              />
-              {selectedImageFile && (
-                <Typography variant="body2" mt={1}>
-                  Selected: {selectedImageFile.name}
-                </Typography>
-              )}
-            </Box>
+<Box mt={3}>
+  <Typography variant="subtitle1">{t("manager_hotels.select_images")}</Typography>
+  <input
+    type="file"
+    accept="image/*"
+    multiple
+    onChange={e => {
+      const files = Array.from(e.target.files);
+      setSelectedImageFiles(files);
+      // İlkini default primary yap
+      setPrimaryImageIndex(files.length ? 0 : null);
+    }}
+    style={{ marginTop: 8 }}
+  />
+</Box>
+{selectedImageFiles.length > 0 && (
+  <Box mt={2}>
+    {selectedImageFiles.map((file, idx) => (
+      <Box key={idx} display="flex" alignItems="center" mb={1}>
+        <input
+          type="radio"
+          name="primaryImage"
+          checked={primaryImageIndex === idx}
+          onChange={() => setPrimaryImageIndex(idx)}
+        />
+        <Typography variant="body2" ml={1}>{file.name}</Typography>
+      </Box>
+    ))}
+  </Box>
+)}
+
+
           </DialogContent>
           <DialogActions>
             <Button onClick={handleSave} variant="contained" color="primary">
