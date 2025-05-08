@@ -159,11 +159,18 @@ public class HotelController {
                     .body("Error updating hotel: " + e.getMessage());
         }
     }
-
-    @DeleteMapping("/{hotelId}")
+    
+     @DeleteMapping("/{hotelId}")
     @Transactional
     public ResponseEntity<?> deleteHotel(@PathVariable Long hotelId) {
-        // 1. Otelle doğrudan ilişkili diğer tabloları silin:
+
+        /* 0. Manager tablosunda bu otele işaret eden hotel_id’yi temizle */
+        entityManager.createNativeQuery(
+                "UPDATE managers SET hotel_id = NULL WHERE hotel_id = :hotelId")
+                .setParameter("hotelId", hotelId)
+                .executeUpdate();
+
+        /* 1. Otelle doğrudan ilişkili diğer tabloları silin */
         entityManager.createNativeQuery("DELETE FROM reviews WHERE hotel_id = :hotelId")
                 .setParameter("hotelId", hotelId)
                 .executeUpdate();
@@ -177,7 +184,7 @@ public class HotelController {
                 .setParameter("hotelId", hotelId)
                 .executeUpdate();
 
-        // 2. Otelin odalarına ilişkin verileri silin:
+        /* 2. Otelin odalarına ilişkin verileri silin */
         entityManager.createNativeQuery(
                 "DELETE rm FROM roomamenityjunction rm JOIN rooms r ON rm.room_id = r.room_id WHERE r.hotel_id = :hotelId")
                 .setParameter("hotelId", hotelId)
@@ -194,7 +201,7 @@ public class HotelController {
                 .setParameter("hotelId", hotelId)
                 .executeUpdate();
 
-        // 3. Oteli silin:
+        /* 3. Oteli silin */
         entityManager.createNativeQuery("DELETE FROM hotels WHERE hotel_id = :hotelId")
                 .setParameter("hotelId", hotelId)
                 .executeUpdate();
