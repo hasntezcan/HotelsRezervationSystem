@@ -37,14 +37,15 @@ public class AuthController {
     // Register endpoint
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User userData) {
+        // Email çakışma kontrolü
         if (userRepository.existsByEmail(userData.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists.");
         }
 
+        // User objesini oluşturup kaydet
         User user = new User();
         user.setUsername(userData.getUsername());
         user.setEmail(userData.getEmail());
-        // Şifreyi hash'le
         String rawPassword = userData.getPassword();
         user.setPassword(passwordEncoder.encode(rawPassword));
         user.setRole(userData.getRole() != null ? userData.getRole() : "user");
@@ -52,48 +53,52 @@ public class AuthController {
         user.setLastName(userData.getLastName());
         user.setPhone(userData.getPhone());
 
-        User saved = userRepository.save(user);
-        // Güvenlik için şifreyi cevapta temizle
-        saved.setPassword(null);
-        return ResponseEntity.ok(saved);
+        User savedUser = userRepository.save(user);
+
+        // Eğer role=manager ise, otel ataması olmadan managers tablosuna ekle
+        if ("manager".equalsIgnoreCase(savedUser.getRole())) {
+            Manager mgr = new Manager();
+            mgr.setUserId(savedUser.getUserId());
+            mgr.setHotelId(null);  // henüz otel ataması yok
+            managerRepository.save(mgr);
+        }
+
+        // Güvenlik için şifreyi temizleyip dön
+        savedUser.setPassword(null);
+        return ResponseEntity.ok(savedUser);
     }
 
     // Login endpoint
     @PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
-    Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
-    if (optionalUser.isEmpty()) {
-        return ResponseEntity.status(401).body("Invalid credentials.");
-    }
-    User user = optionalUser.get();
-    String raw = loginRequest.getPassword();
-    String stored = user.getPassword();
-
-    boolean authenticated = false;
-    // 1) Eğer zaten hash’lenmişse
-    if (stored != null && stored.startsWith("$2")) {
-        if (passwordEncoder.matches(raw, stored)) {
-            authenticated = true;
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+        Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(401).body("Invalid credentials.");
         }
-    } 
-    // 2) Yok, düz metinse (legacy user)
-    else if (raw.equals(stored)) {
-        authenticated = true;
-        // İlk başarılı girişte şifreyi hash’leyip güncelle
-        user.setPassword(passwordEncoder.encode(raw));
-        userRepository.save(user);
+        User user = optionalUser.get();
+        String raw = loginRequest.getPassword();
+        String stored = user.getPassword();
+
+        boolean authenticated = false;
+        if (stored != null && stored.startsWith("$2")) {
+            if (passwordEncoder.matches(raw, stored)) {
+                authenticated = true;
+            }
+        } else if (raw.equals(stored)) {
+            authenticated = true;
+            // Legacy plain-text kullanıcı için ilk girişte şifreyi hash’le
+            user.setPassword(passwordEncoder.encode(raw));
+            userRepository.save(user);
+        }
+
+        if (!authenticated) {
+            return ResponseEntity.status(401).body("Invalid credentials.");
+        }
+
+        request.getSession().setAttribute("user", user);
+        user.setPassword(null);
+        return ResponseEntity.ok(user);
     }
-
-    if (!authenticated) {
-        return ResponseEntity.status(401).body("Invalid credentials.");
-    }
-
-    // Login başarılı → session’a koy, password alanını null’la
-    request.getSession().setAttribute("user", user);
-    user.setPassword(null);
-    return ResponseEntity.ok(user);
-}
-
 
     // Profile update endpoint
     @PutMapping("/profile")
@@ -110,7 +115,6 @@ public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServl
         User user = optionalUser.get();
         user.setUsername(updatedUser.getUsername());
         user.setEmail(updatedUser.getEmail());
-        // Şifre güncellemesi yapılmışsa hash'le
         if (updatedUser.getPassword() != null && !updatedUser.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }

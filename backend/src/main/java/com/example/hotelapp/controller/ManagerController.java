@@ -27,6 +27,7 @@ public class ManagerController {
         return managers.stream().map(manager -> {
             ManagerDTO dto = new ManagerDTO();
             dto.setManagerId(manager.getManagerId());
+            dto.setHotelId(manager.getHotelId());    // eklendi
             // İlgili manager'ın kullanıcı bilgisini çekiyoruz.
             userRepository.findById(manager.getUserId()).ifPresent(user -> {
                 String fullName = user.getFirstName() + " " + user.getLastName();

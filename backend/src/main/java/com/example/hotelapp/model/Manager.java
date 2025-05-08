@@ -15,7 +15,7 @@ public class Manager {
     @Column(name = "user_id", nullable = false)
     private Long userId;  // User ID
 
-    @Column(name = "hotel_id", nullable = false)
+    @Column(name = "hotel_id", nullable = true)
     private Long hotelId;  // Manager'ın bağlı olduğu otelin ID'si, veritabanındaki char(36) için String
 
     @Column(name = "assigned_at")

@@ -6,7 +6,7 @@ const AdminUser = () => {
   const [managers, setManagers] = useState([]);
   const [users, setUsers] = useState([]);
 
-  // 🔧 Form için gerekli state; alan isimleri backend User modeline göre güncellendi.
+  // Form için gerekli state
   const [manager, setManager] = useState({
     first_name: '',
     last_name: '',
@@ -16,41 +16,37 @@ const AdminUser = () => {
     password: '',
   });
 
-  // 🔧 Form için input değişikliklerini handle et
+  // Input değişikliklerini handle et
   const handleChange = (e) => {
     const { name, value } = e.target;
     setManager({ ...manager, [name]: value });
   };
 
-  // Form validasyon fonksiyonu: Email, telefon ve şifre için regex kuralları
+  // Form validasyon
   const validateForm = () => {
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
     const phoneRegex = /^\+?\d{10,15}$/;
     const passwordRegex = /^.{6,}$/;
 
     if (!emailRegex.test(manager.email)) {
-      alert("⚠️ Hatalı Email: Lütfen 'ornek@domain.com' formatında geçerli bir e-posta adresi giriniz.");
+      alert("⚠️ Geçersiz Email: ornek@domain.com formatında olmalı.");
       return false;
     }
     if (!phoneRegex.test(manager.phone)) {
-      alert("⚠️ Hatalı Telefon Numarası: Lütfen 10-15 basamaklı, opsiyonel '+' işareti ile başlayan bir numara giriniz.");
+      alert("⚠️ Geçersiz Telefon Numarası: 10-15 basamaklı olmalı.");
       return false;
     }
     if (!passwordRegex.test(manager.password)) {
-      alert("⚠️ Geçersiz Şifre: Şifreniz en az 6 karakter içermelidir.");
+      alert("⚠️ Şifre en az 6 karakter olmalı.");
       return false;
     }
     return true;
   };
 
-  // 🔧 Manager ekleme fonksiyonu; POST isteği AuthController'daki register endpoint'ine role=manager şeklinde user bilgisi gönderir.
+  // Yeni manager ekle
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validasyon kontrolü
-    if (!validateForm()) {
-      return; // Geçersizse form gönderilmez.
-    }
+    if (!validateForm()) return;
 
     try {
       await axios.post("http://localhost:8080/api/auth/register", {
@@ -58,20 +54,17 @@ const AdminUser = () => {
         role: "manager",
       });
       alert("✅ Manager başarıyla eklendi!");
-      // Form alanlarını temizle
-      setManager({
-        first_name: '',
-        last_name: '',
-        phone: '',
-        email: '',
-        username: '',
-        password: '',
-      });
-      fetchManagersWithHotelInfo(); // Listeyi güncelle
+      setManager({ first_name: '', last_name: '', phone: '', email: '', username: '', password: '' });
+      fetchManagers();
     } catch (error) {
       console.error("Error adding manager:", error);
-      if (error.response && error.response.data) {
-        alert(`❌ Manager eklenirken bir sorun oluştu: ${error.response.data}`);
+      if (error.response) {
+        if (error.response.status === 409) {
+          // Username veya email çakışması
+          alert(`❌ ${error.response.data}`);
+        } else {
+          alert(`❌ Manager eklenirken bir sorun oluştu: ${error.response.data}`);
+        }
       } else {
         alert("❌ Manager eklenemedi. Lütfen daha sonra tekrar deneyiniz.");
       }
@@ -80,83 +73,59 @@ const AdminUser = () => {
 
   useEffect(() => {
     fetchUsers();
-    fetchManagersWithHotelInfo();
+    fetchManagers();
   }, []);
 
+  // Kullanıcıları çek (role=user)
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/users?role=user");
-      setUsers(response.data);
+      const res = await axios.get("http://localhost:8080/api/users?role=user");
+      setUsers(res.data);
     } catch (error) {
       console.error("Error fetching users:", error);
-      alert("❌ Kullanıcılar çekilirken bir hata oluştu (role=user).");
+      alert("❌ Kullanıcılar çekilemedi.");
     }
   };
 
-  const fetchManagersWithHotelInfo = async () => {
+  // Manager listesini çek
+  const fetchManagers = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/users?role=manager");
-      const managersData = response.data;
-
-      const managersWithHotelInfo = await Promise.all(
-        managersData.map(async (manager) => {
-          try {
-            const hotelResponse = await axios.get(
-              `http://localhost:8080/api/hotels/manager?userId=${manager.userId}`
-            );
-            const hotelData = Array.isArray(hotelResponse.data)
-              ? (hotelResponse.data.length > 0 ? hotelResponse.data[0] : null)
-              : hotelResponse.data;
-            return {
-              ...manager,
-              hotelName: hotelData?.name || "Bilinmiyor",
-              city: hotelData?.city || "Bilinmiyor"
-            };
-          } catch (error) {
-            console.error(`Manager ${manager.userId} için otel bilgileri alınırken hata:`, error);
-            return {
-              ...manager,
-              hotelName: "Bilinmiyor",
-              city: "Bilinmiyor"
-            };
-          }
-        })
-      );
-      setManagers(managersWithHotelInfo);
+      const res = await axios.get("http://localhost:8080/api/managers");
+      setManagers(res.data);
     } catch (error) {
       console.error("Error fetching managers:", error);
-      alert("❌ Manager bilgileri çekilirken bir hata oluştu (role=manager).");
+      alert("❌ Manager bilgileri çekilemedi.");
     }
   };
 
-  // Mevcut deleteManager fonksiyonu, sadece manager listesi için çalışıyor.
-  const deleteManager = async (managerToDelete) => {
+  // Manager sil
+  const deleteManager = async (m) => {
     try {
-      await axios.delete(`http://localhost:8080/api/users/${managerToDelete.userId}`);
-      setManagers(managers.filter((m) => m.userId !== managerToDelete.userId));
-      alert(`✅ ${managerToDelete.first_name} ${managerToDelete.last_name} başarıyla silindi!`);
+      await axios.delete(`http://localhost:8080/api/users/${m.managerId}`);
+      setManagers(managers.filter(x => x.managerId !== m.managerId));
+      alert("✅ Manager silindi!");
     } catch (error) {
       console.error("Error deleting manager:", error);
-      alert("❌ Manager silinirken bir hata oluştu. Lütfen tekrar deneyiniz.");
+      alert("❌ Manager silinirken hata.");
     }
   };
 
-  // Kullanıcı listesi için delete fonksiyonu (role=user)
-  const deleteUser = async (userToDelete) => {
+  // User sil
+  const deleteUser = async (u) => {
     try {
-      await axios.delete(`http://localhost:8080/api/users/${userToDelete.userId}`);
-      setUsers(users.filter((u) => u.userId !== userToDelete.userId));
-      alert(`✅ ${userToDelete.first_name} ${userToDelete.last_name} başarıyla silindi!`);
+      await axios.delete(`http://localhost:8080/api/users/${u.userId}`);
+      setUsers(users.filter(x => x.userId !== u.userId));
+      alert("✅ Kullanıcı silindi!");
     } catch (error) {
       console.error("Error deleting user:", error);
-      alert("❌ Kullanıcı silinirken bir hata oluştu. Lütfen tekrar deneyiniz.");
+      alert("❌ Kullanıcı silinirken hata.");
     }
   };
 
   return (
     <div className="admin-user-page-container">
       <h1 className="admin-user-title">Admin User Management</h1>
-      
+
       <h2>Add Manager</h2>
       <form className="admin-user-form" onSubmit={handleSubmit} noValidate>
         <input
@@ -195,7 +164,6 @@ const AdminUser = () => {
           value={manager.email}
           onChange={handleChange}
           required
-          pattern="^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$"
         />
         <input
           type="text"
@@ -214,7 +182,6 @@ const AdminUser = () => {
           value={manager.password}
           onChange={handleChange}
           required
-          pattern="^.{6,}$"
         />
         <button type="submit" className="admin-user-button">
           Add Manager
@@ -228,20 +195,16 @@ const AdminUser = () => {
             <table className="admin-user-list-table">
               <thead>
                 <tr>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Hotel Name</th>
-                  <th>City</th>
+                  <th>Manager ID</th>
+                  <th>Manager Name</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {managers.map((m) => (
-                  <tr key={m.userId}>
-                    <td>{m.first_name}</td>
-                    <td>{m.last_name}</td>
-                    <td>{m.hotelName}</td>
-                    <td>{m.city}</td>
+                {managers.map(m => (
+                  <tr key={m.managerId}>
+                    <td>{m.managerId}</td>
+                    <td>{m.managerName}</td>
                     <td>
                       <button
                         className="admin-user-delete-btn"
@@ -255,7 +218,7 @@ const AdminUser = () => {
               </tbody>
             </table>
           ) : (
-            <p>No managers found with role=manager.</p>
+            <p>No managers found.</p>
           )}
         </div>
 
@@ -271,7 +234,7 @@ const AdminUser = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((u) => (
+                {users.map(u => (
                   <tr key={u.userId}>
                     <td>{u.first_name}</td>
                     <td>{u.last_name}</td>

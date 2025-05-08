@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 21 Nis 2025, 10:41:05
+-- Üretim Zamanı: 08 May 2025, 14:21:35
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -50,9 +50,6 @@ INSERT INTO `bookings` (`booking_id`, `user_id`, `room_id`, `check_in_date`, `ch
 (2, 2, 1, '2025-04-24', '2025-04-26', 1, 1, 100.00, 200.00, 'confirmed', '2025-04-10 10:22:07'),
 (3, 3, 1, '2025-04-24', '2025-04-26', 1, 3, 100.00, 230.00, 'confirmed', '2025-04-10 10:22:07'),
 (4, 4, 1, '2025-04-24', '2025-04-26', 1, 2, 100.00, 210.00, 'confirmed', '2025-04-10 10:22:07'),
-(10, 1, 20, '2025-04-11', '2025-04-12', 1, 1, 100.00, 110.00, 'confirmed', '2025-04-11 10:33:47'),
-(11, 1, 20, '2025-04-30', '2025-05-01', 1, 1, 100.00, 110.00, 'rejected', '2025-04-11 13:03:17'),
-(12, 31, 20, '2025-04-12', '2025-04-13', 1, 2, 100.00, 210.00, 'pending', '2025-04-11 17:01:16'),
 (13, 31, 16, '2025-04-12', '2025-04-13', 1, 2, 100.00, 210.00, 'pending', '2025-04-11 17:02:17'),
 (15, 2, 1, '2025-03-05', '2025-04-04', 1, 1, 160.00, 330.00, 'pending', '2025-04-11 20:10:37'),
 (16, 2, 1, '2025-04-24', '2025-04-26', 1, 1, 160.00, 330.00, 'pending', '2025-04-21 08:38:50');
@@ -176,10 +173,7 @@ INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
 (14, 8),
 (14, 11),
 (14, 13),
-(15, 1),
-(16, 1),
-(16, 2),
-(16, 15);
+(15, 1);
 
 -- --------------------------------------------------------
 
@@ -272,13 +266,7 @@ INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VA
 (71, 15, '/hotel_images/hotel-img71.jpg', 1),
 (72, 15, '/hotel_images/hotel-img72.jpg', 0),
 (73, 15, '/hotel_images/hotel-img73.jpg', 0),
-(74, 15, '/hotel_images/hotel-img74.jpg', 0),
-(75, 16, '/hotel_images/hotel-img75.jpg', 1),
-(76, 16, '/hotel_images/hotel-img76.jpg', 0),
-(77, 16, '/hotel_images/hotel-img77.jpg', 0),
-(78, 16, '/hotel_images/hotel-img78.jpg', 0),
-(79, 16, '/hotel_images/hotel-img79.jpg', 0),
-(80, 16, '/hotel_images/hotel-img80.jpg', 0);
+(74, 15, '/hotel_images/hotel-img74.jpg', 0);
 
 -- --------------------------------------------------------
 
@@ -328,7 +316,9 @@ INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `coun
 (13, 13, 'Eiffel Grand Hotel', '123 Champs Elysees, Paris', 'Paris', 'France', 48.8566, 2.3522, 'Stay steps away from the Eiffel Tower...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
 (14, 14, 'Louvre Palace Hotel', '89 Louvre Street, Paris', 'Paris', 'France', 48.8606, 2.3376, 'Discover art and culture...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
 (15, 15, 'Seine River Hotel', '456 Riverfront, Paris', 'Paris', 'France', 48.857, 2.354, 'Enjoy riverside dining...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0, NULL),
-(16, 16, 'Parisian Royal Suites', '777 Palace Road, Paris', 'Paris', 'France', 48.8582, 2.35, 'Royal treatment...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0, NULL);
+(21, NULL, 'deneme2', 'deneme2', 'deneme2', 'deneme2', 0, 0, 'deneme2', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-05-05 12:48:53', 0, 0, 0, NULL),
+(22, NULL, 'deneme2', 'a', 'deneme2', 'a', 0, 0, 'a', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-05-05 12:54:53', 0, 0, 0, NULL),
+(23, NULL, 'deneme', 'deneme', 'deneme', 'deneme', 0, 0, 'aaa', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-05-05 13:33:10', 0, 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -339,7 +329,7 @@ INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `coun
 CREATE TABLE `managers` (
   `manager_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
-  `hotel_id` bigint(20) NOT NULL,
+  `hotel_id` bigint(20) DEFAULT NULL,
   `assigned_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -363,7 +353,8 @@ INSERT INTO `managers` (`manager_id`, `user_id`, `hotel_id`, `assigned_at`) VALU
 (13, 28, 13, '2025-04-08 20:32:15'),
 (14, 29, 14, '2025-04-08 20:35:48'),
 (15, 30, 15, '2025-04-08 20:35:48'),
-(16, 31, 16, '2025-04-08 20:36:11');
+(16, 31, 16, '2025-04-08 20:36:11'),
+(20, 43, NULL, '2025-05-08 09:15:32');
 
 -- --------------------------------------------------------
 
@@ -523,7 +514,6 @@ INSERT INTO `roomimages` (`image_id`, `room_id`, `image_url`, `is_primary`) VALU
 (24, 17, '/public/room_images/room-img01.jpg', 1),
 (25, 18, '/public/room_images/room-img03.jpg', 1),
 (26, 19, '/public/room_images/room-img03.jpg', 1),
-(27, 20, '/public/room_images/room-img03.jpg', 1),
 (28, 21, '/public/room_images/room-img01.jpg', 1),
 (29, 22, '/public/room_images/room-img01.jpg', 1),
 (30, 23, '/public/room_images/room-img01.jpg', 1),
@@ -576,7 +566,6 @@ INSERT INTO `rooms` (`room_id`, `hotel_id`, `room_type`, `description`, `price_p
 (17, 12, 'Standard Room', 'Comfortable room with essential facilities.', 160.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
 (18, 14, 'Standard Room', 'Comfortable room with essential facilities.', 140.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
 (19, 15, 'Standard Room', 'Comfortable room with essential facilities.', 65.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
-(20, 16, 'Standard Room', 'Comfortable room with essential facilities.', 100.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
 (21, 9, 'Deluxe Room', 'Comfortable room with essential facilities.', 250.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Deluxe Room', 25, NULL),
 (22, 6, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
 (23, 7, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
@@ -611,7 +600,7 @@ INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_
 (1, 'iamsahinemir', 'user', 'esad.emir34@gmail.com', '123456', 'emir esad', 'şahin', '05438813007', '2025-03-31 17:36:25', '2025-04-10 06:49:55', 1),
 (2, 'sezo', 'user', 'sezo@sezo.com', '123456', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-10 06:49:57', 1),
 (3, 'dede', 'user', 'dede@dede.com', '123456', 'dede', 'dede', '05313313131', '2025-04-03 17:57:28', '2025-04-10 06:50:00', 0),
-(4, 'admin', 'admin', 'admin@admin.com', '1234567', 'admin', 'admin', '05467897895', '2025-04-03 18:54:48', '2025-04-10 06:50:02', 0),
+(4, 'admin', 'admin', 'admin@admin.com', '$2a$10$4ivO5hjwwFgbo5MtT8UaXeBt2kUC0IxS6NvNLQHX4eF6D/MdZduwm', 'admin', 'admin', '05467897895', '2025-04-03 18:54:48', '2025-04-10 06:50:02', 0),
 (16, 'manager_royal_palace', 'manager', 'royal.manager@example.com', 'password', 'Royalaaaa', 'Manager', '0000000001', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
 (17, 'manager_london_river', 'manager', 'london.manager@example.com', 'password', 'London', 'Manager', '0000000002', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
 (18, 'manager_bali_beach', 'manager', 'bali.manager@example.com', 'password', 'Bali', 'Manager', '0000000003', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
@@ -626,8 +615,10 @@ INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_
 (27, 'manager_river', 'manager', 'river.manager@example.com', 'password', 'River', 'Manager', '0000000012', '2025-04-08 12:00:00', '2025-04-08 12:00:00', 0),
 (28, 'manager_forest', 'manager', 'forest.manager@example.com', 'password', 'Forest', 'Manager', '0000000013', '2025-04-08 12:00:00', '2025-04-08 12:00:00', 0),
 (29, 'manager_sunset', 'manager', 'sunset.manager@example.com', 'password', 'Sunset', 'Manager', '0000000014', '2025-04-08 12:00:00', '2025-04-08 12:00:00', 0),
-(30, 'manager_mountain', 'manager', 'mountain.manager@example.com', 'password', 'Mountain', 'Manager', '0000000015', '2025-04-08 12:00:00', '2025-04-08 12:00:00', 0),
-(31, 'manager_ocean', 'manager', 'ocean.manager@example.com', 'password', 'Ocean', 'Manager', '0000000016', '2025-04-08 12:00:00', '2025-04-08 12:00:00', 0);
+(30, 'manager_mountain', 'manager', 'mountain.manager@example.com', '$2a$10$o0TlMz1YxxkCMZfkcKzmpOYXX1hVsHmRF3zrxBZQOknLgdtoDJXF2', 'Mountain', 'Manager', '0000000015', '2025-04-08 12:00:00', '2025-04-08 12:00:00', 0),
+(31, 'manager_ocean', 'manager', 'ocean.manager@example.com', '$2a$10$fZnN1k5b2t9Cny93gv2Ssu.nf3GbVvTNdShvZij/Hh9qQBH17B3lS', 'Ocean', 'Manager', '0000000016', '2025-04-08 12:00:00', '2025-04-08 12:00:00', 0),
+(43, 'aaaaaaaaaaa', 'manager', 'aaaaaaa@a.com', '$2a$10$NDsDJEkgmTaT0b9mLqC0X.SRRKydmJjGfurMexen4S8p8veim2qyG', 'emir emir', 'bacın', '05438813007', '2025-05-08 09:15:31', '2025-05-08 12:19:29', 0),
+(44, 'beril', 'user', 'beril@beril.com', '$2a$10$U6TfdyxhxsOlFteG81ms4OVE6QvCHm9GjMQbMeWtj9P/MRZdzRJeK', 'beril', 'kurt', '05555555555', '2025-05-08 09:21:12', '2025-05-08 09:21:12', 0);
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -775,13 +766,13 @@ ALTER TABLE `hotelimages`
 -- Tablo için AUTO_INCREMENT değeri `hotels`
 --
 ALTER TABLE `hotels`
-  MODIFY `hotel_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `hotel_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `managers`
 --
 ALTER TABLE `managers`
-  MODIFY `manager_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `manager_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `payments`
@@ -823,7 +814,7 @@ ALTER TABLE `rooms`
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- Dökümü yapılmış tablolar için kısıtlamalar
