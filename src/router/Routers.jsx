@@ -27,6 +27,7 @@ import PaymentPage from '../pages/Booking/PaymentPage.jsx';
 import PrivateRoute from '../components/PrivateRoute';
 import ManagerRoute from '../components/ManagerRoute';
 import AdminRoute from '../components/AdminRoute';
+import ResetPassword from '../pages/ResetPassword.jsx';
 
 const Routers = () => {
   return (
@@ -39,6 +40,7 @@ const Routers = () => {
       <Route path="/hotels" element={<Hotels />} />
       <Route path="/hotels/:id" element={<TourDetails />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/register" element={<Register />} />
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/search-results" element={<SearchResults />} />
