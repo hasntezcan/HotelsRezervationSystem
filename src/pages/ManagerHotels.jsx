@@ -35,8 +35,9 @@ const ManagerHotels = () => {
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [selectedImageFiles, setSelectedImageFiles] = useState([]); // çoklu dosya listesi
   const [primaryImageIndex, setPrimaryImageIndex] = useState(null); // hangisi primary?
-
   const [rooms, setRooms] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);       // 🔸 NEW
+  const [primaryFromDb,  setPrimaryFromDb]  = useState(null); 
   const [roomData, setRoomData] = useState({
     name: "",
     roomType: "",
@@ -117,13 +118,27 @@ const ManagerHotels = () => {
 
   
 
-  const handleEdit = hotel => {
+  const handleEdit = async hotel => {                             // 🔸 NEW  async oldu
     setSelectedAmenities(
       hotel.amenities
         ? hotel.amenities.split(",").map(a => a.trim())
         : []
     );
     setEditHotel({ ...hotel, featured: hotel.featured ?? false });
+
+   /* DB'deki görselleri getir */                                // 🔸 NEW
+   try {
+     const res = await axios.get(
+       `http://localhost:8080/api/hotel-images/${hotel.hotelId}`
+     );
+     setExistingImages(res.data);                                // [{imageId, imageUrl, primary}, …]
+     const prim = res.data.find(i => i.primary);
+     setPrimaryFromDb(prim ? prim.imageId : null);
+   } catch {
+     setExistingImages([]);
+     setPrimaryFromDb(null);
+   }
+
     setSelectedImageFiles([]);
     setPrimaryImageIndex(null);
     setOpenModal(true);
@@ -138,6 +153,18 @@ const ManagerHotels = () => {
       totalRooms: room.totalRooms
     });
   };
+  const deleteExistingImage = async imageId => {                   // 🔸 NEW
+    try {                                                          // 🔸 NEW
+      await axios.delete(                                          // 🔸 NEW
+        `http://localhost:8080/api/hotel-images/${imageId}`,       // 🔸 NEW
+        { headers: { Authorization: user?.token ? `Bearer ${user.token}` : "" } }
+      );                                                           // 🔸 NEW
+      setExistingImages(prev => prev.filter(i => i.imageId !== imageId)); // 🔸 NEW
+      if (primaryFromDb === imageId) setPrimaryFromDb(null);       // 🔸 NEW
+    } catch {                                                      // 🔸 NEW
+      alert("Image delete failed");                                // 🔸 NEW
+    }                                                              // 🔸 NEW
+  };  
 
   // Otel kaydet (update veya create) & görsel upload
   const handleSave = async () => {
@@ -226,6 +253,13 @@ for (let i = 0; i < selectedImageFiles.length; i++) {
     }
   );
 }
+if (selectedImageFiles.length === 0 && primaryFromDb) {
+     await axios.patch(
+       `http://localhost:8080/api/hotel-images/${primaryFromDb}/primary`,
+       {},
+       { headers: { Authorization: user?.token ? `Bearer ${user.token}` : "" } }
+     ).catch(() => {});   // hata olursa sessiz geç
+   }
 
 
       // 3) State güncelle
@@ -602,6 +636,48 @@ for (let i = 0; i < selectedImageFiles.length; i++) {
             '&:hover': {
               backgroundColor: 'rgba(244, 67, 54, 0.04)'
             }
+          }}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </Box>
+    ))}
+  </Box>
+)}
+{existingImages.length > 0 && (
+  <Box mt={3}>
+    <Typography variant="subtitle1">
+      {t("manager_hotels.current_images")}
+    </Typography>
+
+    {existingImages.map(img => (
+      <Box key={img.imageId} display="flex" alignItems="center" mb={1}>
+        <input
+          type="radio"
+          name="primaryExisting"
+          checked={primaryFromDb === img.imageId}
+          onChange={() => setPrimaryFromDb(img.imageId)}
+          style={{ cursor: "pointer", accentColor: "#9C27B0" }}
+        />
+        <img
+          src={`http://localhost:8080${img.imageUrl}`}
+          alt=""
+          style={{ width: 60, height: 40, objectFit: "cover", marginLeft: 8, borderRadius: 4 }}
+        />
+        <Typography
+          ml={1}
+          variant="body2"
+          sx={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+        >
+          {img.imageUrl.split("/").pop()}
+        </Typography>
+        {/* 🔸 NEW — Sil düğmesi */}
+        <IconButton
+          size="small"
+          onClick={() => deleteExistingImage(img.imageId)}
+          sx={{
+            color: "#f44336",
+            "&:hover": { backgroundColor: "rgba(244,67,54,0.04)" }
           }}
         >
           <CloseIcon fontSize="small" />
