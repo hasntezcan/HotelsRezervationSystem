@@ -77,13 +77,104 @@
   }
   
   /* AMENITY SCROLL */
-  .amenity-list {
-    max-height: 180px;
+  /* Checkbox görünümü */
+.amenity-list input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--secondary-color);
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.amenity-list input[type="checkbox"]:checked {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+.amenity-list input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.amenity-list input[type="checkbox"]:checked::after {
+  display: block;
+  content: "✓";
+  font-size: 11px;
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* tam ortalama */
+  color: white;
+}
+
+/* Amenity row */
+.amenity-list .form-check {
+  padding: 6px 6px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.93rem;
+}
+
+.amenity-list .form-check:hover {
+  background-color: #f8f8f8;
+}
+
+/* Iconlar için renk değişikliği */
+.amenity-list .form-check svg {
+  min-width: 18px;
+  height: 18px;
+  color: var(--secondary-color)!important;
+  margin-right: 4px;
+}
+
+/* Uzun listeyi daraltma (expand/collapse özelliği için örnek yapı) */
+.amenity-list {
+  max-height: 330px;
+  overflow-y: auto;
+  padding-right: 4px;
+  transition: max-height 0.3s ease;
+}
+
+/* Mobil/overlay fix */
+@media (max-width: 768px) {
+  .offcanvas {
+    max-height: 100vh;
     overflow-y: auto;
-    padding-right: 4px;
+    overscroll-behavior: contain;
+    background-color: white !important;
   }
+}
+
   
+  /* Icon stilleri */
+  .amenity-list .form-check svg {
+    min-width: 18px;
+    height: 18px;
+    color: var(--accent-color);
+    margin-right: 4px;
+  }
   /* Offcanvas */
   .offcanvas-sm {
     width: 280px !important;
+  }
+
+  .offcanvas-filter {
+    width: 100%;
+    max-width: 250px!important;
+    margin: 0 auto !important;
+    border: none;
+    border-radius: 0;
+    background-color: #fff;
   }

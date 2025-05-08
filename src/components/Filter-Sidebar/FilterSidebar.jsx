@@ -9,17 +9,9 @@ import {
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import './filter-sidebar.css';
+import { getAmenityIcon } from '/src/assets/data/amenityIconConfig.jsx';
 
-const amenityIcons = {
-  wifi: 'ri-wifi-line',
-  breakfast: 'ri-restaurant-2-line',
-  swimming: 'ri-swim-line',
-  pool: 'ri-swim-line',
-  gym: 'ri-dumbbell-line',
-  bar: 'ri-cup-line',
-  beach: 'ri-sailboat-line',
-  view: 'ri-building-2-line',
-};
+
 
 const useIsDesktop = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
@@ -89,11 +81,11 @@ const FilterSidebar = ({ amenities = [], onApply }) => {
       />
       <p className="text-muted">{rating.toFixed(1)}</p>
 
-      <div className="filter-section-heading mt-3">Amenities</div>
+      <div className="filter-section-heading mt-3">Features</div>
       <div className="amenity-list">
         {amenities.map(a => {
-          const key = a.name.toLowerCase().split(' ')[0];
-          const icon = amenityIcons[key] || 'ri-checkbox-blank-line';
+        //  const key = a.name.toLowerCase().split(' ')[0];
+          const icon = getAmenityIcon(a.name);
           return (
             <FormGroup check key={a.amenityId} className="mb-1 d-flex align-items-center gap-1">
               <input
@@ -101,7 +93,7 @@ const FilterSidebar = ({ amenities = [], onApply }) => {
                 checked={selectedAmenities.includes(a.amenityId)}
                 onChange={() => toggleAmenity(a.amenityId)}
               />
-              <i className={icon} />
+              {icon}
               <span>{a.name}</span>
             </FormGroup>
           );
@@ -152,7 +144,7 @@ const FilterSidebar = ({ amenities = [], onApply }) => {
             isOpen={openMobile}
             toggle={() => setOpenMobile(false)}
             direction="start"
-            className="offcanvas-sm"
+            className="offcanvas-filter"
             unmountOnClose={false}
           >
             <OffcanvasHeader toggle={() => setOpenMobile(false)}>Filters</OffcanvasHeader>
