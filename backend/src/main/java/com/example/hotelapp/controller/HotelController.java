@@ -10,6 +10,7 @@ import com.example.hotelapp.repository.ReviewRepository;
 import com.example.hotelapp.repository.RoomRepository;
 import com.example.hotelapp.service.AdminHotelService;
 
+
 import jakarta.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,7 @@ public class HotelController {
             return ResponseEntity.ok(hotel);
         }).orElse(ResponseEntity.notFound().build());
     }
+    
 
     @GetMapping
     public ResponseEntity<?> getAllHotels() {

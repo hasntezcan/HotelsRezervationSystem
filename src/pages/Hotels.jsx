@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import CommonSection from '../shared/CommonSection';
 import TourCard from '../shared/TourCard';
 import SearchBar from '../shared/SearchBar';
+import MapView from '../components/MapView';
 import FilterSidebar from '../components/Filter-Sidebar/FilterSidebar';
 import { Col, Container, Row } from 'reactstrap';
 import '../styles/hotel.css';
@@ -29,6 +30,9 @@ const mapDTO = h => ({
   city: h.city,
   pricePerNight: parseNumber(h.pricePerNight ?? h.minPrice),
   starRating: parseNumber(h.starRating ?? h.avgRating),
+  latitude: parseNumber(h.latitude),
+  longitude: parseNumber(h.longitude),
+  description: h.description || h.shortDescription || h.longDescription || '',
   imgUrl: h.imageUrl || h.primaryImageUrl || '',
   amenities: h.amenities || '', // CSV
 });
@@ -63,6 +67,8 @@ const Hotels = () => {
   const [selectedCity, setSelectedCity] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({});
+  const [showMap, setShowMap] = useState(false); 
+
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -159,12 +165,46 @@ const Hotels = () => {
     }
   }, [loc.pathname, loc.search]);
 
+  // Hotels.jsx’in üstünde, render’dan önce
+  const markers = hotels.map(h => ({
+       id: h.hotelId,
+       position: [h.latitude, h.longitude],
+       popup: (
+        <div
+        className="map-popup-compact"
+        style={{ cursor: 'pointer' }}
+        onClick={() => {
+          // checkIn / checkOut varsa ekleyelim
+          const qs = checkIn && checkOut
+            ? `?startDate=${encodeURIComponent(checkIn)}&endDate=${encodeURIComponent(checkOut)}`
+            : ''
+          navigate(`/hotels/${h.hotelId}${qs}`)
+        }}
+      >
+           <img
+             src={h.imgUrl}
+             alt={h.name}
+             className="map-popup-compact__img"
+           />
+           <div className="map-popup-compact__title">
+             {h.name}
+          </div>
+           <div className="map-popup-compact__rating">
+             {(h.starRating ?? '–')} ★
+           </div>
+           <div className="map-popup-compact__price">
+             ${h.pricePerNight}
+           </div>
+         </div>
+      )
+     }));
+
+
   /* -----------------------   pagination   ------------------------- */
   const perPage = 8;
   const slice = hotels.slice(page * perPage, page * perPage + perPage);
   const pageCount = Math.ceil(hotels.length / perPage);
 
-  /* -----------------------   render   ----------------------------- */
   const gridMode = !selectedCity && !searchTerm;
   const listMode = !gridMode;
   const title = selectedCity ? `${selectedCity} ${t('hotels_page.hotels')}`
@@ -185,8 +225,48 @@ const Hotels = () => {
           <div className="search-bar-wrapper">
             <SearchBar onSearch={onSearch} />
           </div>
+
+          {listMode && (
+            <div className="d-flex justify-content-end my-3">
+              <button
+                className="btn btn-outline-primary"
+                onClick={() => setShowMap(v => !v)}
+              >
+                {showMap
+                  ? t('hotels_page.list_view')
+                  : t('hotels_page.map_view')}
+              </button>
+            </div>
+          )}
+                            
         </Container>
       </section>
+
+   {/* MAP - VIEW */}
+    {showMap && listMode && hotels.length > 0 && (
+      <section className="map-section pt-0">
+        <div className="map-layout container-lg">
+          <div>
+            <FilterSidebar amenities={amenities} onApply={setFilters} />
+          </div>
+
+          <div className="map-holder">
+            {loading ? (
+              <h5 className="text-center">{t('hotels_page.loading')}</h5>
+            ) : (
+              <MapView
+                center={[hotels[0].latitude, hotels[0].longitude]}
+                zoom={selectedCity ? 12 : 2}
+                markers={markers}
+                
+              />
+            )}
+          </div>
+        </div>
+      </section>
+    )}
+
+
 
       {/* 🏙  grid (şehir seçimi) */}
       {gridMode && (
@@ -220,76 +300,72 @@ const Hotels = () => {
       )}
 
       {/* 📋  list (filtre + sonuçlar) */}
-      {listMode && (
-        <section className="pt-0 results-section">
-          <Container fluid="lg">
-            <div className="results-layout">
-              {/* sticky / collapse-able sidebar */}
-              <FilterSidebar
-                amenities={amenities}
-                onApply={setFilters}
-              />
+      {listMode && !showMap && (
+  <section className="pt-0 results-section">
+    <Container fluid="lg">
+      <div className="results-layout">
+        {/* sticky sidebar */}
+        <FilterSidebar amenities={amenities} onApply={setFilters} />
 
-              {/* kartlar */}
-              <div className="hotel-list-wrapper">
-                <Row>
-                  {loading ? (
-                    <h5 className="text-center w-100 mt-5">
-                      {t('hotels_page.loading')}
-                    </h5>
-                  ) : slice.length === 0 ? (
-                    <h5 className="text-center w-100 mt-5">
-                      {t('hotels_page.no_results')}
-                    </h5>
-                  ) : (
-                    slice.map((h) => (
-                      <div
-                        className="col-lg-3 col-md-6 col-sm-6 mb-4"
-                        key={h.hotelId}
-                      >
-                        <TourCard
-                          tour={{
-                            ...h,
-                            title: h.name,
-                            price: h.pricePerNight,
-                            location: h.city,
-                            rating:
-                              h.starRating ?? t('hotels_page.not_rated'),
-                          }}
-                          checkIn={checkIn}
-                          checkOut={checkOut}
-                        />
-                      </div>
-                    ))
-                  )}
+        {/* kartlar */}
+        <div className="hotel-list-wrapper">
+          {/* BURADAN BAŞLIYOR */}
+          <div className="hotel-grid">
+            {loading ? (
+              <h5 className="text-center w-100 mt-5">
+                {t('hotels_page.loading')}
+              </h5>
+            ) : slice.length === 0 ? (
+              <h5 className="text-center w-100 mt-5">
+                {t('hotels_page.no_results')}
+              </h5>
+            ) : (
+              slice.map(h => (
+                <div className="hotel-grid-item" key={h.hotelId}>
+                  <TourCard
+                    tour={{
+                      ...h,
+                      title: h.name,
+                      price: h.pricePerNight,
+                      location: h.city,
+                      rating: h.starRating ?? t('hotels_page.not_rated'),
+                    }}
+                    checkIn={checkIn}
+                    checkOut={checkOut}
+                  />
+                </div>
+              ))
+            )}
+          </div>
+          {/* VE BURADA BİTİYOR */}
 
-                  {pageCount > 1 && !loading && (
-                    <div className="col-12">
-                      <div className="pagination d-flex align-items-center justify-content-center mt-4 gap-3">
-                        {[...Array(pageCount).keys()].map((i) => (
-                          <span
-                            key={i}
-                            onClick={() => setPage(i)}
-                            className={page === i ? 'active__page' : ''}
-                          >
-                            {i + 1}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="col-12 mt-3 text-center">
-                    <button className="btn btn-secondary" onClick={back}>
-                      {t('hotels_page.back')}
-                    </button>
-                  </div>
-                </Row>
+          {/* pagination & back */}
+          {!loading && pageCount > 1 && (
+            <div className="pagination-wrapper">
+              <div className="pagination d-flex align-items-center justify-content-center mt-4 gap-3">
+                {[...Array(pageCount).keys()].map(i => (
+                  <span
+                    key={i}
+                    onClick={() => setPage(i)}
+                    className={page === i ? 'active__page' : ''}
+                  >
+                    {i + 1}
+                  </span>
+                ))}
               </div>
             </div>
-          </Container>
-        </section>
-      )}
+          )}
+
+          <div className="text-center mt-3">
+            <button className="btn btn-secondary" onClick={back}>
+              {t('hotels_page.back')}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </section>
+)}
     </>
   );
 };

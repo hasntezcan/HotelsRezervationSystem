@@ -10,6 +10,7 @@ import { AuthContext } from '../context/AuthContext';
 import Room from '../components/Room/Room';
 import HotelGallery from '../shared/HotelGallery';
 import { useTranslation } from 'react-i18next';
+import MapView from '../components/MapView';
 
 const TourDetails = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ const TourDetails = () => {
   const [reviews, setReviews] = useState([]);
   const reviewMsgRef = useRef('');
   const { user } = useContext(AuthContext);
+  const [realAmenities, setRealAmenities] = useState([]);
 
   const [initialAdults, setInitialAdults] = useState(1);
   const [initialChildren, setInitialChildren] = useState(0);
@@ -58,8 +60,10 @@ const TourDetails = () => {
     fetchHotel();
     fetchReviews();
 
-
-
+    
+    axios.get(`http://localhost:8080/api/hotels/${id}/amenities`)
+     .then(res => setRealAmenities(res.data))
+     .catch(err => console.error("Amenity fetch error:", err));
 
 
     window.scrollTo(0, 0);
@@ -174,7 +178,26 @@ const TourDetails = () => {
 
                 <h5 className="mt-3">{t('tour_details.description')}</h5>
                 <p>{desc}</p>
+
+                <div className="tour__map mt-4">
+                    <h5>{t('tour_details.map_location', 'Location')}</h5>
+                    <MapView
+                      center={[tour.latitude, tour.longitude]}
+                      zoom={13}
+                      markers={[{
+                        id: tour.hotelId,
+                        position: [tour.latitude, tour.longitude],
+                        popup: null              // istersen burada otel adını da gösterebilirsin
+                      }]}
+                    />
+                  </div>
               </div>
+
+
+
+                  {/* ======= OTEL KONUM HARİTASI ======= */}
+                  
+
 
               <div className="tour__rooms mt-4">
                 <h4 className="mb-3">{t('tour_details.select_room')}</h4>

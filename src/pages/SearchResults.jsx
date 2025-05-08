@@ -8,6 +8,7 @@ import CommonSection from "../shared/CommonSection";
 import TourCard from "../shared/TourCard";
 import Newsletter from "../shared/Newsletter";
 import SearchBar from "../shared/SearchBar";
+import MapView from "../components/MapView";
 
 const SearchResults = () => {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ const SearchResults = () => {
   const adults = parseInt(params.get("adults")) || 1;
   const children = parseInt(params.get("children")) || 0;
 
+  const [showMap, setShowMap]       = useState(false);
   const [filteredHotels, setFilteredHotels] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -58,8 +60,37 @@ const SearchResults = () => {
               <SearchBar />
             </Col>
           </Row>
+
+          <div className="d-flex justify-content-end my-3">
+           <button
+             className="btn btn-outline-primary"
+             onClick={() => setShowMap(v => !v)}
+           >
+             {showMap ? "List View" : "Map View"}
+          </button>
+         </div>
+
         </Container>
       </section>
+
+      {showMap && filteredHotels.length > 0 && (
+        <Container className="mb-4">
+          <MapView
+            center={[
+              filteredHotels[0].latitude  || 0,
+              filteredHotels[0].longitude || 0
+            ]}
+            zoom={filteredHotels.length === 1 ? 14 : 3}
+            markers={filteredHotels.map(h => ({
+              id:       h.hotelId,
+              position: [h.latitude, h.longitude],
+              popup:    `<strong>${h.name}</strong><br/>${h.city}`
+            }))}
+          />
+        </Container>
+      )}
+
+
 
       <section>
         <Container>

@@ -1,0 +1,2 @@
+com\example\hotelapp\dto\HotelCardDTO.class
+com\example\hotelapp\repository\projection\HotelCardView.class

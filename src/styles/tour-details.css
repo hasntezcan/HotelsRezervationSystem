@@ -266,6 +266,22 @@
    color: var(--secondary-color);
    font-size: 1.1rem;
  }
+
+ /* tour-details.css */
+
+.tour__map {
+  width: 100%;
+}
+.tour__map h5 {
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.tour__map .leaflet-container {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
  
  /* RESPONSIVE */
  @media (max-width: 768px) {

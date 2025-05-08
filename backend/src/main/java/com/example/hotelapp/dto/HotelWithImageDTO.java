@@ -7,20 +7,39 @@ public class HotelWithImageDTO {
     private Double pricePerNight;
     private Integer starRating;
     private String primaryImageUrl;
+    private Double latitude;
+   private Double longitude;
 
     // Constructor
     public HotelWithImageDTO(Long hotelId, String name, String city, 
                              Double pricePerNight, Integer starRating,
-                             String primaryImageUrl) {
+                             String primaryImageUrl,
+                             Double latitude, Double longitude) {
         this.hotelId = hotelId;
         this.name = name;
         this.city = city;
         this.pricePerNight = pricePerNight;
         this.starRating = starRating;
         this.primaryImageUrl = primaryImageUrl;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        
     }
 
     // Getters
+    public Double getLatitude() {
+        return latitude;
+    }
+    public Double getLongitude() {
+        return longitude;
+    }
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
     public Long getHotelId() {
         return hotelId;
     }

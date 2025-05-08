@@ -1,15 +1,15 @@
 package com.example.hotelapp.repository;
 
-import com.example.hotelapp.dto.HotelWithImageDTO;
-import com.example.hotelapp.model.Hotel;
-import com.example.hotelapp.repository.projection.HotelCardView;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-import java.util.Map;
+import com.example.hotelapp.dto.HotelWithImageDTO;
+import com.example.hotelapp.model.Hotel;
+import com.example.hotelapp.repository.projection.HotelCardView;
 
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
@@ -47,7 +47,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     List<String> findDistinctCityByStatus();
 
     @Query("SELECT new com.example.hotelapp.dto.HotelWithImageDTO(" +
-            "h.hotelId, h.name, h.city, h.pricePerNight, h.starRating, i.imageUrl) " +
+            "h.hotelId, h.name, h.city, h.pricePerNight, h.starRating, i.imageUrl, h.latitude, h.longitude) " +
             "FROM Hotel h " +
             "LEFT JOIN h.images i ON i.isPrimary = true " +
             "WHERE (LOWER(h.name) LIKE LOWER(CONCAT('%', :query, '%')) " +
@@ -57,7 +57,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
 
     @Query("SELECT new com.example.hotelapp.dto.HotelWithImageDTO(" +
-        "h.hotelId, h.name, h.city, h.pricePerNight, h.starRating, i.imageUrl) " +
+        "h.hotelId, h.name, h.city, h.pricePerNight, h.starRating, i.imageUrl, h.latitude, h.longitude) " +
         "FROM Hotel h " +
         "LEFT JOIN h.images i ON i.isPrimary = true " +
         "WHERE LOWER(h.city) LIKE LOWER(CONCAT('%', :city, '%')) " +

@@ -3,7 +3,7 @@ import { Card, CardBody } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './tour-card.css';
 
-const TourCard = ({ tour, checkIn, checkOut }) => {
+const TourCard = ({ mini=false, tour, checkIn, checkOut }) => {
   const { hotelId, _id } = tour;
   const id = hotelId || _id;
 
