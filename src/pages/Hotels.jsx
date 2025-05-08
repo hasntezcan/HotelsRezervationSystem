@@ -232,9 +232,9 @@ const Hotels = () => {
                 className="btn btn-outline-primary"
                 onClick={() => setShowMap(v => !v)}
               >
-                {showMap
-                  ? t('hotels_page.list_view')
-                  : t('hotels_page.map_view')}
+                {showMap                                  // ? t('hotels_page.list_view')
+                  ? t('hotels_page.list_view')        // :  t('hotels_page.map_view')} <- eklersin sezom
+                  : t('hotels_page.map_view')}        
               </button>
             </div>
           )}

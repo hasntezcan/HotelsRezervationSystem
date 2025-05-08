@@ -211,7 +211,10 @@
   "see_hotels": "See Hotels",
   "loading": "Loading hotels...",
   "not_rated": "Not rated",
-  "back": "Back to Cities"
+  "back": "Back to Cities",
+  "map_view": "Map view",
+    "list_view": "List view",
+    "no_results": "No results found"
   },
 
   "login": {

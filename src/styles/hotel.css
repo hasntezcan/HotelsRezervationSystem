@@ -203,6 +203,16 @@ map-section{ margin-top:32px; }
   color: var(--accent-color);
 }
 
+.btn-outline-primary {
+  border-color: var(--secondary-color) !important;
+  color: var(--secondary-color) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--secondary-color) !important;
+  color: #fff !important;
+}
+
 
 /* eski .filter-collapsed-btn artık yok */
 
