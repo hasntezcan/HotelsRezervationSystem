@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -13,6 +14,7 @@ import com.example.hotelapp.repository.projection.HotelCardView;
 
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
+    // ——————————————————————————————————————————————————————————————————————
     // Existing native query - for admin panel / full hotel info
     @Query(value = "SELECT " +
             "h.hotel_id as hotelId, " +
@@ -39,10 +41,10 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "GROUP BY h.hotel_id", nativeQuery = true)
     List<Map<String, Object>> findAllWithAmenities();
 
-    // ✅ For frontend city filtering
+    // For frontend city filtering
     List<Hotel> findByCityIgnoreCaseAndStatus(String city, String status);
 
-    // ✅ To return distinct approved cities
+    // To return distinct approved cities
     @Query("SELECT DISTINCT h.city FROM Hotel h WHERE h.status = 'approved'")
     List<String> findDistinctCityByStatus();
 
@@ -54,7 +56,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "OR LOWER(h.city) LIKE LOWER(CONCAT('%', :query, '%'))) " +
             "AND h.status = 'approved'")
     List<HotelWithImageDTO> searchHotelsByNameOrCity(@Param("query") String query);
-
 
     @Query("SELECT new com.example.hotelapp.dto.HotelWithImageDTO(" +
         "h.hotelId, h.name, h.city, h.pricePerNight, h.starRating, i.imageUrl, h.latitude, h.longitude) " +
@@ -76,19 +77,15 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
           h.name                       AS name,
           h.city                       AS city,
           h.country                    AS country,
-          -- ana foto
           (SELECT image_url FROM hotelimages i
            WHERE i.hotel_id = h.hotel_id AND i.is_primary = TRUE LIMIT 1)
                                         AS primaryImageUrl,
-          -- en düşük oda fiyatı
           (SELECT MIN(r.price_per_night) FROM rooms r 
            WHERE r.hotel_id = h.hotel_id)
                                         AS minPrice,
-          -- ortalama review
           (SELECT ROUND(AVG(rv.rating),1) FROM reviews rv 
            WHERE rv.hotel_id = h.hotel_id)
                                         AS avgRating,
-          -- amenity CSV
           GROUP_CONCAT(DISTINCT a.name) AS amenities,
           h.latitude                    AS latitude,
           h.longitude                   AS longitude
@@ -121,6 +118,11 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             @Param("amenityIds")   List<Long>  amenityIds,
             @Param("amenityCount") int         amenityCount
     );
-    
 
+    // ────────────────────────────────────────────────────────────────────────────
+    // NEW: find all hotels assigned to a given manager (for delete‐cascade logic)
+    List<Hotel> findByManagerId(Long managerId);
+     @Modifying
+    @Query("UPDATE Hotel h SET h.managerId = null WHERE h.managerId = :mgrId")
+    void clearManagerFromHotels(@Param("mgrId") Long mgrId);
 }
