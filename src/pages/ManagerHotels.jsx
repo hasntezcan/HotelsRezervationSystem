@@ -22,7 +22,6 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 
-
 const ManagerHotels = () => {
   const { user } = useContext(AuthContext);
   const { t } = useTranslation();
@@ -52,7 +51,22 @@ const ManagerHotels = () => {
   const [allAmenities, setAllAmenities] = useState([]);
 
   // ─────────── Effects ───────────
-  // 1) Fetch hotels (and derive managerId + amenities)
+
+  // 0) Profile’den managerId’yi çek
+  useEffect(() => {
+    if (!user?.userId) return;
+    axios
+      .get(`http://localhost:8080/api/auth/profile/manager?userId=${user.userId}`)
+      .then(res => {
+        // Response örn. { managerId: 123, ... }
+        if (res.data.managerId) {
+          setManagerId(res.data.managerId);
+        }
+      })
+      .catch(() => console.error("Error fetching manager profile"));
+  }, [user]);
+
+  // 1) Fetch oteller ve amenities
   useEffect(() => {
     if (!user?.userId) return;
     axios
@@ -61,8 +75,6 @@ const ManagerHotels = () => {
         const list = res.data;
         setHotels(list);
         if (list.length > 0) {
-          setManagerId(list[0].managerId);
-          // fetch amenities for first hotel
           return axios.get(
             `http://localhost:8080/api/hotels/${list[0].hotelId}/amenities`
           );
@@ -80,7 +92,7 @@ const ManagerHotels = () => {
       .catch(() => alert("Error fetching hotels or amenities"));
   }, [user]);
 
-  // 2) Fetch all available amenities
+  // 2) Tüm amenity’leri çek
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/hotelamenities")
@@ -88,7 +100,7 @@ const ManagerHotels = () => {
       .catch(() => alert("Error fetching hotel amenities"));
   }, []);
 
-  // 3) Fetch rooms when hotels change
+  // 3) Oda listesini çek
   useEffect(() => {
     if (!hotels.length) return;
     const hotelId = hotels[0].hotelId;
@@ -134,7 +146,7 @@ const ManagerHotels = () => {
       pricePerNight: editHotel.pricePerNight || 0,
       capacity: editHotel.capacity || 0,
       amenities: selectedAmenities.join(", "),
-      managerId: managerId,
+      managerId: managerId,              // artık null değil
       description: editHotel.description || "",
       starRating: editHotel.starRating || 0,
       featured: editHotel.featured || false
@@ -183,15 +195,18 @@ const ManagerHotels = () => {
     }
   };
 
-
-
   const handleChange = (e, field) => {
     const val = field === "featured" ? e.target.checked : e.target.value;
     setEditHotel(prev => ({ ...prev, [field]: val }));
   };
 
   const handleAddRoom = () => {
-    if (!roomData.name || !roomData.roomType || roomData.pricePerNight === "" || roomData.totalRooms === "") {
+    if (
+      !roomData.name ||
+      !roomData.roomType ||
+      roomData.pricePerNight === "" ||
+      roomData.totalRooms === ""
+    ) {
       alert("Please fill in all room details before adding.");
       return;
     }
@@ -234,6 +249,7 @@ const ManagerHotels = () => {
       alert("Error deleting hotel");
     }
   };
+
   return (
     <div className="dashboard" style={{ display: "flex" }}>
       <SidebarManager />
@@ -267,7 +283,7 @@ const ManagerHotels = () => {
         )}
 
         <Grid container spacing={4}>
-          {/* Hotel Alanı */}
+          {/* Otel Kartı */}
           <Grid item xs={12} sm={6}>
             {hotels.length > 0 && (
               <Card style={{ borderRadius: "50px", padding: "20px" }}>
@@ -298,180 +314,120 @@ const ManagerHotels = () => {
             )}
           </Grid>
 
-          {/* Room Alanı */}
-<Grid item xs={12} sm={6}>
-  <Card style={{ borderRadius: "50px", padding: "20px" }}>
-    <CardContent>
-      <Typography variant="h5" fontWeight="bold">{t("manager_hotels.room_details")}</Typography>
-
-
-      {Array.isArray(rooms) && rooms.length > 0 ? (
-        rooms.map((room) => (
-          <Box
-            key={room.id}
-            mt={2}
-            p={2}
-            border="1px solid #ccc"
-            borderRadius="8px"
-            display="flex"
-            flexDirection="column"
-            gap={1}
-          >
-            {editingRoomId === room.id ? (
-              <>
-                <TextField
-                  label={t("manager_hotels.room_name")}
-                  value={editingRoomData.name}
-                  onChange={(e) =>
-                    setEditingRoomData((prev) => ({
-                      ...prev,
-                      name: e.target.value
-                    }))
-                  }
-                  fullWidth
-                  size="small"
-                />
-                <TextField
-                  label={t("manager_hotels.room_type")}
-                  value={editingRoomData.roomType}
-                  onChange={(e) =>
-                    setEditingRoomData((prev) => ({
-                      ...prev,
-                      roomType: e.target.value
-                    }))
-                  }
-                  fullWidth
-                  size="small"
-                />
-                <TextField
-                  label={t("manager_hotels.price")}
-                  type="number"
-                  value={editingRoomData.pricePerNight}
-                  onChange={(e) =>
-                    setEditingRoomData((prev) => ({
-                      ...prev,
-                      pricePerNight: e.target.value
-                    }))
-                  }
-                  fullWidth
-                  size="small"
-                />
-                <TextField
-                  label={t("manager_hotels.total_rooms")}
-                  type="number"
-                  value={editingRoomData.totalRooms}
-                  onChange={(e) =>
-                    setEditingRoomData((prev) => ({
-                      ...prev,
-                      totalRooms: e.target.value
-                    }))
-                  }
-                  fullWidth
-                  size="small"
-                />
-                <Box mt={1} display="flex" gap={1}>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={() => updateRoom(room.id)}
+          {/* Oda Kartları */}
+          <Grid item xs={12} sm={6}>
+            <Card style={{ borderRadius: "50px", padding: "20px" }}>
+              <CardContent>
+                <Typography variant="h5" fontWeight="bold">{t("manager_hotels.room_details")}</Typography>
+                {rooms.map(room => (
+                  <Box
+                    key={room.id}
+                    mt={2}
+                    p={2}
+                    border="1px solid #ccc"
+                    borderRadius="8px"
+                    display="flex"
+                    flexDirection="column"
+                    gap={1}
                   >
-                    {t("common.save")}
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => setEditingRoomId(null)}
-                  >
-                    {t("common.cancel")}
-                  </Button>
-                </Box>
-              </>
-            ) : (
-              <>
-                <Typography><strong>Name:</strong> {room.name}</Typography>
-                <Typography><strong>Type:</strong> {room.roomType}</Typography>
-                <Typography><strong>Price:</strong> {room.pricePerNight}</Typography>
-                <Typography><strong>Total Rooms:</strong> {room.totalRooms}</Typography>
-                <Box mt={1} display="flex" gap={1}>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => startEditRoom(room)}
-                  >
-                    {t("common.edit")}
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    size="small"
-                    onClick={() => deleteRoomRemote(room.id)}
-                  >
-                    {t("common.delete")}
-                  </Button>
-                </Box>
-              </>
-            )}
-          </Box>
-        ))
-      ) : (
-        <Typography mt={2}>No rooms available for this hotel.</Typography>
-      )}
-    </CardContent>
-  </Card>
-</Grid>
-</Grid>   {/* <-- closes the container */}
+                    {editingRoomId === room.id ? (
+                      <>
+                        <TextField
+                          label={t("manager_hotels.room_name")}
+                          value={editingRoomData.name}
+                          onChange={e =>
+                            setEditingRoomData(prev => ({ ...prev, name: e.target.value }))
+                          }
+                          fullWidth
+                          size="small"
+                        />
+                        <TextField
+                          label={t("manager_hotels.room_type")}
+                          value={editingRoomData.roomType}
+                          onChange={e =>
+                            setEditingRoomData(prev => ({ ...prev, roomType: e.target.value }))
+                          }
+                          fullWidth
+                          size="small"
+                        />
+                        <TextField
+                          label={t("manager_hotels.price")}
+                          type="number"
+                          value={editingRoomData.pricePerNight}
+                          onChange={e =>
+                            setEditingRoomData(prev => ({ ...prev, pricePerNight: e.target.value }))
+                          }
+                          fullWidth
+                          size="small"
+                        />
+                        <TextField
+                          label={t("manager_hotels.total_rooms")}
+                          type="number"
+                          value={editingRoomData.totalRooms}
+                          onChange={e =>
+                            setEditingRoomData(prev => ({ ...prev, totalRooms: e.target.value }))
+                          }
+                          fullWidth
+                          size="small"
+                        />
+                        <Box mt={1} display="flex" gap={1}>
+                          <Button variant="contained" size="small" onClick={() => updateRoom(room.id)}>
+                            {t("common.save")}
+                          </Button>
+                          <Button variant="outlined" size="small" onClick={() => setEditingRoomId(null)}>
+                            {t("common.cancel")}
+                          </Button>
+                        </Box>
+                      </>
+                    ) : (
+                      <>
+                        <Typography><strong>Name:</strong> {room.name}</Typography>
+                        <Typography><strong>Type:</strong> {room.roomType}</Typography>
+                        <Typography><strong>Price:</strong> {room.pricePerNight}</Typography>
+                        <Typography><strong>Total Rooms:</strong> {room.totalRooms}</Typography>
+                        <Box mt={1} display="flex" gap={1}>
+                          <Button variant="outlined" size="small" onClick={() => startEditRoom(room)}>
+                            {t("common.edit")}
+                          </Button>
+                          <Button variant="outlined" color="error" size="small" onClick={() => deleteRoomRemote(room.id)}>
+                            {t("common.delete")}
+                          </Button>
+                        </Box>
+                      </>
+                    )}
+                  </Box>
+                ))}
+                {rooms.length === 0 && <Typography mt={2}>No rooms available for this hotel.</Typography>}
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
 
-
-        {/* Otel Düzenleme Modal'ı */}
+        {/* Modal */}
         <Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth maxWidth="sm">
           <DialogTitle>
-            Hotel Form
+            {editHotel?.hotelId ? t("manager_hotels.edit_hotel") : t("manager_hotels.add_hotel")}
             <IconButton onClick={() => setOpenModal(false)} sx={{ position: "absolute", right: 8, top: 8 }}>
               <CloseIcon />
             </IconButton>
           </DialogTitle>
           <DialogContent dividers>
-            <TextField 
-              label={t("manager_hotels.hotel_name")}
-              value={editHotel?.name || ""} 
-              onChange={(e) => handleChange(e, "name")} 
-              fullWidth 
-              margin="normal" 
-            />
-            <TextField 
-              label={t("manager_hotels.city")}
-              value={editHotel?.city || ""} 
-              onChange={(e) => handleChange(e, "city")} 
-              fullWidth 
-              margin="normal" 
-            />
-            <TextField 
-              label={t("manager_hotels.country")}
-              value={editHotel?.country || ""} 
-              onChange={(e) => handleChange(e, "country")} 
-              fullWidth 
-              margin="normal" 
-            />
-            <TextField 
-              label={t("manager_hotels.address")}
-              value={editHotel?.address || ""} 
-              onChange={(e) => handleChange(e, "address")} 
-              fullWidth 
-              margin="normal" 
-            />
-            <TextField 
-              label={t("manager_hotels.description")} 
-              value={editHotel?.description || ""} 
-              onChange={(e) => handleChange(e, "description")} 
-              fullWidth 
-              margin="normal" 
-            />
+            {["name","city","country","address","description"].map(field => (
+              <TextField
+                key={field}
+                label={t(`manager_hotels.${field}`)}
+                value={editHotel?.[field] || ""}
+                onChange={e => handleChange(e, field)}
+                fullWidth
+                margin="normal"
+              />
+            ))}
 
             <Box marginY={2}>
               <Typography variant="subtitle1">{t("manager_hotels.star_rating")}</Typography>
               <Rating
                 value={Number(editHotel?.starRating) || 0}
-                onChange={(e, newValue) => setEditHotel({ ...editHotel, starRating: newValue })}
+                onChange={(e, newValue) => setEditHotel(prev => ({ ...prev, starRating: newValue }))}
                 max={5}
               />
             </Box>
@@ -479,28 +435,22 @@ const ManagerHotels = () => {
             <Box marginTop={2}>
               <Button
                 variant="outlined"
-                onClick={() => {
-                  if (editHotel && editHotel.amenities) {
-                    const preSelected = editHotel.amenities.split(",").map(a => a.trim());
-                    setSelectedAmenities(preSelected);
-                  } else {
-                    setSelectedAmenities([]);
-                  }
-                  setShowAmenitySelector(true);
-                }}
+                onClick={() => setShowAmenitySelector(!showAmenitySelector)}
               >
-                {showAmenitySelector ? t("manager_hotels.close_amenities") : t("manager_hotels.select_amenities")}
+                {showAmenitySelector
+                  ? t("manager_hotels.close_amenities")
+                  : t("manager_hotels.select_amenities")}
               </Button>
 
               {showAmenitySelector && (
                 <Box mt={2}>
-                  {allAmenities.map((amenity) => (
+                  {allAmenities.map(amenity => (
                     <FormControlLabel
                       key={amenity.amenityId}
                       control={
-                        <Checkbox 
+                        <Checkbox
                           checked={selectedAmenities.includes(amenity.name)}
-                          onChange={(e) => toggleAmenity(amenity.name, e.target.checked)}
+                          onChange={e => toggleAmenity(amenity.name, e.target.checked)}
                         />
                       }
                       label={amenity.name}

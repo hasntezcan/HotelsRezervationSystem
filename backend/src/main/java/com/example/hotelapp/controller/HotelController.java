@@ -9,7 +9,7 @@ import com.example.hotelapp.repository.HotelRepository;
 import com.example.hotelapp.repository.ReviewRepository;
 import com.example.hotelapp.repository.RoomRepository;
 import com.example.hotelapp.service.AdminHotelService;
-
+import com.example.hotelapp.service.HotelAmenityJunctionService;
 
 import jakarta.persistence.EntityManager;
 
@@ -35,6 +35,8 @@ public class HotelController {
     private AdminHotelService adminHotelService;
     @Autowired
     private ReviewRepository reviewRepository;
+    
+    @Autowired private HotelAmenityJunctionService amenityService;  // <-- ekle
 
     @Autowired
     private RoomRepository roomRepository;
@@ -93,10 +95,12 @@ public class HotelController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addHotel(@RequestBody Hotel hotel) {
-        // "featured" alanı kaldırıldı.
-        Hotel savedHotel = hotelRepository.save(hotel);
-        return ResponseEntity.ok(savedHotel);
+    public ResponseEntity<Hotel> addHotel(@RequestBody Hotel hotel) {
+        // 1) Otel kaydını oluştur
+        Hotel saved = hotelRepository.save(hotel);
+        // 2) Amenity–junction kayıtlarını güncelle
+        amenityService.updateHotelAmenities(saved.getHotelId(), hotel.getAmenities());
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping("/filter")

@@ -53,7 +53,7 @@ public class Hotel {
 
     private Integer capacity;
 
-    @Transient // Artık veritabanında saklanmayacak
+    @Column(columnDefinition = "TEXT")
     private String amenities;
 
     //private String photo;
