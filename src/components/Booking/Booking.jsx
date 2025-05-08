@@ -20,7 +20,6 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
   const reviews = tour.reviews || [];
 
   const today = new Date().toISOString().split('T')[0];
-
   const [nights, setNights] = useState(1);
 
   const [booking, setBooking] = useState({
@@ -35,17 +34,35 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
     endDate: defaultEndDate
   });
 
+  // Geçersiz tarih kontrolü
   useEffect(() => {
+    const sDate = new Date(booking.startDate);
+    const eDate = new Date(booking.endDate);
+
+    if (booking.startDate && booking.endDate && sDate >= eDate) {
+      const newEndDate = new Date(sDate);
+      newEndDate.setDate(sDate.getDate() + 1);
+      setBooking((prev) => ({
+        ...prev,
+        endDate: newEndDate.toISOString().split('T')[0],
+      }));
+    }
+
     if (booking.startDate && booking.endDate) {
-      const sDate = new Date(booking.startDate);
-      const eDate = new Date(booking.endDate);
       const calculatedNights = Math.max(1, Math.round((eDate - sDate) / (1000 * 60 * 60 * 24)));
       setNights(calculatedNights);
     }
   }, [booking.startDate, booking.endDate]);
 
   const handleChange = (e) => {
-    setBooking((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    const { id, value } = e.target;
+
+    // Sadece tam sayı ve sıfırdan büyük değerler
+    if ((id === 'adultCount' || id === 'childCount') && (!/^\d+$/.test(value))) {
+      return;
+    }
+
+    setBooking((prev) => ({ ...prev, [id]: value }));
   };
 
   const serviceFee = 10;
@@ -69,6 +86,7 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
 
     const sDate = new Date(booking.startDate);
     const eDate = new Date(booking.endDate);
+
     if (sDate.toString() === 'Invalid Date' || eDate.toString() === 'Invalid Date') {
       alert(t('alert_invalid_dates'));
       return;
@@ -119,7 +137,6 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
 
     localStorage.setItem('userId', user.userId);
     localStorage.setItem('pendingBooking', JSON.stringify(bookingPayload));
-
     navigate('/payment');
   };
 
@@ -171,6 +188,7 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
                 type="number"
                 id="adultCount"
                 min="0"
+                step="1"
                 onChange={handleChange}
                 value={booking.adultCount}
               />
@@ -181,6 +199,7 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
                 type="number"
                 id="childCount"
                 min="0"
+                step="1"
                 onChange={handleChange}
                 value={booking.childCount}
               />
