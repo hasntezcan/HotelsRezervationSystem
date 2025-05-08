@@ -6,18 +6,17 @@ import com.example.hotelapp.model.Hotel;
 import com.example.hotelapp.model.Review;
 import com.example.hotelapp.model.Room;
 import com.example.hotelapp.repository.HotelRepository;
+import com.example.hotelapp.repository.ManagerRepository;
 import com.example.hotelapp.repository.ReviewRepository;
 import com.example.hotelapp.repository.RoomRepository;
 import com.example.hotelapp.service.AdminHotelService;
 import com.example.hotelapp.service.HotelAmenityJunctionService;
-
 import jakarta.persistence.EntityManager;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -30,14 +29,15 @@ public class HotelController {
     @Autowired
     private HotelRepository hotelRepository;
     @Autowired
+    private ManagerRepository managerRepository;              // ← eklendi
+    @Autowired
     private EntityManager entityManager;
     @Autowired
     private AdminHotelService adminHotelService;
     @Autowired
+    private HotelAmenityJunctionService amenityService;
+    @Autowired
     private ReviewRepository reviewRepository;
-    
-    @Autowired private HotelAmenityJunctionService amenityService;  // <-- ekle
-
     @Autowired
     private RoomRepository roomRepository;
 
@@ -53,7 +53,6 @@ public class HotelController {
     @GetMapping("/{hotelId}")
     public ResponseEntity<Hotel> getHotelById(@PathVariable Long hotelId) {
         return hotelRepository.findById(hotelId).map(hotel -> {
-            // ★ Otele ait yorumları çekip ortalamayı hesaplayalım
             var reviews = reviewRepository.findByHotelId(hotelId);
             double avg = reviews.stream()
                     .mapToInt(Review::getRating)
@@ -63,7 +62,6 @@ public class HotelController {
             return ResponseEntity.ok(hotel);
         }).orElse(ResponseEntity.notFound().build());
     }
-    
 
     @GetMapping
     public ResponseEntity<?> getAllHotels() {
@@ -87,7 +85,6 @@ public class HotelController {
         return ResponseEntity.ok(dtoList);
     }
 
-    // Otellerin amenity bilgilerini de getiren endpoint
     @GetMapping("/withAmenities")
     public ResponseEntity<?> getAllHotelsWithAmenities() {
         List<Map<String, Object>> hotelsWithAmenities = hotelRepository.findAllWithAmenities();
@@ -100,6 +97,13 @@ public class HotelController {
         Hotel saved = hotelRepository.save(hotel);
         // 2) Amenity–junction kayıtlarını güncelle
         amenityService.updateHotelAmenities(saved.getHotelId(), hotel.getAmenities());
+        // 3) Managers tablosundaki ilgili manager kaydını güncelle
+        if (saved.getManagerId() != null) {
+            managerRepository.findById(saved.getManagerId()).ifPresent(mgr -> {
+                mgr.setHotelId(saved.getHotelId());
+                managerRepository.save(mgr);
+            });
+        }
         return ResponseEntity.ok(saved);
     }
 
@@ -133,17 +137,22 @@ public class HotelController {
         return ResponseEntity.ok(list);
     }
 
-    /**
-     * Update Hotel endpointi:
-     * Bu metod, sadece güncellenmek istenen alanları alır (name, city, country,
-     * address ve amenities)
-     * ve AdminHotelService.updateHotel() çağrılarak hem hotel tablosu hem de
-     * amenity junctionları güncellenir.
-     */
     @PutMapping("/{hotelId}")
-    public ResponseEntity<?> updateHotel(@PathVariable Long hotelId, @RequestBody Hotel hotelDetails) {
+    public ResponseEntity<?> updateHotel(@PathVariable Long hotelId,
+                                         @RequestBody Hotel hotelDetails) {
         try {
+            // 1) Hotel güncelleme
             Hotel updatedHotel = adminHotelService.updateHotel(hotelId, hotelDetails);
+            // 2) Amenity–junction kayıtlarını güncelle
+            amenityService.updateHotelAmenities(hotelId, hotelDetails.getAmenities());
+            // 3) Manager kaydının hotel_id alanını güncelle
+            if (hotelDetails.getManagerId() != null) {
+                managerRepository.findById(hotelDetails.getManagerId())
+                        .ifPresent(mgr -> {
+                            mgr.setHotelId(hotelId);
+                            managerRepository.save(mgr);
+                        });
+            }
             return ResponseEntity.ok(updatedHotel);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -169,22 +178,18 @@ public class HotelController {
                 .executeUpdate();
 
         // 2. Otelin odalarına ilişkin verileri silin:
-        // 2.a. Önce, odalara ait roomamenityjunction kayıtları:
         entityManager.createNativeQuery(
                 "DELETE rm FROM roomamenityjunction rm JOIN rooms r ON rm.room_id = r.room_id WHERE r.hotel_id = :hotelId")
                 .setParameter("hotelId", hotelId)
                 .executeUpdate();
-        // 2.b. Odaya ait görseller:
         entityManager.createNativeQuery(
                 "DELETE ri FROM roomimages ri JOIN rooms r ON ri.room_id = r.room_id WHERE r.hotel_id = :hotelId")
                 .setParameter("hotelId", hotelId)
                 .executeUpdate();
-        // 2.c. Rezervasyonlar (bookings):
         entityManager.createNativeQuery(
                 "DELETE FROM bookings WHERE room_id IN (SELECT room_id FROM rooms WHERE hotel_id = :hotelId)")
                 .setParameter("hotelId", hotelId)
                 .executeUpdate();
-        // 2.d. Son olarak, rooms tablosundan otel odalarını silin:
         entityManager.createNativeQuery("DELETE FROM rooms WHERE hotel_id = :hotelId")
                 .setParameter("hotelId", hotelId)
                 .executeUpdate();
