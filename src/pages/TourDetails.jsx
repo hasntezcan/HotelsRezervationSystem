@@ -183,11 +183,22 @@ const TourDetails = () => {
                     <h5>{t('tour_details.map_location', 'Location')}</h5>
                     <MapView
                       center={[tour.latitude, tour.longitude]}
-                      zoom={13}
+                      zoom={15}
                       markers={[{
                         id: tour.hotelId,
                         position: [tour.latitude, tour.longitude],
-                        popup: null              // istersen burada otel adını da gösterebilirsin
+                        popup: (
+                               <div style={{ fontSize: '0.9rem' }}>
+                                 <strong>{tour.name}</strong><br/>
+                                 <a
+                                  href={`https://www.google.com/maps/dir/?api=1&destination=${tour.latitude},${tour.longitude}`}
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                 >
+                                   Get Directions
+                                 </a>
+                               </div>
+                             )             // istersen burada otel adını da gösterebilirsin
                       }]}
                     />
                   </div>
