@@ -31,6 +31,32 @@ const TourCard = ({ mini=false, tour, checkIn, checkOut }) => {
       .catch(err => console.error("Primary resim hatası:", err));
   }, [id]);
 
+  const [galleryImages, setGalleryImages] = useState([]);
+
+useEffect(() => {
+  if (!id) return;
+
+  fetch(`http://localhost:8080/api/hotel-images/${id}`)
+    .then(res => res.json())
+    .then(data => {
+      if (Array.isArray(data)) setGalleryImages(data);
+    })
+    .catch(err => console.error("Tüm görseller alınamadı", err));
+}, [id]);
+
+const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+const nextImage = () =>
+  setActiveImageIndex((prev) => (prev + 1) % galleryImages.length);
+
+const prevImage = () =>
+  setActiveImageIndex((prev) =>
+    prev === 0 ? galleryImages.length - 1 : prev - 1
+  );
+
+const currentImage = galleryImages[activeImageIndex];
+
+
   // ✅ Get full hotel info
   useEffect(() => {
     if (!id) return;
@@ -74,18 +100,16 @@ const TourCard = ({ mini=false, tour, checkIn, checkOut }) => {
   return (
     <div className='tour__card'>
       <Card>
-        <div className="tour__img">
-          {hotel.primaryImageUrl ? (
-            <img src={hotel.primaryImageUrl} alt="hotel-img" />
+      <div className="tour__img">
+          {currentImage?.imageUrl ? (
+            <div className="tour__img-carousel">
+              <button className="img-nav left" onClick={prevImage}>&#10094;</button>
+              <img src={currentImage.imageUrl} alt="hotel-img" />
+              <button className="img-nav right" onClick={nextImage}>&#10095;</button>
+            </div>
           ) : (
-            <div style={{
-              height: '200px',
-              backgroundColor: '#eee',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-              Yükleniyor...
+            <div style={{ height: '200px', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              Loading...
             </div>
           )}
           {hotel.starRating >= 4 && <span>Featured</span>}
