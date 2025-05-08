@@ -17,6 +17,7 @@
   "info": "Information",
   "start_date": "Start Date",
   "end_date": "End Date",
+  "select_dates": "Select Dates",
   "adults": "Adults",
   "children": "Children",
   "service_charge": "Service charge",
