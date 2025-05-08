@@ -39,19 +39,27 @@ const ManagerHotels = () => {
   const [existingImages, setExistingImages] = useState([]);
   const [primaryFromDb, setPrimaryFromDb] = useState(null);
 
+  const [showAddRoomForm, setShowAddRoomForm] = useState(false);
+
   const [roomData, setRoomData] = useState({
     name: "",
     roomType: "",
     pricePerNight: "",
-    totalRooms: ""
+    totalRooms: "",
+    capacity: "",
+    roomSize: ""
   });
+
   const [editingRoomId, setEditingRoomId] = useState(null);
   const [editingRoomData, setEditingRoomData] = useState({
     name: "",
     roomType: "",
     pricePerNight: "",
-    totalRooms: 0
+    totalRooms: 0,
+    capacity: 0,
+    roomSize: 0
   });
+
   const [allAmenities, setAllAmenities] = useState([]);
 
   /* ─────────── Effects ─────────── */
@@ -111,6 +119,10 @@ const ManagerHotels = () => {
       .catch(() => alert("Error fetching rooms"));
   }, [hotels]);
 
+  useEffect(() => {
+    setShowAddRoomForm(rooms.length === 0);
+  }, [rooms]);
+
   /* ─────────── Handlers ─────────── */
 
   const toggleAmenity = (amenity, checked) =>
@@ -119,10 +131,7 @@ const ManagerHotels = () => {
     );
 
   const openAddHotelModal = () => {
-    setEditHotel({
-      latitude: "",
-      longitude: ""
-    });
+    setEditHotel({ latitude: "", longitude: "" });
     setSelectedAmenities([]);
     setSelectedImageFiles([]);
     setPrimaryImageIndex(null);
@@ -133,9 +142,7 @@ const ManagerHotels = () => {
 
   const handleEdit = async hotel => {
     setSelectedAmenities(
-      hotel.amenities
-        ? hotel.amenities.split(",").map(a => a.trim())
-        : []
+      hotel.amenities ? hotel.amenities.split(",").map(a => a.trim()) : []
     );
     setEditHotel({ ...hotel, featured: hotel.featured ?? false });
 
@@ -162,7 +169,9 @@ const ManagerHotels = () => {
       name: room.name,
       roomType: room.roomType,
       pricePerNight: room.pricePerNight,
-      totalRooms: room.totalRooms
+      totalRooms: room.totalRooms,
+      capacity: room.capacity,
+      roomSize: room.roomSize
     });
   };
 
@@ -181,14 +190,20 @@ const ManagerHotels = () => {
 
   /* ----------  SAVE HOTEL  ---------- */
   const handleSave = async () => {
-    const latOk = editHotel?.latitude !== "" && !isNaN(parseFloat(editHotel.latitude));
-    const lngOk = editHotel?.longitude !== "" && !isNaN(parseFloat(editHotel.longitude));
+    const latOk =
+      editHotel?.latitude !== "" && !isNaN(parseFloat(editHotel.latitude));
+    const lngOk =
+      editHotel?.longitude !== "" && !isNaN(parseFloat(editHotel.longitude));
 
     if (
-      !editHotel?.name?.trim()     || !editHotel?.city?.trim()   ||
-      !editHotel?.country?.trim()  || !editHotel?.address?.trim()||
-      !editHotel?.description?.trim() || !editHotel?.starRating ||
-      !latOk || !lngOk
+      !editHotel?.name?.trim() ||
+      !editHotel?.city?.trim() ||
+      !editHotel?.country?.trim() ||
+      !editHotel?.address?.trim() ||
+      !editHotel?.description?.trim() ||
+      !editHotel?.starRating ||
+      !latOk ||
+      !lngOk
     ) {
       alert(t("manager_hotels.fill_all_fields"));
       return;
@@ -200,19 +215,19 @@ const ManagerHotels = () => {
     }
 
     const base = {
-      name          : editHotel.name.trim(),
-      city          : editHotel.city.trim(),
-      country       : editHotel.country.trim(),
-      address       : editHotel.address.trim(),
-      pricePerNight : editHotel.pricePerNight || 0,
-      capacity      : editHotel.capacity || 0,
-      amenities     : selectedAmenities.join(", "),
-      managerId     : managerId,
-      description   : editHotel.description.trim(),
-      starRating    : editHotel.starRating,
-      featured      : editHotel.featured || false,
-      latitude      : parseFloat(editHotel.latitude),
-      longitude     : parseFloat(editHotel.longitude)
+      name: editHotel.name.trim(),
+      city: editHotel.city.trim(),
+      country: editHotel.country.trim(),
+      address: editHotel.address.trim(),
+      pricePerNight: editHotel.pricePerNight || 0,
+      capacity: editHotel.capacity || 0,
+      amenities: selectedAmenities.join(", "),
+      managerId: managerId,
+      description: editHotel.description.trim(),
+      starRating: editHotel.starRating,
+      featured: editHotel.featured || false,
+      latitude: parseFloat(editHotel.latitude),
+      longitude: parseFloat(editHotel.longitude)
     };
 
     const configJson = {
@@ -233,9 +248,9 @@ const ManagerHotels = () => {
       } else {
         const payload = {
           ...base,
-          status            : "approved",
-          checkInTime       : "14:00:00",
-          checkOutTime      : "12:00:00",
+          status: "approved",
+          checkInTime: "14:00:00",
+          checkOutTime: "12:00:00",
           cancellationPolicy: "Free cancellation..."
         };
         hotelRes = await axios.post(
@@ -265,21 +280,31 @@ const ManagerHotels = () => {
       }
 
       if (selectedImageFiles.length === 0 && primaryFromDb) {
-        await axios.patch(
-          `http://localhost:8080/api/hotel-images/${primaryFromDb}/primary`,
-          {},
-          { headers: { Authorization: user?.token ? `Bearer ${user.token}` : "" } }
-        ).catch(() => {});
+        await axios
+          .patch(
+            `http://localhost:8080/api/hotel-images/${primaryFromDb}/primary`,
+            {},
+            {
+              headers: {
+                Authorization: user?.token ? `Bearer ${user.token}` : ""
+              }
+            }
+          )
+          .catch(() => {});
       }
 
       setHotels(prev => {
         if (editHotel?.hotelId) {
-          return prev.map(h => h.hotelId === savedHotel.hotelId ? savedHotel : h);
+          return prev.map(h =>
+            h.hotelId === savedHotel.hotelId ? savedHotel : h
+          );
         }
         return [...prev, savedHotel];
       });
 
-      alert(`Hotel ${editHotel?.hotelId ? "updated" : "added"} successfully!`);
+      alert(
+        `Hotel ${editHotel?.hotelId ? "updated" : "added"} successfully!`
+      );
       setOpenModal(false);
     } catch (err) {
       console.error(err);
@@ -292,31 +317,62 @@ const ManagerHotels = () => {
     setEditHotel(prev => ({ ...prev, [field]: val }));
   };
 
-  /* room CRUD helpers (unchanged) */
-  const handleAddRoom = () => {
+  /* ---------- Room CRUD ---------- */
+  const handleAddRoom = async () => {
     if (
       !roomData.name ||
       !roomData.roomType ||
       roomData.pricePerNight === "" ||
-      roomData.totalRooms === ""
+      roomData.totalRooms === "" ||
+      roomData.capacity === "" ||
+      roomData.roomSize === ""
     ) {
       alert("Please fill in all room details before adding.");
       return;
     }
-    setRooms(prev => [...prev, roomData]);
-    setRoomData({ name: "", roomType: "", pricePerNight: "", totalRooms: "" });
+
+    try {
+      const payload = {
+        hotelId: hotels[0].hotelId,
+        name: roomData.name.trim(),
+        roomType: roomData.roomType.trim(),
+        pricePerNight: parseFloat(roomData.pricePerNight),
+        totalRooms: parseInt(roomData.totalRooms, 10),
+        capacity: parseInt(roomData.capacity, 10),
+        roomSize: parseFloat(roomData.roomSize)
+      };
+      const res = await axios.post("http://localhost:8080/api/rooms", payload);
+      setRooms(prev => [...prev, res.data]);
+      setRoomData({
+        name: "",
+        roomType: "",
+        pricePerNight: "",
+        totalRooms: "",
+        capacity: "",
+        roomSize: ""
+      });
+      setShowAddRoomForm(false);
+    } catch (err) {
+      console.error(err);
+      alert("Room add failed");
+    }
   };
 
   const updateRoom = async id => {
     try {
       const payload = {
         hotelId: hotels[0].hotelId,
-        name: editingRoomData.name,
-        roomType: editingRoomData.roomType,
-        pricePerNight: editingRoomData.pricePerNight,
-        totalRooms: editingRoomData.totalRooms
+        name: editingRoomData.name.trim(),
+        roomType: editingRoomData.roomType.trim(),
+        pricePerNight: parseFloat(editingRoomData.pricePerNight),
+        totalRooms: parseInt(editingRoomData.totalRooms, 10),
+        capacity: parseInt(editingRoomData.capacity, 10),
+        roomSize: parseFloat(editingRoomData.roomSize)
       };
-      const res = await axios.put(`http://localhost:8080/api/rooms/${id}`, payload);
+      const res = await axios.put(
+        `http://localhost:8080/api/rooms/${id}`,
+        payload
+      );
       setRooms(prev => prev.map(r => (r.id === id ? res.data : r)));
       setEditingRoomId(null);
     } catch {
@@ -343,13 +399,24 @@ const ManagerHotels = () => {
     }
   };
 
+  /* ─────────── UI ─────────── */
+
   return (
     <div className="dashboard" style={{ display: "flex" }}>
       <SidebarManager />
       <div className="content" style={{ padding: "40px", width: "100%" }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-          <Typography variant="h4" fontWeight="bold">{t("manager_hotels.hotel")}</Typography>
-          <Typography variant="h4" fontWeight="bold">{t("manager_hotels.room")}</Typography>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={1}
+        >
+          <Typography variant="h4" fontWeight="bold">
+            {t("manager_hotels.hotel")}
+          </Typography>
+          <Typography variant="h4" fontWeight="bold">
+            {t("manager_hotels.room")}
+          </Typography>
         </Box>
 
         {hotels.length === 0 && (
@@ -372,7 +439,7 @@ const ManagerHotels = () => {
         )}
 
         <Grid container spacing={4}>
-          {/* Otel Kartı */}
+          {/* Hotel card */}
           <Grid item xs={12} sm={6}>
             {hotels.length > 0 && (
               <Card style={{ borderRadius: "50px", padding: "20px" }}>
@@ -380,19 +447,37 @@ const ManagerHotels = () => {
                   <Typography variant="h5" fontWeight="bold">
                     {hotels[0].name}
                   </Typography>
-                  <Typography><strong>{t("manager_hotels.city")}:</strong> {hotels[0].city}</Typography>
-                  <Typography><strong>{t("manager_hotels.country")}:</strong> {hotels[0].country}</Typography>
-                  <Typography><strong>{t("manager_hotels.description")}:</strong> {hotels[0].description}</Typography>
-                  <Typography><strong>Star Rating:</strong> {hotels[0].starRating}</Typography>
-                  <Typography><strong>Address:</strong> {hotels[0].address}</Typography>
-                  <Typography><strong>Amenities:</strong> {hotels[0].amenities}</Typography>
+                  <Typography>
+                    <strong>{t("manager_hotels.city")}:</strong>{" "}
+                    {hotels[0].city}
+                  </Typography>
+                  <Typography>
+                    <strong>{t("manager_hotels.country")}:</strong>{" "}
+                    {hotels[0].country}
+                  </Typography>
+                  <Typography>
+                    <strong>{t("manager_hotels.description")}:</strong>{" "}
+                    {hotels[0].description}
+                  </Typography>
+                  <Typography>
+                    <strong>Star Rating:</strong> {hotels[0].starRating}
+                  </Typography>
+                  <Typography>
+                    <strong>Address:</strong> {hotels[0].address}
+                  </Typography>
+                  <Typography>
+                    <strong>Amenities:</strong> {hotels[0].amenities}
+                  </Typography>
                   <Box display="flex" gap={2} mt={2}>
-                    <Button variant="outlined" onClick={() => handleEdit(hotels[0])}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => handleEdit(hotels[0])}
+                    >
                       {t("manager_hotels.edit_hotel")}
                     </Button>
-                    <Button 
-                      variant="outlined" 
-                      color="error" 
+                    <Button
+                      variant="outlined"
+                      color="error"
                       onClick={() => deleteHotel(hotels[0].hotelId)}
                     >
                       {t("manager_hotels.delete_hotel")}
@@ -403,11 +488,146 @@ const ManagerHotels = () => {
             )}
           </Grid>
 
-          {/* Oda Kartları */}
+          {/* Room column */}
           <Grid item xs={12} sm={6}>
             <Card style={{ borderRadius: "50px", padding: "20px" }}>
               <CardContent>
-                <Typography variant="h5" fontWeight="bold">{t("manager_hotels.room_details")}</Typography>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography variant="h5" fontWeight="bold">
+                    {t("manager_hotels.room_details")}
+                  </Typography>
+                  {rooms.length > 0 && (
+                    <Button
+                      size="small"
+                      variant="contained"
+                      onClick={() => setShowAddRoomForm(true)}
+                    >
+                      {t("common.add")}
+                    </Button>
+                  )}
+                </Box>
+
+                {/* Add room form */}
+                {showAddRoomForm && (
+                  <Box
+                    mt={2}
+                    p={2}
+                    border="1px solid #ccc"
+                    borderRadius="8px"
+                    display="flex"
+                    flexDirection="column"
+                    gap={1}
+                  >
+                    <TextField
+                      label={t("manager_hotels.room_name")}
+                      value={roomData.name}
+                      onChange={e =>
+                        setRoomData(prev => ({
+                          ...prev,
+                          name: e.target.value
+                        }))
+                      }
+                      fullWidth
+                      size="small"
+                    />
+                    <TextField
+                      label={t("manager_hotels.room_type")}
+                      value={roomData.roomType}
+                      onChange={e =>
+                        setRoomData(prev => ({
+                          ...prev,
+                          roomType: e.target.value
+                        }))
+                      }
+                      fullWidth
+                      size="small"
+                    />
+                    <TextField
+                      label={t("manager_hotels.price")}
+                      type="number"
+                      value={roomData.pricePerNight}
+                      onChange={e =>
+                        setRoomData(prev => ({
+                          ...prev,
+                          pricePerNight: e.target.value
+                        }))
+                      }
+                      fullWidth
+                      size="small"
+                    />
+                    <TextField
+                      label={t("manager_hotels.total_rooms")}
+                      type="number"
+                      value={roomData.totalRooms}
+                      onChange={e =>
+                        setRoomData(prev => ({
+                          ...prev,
+                          totalRooms: e.target.value
+                        }))
+                      }
+                      fullWidth
+                      size="small"
+                    />
+                    <TextField
+                      label={t("manager_hotels.capacity")}
+                      type="number"
+                      value={roomData.capacity}
+                      onChange={e =>
+                        setRoomData(prev => ({
+                          ...prev,
+                          capacity: e.target.value
+                        }))
+                      }
+                      fullWidth
+                      size="small"
+                    />
+                    <TextField
+                      label={t("manager_hotels.room_size")}
+                      type="number"
+                      value={roomData.roomSize}
+                      onChange={e =>
+                        setRoomData(prev => ({
+                          ...prev,
+                          roomSize: e.target.value
+                        }))
+                      }
+                      fullWidth
+                      size="small"
+                    />
+                    <Box mt={1} display="flex" gap={1}>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={handleAddRoom}
+                      >
+                        {t("common.save")}
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => {
+                          setShowAddRoomForm(false);
+                          setRoomData({
+                            name: "",
+                            roomType: "",
+                            pricePerNight: "",
+                            totalRooms: "",
+                            capacity: "",
+                            roomSize: ""
+                          });
+                        }}
+                      >
+                        {t("common.cancel")}
+                      </Button>
+                    </Box>
+                  </Box>
+                )}
+
+                {/* Room list */}
                 {rooms.map(room => (
                   <Box
                     key={room.id}
@@ -425,7 +645,10 @@ const ManagerHotels = () => {
                           label={t("manager_hotels.room_name")}
                           value={editingRoomData.name}
                           onChange={e =>
-                            setEditingRoomData(prev => ({ ...prev, name: e.target.value }))
+                            setEditingRoomData(prev => ({
+                              ...prev,
+                              name: e.target.value
+                            }))
                           }
                           fullWidth
                           size="small"
@@ -434,7 +657,10 @@ const ManagerHotels = () => {
                           label={t("manager_hotels.room_type")}
                           value={editingRoomData.roomType}
                           onChange={e =>
-                            setEditingRoomData(prev => ({ ...prev, roomType: e.target.value }))
+                            setEditingRoomData(prev => ({
+                              ...prev,
+                              roomType: e.target.value
+                            }))
                           }
                           fullWidth
                           size="small"
@@ -444,7 +670,10 @@ const ManagerHotels = () => {
                           type="number"
                           value={editingRoomData.pricePerNight}
                           onChange={e =>
-                            setEditingRoomData(prev => ({ ...prev, pricePerNight: e.target.value }))
+                            setEditingRoomData(prev => ({
+                              ...prev,
+                              pricePerNight: e.target.value
+                            }))
                           }
                           fullWidth
                           size="small"
@@ -454,31 +683,91 @@ const ManagerHotels = () => {
                           type="number"
                           value={editingRoomData.totalRooms}
                           onChange={e =>
-                            setEditingRoomData(prev => ({ ...prev, totalRooms: e.target.value }))
+                            setEditingRoomData(prev => ({
+                              ...prev,
+                              totalRooms: e.target.value
+                            }))
                           }
                           fullWidth
                           size="small"
-                        />  
+                        />
+                        <TextField
+                          label={t("manager_hotels.capacity")}
+                          type="number"
+                          value={editingRoomData.capacity}
+                          onChange={e =>
+                            setEditingRoomData(prev => ({
+                              ...prev,
+                              capacity: e.target.value
+                            }))
+                          }
+                          fullWidth
+                          size="small"
+                        />
+                        <TextField
+                          label={t("manager_hotels.room_size")}
+                          type="number"
+                          value={editingRoomData.roomSize}
+                          onChange={e =>
+                            setEditingRoomData(prev => ({
+                              ...prev,
+                              roomSize: e.target.value
+                            }))
+                          }
+                          fullWidth
+                          size="small"
+                        />
                         <Box mt={1} display="flex" gap={1}>
-                          <Button variant="contained" size="small" onClick={() => updateRoom(room.id)}>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => updateRoom(room.id)}
+                          >
                             {t("common.save")}
                           </Button>
-                          <Button variant="outlined" size="small" onClick={() => setEditingRoomId(null)}>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => setEditingRoomId(null)}
+                          >
                             {t("common.cancel")}
                           </Button>
                         </Box>
                       </>
                     ) : (
                       <>
-                        <Typography><strong>Name:</strong> {room.name}</Typography>
-                        <Typography><strong>Type:</strong> {room.roomType}</Typography>
-                        <Typography><strong>Price:</strong> {room.pricePerNight}</Typography>
-                        <Typography><strong>Total Rooms:</strong> {room.totalRooms}</Typography>
+                        <Typography>
+                          <strong>Name:</strong> {room.name}
+                        </Typography>
+                        <Typography>
+                          <strong>Type:</strong> {room.roomType}
+                        </Typography>
+                        <Typography>
+                          <strong>Price:</strong> {room.pricePerNight}
+                        </Typography>
+                        <Typography>
+                          <strong>Total Rooms:</strong> {room.totalRooms}
+                        </Typography>
+                        <Typography>
+                          <strong>Capacity:</strong> {room.capacity}
+                        </Typography>
+                        <Typography>
+                          <strong>Size:</strong> {room.roomSize}
+                        </Typography>
                         <Box mt={1} display="flex" gap={1}>
-                          <Button variant="outlined" size="small" onClick={() => startEditRoom(room)}>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => startEditRoom(room)}
+                          >
                             {t("common.edit")}
                           </Button>
-                          <Button variant="outlined" color="error" size="small" onClick={() => deleteRoomRemote(room.id)}>
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            size="small"
+                            onClick={() => deleteRoomRemote(room.id)}
+                          >
                             {t("common.delete")}
                           </Button>
                         </Box>
@@ -486,23 +775,37 @@ const ManagerHotels = () => {
                     )}
                   </Box>
                 ))}
-                {rooms.length === 0 && <Typography mt={2}>No rooms available for this hotel.</Typography>}
+                {rooms.length === 0 && (
+                  <Typography mt={2}>
+                    No rooms available for this hotel.
+                  </Typography>
+                )}
               </CardContent>
             </Card>
           </Grid>
         </Grid>
 
-        {/* --------------------  MODAL  -------------------- */}
-        <Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth maxWidth="sm">
+        {/* ------------- HOTEL MODAL ------------- */}
+        <Dialog
+          open={openModal}
+          onClose={() => setOpenModal(false)}
+          fullWidth
+          maxWidth="sm"
+        >
           <DialogTitle>
-            {editHotel?.hotelId ? t("manager_hotels.edit_hotel") : t("manager_hotels.add_hotel")}
-            <IconButton onClick={() => setOpenModal(false)} sx={{ position: "absolute", right: 8, top: 8 }}>
+            {editHotel?.hotelId
+              ? t("manager_hotels.edit_hotel")
+              : t("manager_hotels.add_hotel")}
+            <IconButton
+              onClick={() => setOpenModal(false)}
+              sx={{ position: "absolute", right: 8, top: 8 }}
+            >
               <CloseIcon />
             </IconButton>
           </DialogTitle>
 
           <DialogContent dividers>
-            {["name","city","country","address","description"].map(field => (
+            {["name", "city", "country", "address", "description"].map(field => (
               <TextField
                 key={field}
                 label={t(`manager_hotels.${field}`)}
@@ -534,14 +837,19 @@ const ManagerHotels = () => {
             />
 
             <Box marginY={2}>
-              <Typography variant="subtitle1">{t("manager_hotels.star_rating")}</Typography>
+              <Typography variant="subtitle1">
+                {t("manager_hotels.star_rating")}
+              </Typography>
               <Rating
                 value={Number(editHotel?.starRating) || 0}
-                onChange={(e, newValue) => setEditHotel(prev => ({ ...prev, starRating: newValue }))}
+                onChange={(e, newValue) =>
+                  setEditHotel(prev => ({ ...prev, starRating: newValue }))
+                }
                 max={5}
               />
             </Box>
 
+            {/* Amenities */}
             <Box marginTop={2}>
               <Button
                 variant="outlined"
@@ -560,17 +868,25 @@ const ManagerHotels = () => {
                       control={
                         <Checkbox
                           checked={selectedAmenities.includes(amenity.name)}
-                          onChange={e => toggleAmenity(amenity.name, e.target.checked)}
+                          onChange={e =>
+                            toggleAmenity(amenity.name, e.target.checked)
+                          }
                         />
                       }
                       label={amenity.name}
                     />
                   ))}
                   <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
-                    <Button variant="outlined" onClick={() => setShowAmenitySelector(false)}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => setShowAmenitySelector(false)}
+                    >
                       {t("common.cancel")}
                     </Button>
-                    <Button variant="contained" onClick={() => setShowAmenitySelector(false)}>
+                    <Button
+                      variant="contained"
+                      onClick={() => setShowAmenitySelector(false)}
+                    >
                       {t("common.done")}
                     </Button>
                   </Box>
@@ -578,142 +894,164 @@ const ManagerHotels = () => {
               )}
             </Box>
 
-            {/* Image selection */}
-<Box mt={3}>
-  <Typography variant="subtitle1">{t("manager_hotels.select_images")}</Typography>
-  <input
-    type="file"
-    accept="image/*"
-    multiple
-    onChange={e => {
-      const files = Array.from(e.target.files);
-      setSelectedImageFiles(files);
-      setPrimaryImageIndex(files.length ? 0 : null);
-    }}
-    style={{
-      marginTop: 8,
-      border: '1px solid #ccc',
-      padding: '8px',
-      borderRadius: '4px',
-      width: '100%',
-      backgroundColor: '#f8f9fa',
-      cursor: 'pointer'
-    }}
-  />
-</Box>
-{selectedImageFiles.length > 0 && (
-  <Box mt={2}>
-    {selectedImageFiles.map((file, idx) => (
-      <Box 
-        key={idx} 
-        display="flex" 
-        alignItems="center" 
-        mb={1}
-        sx={{
-          padding: '8px',
-          borderRadius: '4px',
-          backgroundColor: '#fff',
-          border: '1px solid #e0e0e0',
-          '&:hover': {
-            backgroundColor: '#f5f5f5'
-          }
-        }}
-      >
-        <input
-          type="radio"
-          name="primaryImage"
-          checked={primaryImageIndex === idx}
-          onChange={() => setPrimaryImageIndex(idx)}
-          style={{
-            width: '18px',
-            height: '18px',
-            cursor: 'pointer',
-            accentColor: '#9C27B0'
-          }}
-        />
-        <Typography 
-          variant="body2" 
-          ml={1}
-          sx={{
-            flex: 1,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}
-        >
-          {file.name}
-        </Typography>
-        <IconButton
-          size="small"
-          onClick={() => {
-            const newFiles = selectedImageFiles.filter((_, index) => index !== idx);
-            setSelectedImageFiles(newFiles);
-            if (primaryImageIndex === idx) {
-              setPrimaryImageIndex(newFiles.length ? 0 : null);
-            } else if (primaryImageIndex > idx) {
-              setPrimaryImageIndex(primaryImageIndex - 1);
-            }
-          }}
-          sx={{
-            color: '#f44336',
-            '&:hover': {
-              backgroundColor: 'rgba(244, 67, 54, 0.04)'
-            }
-          }}
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </Box>
-    ))}
-  </Box>
-)}
-{existingImages.length > 0 && (
-  <Box mt={3}>
-    <Typography variant="subtitle1">
-      {t("manager_hotels.current_images")}
-    </Typography>
+            {/* Images */}
+            <Box mt={3}>
+              <Typography variant="subtitle1">
+                {t("manager_hotels.select_images")}
+              </Typography>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={e => {
+                  const files = Array.from(e.target.files);
+                  setSelectedImageFiles(files);
+                  setPrimaryImageIndex(files.length ? 0 : null);
+                }}
+                style={{
+                  marginTop: 8,
+                  border: "1px solid #ccc",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  width: "100%",
+                  backgroundColor: "#f8f9fa",
+                  cursor: "pointer"
+                }}
+              />
+            </Box>
 
-    {existingImages.map(img => (
-      <Box key={img.imageId} display="flex" alignItems="center" mb={1}>
-        <input
-          type="radio"
-          name="primaryExisting"
-          checked={primaryFromDb === img.imageId}
-          onChange={() => setPrimaryFromDb(img.imageId)}
-          style={{ cursor: "pointer", accentColor: "#9C27B0" }}
-        />
-        <img
-          src={`http://localhost:8080${img.imageUrl}`}
-          alt=""
-          style={{ width: 60, height: 40, objectFit: "cover", marginLeft: 8, borderRadius: 4 }}
-        />
-        <Typography
-          ml={1}
-          variant="body2"
-          sx={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-        >
-          {img.imageUrl.split("/").pop()}
-        </Typography>
-        {/* 🔸 NEW — Sil düğmesi */}
-        <IconButton
-          size="small"
-          onClick={() => deleteExistingImage(img.imageId)}
-          sx={{
-            color: "#f44336",
-            "&:hover": { backgroundColor: "rgba(244,67,54,0.04)" }
-          }}
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </Box>
-    ))}
-  </Box>
-)}
+            {selectedImageFiles.length > 0 && (
+              <Box mt={2}>
+                {selectedImageFiles.map((file, idx) => (
+                  <Box
+                    key={idx}
+                    display="flex"
+                    alignItems="center"
+                    mb={1}
+                    sx={{
+                      padding: "8px",
+                      borderRadius: "4px",
+                      backgroundColor: "#fff",
+                      border: "1px solid #e0e0e0",
+                      "&:hover": { backgroundColor: "#f5f5f5" }
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name="primaryImage"
+                      checked={primaryImageIndex === idx}
+                      onChange={() => setPrimaryImageIndex(idx)}
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        cursor: "pointer",
+                        accentColor: "#9C27B0"
+                      }}
+                    />
+                    <Typography
+                      variant="body2"
+                      ml={1}
+                      sx={{
+                        flex: 1,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap"
+                      }}
+                    >
+                      {file.name}
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        const newFiles = selectedImageFiles.filter(
+                          (_, index) => index !== idx
+                        );
+                        setSelectedImageFiles(newFiles);
+                        if (primaryImageIndex === idx) {
+                          setPrimaryImageIndex(newFiles.length ? 0 : null);
+                        } else if (primaryImageIndex > idx) {
+                          setPrimaryImageIndex(primaryImageIndex - 1);
+                        }
+                      }}
+                      sx={{
+                        color: "#f44336",
+                        "&:hover": { backgroundColor: "rgba(244,67,54,0.04)" }
+                      }}
+                    >
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Box>
+            )}
 
+            {existingImages.length > 0 && (
+              <Box mt={3}>
+                <Typography variant="subtitle1">
+                  {t("manager_hotels.current_images")}
+                </Typography>
 
+                {existingImages.map(img => (
+                  <Box
+                    key={img.imageId}
+                    display="flex"
+                    alignItems="center"
+                    mb={1}
+                  >
+                    <input
+                      type="radio"
+                      name="primaryExisting"
+                      checked={primaryFromDb === img.imageId}
+                      onChange={() => setPrimaryFromDb(img.imageId)}
+                      style={{ cursor: "pointer", accentColor: "#9C27B0" }}
+                    />
+                    <img
+                      src={`http://localhost:8080${img.imageUrl}`}
+                      alt=""
+                      style={{
+                        width: 60,
+                        height: 40,
+                        objectFit: "cover",
+                        marginLeft: 8,
+                        borderRadius: 4
+                      }}
+                    />
+                    <Typography
+                      ml={1}
+                      variant="body2"
+                      sx={{
+                        flex: 1,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap"
+                      }}
+                    >
+                      {img.imageUrl.split("/").pop()}
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      onClick={() => deleteExistingImage(img.imageId)}
+                      sx={{
+                        color: "#f44336",
+                        "&:hover": {
+                          backgroundColor: "rgba(244,67,54,0.04)"
+                        }
+                      }}
+                    >
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Box>
+            )}
           </DialogContent>
+
           <DialogActions>
-            <Button onClick={handleSave} variant="contained" color="primary">
+            <Button
+              onClick={handleSave}
+              variant="contained"
+              color="primary"
+            >
               {t("common.save_changes")}
             </Button>
           </DialogActions>
