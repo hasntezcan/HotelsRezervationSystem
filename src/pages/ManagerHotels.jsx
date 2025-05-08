@@ -33,6 +33,7 @@ const ManagerHotels = () => {
   const [openModal, setOpenModal] = useState(false);
   const [showAmenitySelector, setShowAmenitySelector] = useState(false);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
 
   const [rooms, setRooms] = useState([]);
   const [roomData, setRoomData] = useState({
@@ -58,15 +59,12 @@ const ManagerHotels = () => {
     axios
       .get(`http://localhost:8080/api/auth/profile/manager?userId=${user.userId}`)
       .then(res => {
-        // Response örn. { managerId: 123, ... }
-        if (res.data.managerId) {
-          setManagerId(res.data.managerId);
-        }
+        if (res.data.managerId) setManagerId(res.data.managerId);
       })
       .catch(() => console.error("Error fetching manager profile"));
   }, [user]);
 
-  // 1) Fetch oteller ve amenities
+  // 1) Otelleri ve ilk otelin amenities’ini çek
   useEffect(() => {
     if (!user?.userId) return;
     axios
@@ -116,6 +114,12 @@ const ManagerHotels = () => {
       checked ? [...prev, amenity] : prev.filter(a => a !== amenity)
     );
 
+  const handleImageChange = e => {
+    if (e.target.files?.length) {
+      setSelectedImageFile(e.target.files[0]);
+    }
+  };
+
   const handleEdit = hotel => {
     setSelectedAmenities(
       hotel.amenities
@@ -123,6 +127,7 @@ const ManagerHotels = () => {
         : []
     );
     setEditHotel({ ...hotel, featured: hotel.featured ?? false });
+    setSelectedImageFile(null);
     setOpenModal(true);
   };
 
@@ -146,7 +151,7 @@ const ManagerHotels = () => {
       pricePerNight: editHotel.pricePerNight || 0,
       capacity: editHotel.capacity || 0,
       amenities: selectedAmenities.join(", "),
-      managerId: managerId,              // artık null değil
+      managerId: managerId,
       description: editHotel.description || "",
       starRating: editHotel.starRating || 0,
       featured: editHotel.featured || false
@@ -160,18 +165,14 @@ const ManagerHotels = () => {
     };
 
     try {
+      let hotelRes;
       if (editHotel?.hotelId) {
         // Update
-        const res = await axios.put(
+        hotelRes = await axios.put(
           `http://localhost:8080/api/hotels/${editHotel.hotelId}`,
           base,
           config
         );
-        const updated = res.data;
-        setHotels(prev =>
-          prev.map(h => (h.hotelId === updated.hotelId ? updated : h))
-        );
-        alert("Hotel updated successfully!");
       } else {
         // Create
         const payload = {
@@ -181,14 +182,41 @@ const ManagerHotels = () => {
           checkOutTime: "12:00:00",
           cancellationPolicy: "Free cancellation..."
         };
-        const res = await axios.post(
+        hotelRes = await axios.post(
           "http://localhost:8080/api/hotels",
           payload,
           config
         );
-        setHotels(prev => [...prev, res.data]);
-        alert("Hotel added successfully!");
       }
+      const savedHotel = hotelRes.data;
+
+      // Eğer bir resim seçildiyse, aynı anda upload yerine yol kaydet
+      if (selectedImageFile) {
+        const filename = selectedImageFile.name;
+        // frontend'de dosya fiziksel kaydetme yok; backend endpoint bekleniyor
+        await axios.post(
+          "http://localhost:8080/api/hotel-images",
+          {
+            hotelId: savedHotel.hotelId,
+            imageUrl: `/hotel_images/${filename}`,
+            isPrimary: true
+          },
+          config
+        );
+      }
+
+      // State güncelle
+      setHotels(prev => {
+        if (editHotel?.hotelId) {
+          return prev.map(h =>
+            h.hotelId === savedHotel.hotelId ? savedHotel : h
+          );
+        } else {
+          return [...prev, savedHotel];
+        }
+      });
+
+      alert(`Hotel ${editHotel?.hotelId ? "updated" : "added"} successfully!`);
       setOpenModal(false);
     } catch {
       alert(editHotel?.hotelId ? "Error updating hotel" : "Error adding hotel");
@@ -266,6 +294,7 @@ const ManagerHotels = () => {
               onClick={() => {
                 setEditHotel({});
                 setSelectedAmenities([]);
+                setSelectedImageFile(null);
                 setOpenModal(true);
               }}
               style={{
@@ -369,7 +398,7 @@ const ManagerHotels = () => {
                           }
                           fullWidth
                           size="small"
-                        />
+                        />  
                         <Box mt={1} display="flex" gap={1}>
                           <Button variant="contained" size="small" onClick={() => updateRoom(room.id)}>
                             {t("common.save")}
@@ -465,6 +494,22 @@ const ManagerHotels = () => {
                     </Button>
                   </Box>
                 </Box>
+              )}
+            </Box>
+
+            {/* Image selection */}
+            <Box mt={3}>
+              <Typography variant="subtitle1">{t("manager_hotels.select_image")}</Typography>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ marginTop: 8 }}
+              />
+              {selectedImageFile && (
+                <Typography variant="body2" mt={1}>
+                  Selected: {selectedImageFile.name}
+                </Typography>
               )}
             </Box>
           </DialogContent>
