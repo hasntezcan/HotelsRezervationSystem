@@ -141,19 +141,40 @@ const ManagerHotels = () => {
 
   // Otel kaydet (update veya create) & görsel upload
   const handleSave = async () => {
-    const base = {
-      name: editHotel.name || "",
-      city: editHotel.city || "",
-      country: editHotel.country || "",
-      address: editHotel.address || "",
-      pricePerNight: editHotel.pricePerNight || 0,
-      capacity: editHotel.capacity || 0,
-      amenities: selectedAmenities.join(", "),
-      managerId: managerId,
-      description: editHotel.description || "",
-      starRating: editHotel.starRating || 0,
-      featured: editHotel.featured || false
-    };
+  // Validation checks
+  if (!editHotel?.name?.trim() || 
+      !editHotel?.city?.trim() || 
+      !editHotel?.country?.trim() || 
+      !editHotel?.address?.trim() || 
+      !editHotel?.description?.trim() || 
+      !editHotel?.starRating) {
+    alert(t("manager_hotels.fill_all_fields"));
+    return;
+  }
+
+  if (selectedAmenities.length === 0) {
+    alert(t("manager_hotels.select_at_least_one_amenity"));
+    return;
+  }
+
+  if (selectedImageFiles.length === 0) {
+    alert(t("manager_hotels.select_at_least_one_image"));
+    return;
+  }
+
+  const base = {
+    name: editHotel.name.trim(),
+    city: editHotel.city.trim(),
+    country: editHotel.country.trim(),
+    address: editHotel.address.trim(),
+    pricePerNight: editHotel.pricePerNight || 0,
+    capacity: editHotel.capacity || 0,
+    amenities: selectedAmenities.join(", "),
+    managerId: managerId,
+    description: editHotel.description.trim(),
+    starRating: editHotel.starRating,
+    featured: editHotel.featured || false
+  };
 
     const configJson = {
       headers: {
@@ -510,23 +531,81 @@ for (let i = 0; i < selectedImageFiles.length; i++) {
     onChange={e => {
       const files = Array.from(e.target.files);
       setSelectedImageFiles(files);
-      // İlkini default primary yap
       setPrimaryImageIndex(files.length ? 0 : null);
     }}
-    style={{ marginTop: 8 }}
+    style={{
+      marginTop: 8,
+      border: '1px solid #ccc',
+      padding: '8px',
+      borderRadius: '4px',
+      width: '100%',
+      backgroundColor: '#f8f9fa',
+      cursor: 'pointer'
+    }}
   />
 </Box>
 {selectedImageFiles.length > 0 && (
   <Box mt={2}>
     {selectedImageFiles.map((file, idx) => (
-      <Box key={idx} display="flex" alignItems="center" mb={1}>
+      <Box 
+        key={idx} 
+        display="flex" 
+        alignItems="center" 
+        mb={1}
+        sx={{
+          padding: '8px',
+          borderRadius: '4px',
+          backgroundColor: '#fff',
+          border: '1px solid #e0e0e0',
+          '&:hover': {
+            backgroundColor: '#f5f5f5'
+          }
+        }}
+      >
         <input
           type="radio"
           name="primaryImage"
           checked={primaryImageIndex === idx}
           onChange={() => setPrimaryImageIndex(idx)}
+          style={{
+            width: '18px',
+            height: '18px',
+            cursor: 'pointer',
+            accentColor: '#9C27B0'
+          }}
         />
-        <Typography variant="body2" ml={1}>{file.name}</Typography>
+        <Typography 
+          variant="body2" 
+          ml={1}
+          sx={{
+            flex: 1,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          {file.name}
+        </Typography>
+        <IconButton
+          size="small"
+          onClick={() => {
+            const newFiles = selectedImageFiles.filter((_, index) => index !== idx);
+            setSelectedImageFiles(newFiles);
+            if (primaryImageIndex === idx) {
+              setPrimaryImageIndex(newFiles.length ? 0 : null);
+            } else if (primaryImageIndex > idx) {
+              setPrimaryImageIndex(primaryImageIndex - 1);
+            }
+          }}
+          sx={{
+            color: '#f44336',
+            '&:hover': {
+              backgroundColor: 'rgba(244, 67, 54, 0.04)'
+            }
+          }}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
       </Box>
     ))}
   </Box>
