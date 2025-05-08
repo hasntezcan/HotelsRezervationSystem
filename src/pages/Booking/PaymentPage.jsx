@@ -34,6 +34,7 @@ const PaymentPage = () => {
 
     if (storedBooking) {
       const parsed = JSON.parse(storedBooking);
+      parsed.totalAmount = parseFloat(parsed.totalAmount);
       if (storedUserId) {
         parsed.userId = parseInt(storedUserId); // Inject userId into booking payload
       } else {
@@ -143,26 +144,12 @@ const PaymentPage = () => {
 
       {/* Right Column */}
       <div className="payment-sidebar">
-        <PaymentPay
-          hotelName={pendingBooking.hotelName || "Default Hotel Name"}
-          photo={pendingBooking.photo}
-          address={pendingBooking.address || ""}
-          checkInDate={pendingBooking.startDate}
-          checkOutDate={pendingBooking.endDate}
-          price={pendingBooking.totalAmount}
-          firstName={firstName}
-          lastName={lastName}
-          email={email}
-          phone={phone}
-          cardName={cardName}
-          cardSurname={cardSurname}
-          cardNumber={cardNumber}
-          expiryMonth={expiryMonth}
-          expiryYear={expiryYear}
-          cvc={cvc}
-          bookingData={pendingBooking}
-          onPaymentClick={handlePaymentClick}
-        />
+       <PaymentPay
+   booking={pendingBooking}
+   guestInfo={{ firstName, lastName, email, phone }}
+   cardInfo={{ cardName, cardSurname, cardNumber, expiryMonth, expiryYear, cvc }}
+   onPaymentClick={handlePaymentClick}
+ />
       </div>
     </div>
   );
