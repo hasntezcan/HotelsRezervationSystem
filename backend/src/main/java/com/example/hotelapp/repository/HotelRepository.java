@@ -125,4 +125,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
      @Modifying
     @Query("UPDATE Hotel h SET h.managerId = null WHERE h.managerId = :mgrId")
     void clearManagerFromHotels(@Param("mgrId") Long mgrId);
+
+    
 }
