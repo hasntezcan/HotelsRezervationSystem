@@ -1,132 +1,127 @@
-// PaymentPay.jsx
-import React from "react";
-import { jsPDF } from "jspdf"; // Import jsPDF
+import React, { useState, useEffect } from "react";
+import { jsPDF } from "jspdf";
 import defaultPhoto from "../../assets/images/hotelImages.jpg";
 import "./../../styles/PaymentPage.css";
 
-const PaymentPay = ({
-  // Hotel Information
-  hotelName = "Hilton Garden Inn",
-  photo, 
-  address = "",
-  checkInDate = "",
-  checkOutDate = "",
-  price = 0,
-  // PaymentName Data (Step 1)
-  firstName = "",
-  lastName = "",
-  email = "",
-  phone = "",
-  // PaymentCard Data (Step 3)
-  cardName = "",
-  cardSurname = "",
-  cardNumber = "",
-  expiryMonth = "",
-  expiryYear = "",
-  cvc = "",
-  onPaymentClick = () => {}
-}) => {
-  const actualPhoto = photo || defaultPhoto;
+const PaymentPay = ({ booking, guestInfo, cardInfo, onPaymentClick }) => {
+  const [hotel, setHotel] = useState(null);
+  const [room, setRoom] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Validation for card number: after removing spaces it must be exactly 16 digits.
-  const isCardNumberComplete = cardNumber.replace(/\s/g, "").length === 16;
-  // CVC validation: must be either 3 or 4 digits.
+  const { hotelId, roomId, startDate: checkInDate, endDate: checkOutDate, totalAmount: price } = booking;
+  const { firstName, lastName, email, phone } = guestInfo;
+  const { cardName, cardSurname, cardNumber, expiryMonth, expiryYear, cvc } = cardInfo;
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [hotelRes, roomRes] = await Promise.all([
+          fetch(`http://localhost:8080/api/hotels/${hotelId}`),
+          fetch(`http://localhost:8080/api/rooms/${roomId}`)
+        ]);
+        if (!hotelRes.ok || !roomRes.ok) {
+          throw new Error(`Fetch error: ${hotelRes.status}, ${roomRes.status}`);
+        }
+        const [hotelData, roomData] = await Promise.all([
+          hotelRes.json(),
+          roomRes.json()
+        ]);
+        console.log("Fetched hotel images:", hotelData.images);
+        setHotel(hotelData);
+        setRoom(roomData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [hotelId, roomId]);
+
+  if (loading) return <div>Loading reservation...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!hotel || !room) return <div>Data not found.</div>;
+
+  // Map image field flexibly: try url, imageUrl, path, src
+  const rawImages = Array.isArray(hotel.images) ? hotel.images : [];
+  const images = rawImages.length > 0
+    ? rawImages.map(img => img.url || img.imageUrl || img.path || img.src || defaultPhoto)
+    : [defaultPhoto];
+
+  const handlePrev = () => setCurrentImageIndex(i => (i === 0 ? images.length - 1 : i - 1));
+  const handleNext = () => setCurrentImageIndex(i => (i === images.length - 1 ? 0 : i + 1));
+  const currentImage = images[currentImageIndex];
+
+  // Validation
+  const isCardComplete = cardNumber.replace(/\s/g, "").length === 16;
   const isCvcValid = cvc.length === 3 || cvc.length === 4;
-  // Email must contain "@" symbol.
   const isEmailValid = email.includes("@");
+  const isFormValid = firstName && lastName && email && isEmailValid && phone && cardName && cardSurname && cardNumber && isCardComplete && expiryMonth && expiryYear && cvc && isCvcValid;
 
-  // Check if all form fields are complete and valid
-  const isFormComplete =
-    firstName.trim() &&
-    lastName.trim() &&
-    email.trim() && isEmailValid &&
-    phone.trim() &&
-    cardName.trim() &&
-    cardSurname.trim() &&
-    cardNumber.trim() && isCardNumberComplete &&
-    expiryMonth.trim() &&
-    expiryYear.trim() &&
-    cvc.trim() && isCvcValid;
-
-  const findMissingFields = () => {
+  const findMissing = () => {
     const missing = [];
-    if (!firstName.trim()) missing.push("First Name");
-    if (!lastName.trim()) missing.push("Last Name");
-    if (!email.trim() || !isEmailValid)
-      missing.push("Email (must contain '@')");
-    if (!phone.trim()) missing.push("Phone");
-    if (!cardName.trim()) missing.push("Card Name");
-    if (!cardSurname.trim()) missing.push("Card Surname");
-    if (!cardNumber.trim() || !isCardNumberComplete)
-      missing.push("Complete Card Number (16 digits required)");
-    if (!expiryMonth.trim()) missing.push("Expiry Month");
-    if (!expiryYear.trim()) missing.push("Expiry Year");
-    if (!cvc.trim() || !isCvcValid)
-      missing.push("CVC (3 or 4 digits required)");
+    if (!firstName) missing.push("First Name");
+    if (!lastName) missing.push("Last Name");
+    if (!email || !isEmailValid) missing.push("Valid Email");
+    if (!phone) missing.push("Phone");
+    if (!cardName) missing.push("Card Name");
+    if (!cardSurname) missing.push("Card Surname");
+    if (!cardNumber || !isCardComplete) missing.push("Card Number (16 digits)");
+    if (!expiryMonth) missing.push("Expiry Month");
+    if (!expiryYear) missing.push("Expiry Year");
+    if (!cvc || !isCvcValid) missing.push("CVC (3 or 4 digits)");
     return missing;
   };
 
-  // Invoice generation function using jsPDF
   const generateInvoice = () => {
     const doc = new jsPDF();
-
-    // Title and basic settings
     doc.setFontSize(18);
     doc.text("Invoice", 20, 20);
-    
     doc.setFontSize(12);
-    doc.text(`Name: ${firstName} ${lastName}`, 20, 40);
+    doc.text(`Guest: ${firstName} ${lastName}`, 20, 40);
     doc.text(`Email: ${email}`, 20, 50);
     doc.text(`Phone: ${phone}`, 20, 60);
-    
-    // Payment card details
-    doc.text(`Card Holder: ${cardName} ${cardSurname}`, 20, 80);
-
-    
-    // Hotel and reservation details
-    doc.text(`Hotel: ${hotelName}`, 20, 120);
-    doc.text(`Address: ${address}`, 20, 130);
-    doc.text(`Check-in: ${checkInDate}`, 20, 140);
-    doc.text(`Check-out: ${checkOutDate}`, 20, 150);
-    
-    // Price and total payment info
-    doc.text(`Total Price: $${price}`, 20, 170);
-    
-    // Save or display the PDF
+    doc.text(`Hotel: ${hotel.name}`, 20, 80);
+    doc.text(`Address: ${hotel.address}`, 20, 90);
+    doc.text(`Room: ${room.name}`, 20, 100);
+    doc.text(`Dates: ${checkInDate} - ${checkOutDate}`, 20, 110);
+    doc.text(`Total Price: $${Number(price).toFixed(2)}`, 20, 130);
     doc.save("invoice.pdf");
   };
 
-  // Function to handle the payment button click
   const handlePayment = () => {
-    if (!isFormComplete) {
-      const missingFields = findMissingFields();
-      alert(
-        "Please fill in all fields correctly.\nMissing/Invalid Fields:\n" +
-          missingFields.join("\n")
-      );
+    if (!isFormValid) {
+      alert("Please fill all fields:\n" + findMissing().join("\n"));
       return;
     }
-    
-    // Initiate payment process (for example, send data to backend)
     onPaymentClick();
-    
-    // Generate invoice PDF after successful validation
     generateInvoice();
   };
 
   return (
     <div className="paymentPay-container">
       <div className="paymentPay-card">
-        <img src={actualPhoto} alt={hotelName} className="paymentPay-img" />
-
+        <div className="paymentPay-carousel">
+          <button className="carousel-button prev" onClick={handlePrev}>❮</button>
+          <img
+            src={currentImage}
+            alt={`${hotel.name} image ${currentImageIndex + 1}`}
+            className="paymentPay-img"
+          />
+          <button className="carousel-button next" onClick={handleNext}>❯</button>
+        </div>
         <div className="paymentPay-content">
-          <h3 className="paymentPay-name">{hotelName}</h3>
-          <p className="paymentPay-address">{address}</p>
-          <p className="paymentPay-dates">
-            Date: {checkInDate} - {checkOutDate}
-          </p>
-          <div className="paymentPay-price">Price: ${price}</div>
-
+          <h3 className="paymentPay-name">{hotel.name}</h3>
+          <p className="paymentPay-address">{hotel.address}</p>
+          <div className="paymentPay-summary">
+            <p><strong>Dates:</strong> {checkInDate} – {checkOutDate}</p>
+            <p><strong>Room:</strong> {room.name}</p>
+          </div>
+          <div className="paymentPay-price">
+            Price: ${Number(price).toFixed(2)}
+          </div>
           <button className="myGreenBookNowButton" onClick={handlePayment}>
             Book Now
           </button>
