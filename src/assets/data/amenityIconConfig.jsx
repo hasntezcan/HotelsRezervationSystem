@@ -50,5 +50,5 @@ export const AMENITY_ICON_MAP = {
   
 export function getAmenityIcon(name) {
   const IconComponent = AMENITY_ICON_MAP[name] || GiTwoCoins; // fallback
-  return <IconComponent size={18} style={{ flexShrink: 0 }} />;
+  return <IconComponent size={18} style={{ flexShrink: 0, color: 'var(--accent-color)' }} />;
 }
