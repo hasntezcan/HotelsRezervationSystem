@@ -247,51 +247,6 @@
    background: #d65f5f; /* Change button color on hover */
  }
  
- /* ==================== PET OPTION ==================== */
- .pet-option {
-   display: flex;
-   justify-content: space-between; /* Pushes label left and checkbox right */
-   align-items: center;
-   width: 100%;
-}
-
-
-.pet-option label {
-   display: flex;
-   align-items: center;
-   gap: 8px;
-   font-size: 1rem;
-   font-weight: 500;
-   color: var(--text-color);
-}
-
- 
- .pet-option input {
-   justify-content: flex-end;
-   right: 10%;
-   width: 20px; /* Adjust checkbox size */
-   height: 20px; /* Adjust checkbox size */
-   accent-color: var(--accent-color); /* Change checkbox color */
- }
- 
- /* ==================== CLOSE BUTTON ==================== */
- .guest-close {
-   width: 100%;
-   margin-top: 12px; /* Adjust margin */
-   padding: 12px; /* Adjust padding */
-   background: #E07A5F; /* Change background color */
-   color: white; /* Change text color */
-   border: none;
-   border-radius: 12px; /* Adjust corner radius */
-   cursor: pointer;
-   font-weight: 500;
-   font-size: 16px; /* Adjust font size */
- }
- 
- .guest-close:hover {
-   background: #d65f5f; /* Change background color on hover */
- }
- 
  /* ==================== SEARCH BUTTON ==================== */
  .search-button {
    background: var(--accent-color); /* Change background color */
@@ -300,6 +255,7 @@
    padding: 0px 10px; /* Adjust padding */
    font-size: 1.2rem; /* Adjust font size */
    border-radius: 12px; /* Adjust corner radius */
+   min-width: 80px;
    cursor: pointer;
    transition: background 0.3s;
    height: 50px; /* Adjust height */

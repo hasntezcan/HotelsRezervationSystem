@@ -13,6 +13,7 @@ C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\ContactMessage.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\User.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\RoomImageRepository.java
+C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\dto\AmenityDTO.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\RoomAmenityJunctionRepository.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\service\RoomService.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\controller\HotelImageController.java
@@ -46,6 +47,7 @@ C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\dto\HotelWithImageDTO.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\RoomAmenityRepository.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\RoomAmenity.java
+C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\AmenityTranslationRepository.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\dto\HotelCardDTO.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\service\AdminHotelService.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\UserRepository.java
@@ -59,3 +61,5 @@ C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\HotelRepository.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\HotelAmenityRepository.java
 C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\repository\HotelAmenityJunctionRepository.java
+C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\service\AmenityService.java
+C:\Users\sezow\OneDrive\Belgeler\GitHub\HotelsRezervationSystem\backend\src\main\java\com\example\hotelapp\model\AmenityTranslation.java

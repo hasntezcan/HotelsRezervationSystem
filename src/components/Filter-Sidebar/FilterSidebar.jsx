@@ -10,8 +10,8 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import './filter-sidebar.css';
 import { getAmenityIcon } from '/src/assets/data/amenityIconConfig.jsx';
-
-
+import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
 const useIsDesktop = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
@@ -23,14 +23,35 @@ const useIsDesktop = () => {
   return isDesktop;
 };
 
-const FilterSidebar = ({ amenities = [], onApply }) => {
+const FilterSidebar = ({ onApply }) => {
+  const { t, i18n } = useTranslation();
   const isDesktop = useIsDesktop();
   const [price, setPrice] = useState([0, 1000]);
   const [rating, setRating] = useState(0);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [amenities, setAmenities] = useState([]);
 
   const [showInline, setShowInline] = useState(true);
   const [openMobile, setOpenMobile] = useState(false);
+
+  // ✅ Dil değiştiğinde amenities'i tekrar fetch et
+  useEffect(() => {
+    const lang = i18n.language || 'en';
+    axios
+      .get(`http://localhost:8080/api/hotelamenities?lang=${lang}`)
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setAmenities(res.data);
+        } else {
+          console.warn("Unexpected response for amenities:", res.data);
+          setAmenities([]);
+        }
+      })
+      .catch(() => {
+        alert("Error fetching amenities");
+        setAmenities([]);
+      });
+  }, [i18n.language]);
 
   const toggleAmenity = (id) =>
     setSelectedAmenities(prev =>
@@ -49,7 +70,7 @@ const FilterSidebar = ({ amenities = [], onApply }) => {
 
   const Form = (
     <div className="filter-form">
-      <div className="filter-section-heading">Price ($)</div>
+      <div className="filter-section-heading">{t("filter.price")} ($)</div>
       <Slider
         className="filter-slider"
         range
@@ -67,7 +88,7 @@ const FilterSidebar = ({ amenities = [], onApply }) => {
       />
       <p className="text-muted">${price[0]} – ${price[1]}</p>
 
-      <div className="filter-section-heading mt-3">Minimum Rating</div>
+      <div className="filter-section-heading mt-3">{t("filter.rating")}</div>
       <Slider
         className="filter-slider"
         min={0}
@@ -81,10 +102,9 @@ const FilterSidebar = ({ amenities = [], onApply }) => {
       />
       <p className="text-muted">{rating.toFixed(1)}</p>
 
-      <div className="filter-section-heading mt-3">Features</div>
+      <div className="filter-section-heading mt-3">{t("filter.features")}</div>
       <div className="amenity-list">
         {amenities.map(a => {
-        //  const key = a.name.toLowerCase().split(' ')[0];
           const icon = getAmenityIcon(a.name);
           return (
             <FormGroup check key={a.amenityId} className="mb-1 d-flex align-items-center gap-1">
@@ -101,7 +121,7 @@ const FilterSidebar = ({ amenities = [], onApply }) => {
       </div>
 
       <Button className="apply-btn mt-3 w-100" onClick={applyFilters}>
-        Apply
+        {t("filter.apply_button")}
       </Button>
     </div>
   );
@@ -113,7 +133,7 @@ const FilterSidebar = ({ amenities = [], onApply }) => {
         <aside className="filter-inline">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h5 className="m-0 d-flex align-items-center gap-1">
-              <i className="ri-filter-3-line" /> Filters
+              <i className="ri-filter-3-line" /> {t("filter.title")}
             </h5>
             <Button size="sm" color="light" onClick={() => setShowInline(false)}>
               <i className="ri-close-line" />
@@ -128,7 +148,7 @@ const FilterSidebar = ({ amenities = [], onApply }) => {
         <button
           className="filter-toggle-btn"
           onClick={() => setShowInline(true)}
-          aria-label="Open filters"
+          aria-label={t("filter.open_aria_label")}
         >
           <i className="ri-filter-3-line" />
         </button>
@@ -147,7 +167,9 @@ const FilterSidebar = ({ amenities = [], onApply }) => {
             className="offcanvas-filter"
             unmountOnClose={false}
           >
-            <OffcanvasHeader toggle={() => setOpenMobile(false)}>Filters</OffcanvasHeader>
+            <OffcanvasHeader toggle={() => setOpenMobile(false)}>
+              {t("filter.title")}
+            </OffcanvasHeader>
             <OffcanvasBody>{Form}</OffcanvasBody>
           </Offcanvas>
         </>

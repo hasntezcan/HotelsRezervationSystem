@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 08 May 2025, 14:21:35
+-- Üretim Zamanı: 10 May 2025, 00:09:11
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -20,6 +20,73 @@ SET time_zone = "+00:00";
 --
 -- Veritabanı: `hotels_reservations`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `amenity_translations`
+--
+
+CREATE TABLE `amenity_translations` (
+  `translation_id` bigint(20) NOT NULL,
+  `amenity_id` bigint(20) NOT NULL,
+  `language_code` varchar(5) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Tablo döküm verisi `amenity_translations`
+--
+
+INSERT INTO `amenity_translations` (`translation_id`, `amenity_id`, `language_code`, `name`) VALUES
+(1, 1, 'en', 'Free Wi-Fi'),
+(2, 1, 'tr', 'Ücretsiz Wi-Fi'),
+(3, 2, 'en', 'Breakfast Included'),
+(4, 2, 'tr', 'Kahvaltı Dahil'),
+(5, 3, 'en', 'Swimming Pool'),
+(6, 3, 'tr', 'Yüzme Havuzu'),
+(7, 4, 'en', 'Gym'),
+(8, 4, 'tr', 'Spor Salonu'),
+(9, 5, 'en', 'Private Beach'),
+(10, 5, 'tr', 'Özel Plaj'),
+(11, 6, 'en', 'Bar'),
+(12, 6, 'tr', 'Bar'),
+(13, 7, 'en', 'City View'),
+(14, 7, 'tr', 'Şehir Manzarası'),
+(15, 8, 'en', 'Free Parking'),
+(16, 8, 'tr', 'Ücretsiz Otopark'),
+(17, 9, 'en', 'Riverside View'),
+(18, 9, 'tr', 'Nehir Manzarası'),
+(19, 10, 'en', 'Restaurant'),
+(20, 10, 'tr', 'Restoran'),
+(21, 11, 'en', 'Skyline View'),
+(22, 11, 'tr', 'Skyline Manzarası'),
+(23, 12, 'en', 'Luxury Suites'),
+(24, 12, 'tr', 'Lüks Süitler'),
+(25, 13, 'en', 'Helipad'),
+(26, 13, 'tr', 'Helikopter Pisti'),
+(27, 14, 'en', 'Beachfront'),
+(28, 14, 'tr', 'Deniz Kenarı'),
+(29, 15, 'en', 'Private Pool'),
+(30, 15, 'tr', 'Özel Havuz'),
+(31, 16, 'en', 'Beach View'),
+(32, 16, 'tr', 'Plaj Manzarası'),
+(33, 17, 'en', 'Luxury Spa'),
+(34, 17, 'tr', 'Lüks Spa'),
+(35, 18, 'en', 'Sunset View'),
+(36, 18, 'tr', 'Gün Batımı Manzarası'),
+(37, 19, 'en', 'Cocktail Bar'),
+(38, 19, 'tr', 'Kokteyl Barı'),
+(39, 20, 'en', 'Massage Therapy'),
+(40, 20, 'tr', 'Masaj Terapisi'),
+(41, 21, 'en', 'Private Beach'),
+(42, 21, 'tr', 'Özel Plaj'),
+(43, 22, 'en', 'Infinity Pool'),
+(44, 22, 'tr', 'Sonsuzluk Havuzu'),
+(45, 23, 'en', 'Scuba Diving'),
+(46, 23, 'tr', 'Dalgıçlık'),
+(47, 24, 'en', 'Business Center'),
+(48, 24, 'tr', 'İş Merkezi');
 
 -- --------------------------------------------------------
 
@@ -598,10 +665,10 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_name`, `last_name`, `phone`, `created_at`, `updated_at`, `is_verified`) VALUES
 (1, 'iamsahinemir', 'user', 'esad.emir34@gmail.com', '123456', 'emir esad', 'şahin', '05438813007', '2025-03-31 17:36:25', '2025-04-10 06:49:55', 1),
-(2, 'sezo', 'user', 'sezo@sezo.com', '123456', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-10 06:49:57', 1),
+(2, 'sezo', 'user', 'sezo@sezo.com', '$2a$10$LqZldHL7wXph175ArXjAAOcvARqK48eOBiLMh95/Jy2clxFu4cEi2', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-10 06:49:57', 1),
 (3, 'dede', 'user', 'dede@dede.com', '123456', 'dede', 'dede', '05313313131', '2025-04-03 17:57:28', '2025-04-10 06:50:00', 0),
 (4, 'admin', 'admin', 'admin@admin.com', '$2a$10$4ivO5hjwwFgbo5MtT8UaXeBt2kUC0IxS6NvNLQHX4eF6D/MdZduwm', 'admin', 'admin', '05467897895', '2025-04-03 18:54:48', '2025-04-10 06:50:02', 0),
-(16, 'manager_royal_palace', 'manager', 'royal.manager@example.com', 'password', 'Royalaaaa', 'Manager', '0000000001', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
+(16, 'manager_royal_palace', 'manager', 'royal.manager@example.com', '$2a$10$7.fHsjEx.kySznBmTehL0e3Fu9DbEXY7hRtrRzw5BaFl16mw5gb7S', 'Royalaaaa', 'Manager', '0000000001', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
 (17, 'manager_london_river', 'manager', 'london.manager@example.com', 'password', 'London', 'Manager', '0000000002', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
 (18, 'manager_bali_beach', 'manager', 'bali.manager@example.com', 'password', 'Bali', 'Manager', '0000000003', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
 (19, 'manager_tropical_paradise', 'manager', 'tropical.manager@example.com', 'password', 'Tropical', 'Manager', '0000000004', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
@@ -623,6 +690,14 @@ INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_
 --
 -- Dökümü yapılmış tablolar için indeksler
 --
+
+--
+-- Tablo için indeksler `amenity_translations`
+--
+ALTER TABLE `amenity_translations`
+  ADD PRIMARY KEY (`translation_id`),
+  ADD UNIQUE KEY `amenity_id` (`amenity_id`,`language_code`),
+  ADD UNIQUE KEY `UKsd0otho85r5rxowltvrdouima` (`amenity_id`,`language_code`);
 
 --
 -- Tablo için indeksler `bookings`
@@ -739,6 +814,12 @@ ALTER TABLE `users`
 --
 
 --
+-- Tablo için AUTO_INCREMENT değeri `amenity_translations`
+--
+ALTER TABLE `amenity_translations`
+  MODIFY `translation_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+
+--
 -- Tablo için AUTO_INCREMENT değeri `bookings`
 --
 ALTER TABLE `bookings`
@@ -819,6 +900,12 @@ ALTER TABLE `users`
 --
 -- Dökümü yapılmış tablolar için kısıtlamalar
 --
+
+--
+-- Tablo kısıtlamaları `amenity_translations`
+--
+ALTER TABLE `amenity_translations`
+  ADD CONSTRAINT `amenity_translations_ibfk_1` FOREIGN KEY (`amenity_id`) REFERENCES `hotelamenities` (`amenity_id`) ON DELETE CASCADE;
 
 --
 -- Tablo kısıtlamaları `bookings`

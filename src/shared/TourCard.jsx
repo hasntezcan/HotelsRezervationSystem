@@ -1,93 +1,90 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardBody } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // ✅ i18n
 import './tour-card.css';
 import LoadingSpinner from '../shared/Loading/Spinner';
 
-const TourCard = ({ mini=false, tour, checkIn, checkOut }) => {
+const TourCard = ({ mini = false, tour, checkIn, checkOut }) => {
+  const { t, i18n } = useTranslation(); // ✅ i18n hook
   const { hotelId, _id } = tour;
   const id = hotelId || _id;
 
   const [hotel, setHotel] = useState(tour);
-  const [price, setPrice] = useState(null); // ✅ separate price state
+  const [price, setPrice] = useState(null);
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  const currentImage = galleryImages[activeImageIndex];
+
+  const nextImage = () =>
+    setActiveImageIndex((prev) => (prev + 1) % galleryImages.length);
+
+  const prevImage = () =>
+    setActiveImageIndex((prev) =>
+      prev === 0 ? galleryImages.length - 1 : prev - 1
+    );
 
   useEffect(() => {
     setHotel(tour);
   }, [tour]);
 
-  // ✅ Get primary hotel image
   useEffect(() => {
     if (!id) return;
-
     fetch(`http://localhost:8080/api/hotel-images/${id}/primary`)
-      .then(res => {
+      .then((res) => {
         if (!res.ok) throw new Error("Resim yüklenemedi");
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         if (data?.imageUrl) {
-          setHotel(prev => ({ ...prev, primaryImageUrl: data.imageUrl }));
+          setHotel((prev) => ({ ...prev, primaryImageUrl: data.imageUrl }));
         }
       })
-      .catch(err => console.error("Primary resim hatası:", err));
+      .catch((err) => console.error("Primary resim hatası:", err));
   }, [id]);
 
-  const [galleryImages, setGalleryImages] = useState([]);
+  useEffect(() => {
+    if (!id) return;
+    fetch(`http://localhost:8080/api/hotel-images/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setGalleryImages(data);
+      })
+      .catch((err) => console.error("Tüm görseller alınamadı", err));
+  }, [id]);
 
-useEffect(() => {
-  if (!id) return;
-
-  fetch(`http://localhost:8080/api/hotel-images/${id}`)
-    .then(res => res.json())
-    .then(data => {
-      if (Array.isArray(data)) setGalleryImages(data);
-    })
-    .catch(err => console.error("Tüm görseller alınamadı", err));
-}, [id]);
-
-const [activeImageIndex, setActiveImageIndex] = useState(0);
-
-const nextImage = () =>
-  setActiveImageIndex((prev) => (prev + 1) % galleryImages.length);
-
-const prevImage = () =>
-  setActiveImageIndex((prev) =>
-    prev === 0 ? galleryImages.length - 1 : prev - 1
-  );
-
-const currentImage = galleryImages[activeImageIndex];
-
-
-  // ✅ Get full hotel info
   useEffect(() => {
     if (!id) return;
     fetch(`http://localhost:8080/api/hotels/${id}`)
-      .then(res => {
+      .then((res) => {
         if (!res.ok) throw new Error("Hotel verisi alınamadı");
         return res.json();
       })
-      .then(data => {
-        setHotel(prev => ({ ...data, primaryImageUrl: prev.primaryImageUrl }));
+      .then((data) => {
+        setHotel((prev) => ({
+          ...data,
+          primaryImageUrl: prev.primaryImageUrl,
+        }));
       })
-      .catch(err => console.error("Otel detay hatası:", err));
+      .catch((err) => console.error("Otel detay hatası:", err));
   }, [id]);
 
-  // ✅ Get min room price
   useEffect(() => {
     if (!id) return;
     fetch(`http://localhost:8080/api/rooms/hotel/${id}/min-price`)
-      .then(res => {
+      .then((res) => {
         if (!res.ok) throw new Error("Fiyat alınamadı");
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         if (data.minPrice !== undefined && data.minPrice !== null) {
           setPrice(data.minPrice);
         } else {
           setPrice(null);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Fiyat hatası:", err);
         setPrice(null);
       });
@@ -101,17 +98,21 @@ const currentImage = galleryImages[activeImageIndex];
   return (
     <div className='tour__card'>
       <Card>
-      <div className="tour__img">
+        <div className="tour__img">
           {currentImage?.imageUrl ? (
             <div className="tour__img-carousel">
-              <button className="img-nav left" onClick={prevImage}>&#10094;</button>
+              <button className="img-nav left" onClick={prevImage}>
+                &#10094;
+              </button>
               <img src={currentImage.imageUrl} alt="hotel-img" />
-              <button className="img-nav right" onClick={nextImage}>&#10095;</button>
+              <button className="img-nav right" onClick={nextImage}>
+                &#10095;
+              </button>
             </div>
           ) : (
             <LoadingSpinner />
           )}
-          {hotel.starRating >= 4 && <span>Featured</span>}
+          {hotel.starRating >= 4 && <span>{t('tour_card.featured')}</span>}
         </div>
 
         <CardBody>
@@ -121,7 +122,9 @@ const currentImage = galleryImages[activeImageIndex];
             </span>
             <span className="tour__rating d-flex align-items-center gap-1">
               <i className='ri-star-fill'></i>
-              {hotel.starRating ? `${hotel.starRating} / 5` : 'Not rated'}
+              {hotel.starRating
+                ? `${hotel.starRating} / 5`
+                : t('tour_card.not_rated')}
             </span>
           </div>
 
@@ -133,11 +136,11 @@ const currentImage = galleryImages[activeImageIndex];
             <h5>
               {price !== null && !isNaN(price)
                 ? `$${parseFloat(price).toFixed(2)}`
-                : 'No rooms available'}
-              <span>/per night</span>
+                : t('tour_card.no_rooms')}
+              <span>{t('tour_card.per_night')}</span>
             </h5>
             <Link to={bookingUrl}>
-              <button className='booking__btn'>Book Now</button>
+              <button className='booking__btn'>{t('tour_card.book_now')}</button>
             </Link>
           </div>
         </CardBody>

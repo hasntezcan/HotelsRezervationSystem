@@ -361,6 +361,33 @@
   "no_reservations": "Rezervasyon bulunamadı.",
   "loading": "Yükleniyor...",
   "no_manager": "Yönetici kimliği bulunamadı. Lütfen yönetici erişiminiz olduğundan emin olun."
+  },
+
+  "search": {
+    "destination_placeholder": "Nereye gitmek istiyorsunuz?",
+    "select_dates": "Tarih seçin",
+    "adults": "Yetişkin",
+    "children": "Çocuk",
+    "done": "Tamam",
+    "search_button": "Ara",
+    "alert_fill_fields": "Lütfen tüm alanları doldurun!"
+  },
+
+  "filter": {
+    "title": "Filtreler",
+    "price": "Fiyat",
+    "rating": "Minimum Puan",
+    "features": "Özellikler",
+    "apply_button": "Uygula",
+    "open_aria_label": "Filtreleri aç"
+  },
+
+  "tour_card": {
+    "featured": "Öne Çıkan",
+    "not_rated": "Henüz puanlanmadı",
+    "no_rooms": "Uygun oda yok",
+    "per_night": "/gecelik",
+    "book_now": "Hemen Rezervasyon Yap"
   }
 
 

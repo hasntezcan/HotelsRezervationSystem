@@ -367,7 +367,35 @@
   "no_reservations": "No reservations found.",
   "loading": "Loading...",
   "no_manager": "Manager ID is not available. Please ensure you have manager access."
+  },
+
+  "search": {
+    "destination_placeholder": "Where do you want to go?",
+    "select_dates": "Select dates",
+    "adults": "Adults",
+    "children": "Children",
+    "done": "Done",
+    "search_button": "Search",
+    "alert_fill_fields": "Please fill in all fields!"
+  },
+
+  "filter": {
+    "title": "Filters",
+    "price": "Price",
+    "rating": "Minimum Rating",
+    "features": "Features",
+    "apply_button": "Apply",
+    "open_aria_label": "Open filters"
+  },
+
+  "tour_card": {
+    "featured": "Featured",
+    "not_rated": "Not rated",
+    "no_rooms": "No rooms available",
+    "per_night": "/per night",
+    "book_now": "Book Now"
   }
+
 
 
 }

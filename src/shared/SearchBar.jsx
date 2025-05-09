@@ -6,8 +6,10 @@ import { startOfMonth } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // ✅ eklendi
 
 const SearchBar = ({ onSearch }) => {
+  const { t } = useTranslation(); // ✅ hook
   const [destination, setDestination] = useState("");
   const [dates, setDates] = useState([null, null]);
   const [defaultViewDate, setDefaultViewDate] = useState(startOfMonth(new Date()));
@@ -31,7 +33,7 @@ const SearchBar = ({ onSearch }) => {
 
   const handleSearch = () => {
     if (!destination || !dates[0] || !dates[1]) {
-      alert("Please fill in all fields!");
+      alert(t("search.alert_fill_fields")); // ✅ çeviri
       return;
     }
 
@@ -64,7 +66,7 @@ const SearchBar = ({ onSearch }) => {
       <div className="search-bar">
         <input
           type="text"
-          placeholder="Where do you want to go?"
+          placeholder={t("search.destination_placeholder")} // ✅
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
           className="search-input"
@@ -80,7 +82,7 @@ const SearchBar = ({ onSearch }) => {
             selectsRange
             monthsShown={2}
             minDate={new Date()}
-            placeholderText="Select dates"
+            placeholderText={t("search.select_dates")} // ✅
             className="search-date-picker"
             dateFormat="dd MMMM yyyy"
             locale={enUS}
@@ -101,11 +103,11 @@ const SearchBar = ({ onSearch }) => {
           className={`passenger-select ${dropdownOpen ? "active" : ""}`}
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
-          {adults} Adults - {children} Children
+          {adults} {t("search.adults")} - {children} {t("search.children")}
         </div>
 
         <button onClick={handleSearch} className="search-button">
-          Search
+          {t("search.search_button")}
         </button>
       </div>
 
@@ -113,7 +115,7 @@ const SearchBar = ({ onSearch }) => {
         <div className="passenger-dropdown-container">
           <div className="passenger-dropdown" ref={dropdownRef}>
             <div className="guest-option">
-              <span>Adults</span>
+              <span>{t("search.adults")}</span>
               <div className="counter">
                 <button onClick={() => setAdults(Math.max(1, adults - 1))}>-</button>
                 <span>{adults}</span>
@@ -122,7 +124,7 @@ const SearchBar = ({ onSearch }) => {
             </div>
 
             <div className="guest-option">
-              <span>Children</span>
+              <span>{t("search.children")}</span>
               <div className="counter">
                 <button onClick={() => setChildren(Math.max(0, children - 1))}>-</button>
                 <span>{children}</span>
@@ -131,7 +133,7 @@ const SearchBar = ({ onSearch }) => {
             </div>
 
             <button className="guest-close" onClick={() => setDropdownOpen(false)}>
-              Done
+              {t("search.done")}
             </button>
           </div>
         </div>

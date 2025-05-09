@@ -1,11 +1,11 @@
 package com.example.hotelapp.controller;
 
+import com.example.hotelapp.dto.AmenityDTO;
 import com.example.hotelapp.model.HotelAmenity;
 import com.example.hotelapp.repository.HotelAmenityRepository;
+import com.example.hotelapp.service.AmenityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,8 +16,15 @@ public class HotelAmenityController {
     @Autowired
     private HotelAmenityRepository hotelAmenityRepository;
 
+    @Autowired
+    private AmenityService amenityService;
+
     @GetMapping
-    public List<HotelAmenity> getAllHotelAmenities() {
-        return hotelAmenityRepository.findAll();
+    public List<?> getAllHotelAmenities(@RequestParam(required = false) String lang) {
+        if (lang != null && !lang.isBlank()) {
+            return amenityService.getAmenitiesByLanguage(lang);
+        } else {
+            return hotelAmenityRepository.findAll();
+        }
     }
 }
