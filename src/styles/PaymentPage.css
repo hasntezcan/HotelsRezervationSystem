@@ -550,3 +550,28 @@ label {
 .paymentPay-carousel .carousel-button.next {
   right: 12px;
 }
+.paymentPay-promo {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.paymentPay-promo input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 5px;
+}
+
+.paymentPay-promo button {
+  padding: 8px 12px;
+  border: none;
+  background-color: #21867a;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.paymentPay-promo button:hover {
+  background-color: #21867b;
+}

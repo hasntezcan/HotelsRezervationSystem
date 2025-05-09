@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import { CiCreditCard1 } from "react-icons/ci"; // Icon
+import React from "react";
+import { CiCreditCard1 } from "react-icons/ci";
 import "./../../styles/PaymentPage.css";
 import visaLogo from "./../../assets/images/booking/visa.png";
 import mastercardLogo from "./../../assets/images/booking/mastercard.png";
 import amexLogo from "./../../assets/images/booking/americanExpress.png";
-
 
 const PaymentCard = ({
   cardName,
@@ -20,9 +19,6 @@ const PaymentCard = ({
   cvc,
   setCvc,
 }) => {
-  const [showPromoModal, setShowPromoModal] = useState(false);
-  const [promoCode, setPromoCode] = useState("");
-
   const handleCardNumberChange = (e) => {
     const input = e.target.value.replace(/\D/g, "");
     const formatted = input.match(/.{1,4}/g)?.join(" ") || "";
@@ -42,21 +38,27 @@ const PaymentCard = ({
     setCvc(input);
   };
 
-  const months = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, "0"));
+  const months = Array.from({ length: 12 }, (_, i) =>
+    String(i + 1).padStart(2, "0")
+  );
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 11 }, (_, i) => currentYear + i);
 
   return (
     <div className="PaymentCard__container">
       <h2 className="PaymentCard__title">Step 3: Payment Details</h2>
-      <p className="PaymentCard__note">We never charge your card without authorization.</p>
+      <p className="PaymentCard__note">
+        We never charge your card without authorization.
+      </p>
 
       <div className="PaymentCard__content">
         <div className="PaymentCard__formWrapper">
           <form className="PaymentCard__form">
             {/* First Name */}
             <div className="PaymentCard__form-group">
-              <label htmlFor="cardName" className="PaymentCard__label">First Name</label>
+              <label htmlFor="cardName" className="PaymentCard__label">
+                First Name
+              </label>
               <input
                 id="cardName"
                 type="text"
@@ -71,7 +73,9 @@ const PaymentCard = ({
             </div>
             {/* Last Name */}
             <div className="PaymentCard__form-group">
-              <label htmlFor="cardSurname" className="PaymentCard__label">Last Name</label>
+              <label htmlFor="cardSurname" className="PaymentCard__label">
+                Last Name
+              </label>
               <input
                 id="cardSurname"
                 type="text"
@@ -86,7 +90,9 @@ const PaymentCard = ({
             </div>
             {/* Card Number */}
             <div className="PaymentCard__form-group">
-              <label htmlFor="cardNumber" className="PaymentCard__label">Card Number</label>
+              <label htmlFor="cardNumber" className="PaymentCard__label">
+                Card Number
+              </label>
               <div className="PaymentCard__input-wrapper PaymentCard__input-wrapper--icon">
                 <CiCreditCard1 className="PaymentCard__icon" />
                 <input
@@ -116,7 +122,11 @@ const PaymentCard = ({
                     className="PaymentCard__select"
                   >
                     <option value="">Month</option>
-                    {months.map((m) => (<option key={m} value={m}>{m}</option>))}
+                    {months.map((m) => (
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
+                    ))}
                   </select>
                   <select
                     value={expiryYear}
@@ -125,13 +135,22 @@ const PaymentCard = ({
                     className="PaymentCard__select"
                   >
                     <option value="">Year</option>
-                    {years.map((y) => (<option key={y} value={y}>{y}</option>))}
+                    {years.map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
-              {/* CVC and Promo Button */}
-              <div className="PaymentCard__form-group promo-group" style={{ position: 'relative' }}>
-                <label htmlFor="cvc" className="PaymentCard__label">CVC</label>
+              {/* CVC */}
+              <div
+                className="PaymentCard__form-group"
+                style={{ position: "relative" }}
+              >
+                <label htmlFor="cvc" className="PaymentCard__label">
+                  CVC
+                </label>
                 <input
                   id="cvc"
                   type="text"
@@ -146,58 +165,36 @@ const PaymentCard = ({
                   inputMode="numeric"
                   title="Only digits allowed."
                 />
-                <button
-                  type="button"
-                  className="apply-promo-btn"
-                  style={{
-                    position: 'absolute',
-                    top: '0',
-                    right: '-100px',
-                    width: '80px',
-                    height: '36px'
-                  }}
-                  onClick={() => setShowPromoModal(true)}
-                >Promo</button>
-                {showPromoModal && (
-                  <div className="promo-popup-overlay">
-                    <div className="promo-popup" role="dialog">
-                      <h3>Enter Promo Code</h3>
-                      <input
-                        type="text"
-                        className="promo-input"
-                        value={promoCode}
-                        onChange={(e) => setPromoCode(e.target.value)}
-                        placeholder="Promo code"
-                      />
-                      <div className="promo-popup-buttons">
-                        <button
-                          className="promo-apply-btn"
-                          onClick={() => setShowPromoModal(false)}
-                        >Apply</button>
-                        <button
-                          className="promo-cancel-btn"
-                          onClick={() => setShowPromoModal(false)}
-                        >Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </form>
         </div>
+
         {/* Accepted Payment Methods */}
         <div className="PaymentCard__acceptedWrapper">
           <div className="PaymentCard__accepted">
-            <h4 className="PaymentCard__accepted-title">We accept the following payment methods</h4>
+            <h4 className="PaymentCard__accepted-title">
+              We accept the following payment methods
+            </h4>
             <div className="PaymentCard__accepted-logos">
               <img src={visaLogo} alt="Visa" className="PaymentCard__logo" />
-              <img src={mastercardLogo} alt="MasterCard" className="PaymentCard__logo" />
-              <img src={amexLogo} alt="American Express" className="PaymentCard__logo" />
+              <img
+                src={mastercardLogo}
+                alt="MasterCard"
+                className="PaymentCard__logo"
+              />
+              <img
+                src={amexLogo}
+                alt="American Express"
+                className="PaymentCard__logo"
+              />
             </div>
           </div>
           <div className="PaymentCard__infoBox">
-            <p>Please note that your card must be activated for online use. If you receive an error message, please contact your bank.</p>
+            <p>
+              Please note that your card must be activated for online use. If
+              you receive an error message, please contact your bank.
+            </p>
           </div>
         </div>
       </div>
