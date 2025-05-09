@@ -10,4 +10,6 @@ public interface RoomImageRepository extends JpaRepository<RoomImage, Long> {
     // RoomImage.room.id alanına göre silme ve listeleme:
     void deleteByRoom_Id(Long roomId);
     List<RoomImage> findByRoom_Id(Long roomId);
+    RoomImage findByRoom_IdAndIsPrimary(Long roomId, boolean isPrimary);
+
 }

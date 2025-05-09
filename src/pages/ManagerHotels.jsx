@@ -27,19 +27,21 @@ const ManagerHotels = () => {
   const { t }   = useTranslation();
 
   /* ─────────── State ─────────── */
-  const [managerId, setManagerId]                       = useState(null);
-  const [hotels, setHotels]                             = useState([]);
-  const [editHotel, setEditHotel]                       = useState(null);
-  const [openModal, setOpenModal]                       = useState(false);
-  const [showAmenitySelector, setShowAmenitySelector]   = useState(false);
-  const [selectedAmenities, setSelectedAmenities]       = useState([]);
-  const [selectedImageFiles, setSelectedImageFiles]     = useState([]);
-  const [primaryImageIndex, setPrimaryImageIndex]       = useState(null);
-  const [existingImages, setExistingImages]             = useState([]);
-  const [primaryFromDb, setPrimaryFromDb]               = useState(null);
+  const [managerId, setManagerId]                         = useState(null);
+  const [hotels, setHotels]                               = useState([]);
+  const [editHotel, setEditHotel]                         = useState(null);
+  const [openModal, setOpenModal]                         = useState(false);
+  const [showAmenitySelector, setShowAmenitySelector]     = useState(false);
+  const [selectedAmenities, setSelectedAmenities]         = useState([]);
+  const [selectedImageFiles, setSelectedImageFiles]       = useState([]);
+  const [primaryImageIndex, setPrimaryImageIndex]         = useState(null);
+  const [existingImages, setExistingImages]               = useState([]);
+  const [primaryFromDb, setPrimaryFromDb]                 = useState(null);
 
-  const [rooms, setRooms]                               = useState([]);
-  const [showAddRoomForm, setShowAddRoomForm]           = useState(false);
+  const [rooms, setRooms]                                 = useState([]);
+  const [showAddRoomForm, setShowAddRoomForm]             = useState(false);
+  const [selectedRoomImageFiles, setSelectedRoomImageFiles] = useState([]);
+  const [primaryRoomImageIndex, setPrimaryRoomImageIndex] = useState(null);
 
   const emptyRoom = {
     name: "",
@@ -52,8 +54,8 @@ const ManagerHotels = () => {
     capacity: ""
   };
 
-  const [roomData, setRoomData]           = useState({ ...emptyRoom });
-  const [editingRoomId, setEditingRoomId] = useState(null);
+  const [roomData, setRoomData]             = useState({ ...emptyRoom });
+  const [editingRoomId, setEditingRoomId]   = useState(null);
   const [editingRoomData, setEditingRoomData] = useState({ ...emptyRoom });
 
   const [allAmenities, setAllAmenities] = useState([]);
@@ -124,19 +126,37 @@ const ManagerHotels = () => {
     }
     try {
       const payload = {
-        hotelId      : hotels[0].hotelId,
-        name         : roomData.name.trim(),
-        roomType     : roomData.roomType.trim(),
-        bedType      : roomData.bedType.trim(),
-        description  : roomData.description.trim(),
-        roomSize     : parseFloat(roomData.roomSize),
+        hotelId: hotels[0].hotelId,
+        name: roomData.name.trim(),
+        roomType: roomData.roomType.trim(),
+        bedType: roomData.bedType.trim(),
+        description: roomData.description.trim(),
+        roomSize: parseFloat(roomData.roomSize),
         pricePerNight: parseFloat(roomData.pricePerNight),
-        totalRooms   : parseInt(roomData.totalRooms, 10),
-        capacity     : parseInt(roomData.capacity, 10)
+        totalRooms: parseInt(roomData.totalRooms, 10),
+        capacity: parseInt(roomData.capacity, 10)
       };
       const res = await axios.post("http://localhost:8080/api/rooms", payload);
-      setRooms(prev => [...prev, res.data]);
+      const newRoom = res.data;
+
+      // Upload room images
+      for (let i = 0; i < selectedRoomImageFiles.length; i++) {
+        const file = selectedRoomImageFiles[i];
+        const form = new FormData();
+        form.append("roomId", newRoom.id);
+        form.append("isPrimary", i === primaryRoomImageIndex);
+        form.append("file", file);
+        await axios.post(
+          "http://localhost:8080/api/room-images/upload",
+          form,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+      }
+
+      setRooms(prev => [...prev, newRoom]);
       setRoomData({ ...emptyRoom });
+      setSelectedRoomImageFiles([]);
+      setPrimaryRoomImageIndex(null);
       setShowAddRoomForm(false);
     } catch (err) {
       console.error(err);
@@ -151,17 +171,34 @@ const ManagerHotels = () => {
     }
     try {
       const payload = {
-        hotelId      : hotels[0].hotelId,
-        name         : editingRoomData.name.trim(),
-        roomType     : editingRoomData.roomType.trim(),
-        bedType      : editingRoomData.bedType.trim(),
-        description  : editingRoomData.description.trim(),
-        roomSize     : parseFloat(editingRoomData.roomSize),
+        hotelId: hotels[0].hotelId,
+        name: editingRoomData.name.trim(),
+        roomType: editingRoomData.roomType.trim(),
+        bedType: editingRoomData.bedType.trim(),
+        description: editingRoomData.description.trim(),
+        roomSize: parseFloat(editingRoomData.roomSize),
         pricePerNight: parseFloat(editingRoomData.pricePerNight),
-        totalRooms   : parseInt(editingRoomData.totalRooms, 10),
-        capacity     : parseInt(editingRoomData.capacity, 10)
+        totalRooms: parseInt(editingRoomData.totalRooms, 10),
+        capacity: parseInt(editingRoomData.capacity, 10)
       };
       const res = await axios.put(`http://localhost:8080/api/rooms/${id}`, payload);
+
+      // Upload room images
+      for (let i = 0; i < selectedRoomImageFiles.length; i++) {
+        const file = selectedRoomImageFiles[i];
+        const form = new FormData();
+        form.append("roomId", id);
+        form.append("isPrimary", i === primaryRoomImageIndex);
+        form.append("file", file);
+        await axios.post(
+          "http://localhost:8080/api/room-images/upload",
+          form,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+      }
+
+      setSelectedRoomImageFiles([]);
+      setPrimaryRoomImageIndex(null);
       setRooms(prev => prev.map(r => (r.id === id ? res.data : r)));
       setEditingRoomId(null);
     } catch {
@@ -192,7 +229,7 @@ const ManagerHotels = () => {
     });
   };
 
-  /* ─────────── Hotel helpers (edit / save / delete / images) ─────────── */
+  /* ─────────── Hotel helpers ─────────── */
   const deleteExistingImage = async imageId => {
     try {
       await axios.delete(
@@ -369,14 +406,14 @@ const ManagerHotels = () => {
               variant="contained"
               onClick={openAddHotelModal}
               sx={{ backgroundColor: "#9C27B0", fontWeight: 700, px: 3, borderRadius: 2, boxShadow: 2 }}
-            >
+            >  
               {t("manager_hotels.add_hotel")}
             </Button>
           </Box>
         )}
 
         <Grid container spacing={4}>
-          {/* ---------- HOTEL CARD ---------- */}
+          {/* HOTEL CARD */}
           <Grid item xs={12} sm={6}>
             {!!hotels.length && (
               <Card sx={{ borderRadius: "50px", p: 3 }}>
@@ -397,7 +434,7 @@ const ManagerHotels = () => {
             )}
           </Grid>
 
-          {/* ---------- ROOM CARD ---------- */}
+          {/* ROOM CARD */}
           <Grid item xs={12} sm={6}>
             <Card sx={{ borderRadius: "50px", p: 3 }}>
               <CardContent>
@@ -410,40 +447,79 @@ const ManagerHotels = () => {
                   )}
                 </Box>
 
-                {/* ---------- ADD ROOM FORM ---------- */}
+                {/* ADD ROOM FORM */}
                 {showAddRoomForm && (
                   <Box mt={2} p={2} border="1px solid #ccc" borderRadius={2} display="flex" flexDirection="column" gap={1}>
                     <TextField label={t("manager_hotels.room_name")} value={roomData.name} onChange={e => setRoomData(p => ({ ...p, name: e.target.value }))} fullWidth size="small" />
                     <TextField label={t("manager_hotels.room_type")} value={roomData.roomType} onChange={e => setRoomData(p => ({ ...p, roomType: e.target.value }))} fullWidth size="small" />
-                    <TextField label={t("manager_hotels.bed_type") || "Bed Type"} value={roomData.bedType} onChange={e => setRoomData(p => ({ ...p, bedType: e.target.value }))} fullWidth size="small" />
-                    <TextField label={t("manager_hotels.room_description") || "Description"} value={roomData.description} onChange={e => setRoomData(p => ({ ...p, description: e.target.value }))} fullWidth multiline minRows={2} size="small" />
-                    <TextField label={t("manager_hotels.room_size") || "Room Size (m²)"} type="number" value={roomData.roomSize} onChange={e => setRoomData(p => ({ ...p, roomSize: e.target.value }))} fullWidth size="small" />
+                    <TextField label={t("manager_hotels.bed_type")} value={roomData.bedType} onChange={e => setRoomData(p => ({ ...p, bedType: e.target.value }))} fullWidth size="small" />
+                    <TextField label={t("manager_hotels.room_description")} value={roomData.description} onChange={e => setRoomData(p => ({ ...p, description: e.target.value }))} fullWidth multiline minRows={2} size="small" />
+                    <TextField label={t("manager_hotels.room_size")} type="number" value={roomData.roomSize} onChange={e => setRoomData(p => ({ ...p, roomSize: e.target.value }))} fullWidth size="small" />
                     <TextField label={t("manager_hotels.price")} type="number" value={roomData.pricePerNight} onChange={e => setRoomData(p => ({ ...p, pricePerNight: e.target.value }))} fullWidth size="small" />
                     <TextField label={t("manager_hotels.total_rooms")} type="number" value={roomData.totalRooms} onChange={e => setRoomData(p => ({ ...p, totalRooms: e.target.value }))} fullWidth size="small" />
                     <TextField label={t("manager_hotels.capacity")} type="number" value={roomData.capacity} onChange={e => setRoomData(p => ({ ...p, capacity: e.target.value }))} fullWidth size="small" />
+
+                    {/* Room image selector */}
+                    <Typography variant="subtitle2">{t("manager_hotels.select_images")}</Typography>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={e => {
+                        const files = [...e.target.files];
+                        setSelectedRoomImageFiles(files);
+                        setPrimaryRoomImageIndex(files.length ? 0 : null);
+                      }}
+                      style={{ marginTop: 8 }}
+                    />
+
                     <Box mt={1} display="flex" gap={1}>
                       <Button variant="contained" size="small" onClick={handleAddRoom}>{t("common.save")}</Button>
-                      <Button variant="outlined"  size="small" onClick={() => { setShowAddRoomForm(false); setRoomData({ ...emptyRoom }); }}>{t("common.cancel")}</Button>
+                      <Button variant="outlined" size="small" onClick={() => {
+                        setShowAddRoomForm(false);
+                        setRoomData({ ...emptyRoom });
+                        setSelectedRoomImageFiles([]);
+                        setPrimaryRoomImageIndex(null);
+                      }}>{t("common.cancel")}</Button>
                     </Box>
                   </Box>
                 )}
 
-                {/* ---------- LISTED ROOMS ---------- */}
+                {/* LISTED ROOMS */}
                 {rooms.map(room => (
                   <Box key={room.id} mt={2} p={2} border="1px solid #ccc" borderRadius={2} display="flex" flexDirection="column" gap={1}>
                     {editingRoomId === room.id ? (
                       <>
-                        <TextField label={t("manager_hotels.room_name")} value={editingRoomData.name}      onChange={e => setEditingRoomData(p => ({ ...p, name: e.target.value }))}       fullWidth size="small" />
-                        <TextField label={t("manager_hotels.room_type")} value={editingRoomData.roomType}  onChange={e => setEditingRoomData(p => ({ ...p, roomType: e.target.value }))}   fullWidth size="small" />
-                        <TextField label={t("manager_hotels.bed_type") || "Bed Type"} value={editingRoomData.bedType} onChange={e => setEditingRoomData(p => ({ ...p, bedType: e.target.value }))} fullWidth size="small" />
-                        <TextField label={t("manager_hotels.room_description") || "Description"} multiline minRows={2} value={editingRoomData.description} onChange={e => setEditingRoomData(p => ({ ...p, description: e.target.value }))} fullWidth size="small" />
-                        <TextField label={t("manager_hotels.room_size") || "Room Size (m²)"} type="number" value={editingRoomData.roomSize} onChange={e => setEditingRoomData(p => ({ ...p, roomSize: e.target.value }))} fullWidth size="small" />
+                        <TextField label={t("manager_hotels.room_name")} value={editingRoomData.name} onChange={e => setEditingRoomData(p => ({ ...p, name: e.target.value }))} fullWidth size="small" />
+                        <TextField label={t("manager_hotels.room_type")} value={editingRoomData.roomType} onChange={e => setEditingRoomData(p => ({ ...p, roomType: e.target.value }))} fullWidth size="small" />
+                        <TextField label={t("manager_hotels.bed_type")} value={editingRoomData.bedType} onChange={e => setEditingRoomData(p => ({ ...p, bedType: e.target.value }))} fullWidth size="small" />
+                        <TextField label={t("manager_hotels.room_description")} multiline minRows={2} value={editingRoomData.description} onChange={e => setEditingRoomData(p => ({ ...p, description: e.target.value }))} fullWidth size="small" />
+                        <TextField label={t("manager_hotels.room_size")} type="number" value={editingRoomData.roomSize} onChange={e => setEditingRoomData(p => ({ ...p, roomSize: e.target.value }))} fullWidth size="small" />
                         <TextField label={t("manager_hotels.price")} type="number" value={editingRoomData.pricePerNight} onChange={e => setEditingRoomData(p => ({ ...p, pricePerNight: e.target.value }))} fullWidth size="small" />
                         <TextField label={t("manager_hotels.total_rooms")} type="number" value={editingRoomData.totalRooms} onChange={e => setEditingRoomData(p => ({ ...p, totalRooms: e.target.value }))} fullWidth size="small" />
                         <TextField label={t("manager_hotels.capacity")} type="number" value={editingRoomData.capacity} onChange={e => setEditingRoomData(p => ({ ...p, capacity: e.target.value }))} fullWidth size="small" />
+
+                        {/* Room image selector for edit */}
+                        <Typography variant="subtitle2">{t("manager_hotels.select_images")}</Typography>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={e => {
+                            const files = [...e.target.files];
+                            setSelectedRoomImageFiles(files);
+                            setPrimaryRoomImageIndex(files.length ? 0 : null);
+                          }}
+                          style={{ marginTop: 8 }}
+                        />
+
                         <Box mt={1} display="flex" gap={1}>
                           <Button variant="contained" size="small" onClick={() => updateRoom(room.id)}>{t("common.save")}</Button>
-                          <Button variant="outlined"  size="small" onClick={() => setEditingRoomId(null)}>{t("common.cancel")}</Button>
+                          <Button variant="outlined" size="small" onClick={() => {
+                            setEditingRoomId(null);
+                            setSelectedRoomImageFiles([]);
+                            setPrimaryRoomImageIndex(null);
+                          }}>{t("common.cancel")}</Button>
                         </Box>
                       </>
                     ) : (
@@ -470,7 +546,7 @@ const ManagerHotels = () => {
           </Grid>
         </Grid>
 
-        {/* ---------- HOTEL MODAL ---------- */}
+        {/* HOTEL MODAL */}
         <Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth maxWidth="sm">
           <DialogTitle>
             {editHotel?.hotelId ? t("manager_hotels.edit_hotel") : t("manager_hotels.add_hotel")}
@@ -484,7 +560,8 @@ const ManagerHotels = () => {
             <TextField label="Latitude"  type="number" inputProps={{ step: "any" }} value={editHotel?.latitude ?? ""}  onChange={e => handleChange(e, "latitude")}  fullWidth margin="normal" />
             <TextField label="Longitude" type="number" inputProps={{ step: "any" }} value={editHotel?.longitude ?? ""} onChange={e => handleChange(e, "longitude")} fullWidth margin="normal" />
 
-            <Box marginY={2}><Typography variant="subtitle1">{t("manager_hotels.star_rating")}</Typography>
+            <Box marginY={2}>
+              <Typography variant="subtitle1">{t("manager_hotels.star_rating")}</Typography>
               <Rating value={Number(editHotel?.starRating)||0} onChange={(e, nv)=>setEditHotel(p=>({...p,starRating:nv}))} max={5}/>
             </Box>
 
@@ -509,8 +586,13 @@ const ManagerHotels = () => {
 
             <Box mt={3}>
               <Typography variant="subtitle1">{t("manager_hotels.select_images")}</Typography>
-              <input type="file" accept="image/*" multiple onChange={e=>{const files=[...e.target.files];setSelectedImageFiles(files);setPrimaryImageIndex(files.length?0:null);}}
-                     style={{marginTop:8,border:"1px solid #ccc",padding:8,borderRadius:4,width:"100%",background:"#f8f9fa",cursor:"pointer"}}/>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={e=>{const files=[...e.target.files];setSelectedImageFiles(files);setPrimaryImageIndex(files.length?0:null);}}
+                style={{marginTop:8,border:"1px solid #ccc",padding:8,borderRadius:4,width:"100%",background:"#f8f9fa",cursor:"pointer"}}
+              />
             </Box>
 
             {selectedImageFiles.length>0 && (
