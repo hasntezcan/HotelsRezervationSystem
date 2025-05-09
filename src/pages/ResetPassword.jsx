@@ -30,7 +30,8 @@ const ResetPassword = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
-      if (!res.ok) throw new Error(await res.text());
+      const text = await res.text();
+      if (!res.ok) throw new Error(text);
       setMessage(t('reset.success'));
     } catch (err) {
       setError(err.message || t('reset.errors.generic'));

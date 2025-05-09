@@ -16,7 +16,7 @@ const PaymentPay = ({ booking, guestInfo, cardInfo, onPaymentClick }) => {
   const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Promo code & discount logic moved here:
+  // Promo code & discount logic
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const handleApplyPromo = () => {
@@ -41,10 +41,10 @@ const PaymentPay = ({ booking, guestInfo, cardInfo, onPaymentClick }) => {
     roomId,
     startDate: checkInDate,
     endDate: checkOutDate,
-    totalAmount: netPrice, // before tax
+    totalAmount: netPrice,
   } = booking;
 
-  const { firstName, lastName } = guestInfo;
+  const { firstName, lastName, email, message } = guestInfo;
 
   useEffect(() => {
     async function fetchData() {
@@ -93,51 +93,67 @@ const PaymentPay = ({ booking, guestInfo, cardInfo, onPaymentClick }) => {
   const total = +(discountedNet + taxAmount).toFixed(2);
 
   const handlePayment = async () => {
-    await onPaymentClick(discountedNet);
-    const canvas = await html2canvas(invoiceRef.current, { scale: 2 });
-    const img = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "pt", "a4");
-    const w = pdf.internal.pageSize.getWidth();
-    const h = (canvas.height * w) / canvas.width;
-    pdf.addImage(img, "PNG", 0, 0, w, h);
-    window.open(URL.createObjectURL(pdf.output("blob")), "_blank");
-  };
+  // 1) Call your payment handler
+  await onPaymentClick(discountedNet);
+
+  // 2) Render invoice DOM to canvas
+  const canvas = await html2canvas(invoiceRef.current, { scale: 2 });
+  const img = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "pt", "a4");
+  const w = pdf.internal.pageSize.getWidth();
+  const h = (canvas.height * w) / canvas.width;
+  pdf.addImage(img, "PNG", 0, 0, w, h);
+
+  // 3) Extract PDF blob
+  const pdfBlob = pdf.output("blob");
+
+  // 4) Prepare FormData and send to backend
+  const formData = new FormData();
+  formData.append("file", pdfBlob, "invoice.pdf");
+  formData.append("email", email);
+  formData.append("firstName", firstName);
+  formData.append("lastName", lastName);
+  formData.append("message", message || "");  // ← BU SATIRI EKLEDIK
+
+  try {
+    await fetch("http://localhost:8080/api/email/send-invoice", {
+      method: "POST",
+      body: formData,
+    });
+    alert("Faturanız e-posta adresinize gönderildi.");
+  } catch (e) {
+    console.error("E-posta gönderilemedi:", e);
+    alert("Fatura gönderiminde hata oluştu.");
+  }
+
+  // 5) Optionally preview PDF
+  window.open(URL.createObjectURL(pdfBlob), "_blank");
+};
+
 
   return (
     <>
       <div className="paymentPay-container">
         <div className="paymentPay-card">
-          {/* Carousel */}
           {images.length > 0 && (
             <div className="paymentPay-carousel">
-              <button className="carousel-button prev" onClick={handlePrev}>
-                ❮
-              </button>
+              <button className="carousel-button prev" onClick={handlePrev}>❮</button>
               <img
                 src={currentImage}
                 alt={`${hotel.name} image`}
                 className="paymentPay-img"
               />
-              <button className="carousel-button next" onClick={handleNext}>
-                ❯
-              </button>
+              <button className="carousel-button next" onClick={handleNext}>❯</button>
             </div>
           )}
 
           <div className="paymentPay-content">
             <h3>{hotel.name}</h3>
             <p>{hotel.address}</p>
-            <p>
-              <strong>Check-in:</strong> {checkInDate}
-            </p>
-            <p>
-              <strong>Check-out:</strong> {checkOutDate}
-            </p>
-            <p>
-              <strong>Nights:</strong> {nights}
-            </p>
+            <p><strong>Check-in:</strong> {checkInDate}</p>
+            <p><strong>Check-out:</strong> {checkOutDate}</p>
+            <p><strong>Nights:</strong> {nights}</p>
 
-            {/* Promo Code Input */}
             <div className="paymentPay-promo">
               <input
                 type="text"
@@ -148,14 +164,9 @@ const PaymentPay = ({ booking, guestInfo, cardInfo, onPaymentClick }) => {
               <button onClick={handleApplyPromo}>Apply</button>
             </div>
 
-            {/* Price Summary */}
             <div className="paymentPay-summary">
-              <p>
-                <strong>Net Price:</strong> ${discountedNet.toFixed(2)}
-              </p>
-              <p>
-                <strong>Tax (10%):</strong> ${taxAmount.toFixed(2)}
-              </p>
+              <p><strong>Net Price:</strong> ${discountedNet.toFixed(2)}</p>
+              <p><strong>Tax (10%):</strong> ${taxAmount.toFixed(2)}</p>
             </div>
             <div className="paymentPay-price">
               <strong>Total:</strong> ${total.toFixed(2)}
@@ -171,17 +182,8 @@ const PaymentPay = ({ booking, guestInfo, cardInfo, onPaymentClick }) => {
       {/* Hidden Invoice Template */}
       <div
         ref={invoiceRef}
-        style={{
-          position: "absolute",
-          top: -9999,
-          left: -9999,
-          width: 600,
-          padding: 24,
-          background: "#fff",
-          fontFamily: "Arial, sans-serif",
-        }}
+        style={{ position: "absolute", top: -9999, left: -9999, width: 600, padding: 24, background: "#fff", fontFamily: "Arial, sans-serif" }}
       >
-        {/* Header */}
         <div style={{ position: "relative", marginBottom: 16 }}>
           <h1 style={{ margin: 0, fontSize: 34 }}>INVOICE</h1>
           <img
@@ -189,126 +191,40 @@ const PaymentPay = ({ booking, guestInfo, cardInfo, onPaymentClick }) => {
             alt="Logo"
             style={{ position: "absolute", top: 0, right: 0, height: 100 }}
           />
-          <address
-            style={{
-              position: "absolute",
-              top: 90,
-              right: 0,
-              fontSize: 12,
-              opacity: 0.8,
-              textAlign: "right",
-            }}
-          >
-            Cibali, Kadir Has Cd.<br />
-            34083 Cibali, İstanbul
+          <address style={{ position: "absolute", top: 90, right: 0, fontSize: 12, opacity: 0.8, textAlign: "right" }}>
+            Cibali, Kadir Has Cd.<br />34083 Cibali, İstanbul
           </address>
         </div>
-
-        {/* Meta */}
         <div style={{ marginBottom: 16, marginTop: 100 }}>
-          <p>
-            <strong>Invoice Date:</strong>{" "}
-            {new Date().toLocaleDateString()}
-          </p>
-          <p>
-            <strong>Tax Number:</strong> 12345678901
-          </p>
-          <p>
-            <strong>To:</strong> {firstName} {lastName}
-          </p>
-          <p>
-            <strong>Hotel Name:</strong> {hotel.name}
-          </p>
-          <p>
-            <strong>Check-in:</strong> {checkInDate}
-          </p>
-          <p>
-            <strong>Check-out:</strong> {checkOutDate}
-          </p>
-          <p>
-            <strong>Nights:</strong> {nights}
-          </p>
+          <p><strong>Invoice Date:</strong> {new Date().toLocaleDateString()}</p>
+          <p><strong>Tax Number:</strong> 12345678901</p>
+          <p><strong>To:</strong> {firstName} {lastName}</p>
+          <p><strong>Hotel Name:</strong> {hotel.name}</p>
+          <p><strong>Check-in:</strong> {checkInDate}</p>
+          <p><strong>Check-out:</strong> {checkOutDate}</p>
+          <p><strong>Nights:</strong> {nights}</p>
         </div>
-
-        {/* Table */}
-        <table
-          style={{ width: "100%", borderCollapse: "collapse" }}
-        >
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
-              <th
-                style={{
-                  border: "1px solid #ccc",
-                  padding: 8,
-                  background: "#f7f7f7",
-                }}
-              >
-                Description
-              </th>
-              <th
-                style={{
-                  border: "1px solid #ccc",
-                  padding: 8,
-                  textAlign: "right",
-                  background: "#f7f7f7",
-                }}
-              >
-                Amount
-              </th>
+              <th style={{ border: "1px solid #ccc", padding: 8, background: "#f7f7f7" }}>Description</th>
+              <th style={{ border: "1px solid #ccc", padding: 8, textAlign: "right", background: "#f7f7f7" }}>Amount</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td style={{ border: "1px solid #ccc", padding: 8 }}>
-                Room charge ({nights} nights × $
-                {(discountedNet / (nights || 1)).toFixed(2)})
+                Room charge ({nights} nights × ${(discountedNet / (nights || 1)).toFixed(2)})
               </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: 8,
-                  textAlign: "right",
-                }}
-              >
-                ${discountedNet.toFixed(2)}
-              </td>
+              <td style={{ border: "1px solid #ccc", padding: 8, textAlign: "right" }}>${discountedNet.toFixed(2)}</td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid #ccc", padding: 8 }}>
-                Tax (10%)
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: 8,
-                  textAlign: "right",
-                }}
-              >
-                ${taxAmount.toFixed(2)}
-              </td>
+              <td style={{ border: "1px solid #ccc", padding: 8 }}>Tax (10%)</td>
+              <td style={{ border: "1px solid #ccc", padding: 8, textAlign: "right" }}>${taxAmount.toFixed(2)}</td>
             </tr>
             <tr>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: 8,
-                  fontWeight: "bold",
-                  background: "#f0f4f8",
-                }}
-              >
-                Total
-              </td>
-              <td
-                style={{
-                  border: "1px solid #ccc",
-                  padding: 8,
-                  textAlign: "right",
-                  fontWeight: "bold",
-                  background: "#f0f4f8",
-                }}
-              >
-                ${total.toFixed(2)}
-              </td>
+              <td style={{ border: "1px solid #ccc", padding: 8, fontWeight: "bold", background: "#f0f4f8" }}>Total</td>
+              <td style={{ border: "1px solid #ccc", padding: 8, textAlign: "right", fontWeight: "bold", background: "#f0f4f8" }}>${total.toFixed(2)}</td>
             </tr>
           </tbody>
         </table>
