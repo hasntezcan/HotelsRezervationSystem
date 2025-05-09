@@ -4,10 +4,15 @@ import PaymentName from "./PaymentName";
 import PaymentRoom from "./PaymentRoom";
 import PaymentCard from "./PaymentCard";
 import PaymentPay from "./PaymentPay";
+import { useLayoutEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import "./../../styles/PaymentPage.css";
 
 const PaymentPage = () => {
+   // sayfa mount olduğunda en üste git
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+ }, []);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 

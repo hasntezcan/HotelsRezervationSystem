@@ -5,6 +5,7 @@ import visaLogo from "./../../assets/images/booking/visa.png";
 import mastercardLogo from "./../../assets/images/booking/mastercard.png";
 import amexLogo from "./../../assets/images/booking/americanExpress.png";
 
+
 const PaymentCard = ({
   cardName,
   setCardName,
