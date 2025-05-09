@@ -25,6 +25,7 @@
     "jspdf": "^3.0.1",
     "leaflet": "^1.9.4",
     "moment": "^2.30.1",
+    "pdfjs-dist": "^5.2.133",
     "rc-slider": "^11.1.8",
     "react": "^19.0.0",
     "react-calendar": "^5.1.0",
