@@ -70,7 +70,7 @@ const Sidebar = () => {
         </div>
       </div>
       <div className="language-section">
-        <LanguageSelector />
+        <LanguageSelector isSidebarOpen={isOpen} />
       </div>
       {menuItems.map((item, index) => (
         <NavLink

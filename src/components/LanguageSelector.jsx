@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import '../styles/LanguageSelector.css'; // Kesin bu yol doğru olsun
+import '../styles/LanguageSelector.css';
 
 const flagMap = {
   en: '/flags/en.png',
   tr: '/flags/tr.png'
 };
 
-const LanguageSelector = () => {
+const LanguageSelector = ({ isSidebarOpen }) => {
   const { i18n } = useTranslation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Dil değiştir
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     localStorage.setItem('selectedLanguage', lng);
@@ -20,28 +19,28 @@ const LanguageSelector = () => {
     setDropdownOpen(false);
   };
 
-  // Kaydetilmiş dili yükle
   useEffect(() => {
-    const saved = localStorage.getItem('selectedLanguage');
-    if (saved) i18n.changeLanguage(saved);
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if (savedLang) i18n.changeLanguage(savedLang);
   }, [i18n]);
 
-  // Dışarı tıklayınca menüyü kapat
   useEffect(() => {
-    const handler = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
-    <div className="language-dropdown-sidebar" ref={dropdownRef}>
-      {/* Buton */}
+    <div
+      className={`language-dropdown-sidebar ${!isSidebarOpen ? 'sidebar-closed' : ''}`}
+      ref={dropdownRef}
+    >
       <button
-        className="dropdown-toggle-sidebar"
+        className={`dropdown-toggle-sidebar ${!isSidebarOpen ? 'hide-arrow' : ''}`}
         onClick={() => setDropdownOpen(!dropdownOpen)}
       >
         <img
@@ -49,21 +48,22 @@ const LanguageSelector = () => {
           alt={i18n.language}
           className="flag-icon-sidebar"
         />
-        <span className="dropdown-label">
-          {i18n.language === 'tr' ? 'Türkçe' : 'English'}
-        </span>
+        {isSidebarOpen && (
+          <span className="dropdown-label">
+            {i18n.language === 'tr' ? 'Türkçe' : 'English'}
+          </span>
+        )}
       </button>
 
-      {/* Dropdown */}
       {dropdownOpen && (
-        <ul className="dropdown-menu-lang-sidebar">
+        <ul className={`dropdown-menu-lang-sidebar ${!isSidebarOpen ? 'sidebar-closed' : ''}`}>
           <li onClick={() => changeLanguage('en')}>
             <img src="/flags/en.png" alt="EN" className="flag-icon-sidebar" />
-            <span className="menu-label">English</span>
+            {isSidebarOpen && <span className="menu-label">English</span>}
           </li>
           <li onClick={() => changeLanguage('tr')}>
             <img src="/flags/tr.png" alt="TR" className="flag-icon-sidebar" />
-            <span className="menu-label">Türkçe</span>
+            {isSidebarOpen && <span className="menu-label">Türkçe</span>}
           </li>
         </ul>
       )}

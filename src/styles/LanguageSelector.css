@@ -1,93 +1,162 @@
-/* Container */
+/* Kapsayıcı */
 .language-dropdown-sidebar {
-    position: relative;
-    margin: 12px 16px;
-    z-index: 1000;
-  }
-  
-  /* ========= BUTON ========= */
-  .dropdown-toggle-sidebar {
-    width: 100%;
-    background-color: #2a9d8f;
-    color: white;
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    position: relative;      /* ok simgesi için */
-    display: flex;
-    align-items: center;      /* düşey ortala */
-    justify-content: center;  /* yazıyı ortaya al */
-    cursor: pointer;
-  }
-  
-  /* Butondaki bayrak */
-  .dropdown-toggle-sidebar .flag-icon-sidebar {
-    position: absolute;       /* en sola sabitle */
-    left: 12px;               /* butonun iç boşluğuna göre */
-    top: 50%;
-    transform: translateY(-50%);
-    width: 24px;
-    height: 24px;
-    object-fit: cover;
-    border-radius: 2px;
-  }
-  
+  position: relative;
+  margin: 12px 16px;
+  z-index: 1000;
+}
 
-  /* Butondaki ok simgesi */
-  .dropdown-toggle-sidebar::after {
-    content: "";
-    position: absolute;
-    right: 12px;
-    top: 60%;
-    transform: translateY(-50%);
-    border: 6px solid transparent;
-    border-top-color: white;
-    pointer-events: none;
-  }
-  
-  /* ========= DROPDOWN ========= */
-  .dropdown-menu-lang-sidebar {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    margin-top: 6px;
-    padding: 6px 0;
-    list-style: none;
-    z-index: 999;
-  }
-  
-  /* Dropdown öğesi */
-  .dropdown-menu-lang-sidebar li {
-    padding: 10px 14px;
-    display: flex;           /* flex ile hizala */
-    align-items: center;     /* düşey ortala */
-    gap: 10px;               /* bayrak ile yazı arası */
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #2a2a2a;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-  }
-  
-  /* Menüde hover efekti */
-  .dropdown-menu-lang-sidebar li:hover {
-    background-color: #f0f0f0;
-  }
-  
-  /* Dropdown bayrağı */
-  .dropdown-menu-lang-sidebar .flag-icon-sidebar {
-    position: static;       /* normal akışta */
-    width: 24px;
-    height: 24px;
-    object-fit: cover;
-    border-radius: 2px;
-  }
-  
+/* Dropdown butonu */
+.dropdown-toggle-sidebar {
+  width: 100%;
+  background-color: #2a9d8f;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  gap: 8px;
+}
 
-  
+/* Bayrak (buton içinde) */
+.dropdown-toggle-sidebar .flag-icon-sidebar {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* Etiket */
+.dropdown-toggle-sidebar .dropdown-label {
+  margin-left: 28px;
+  white-space: nowrap;
+}
+
+/* Ok simgesi */
+.dropdown-toggle-sidebar::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-top-color: white;
+  pointer-events: none;
+}
+
+/* Ok simgesi sidebar kapalıyken gizlenir */
+.dropdown-toggle-sidebar.hide-arrow::after {
+  display: none;
+}
+
+/* Etiket sidebar kapalıyken gizlenir */
+.dropdown-toggle-sidebar.hide-arrow .dropdown-label {
+  display: none;
+}
+
+/* Dropdown menüsü */
+.dropdown-menu-lang-sidebar {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  margin-top: 6px;
+  padding: 6px 0;
+  list-style: none;
+  z-index: 999;
+}
+
+/* Liste öğesi */
+.dropdown-menu-lang-sidebar li {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #2a2a2a;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Hover efekti */
+.dropdown-menu-lang-sidebar li:hover {
+  background-color: #f0f0f0;
+}
+
+/* Bayrak (dropdown menü içinde) */
+.dropdown-menu-lang-sidebar .flag-icon-sidebar {
+  position: static;
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+
+/* Sidebar kapalıyken buton daha dengeli görünsün */
+.language-dropdown-sidebar.sidebar-closed .dropdown-toggle-sidebar {
+  width: auto;
+  min-width: 48px;
+  height: 48px;
+  padding: 0 12px;
+  justify-content: center;
+}
+
+/* Sidebar kapalıyken dropdown menü sağa hizalı çıkar */
+.dropdown-menu-lang-sidebar.sidebar-closed {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 16px);         /* Butona göre sağdan 16px boşluk */
+  transform: translateY(-60%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 6px 8px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 999;
+  height: 48px;
+  width: auto;                    
+  max-width: none;               
+  gap: 12px;                      
+}
+
+/* Sidebar kapalıyken menüdeki öğeler sadeleşir */
+.dropdown-menu-lang-sidebar.sidebar-closed li {
+  padding: 0;
+  background-color: transparent;
+}
+
+/* Hover efekti devre dışı */
+.dropdown-menu-lang-sidebar.sidebar-closed li:hover {
+  background-color: transparent;
+}
+
+/* Sidebar kapalıyken bayrak boyutu */
+.dropdown-menu-lang-sidebar.sidebar-closed .flag-icon-sidebar {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Sidebar kapalıyken menü yazıları görünmesin */
+.dropdown-menu-lang-sidebar.sidebar-closed .menu-label {
+  display: none;
+}
+
