@@ -103,35 +103,89 @@ public class AuthController {
 
     // Forgot-password: e-posta varsa token oluştur, mail gönder
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> body) {
-        String email = body.get("email");
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email address.");
-        }
-        String token = UUID.randomUUID().toString();
-        tokenStore.put(token, email);
-        String resetLink = "http://localhost:5173/new-password?token=" + token;
-        try {
-            MimeMessage mime = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mime, true, "UTF-8");
-            helper.setFrom(fromEmail);
-            helper.setTo(email);
-            helper.setSubject("Şifre Sıfırlama İsteği");
-            String html = String.format(
-                "<p>Merhaba,</p>" +
-                "<p>Şifrenizi sıfırlamak için <a href=\"%s\">buraya tıklayın</a>.</p>" +
-                "<p>Bu link 30 dakika içinde geçerlidir.</p>",
-                resetLink
-            );
-            helper.setText(html, true);
-            mailSender.send(mime);
-        } catch (Exception e) {
-            logger.error("Error sending reset email", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending email.");
-        }
-        return ResponseEntity.ok("Reset instructions sent.");
+public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> body) {
+    String email = body.get("email");
+    Optional<User> userOpt = userRepository.findByEmail(email);
+    if (userOpt.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email address.");
     }
+    String token = UUID.randomUUID().toString();
+    tokenStore.put(token, email);
+    String resetLink = "http://localhost:5173/new-password?token=" + token;
+
+    try {
+        MimeMessage mime = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mime, true, "UTF-8");
+        helper.setFrom(fromEmail);
+        helper.setTo(email);
+        helper.setSubject("Şifre Sıfırlama İsteği");
+
+        String html = """
+            <html>
+            <head>
+              <style>
+                .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                  font-family: Arial, sans-serif;
+                  background-color: #f9f9f9;
+                  border: 1px solid #e0e0e0;
+                  border-radius: 8px;
+                }
+                h1 {
+                  color: #333333;
+                  font-size: 24px;
+                  text-align: center;
+                }
+                p {
+                  color: #555555;
+                  line-height: 1.5;
+                }
+                .button {
+                  display: inline-block;
+                  margin: 20px auto;
+                  padding: 12px 24px;
+                  font-size: 16px;
+                  color: #ffffff !important;
+                  background-color: #007bff;
+                  text-decoration: none;
+                  border-radius: 5px;
+                }
+                .footer {
+                  margin-top: 30px;
+                  font-size: 12px;
+                  color: #999999;
+                  text-align: center;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <h1>Şifre Sıfırlama</h1>
+                <p>Merhaba,</p>
+                <p>Şifrenizi sıfırlamak için aşağıdaki butona tıklayın:</p>
+                <p style="text-align:center;">
+                  <a href="%s" class="button">Şifreni Yenile</a>
+                </p>
+                <p>Bu link 30 dakika içinde geçerlidir.</p>
+                <div class="footer">
+                  Eğer bu isteği siz yapmadıysanız, bu e-postayı göz ardı edebilirsiniz.
+                </div>
+              </div>
+            </body>
+            </html>
+            """.formatted(resetLink);
+
+        helper.setText(html, true);
+        mailSender.send(mime);
+    } catch (Exception e) {
+        logger.error("Error sending reset email", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending email.");
+    }
+    return ResponseEntity.ok("Reset instructions sent.");
+}
+
 
     // Reset-password: token kontrol, şifre güncelle
     @PostMapping("/reset-password")
@@ -216,4 +270,16 @@ public class AuthController {
         request.getSession().invalidate();
         return ResponseEntity.ok("User logged out successfully.");
     }
+
+    // Token geçerliliğini kontrol eden endpoint
+@GetMapping("/validate-reset-token")
+public ResponseEntity<String> validateResetToken(@RequestParam String token) {
+    if (tokenStore.containsKey(token)) {
+        return ResponseEntity.ok("Valid");
+    } else {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body("Invalid or expired token.");
+    }
+}
+
 }
