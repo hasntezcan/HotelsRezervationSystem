@@ -1,13 +1,4 @@
-#root {
-    --primary-color     : #ff7e01;
-    --secondary-color   : #faa935;
-    --heading-color     : #0b2727;
-    --text-color        : #6e7074;
-    --font-name         : "Montserrat", sans-serif;
-    --subtitle-font-name: "Island Moments", cursive;
- }
 
- /* Leaflet kontrol düğmelerinin z-index’ini düşür */
 .leaflet-top.leaflet-left,
 .leaflet-top.leaflet-right,
 .leaflet-bottom.leaflet-left,

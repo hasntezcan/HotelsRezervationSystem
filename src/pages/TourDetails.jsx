@@ -12,6 +12,7 @@ import HotelGallery from '../shared/HotelGallery';
 import { useTranslation } from 'react-i18next';
 import MapView from '../components/MapView';
 import { getAmenityIcon } from '../assets/data/amenityIconConfig';
+import LoadingSpinner from '../shared/Loading/Spinner';
 
 const TourDetails = () => {
   const { id } = useParams();
@@ -92,7 +93,24 @@ const TourDetails = () => {
     if (!isNaN(children)) setInitialChildren(children);
   }, [location.search]);
 
-  if (!tour) return <h4>Loading hotel data...</h4>;
+  /* if tour not found call loading sping for 2 second and then if not found direct it to last hotel id*/
+      // just use timestapeout for 2 second then write no tour found
+   const [loading, setLoading] = useState(true);
+   useEffect(() => {
+     const timer = setTimeout(() => {
+       setLoading(false);
+     }, 200);
+     return () => clearTimeout(timer);
+   }, []);
+   if (loading) {
+     return <LoadingSpinner />;
+   }else if (!tour) {
+      return <h4>{t('specific hotel is not found')}</h4>;
+    }
+  // Check if tour is null and show loading spinner
+  
+  // Check if tour is still null after loading spinner
+
 
   const { name, description: desc, pricePerNight: price, city, address, amenities } = tour;
 

@@ -265,7 +265,7 @@ const Hotels = () => {
             ) : (
               <MapView
                 center={[hotels[0].latitude, hotels[0].longitude]}
-                zoom={selectedCity ? 12 : 2}
+                zoom={selectedCity ? 12 : 13}
                 markers={markers}
                 
               />

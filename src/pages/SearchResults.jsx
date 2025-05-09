@@ -9,6 +9,7 @@ import TourCard from "../shared/TourCard";
 import Newsletter from "../shared/Newsletter";
 import SearchBar from "../shared/SearchBar";
 import MapView from "../components/MapView";
+import LoadingSpinner from "../shared/Loading/Spinner";
 
 const SearchResults = () => {
   const { t } = useTranslation();
@@ -111,9 +112,7 @@ const SearchResults = () => {
             </Col>
 
             {loading ? (
-              <Col lg="12">
-                <h5 className="text-center">{t("search_results.loading")}</h5>
-              </Col>
+              <LoadingSpinner />
             ) : filteredHotels.length > 0 ? (
               filteredHotels.map((hotel) => (
                 <Col lg="3" md="4" sm="6" className="mb-4" key={hotel.hotelId}>
