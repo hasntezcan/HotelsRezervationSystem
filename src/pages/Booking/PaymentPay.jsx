@@ -20,9 +20,16 @@ const PaymentPay = ({ booking, guestInfo, cardInfo, onPaymentClick }) => {
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const handleApplyPromo = () => {
-    if (promoCode.trim().toUpperCase() === "KHAS10") {
+    const code = promoCode.trim().toUpperCase();
+    if (code === "KHAS10") {
       setDiscount(0.10);
-      alert("Promo code applied!");
+      alert("Promo code applied! 10% discount");
+    } else if (code === "KHAS20") {
+      setDiscount(0.20);
+      alert("Promo code applied! 20% discount");
+    } else if (code === "SPECIAL30") {
+      setDiscount(0.30);
+      alert("Promo code applied! 30% discount");
     } else {
       setDiscount(0);
       alert("Invalid promo code.");
