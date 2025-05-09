@@ -5,6 +5,7 @@ import PrivateRoute from '../components/PrivateRoute';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import ResetPassword from '../pages/ResetPassword';
+import NewPassword from '../pages/NewPassword';  // ← Yeni satır
 import Home from '../pages/Home';
 import About from '../pages/About';
 import Contact from '../pages/Contact';
@@ -36,6 +37,7 @@ const Routers = () => (
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
     <Route path="/reset-password" element={<ResetPassword />} />
+    <Route path="/new-password" element={<NewPassword />} />  {/* ← Yeni rota */}
 
     {/* User-only */}
     <Route element={<PrivateRoute denyRoles={['admin','manager']} />}>
@@ -74,7 +76,7 @@ const Routers = () => (
       </Route>
     </Route>
 
-    {/* Hiçbir rota eşleşmezse login */}
+    {/* Hiçbir rota eşleşmezse home */}
     <Route path="*" element={<Navigate to="/home" replace />} />
   </Routes>
 );

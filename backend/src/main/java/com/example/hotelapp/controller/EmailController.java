@@ -9,10 +9,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.HtmlUtils;  // ← BUNU EKLE
+import org.springframework.web.util.HtmlUtils;
 
 @RestController
 @RequestMapping("/api/email")
+@CrossOrigin(origins = "http://localhost:5173")
 public class EmailController {
 
     @Autowired
@@ -21,6 +22,9 @@ public class EmailController {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+    /**
+     * Fatura e-postası gönderir. Multipart/form-data ile email, isim, mesaj ve PDF bekler.
+     */
     @PostMapping(
         path = "/send-invoice",
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE
@@ -45,12 +49,15 @@ public class EmailController {
                 ? "<p><strong>Mesajınız:</strong> " + HtmlUtils.htmlEscape(message) + "</p>"
                 : "";
 
-            String body = """
-                <p>Merhaba <strong>%s %s</strong>,</p>
-                %s
-                <p>Bizi tercih ettiğiniz için teşekkür ederiz. Rezervasyon bilgileriniz faturanızın içindedir. Faturanız ektedir.</p>
-                <p>Sevgilerle,<br/>Stayinn</p>
-                """.formatted(firstName, lastName, userMsgHtml);
+            String body = String.format(
+                "<p>Merhaba <strong>%s %s</strong>,</p>" +
+                "%s" +
+                "<p>Bizi tercih ettiğiniz için teşekkür ederiz. Rezervasyon bilgileriniz faturanızın içindedir. Faturanız ektedir.</p>" +
+                "<p>Sevgilerle,<br/>Stayinn</p>",
+                HtmlUtils.htmlEscape(firstName),
+                HtmlUtils.htmlEscape(lastName),
+                userMsgHtml
+            );
 
             helper.setText(body, true);
             helper.addAttachment("invoice.pdf", file);
