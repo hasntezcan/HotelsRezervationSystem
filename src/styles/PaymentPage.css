@@ -430,53 +430,7 @@ label {
   }
 }
 /* Carousel container sadece görseli kapsasın */
-.paymentPay-carousel {
-  position: relative;
-  width: 100%;
-  /* istersenize sabit bir yükseklik verebilirsiniz,
-     örneğin height: 200px; ama genellikle img kendisi yeterli */
-}
 
-/* Resim tam sığsın */
-.paymentPay-carousel img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-/* Ok butonlarının ortak stili */
-.paymentPay-carousel .carousel-button {
-  position: absolute;
-  top: 50%;                      /* dikeyde ortala */
-  transform: translateY(-50%);   /* ortalamayı tamamla */
-  background-color: rgba(0, 0, 0, 0.5);
-  border: none;
-  color: #fff;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;                    /* kesinlikle resmin üstünde olsun */
-  transition: background-color 0.2s;
-}
-
-/* Hover efekti */
-.paymentPay-carousel .carousel-button:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-/* Sol ok */
-.paymentPay-carousel .carousel-button.prev {
-  left: 12px;    /* biraz içten */
-}
-
-/* Sağ ok */
-.paymentPay-carousel .carousel-button.next {
-  right: 12px;   /* biraz içten */
-}
 .apply-promo-btn {
   width: 100%;
   height: 36px;
@@ -557,4 +511,42 @@ label {
 }
 .promo-cancel-btn:hover {
   opacity: 0.9;
+}
+/* Carousel dış kabı: mutlaka bir yükseklik veriyoruz */
+.paymentPay-carousel {
+  position: relative;
+  width: 100%;
+  height: 200px;           /* İstediğiniz yüksekliği ayarlayın */
+  overflow: hidden;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+/* Resim konteyner’i dolduracak */
+.paymentPay-carousel .paymentPay-img {
+  display: block;          /* inline <img> default’unu kaldır */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;       /* orantılı kırpma / doldurma */
+}
+
+/* Navigasyon ok butonlarını resmin üstüne yerleştir */
+.paymentPay-carousel .carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1;
+}
+.paymentPay-carousel .carousel-button.prev {
+  left: 12px;
+}
+.paymentPay-carousel .carousel-button.next {
+  right: 12px;
 }

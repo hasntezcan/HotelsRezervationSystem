@@ -28,6 +28,7 @@ import PrivateRoute from '../components/PrivateRoute';
 import ManagerRoute from '../components/ManagerRoute';
 import AdminRoute from '../components/AdminRoute';
 import ResetPassword from '../pages/ResetPassword.jsx';
+import Invoice from '../components/Invoice/InvoicePage.tsx';
 
 const Routers = () => {
   return (
@@ -45,6 +46,7 @@ const Routers = () => {
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/search-results" element={<SearchResults />} />
       <Route path="/payment" element={<PaymentPage />} />
+      <Route path="/invoice" element={<Invoice />} />
       <Route path="/profile" element={<Profile />}>
         <Route index element={<Overview />} />
         <Route path="bookings" element={<ProfileBookings />} />
