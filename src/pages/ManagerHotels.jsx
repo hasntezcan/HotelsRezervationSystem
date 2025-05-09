@@ -58,9 +58,11 @@ const ManagerHotels = () => {
   const [editingRoomId, setEditingRoomId]   = useState(null);
   const [editingRoomData, setEditingRoomData] = useState({ ...emptyRoom });
 
-  const [allAmenities, setAllAmenities] = useState([]);
+  // Yeni: mevcut oda görselleri
   const [existingRoomImages, setExistingRoomImages] = useState([]);
-  const [primaryRoomFromDb,   setPrimaryRoomFromDb] = useState(null);
+  const [primaryRoomFromDb, setPrimaryRoomFromDb]   = useState(null);
+
+  const [allAmenities, setAllAmenities] = useState([]);
 
   /* ─────────── Effects ─────────── */
   useEffect(() => {
@@ -166,50 +168,64 @@ const ManagerHotels = () => {
     }
   };
 
-  const updateRoom = async id => {
+  const updateRoom = async (id) => {
     if (roomRequired(editingRoomData)) {
       alert("Please fill in all room details before saving.");
       return;
     }
-     try {
-    const res = await axios.put(`http://localhost:8080/api/rooms/${id}`, payload);
-
-    // Upload new images
-    for (let i = 0; i < selectedRoomImageFiles.length; i++) {
-      const file = selectedRoomImageFiles[i];
-      const form = new FormData();
-      form.append("roomId", id);
-      form.append("isPrimary", i === primaryRoomImageIndex);
-      form.append("file", file);
-      await axios.post(
-        "http://localhost:8080/api/room-images/upload",
-        form,
-        { headers: { "Content-Type": "multipart/form-data" } }
+    try {
+      const payload = {
+        hotelId: hotels[0].hotelId,
+        name: editingRoomData.name.trim(),
+        roomType: editingRoomData.roomType.trim(),
+        bedType: editingRoomData.bedType.trim(),
+        description: editingRoomData.description.trim(),
+        roomSize: parseFloat(editingRoomData.roomSize),
+        pricePerNight: parseFloat(editingRoomData.pricePerNight),
+        totalRooms: parseInt(editingRoomData.totalRooms, 10),
+        capacity: parseInt(editingRoomData.capacity, 10)
+      };
+      const res = await axios.put(
+        `http://localhost:8080/api/rooms/${id}`,
+        payload
       );
+
+      // Upload new images
+      for (let i = 0; i < selectedRoomImageFiles.length; i++) {
+        const file = selectedRoomImageFiles[i];
+        const form = new FormData();
+        form.append("roomId", id);
+        form.append("isPrimary", i === primaryRoomImageIndex);
+        form.append("file", file);
+        await axios.post(
+          "http://localhost:8080/api/room-images/upload",
+          form,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+      }
+
+      // Eğer yeni yükleme yoksa, DB'den gelen birinciliği koru
+      if (!selectedRoomImageFiles.length && primaryRoomFromDb) {
+        await axios.patch(
+          `http://localhost:8080/api/room-images/${primaryRoomFromDb}/primary`,
+          {},
+          { headers: { Authorization: `Bearer ${user.token}` } }
+        ).catch(console.error);
+      }
+
+      setSelectedRoomImageFiles([]);
+      setPrimaryRoomImageIndex(null);
+      setExistingRoomImages([]);
+      setPrimaryRoomFromDb(null);
+      setEditingRoomId(null);
+      setRooms(prev => prev.map(r => (r.id === id ? res.data : r)));
+    } catch (err) {
+      console.error("Error updating room:", err);
+      alert("Room update failed");
     }
+  };
 
-    // Update primary status if no new images were uploaded
-    if (!selectedRoomImageFiles.length && primaryRoomFromDb) {
-  await axios.patch(
-    `/api/room-images/${primaryRoomFromDb}/primary`,
-    {},
-    { headers: { Authorization: `Bearer ${user.token}` } }
-  );
-}
-
-    setSelectedRoomImageFiles([]);
-    setPrimaryRoomImageIndex(null);
-    setExistingRoomImages([]);
-    setPrimaryRoomImageFromDb(null);
-    setRooms(prev => prev.map(r => (r.id === id ? res.data : r)));
-    setEditingRoomId(null);
-  } catch (err) {
-    console.error("Error updating room:", err);
-    alert("Room update failed");
-  }
-};
-
-  const deleteRoomRemote = async id => {
+  const deleteRoomRemote = async (id) => {
     try {
       await axios.delete(`http://localhost:8080/api/rooms/${id}`);
       setRooms(prev => prev.filter(r => r.id !== id));
@@ -218,33 +234,34 @@ const ManagerHotels = () => {
     }
   };
 
-  const startEditRoom = async room => {
-  setEditingRoomId(room.id);
-  setEditingRoomData({
-    name         : room.name,
-    roomType     : room.roomType,
-    bedType      : room.bedType,
-    description  : room.description,
-    roomSize     : room.roomSize,
-    pricePerNight: room.pricePerNight,
-    totalRooms   : room.totalRooms,
-    capacity     : room.capacity
-  });
+  const startEditRoom = async (room) => {
+    setEditingRoomId(room.id);
+    setEditingRoomData({
+      name: room.name,
+      roomType: room.roomType,
+      bedType: room.bedType,
+      description: room.description,
+      roomSize: room.roomSize,
+      pricePerNight: room.pricePerNight,
+      totalRooms: room.totalRooms,
+      capacity: room.capacity
+    });
 
-  // Fetch room images
-  try {
-    const res = await axios.get(`/api/room-images/${room.id}`);
-    setExistingRoomImages(res.data);
-    const primaryImg = res.data.find(img => img.primary);
-    setPrimaryRoomFromDb(primaryImg?.imageId ?? null);   // <-- burası
-  } catch {
-    setExistingRoomImages([]);
-    setPrimaryRoomFromDb(null);                          // <-- ve burası
-  }
-};
+    // Mevcut oda görsellerini çek
+    try {
+      const res = await axios.get(`http://localhost:8080/api/room-images/${room.id}`);
+      setExistingRoomImages(res.data);
+      const primaryImg = res.data.find(img => img.primary);
+      setPrimaryRoomFromDb(primaryImg?.imageId ?? null);
+    } catch (err) {
+      console.error("Error fetching room images:", err);
+      setExistingRoomImages([]);
+      setPrimaryRoomFromDb(null);
+    }
+  };
 
   /* ─────────── Hotel helpers ─────────── */
-  const deleteExistingImage = async imageId => {
+  const deleteExistingImage = async (imageId) => {
     try {
       await axios.delete(
         `http://localhost:8080/api/hotel-images/${imageId}`,
@@ -267,7 +284,7 @@ const ManagerHotels = () => {
     setOpenModal(true);
   };
 
-  const handleEdit = async hotel => {
+  const handleEdit = async (hotel) => {
     setSelectedAmenities(
       hotel.amenities ? hotel.amenities.split(",").map(a => a.trim()) : []
     );
@@ -288,7 +305,7 @@ const ManagerHotels = () => {
     setOpenModal(true);
   };
 
-  const deleteHotel = async hotelId => {
+  const deleteHotel = async (hotelId) => {
     try {
       await axios.delete(`http://localhost:8080/api/hotels/${hotelId}`);
       setHotels(prev => prev.filter(h => h.hotelId !== hotelId));
@@ -324,7 +341,7 @@ const ManagerHotels = () => {
       name          : editHotel.name.trim(),
       city          : editHotel.city.trim(),
       country       : editHotel.country.trim(),
-      address       : editHotel.address.trim(),
+     	address       : editHotel.address.trim(),
       pricePerNight : editHotel.pricePerNight || 0,
       capacity      : editHotel.capacity || 0,
       amenities     : selectedAmenities.join(", "),
@@ -461,43 +478,63 @@ const ManagerHotels = () => {
                   )}
                 </Box>
 
+
                 {/* ADD ROOM FORM */}
                 {showAddRoomForm && (
                   <Box mt={2} p={2} border="1px solid #ccc" borderRadius={2} display="flex" flexDirection="column" gap={1}>
                     <TextField label={t("manager_hotels.room_name")} value={roomData.name} onChange={e => setRoomData(p => ({ ...p, name: e.target.value }))} fullWidth size="small" />
                     <TextField label={t("manager_hotels.room_type")} value={roomData.roomType} onChange={e => setRoomData(p => ({ ...p, roomType: e.target.value }))} fullWidth size="small" />
-                    <TextField label={t("manager_hotels.bed_type")} value={roomData.bedType} onChange={e => setRoomData(p => ({ ...p, bedType: e.target.value }))} fullWidth size="small" />
-                    <TextField label={t("manager_hotels.room_description")} value={roomData.description} onChange={e => setRoomData(p => ({ ...p, description: e.target.value }))} fullWidth multiline minRows={2} size="small" />
-                    <TextField label={t("manager_hotels.room_size")} type="number" value={roomData.roomSize} onChange={e => setRoomData(p => ({ ...p, roomSize: e.target.value }))} fullWidth size="small" />
+                    <TextField label={t("Bed Type")} value={roomData.bedType} onChange={e => setRoomData(p => ({ ...p, bedType: e.target.value }))} fullWidth size="small" />
+                    <TextField label={t("Description")} value={roomData.description} onChange={e => setRoomData(p => ({ ...p, description: e.target.value }))} fullWidth multiline minRows={2} size="small" />
+                    <TextField label={t("Room Size")} type="number" value={roomData.roomSize} onChange={e => setRoomData(p => ({ ...p, roomSize: e.target.value }))} fullWidth size="small" />
                     <TextField label={t("manager_hotels.price")} type="number" value={roomData.pricePerNight} onChange={e => setRoomData(p => ({ ...p, pricePerNight: e.target.value }))} fullWidth size="small" />
                     <TextField label={t("manager_hotels.total_rooms")} type="number" value={roomData.totalRooms} onChange={e => setRoomData(p => ({ ...p, totalRooms: e.target.value }))} fullWidth size="small" />
-                    <TextField label={t("manager_hotels.capacity")} type="number" value={roomData.capacity} onChange={e => setRoomData(p => ({ ...p, capacity: e.target.value }))} fullWidth size="small" />
+                    <TextField label={t("Capacity")} type="number" value={roomData.capacity} onChange={e => setRoomData(p => ({ ...p, capacity: e.target.value }))} fullWidth size="small" />
 
                     {/* Room image selector */}
-                    
-
-<Box mt={3}>
-  <Typography variant="subtitle2">{t("Select Image")}</Typography>
-  <input
-    type="file"
-    accept="image/*"
-    multiple
-    onChange={e => {
-      const files = [...e.target.files];
-      setSelectedRoomImageFiles(files);
-      setPrimaryRoomImageIndex(files.length ? 0 : null);
-    }}
-    style={{
-      marginTop: 8,
-      border: "1px solid #ccc",
-      padding: 8,
-      borderRadius: 4,
-      width: "100%",
-      background: "#f8f9fa",
-      cursor: "pointer"
-    }}
-  />
-</Box>
+                    <Box mt={3}>
+                      <Typography variant="subtitle2">{t("Select Image")}</Typography>
+                      <input
+  type="file"
+  accept="image/*"
+  multiple
+  onChange={e => {
+    const files = [...e.target.files];
+    setSelectedRoomImageFiles(files);
+    setPrimaryRoomImageIndex(files.length ? 0 : null);
+  }}
+  style={{
+    marginTop: 8,
+    border: "2px dashed #9C27B0",
+    padding: "12px 16px",
+    borderRadius: "8px",
+    width: "100%",
+    background: "#f8f9fa",
+    cursor: "pointer",
+    color: "#666",
+    fontSize: "14px",
+    transition: "all 0.3s ease",
+    "&:hover": {
+      borderColor: "#7B1FA2",
+      backgroundColor: "#F3E5F5"
+    },
+    "&::-webkit-file-upload-button": {
+      backgroundColor: "#9C27B0",
+      color: "white",
+      padding: "8px 16px",
+      border: "none",
+      borderRadius: "4px",
+      marginRight: "12px",
+      cursor: "pointer",
+      fontSize: "14px",
+      transition: "background-color 0.3s ease",
+      "&:hover": {
+        backgroundColor: "#7B1FA2"
+      }
+    }
+  }}
+/>
+                    </Box>
 
 {selectedRoomImageFiles.length > 0 && (
   <Box mt={2}>
@@ -562,68 +599,49 @@ const ManagerHotels = () => {
   </Box>
 )}
 {existingRoomImages.length > 0 && (
-  <Box mt={3}>
-    <Typography variant="subtitle1">{t("Existing Images")}</Typography>
-    {existingRoomImages.map(img => (
-      <Box key={img.imageId} display="flex" alignItems="center" mb={1}>
-        <input 
-          type="radio" 
-          name="primaryExistingRoom" 
-          checked={primaryRoomImageFromDb === img.imageId} 
-          onChange={() => setPrimaryRoomImageFromDb(img.imageId)}
-          style={{
-            cursor: "pointer",
-            accentColor: "#9C27B0"
-          }}
-        />
-        <img 
-          src={`http://localhost:8080${img.imageUrl}`} 
-          alt="" 
-          style={{
-            width: 60,
-            height: 40,
-            objectFit: "cover",
-            marginLeft: 8,
-            borderRadius: 4
-          }}
-        />
-        <Typography 
-          ml={1} 
-          variant="body2" 
-          sx={{
-            flex: 1,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap"
-          }}
-        >
-          {img.imageUrl.split("/").pop()}
-        </Typography>
-        <IconButton 
-          size="small"
-          onClick={async () => {
-            try {
-              await axios.delete(`http://localhost:8080/api/room-images/${img.imageId}`);
-              setExistingRoomImages(prev => prev.filter(i => i.imageId !== img.imageId));
-              if (primaryRoomImageFromDb === img.imageId) {
-                setPrimaryRoomImageFromDb(null);
-              }
-            } catch (err) {
-              console.error("Error deleting room image:", err);
-              alert("Failed to delete image");
-            }
-          }}
-          sx={{
-            color: "#f44336",
-            "&:hover": { bgcolor: "rgba(244,67,54,0.04)" }
-          }}
-        >
-          <CloseIcon fontSize="small"/>
-        </IconButton>
-      </Box>
-    ))}
-  </Box>
-)}
+                          <Box mt={3}>
+                            <Typography variant="subtitle1">Existing Room Images</Typography>
+                            {existingRoomImages.map(img => (
+                              <Box key={img.imageId} display="flex" alignItems="center" mb={1}>
+                                <input
+                                  type="radio"
+                                  name="primaryExistingRoom"
+                                  checked={primaryRoomFromDb === img.imageId}
+                                  onChange={() => setPrimaryRoomFromDb(img.imageId)}
+                                  style={{ cursor: "pointer", accentColor: "#9C27B0" }}
+                                />
+                                <img
+                                  src={`http://localhost:8080${img.imageUrl}`}
+                                  alt=""
+                                  style={{ width: 60, height: 40, objectFit: "cover", marginLeft: 8, borderRadius: 4 }}
+                                />
+                                <Typography
+                                  ml={1}
+                                  variant="body2"
+                                  sx={{ flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}
+                                >
+                                  {img.imageUrl.split("/").pop()}
+                                </Typography>
+                                <IconButton
+                                  size="small"
+                                  onClick={async () => {
+                                    try {
+                                      await axios.delete(`http://localhost:8080/api/room-images/${img.imageId}`);
+                                      setExistingRoomImages(prev => prev.filter(i => i.imageId !== img.imageId));
+                                      if (primaryRoomFromDb === img.imageId) setPrimaryRoomFromDb(null);
+                                    } catch (err) {
+                                      console.error("Error deleting room image:", err);
+                                      alert("Failed to delete image");
+                                    }
+                                  }}
+                                  sx={{ color: "#f44336", "&:hover": { bgcolor: "rgba(244,67,54,0.04)" } }}
+                                >
+                                  <CloseIcon fontSize="small" />
+                                </IconButton>
+                              </Box>
+                            ))}
+                          </Box>
+                        )}
 
                     <Box mt={1} display="flex" gap={1}>
                       <Button variant="contained" size="small" onClick={handleAddRoom}>{t("common.save")}</Button>
@@ -644,12 +662,12 @@ const ManagerHotels = () => {
                       <>
                         <TextField label={t("manager_hotels.room_name")} value={editingRoomData.name} onChange={e => setEditingRoomData(p => ({ ...p, name: e.target.value }))} fullWidth size="small" />
                         <TextField label={t("manager_hotels.room_type")} value={editingRoomData.roomType} onChange={e => setEditingRoomData(p => ({ ...p, roomType: e.target.value }))} fullWidth size="small" />
-                        <TextField label={t("manager_hotels.bed_type")} value={editingRoomData.bedType} onChange={e => setEditingRoomData(p => ({ ...p, bedType: e.target.value }))} fullWidth size="small" />
-                        <TextField label={t("manager_hotels.room_description")} multiline minRows={2} value={editingRoomData.description} onChange={e => setEditingRoomData(p => ({ ...p, description: e.target.value }))} fullWidth size="small" />
-                        <TextField label={t("manager_hotels.room_size")} type="number" value={editingRoomData.roomSize} onChange={e => setEditingRoomData(p => ({ ...p, roomSize: e.target.value }))} fullWidth size="small" />
+                        <TextField label={t("Bed Type")} value={editingRoomData.bedType} onChange={e => setEditingRoomData(p => ({ ...p, bedType: e.target.value }))} fullWidth size="small" />
+                        <TextField label={t("Room Description")} multiline minRows={2} value={editingRoomData.description} onChange={e => setEditingRoomData(p => ({ ...p, description: e.target.value }))} fullWidth size="small" />
+                        <TextField label={t("Room Size")} type="number" value={editingRoomData.roomSize} onChange={e => setEditingRoomData(p => ({ ...p, roomSize: e.target.value }))} fullWidth size="small" />
                         <TextField label={t("manager_hotels.price")} type="number" value={editingRoomData.pricePerNight} onChange={e => setEditingRoomData(p => ({ ...p, pricePerNight: e.target.value }))} fullWidth size="small" />
                         <TextField label={t("manager_hotels.total_rooms")} type="number" value={editingRoomData.totalRooms} onChange={e => setEditingRoomData(p => ({ ...p, totalRooms: e.target.value }))} fullWidth size="small" />
-                        <TextField label={t("manager_hotels.capacity")} type="number" value={editingRoomData.capacity} onChange={e => setEditingRoomData(p => ({ ...p, capacity: e.target.value }))} fullWidth size="small" />
+                        <TextField label={t("Capacity")} type="number" value={editingRoomData.capacity} onChange={e => setEditingRoomData(p => ({ ...p, capacity: e.target.value }))} fullWidth size="small" />
 
                         {/* Room image selector for edit */}
                         
@@ -657,24 +675,45 @@ const ManagerHotels = () => {
 <Box mt={3}>
   <Typography variant="subtitle2">{t("Select Image")}</Typography>
   <input
-    type="file"
-    accept="image/*"
-    multiple
-    onChange={e => {
-      const files = [...e.target.files];
-      setSelectedRoomImageFiles(files);
-      setPrimaryRoomImageIndex(files.length ? 0 : null);
-    }}
-    style={{
-      marginTop: 8,
-      border: "1px solid #ccc",
-      padding: 8,
-      borderRadius: 4,
-      width: "100%",
-      background: "#f8f9fa",
-      cursor: "pointer"
-    }}
-  />
+  type="file"
+  accept="image/*"
+  multiple
+  onChange={e => {
+    const files = [...e.target.files];
+    setSelectedRoomImageFiles(files);
+    setPrimaryRoomImageIndex(files.length ? 0 : null);
+  }}
+  style={{
+    marginTop: 8,
+    border: "2px dashed #9C27B0",
+    padding: "12px 16px",
+    borderRadius: "8px",
+    width: "100%",
+    background: "#f8f9fa",
+    cursor: "pointer",
+    color: "#666",
+    fontSize: "14px",
+    transition: "all 0.3s ease",
+    "&:hover": {
+      borderColor: "#7B1FA2",
+      backgroundColor: "#F3E5F5"
+    },
+    "&::-webkit-file-upload-button": {
+      backgroundColor: "#9C27B0",
+      color: "white",
+      padding: "8px 16px",
+      border: "none",
+      borderRadius: "4px",
+      marginRight: "12px",
+      cursor: "pointer",
+      fontSize: "14px",
+      transition: "background-color 0.3s ease",
+      "&:hover": {
+        backgroundColor: "#7B1FA2"
+      }
+    }
+  }}
+/>
 </Box>
 
 {selectedRoomImageFiles.length > 0 && (
@@ -740,68 +779,49 @@ const ManagerHotels = () => {
   </Box>
 )}
 {existingRoomImages.length > 0 && (
-  <Box mt={3}>
-    <Typography variant="subtitle1">{t("Existing Images")}</Typography>
-    {existingRoomImages.map(img => (
-      <Box key={img.imageId} display="flex" alignItems="center" mb={1}>
-        <input 
-          type="radio" 
-          name="primaryExistingRoom" 
-          checked={primaryRoomImageFromDb === img.imageId} 
-          onChange={() => setPrimaryRoomImageFromDb(img.imageId)}
-          style={{
-            cursor: "pointer",
-            accentColor: "#9C27B0"
-          }}
-        />
-        <img 
-          src={`http://localhost:8080${img.imageUrl}`} 
-          alt="" 
-          style={{
-            width: 60,
-            height: 40,
-            objectFit: "cover",
-            marginLeft: 8,
-            borderRadius: 4
-          }}
-        />
-        <Typography 
-          ml={1} 
-          variant="body2" 
-          sx={{
-            flex: 1,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap"
-          }}
-        >
-          {img.imageUrl.split("/").pop()}
-        </Typography>
-        <IconButton 
-          size="small"
-          onClick={async () => {
-            try {
-              await axios.delete(`http://localhost:8080/api/room-images/${img.imageId}`);
-              setExistingRoomImages(prev => prev.filter(i => i.imageId !== img.imageId));
-              if (primaryRoomImageFromDb === img.imageId) {
-                setPrimaryRoomImageFromDb(null);
-              }
-            } catch (err) {
-              console.error("Error deleting room image:", err);
-              alert("Failed to delete image");
-            }
-          }}
-          sx={{
-            color: "#f44336",
-            "&:hover": { bgcolor: "rgba(244,67,54,0.04)" }
-          }}
-        >
-          <CloseIcon fontSize="small"/>
-        </IconButton>
-      </Box>
-    ))}
-  </Box>
-)}
+                          <Box mt={3}>
+                            <Typography variant="subtitle1">Existing Room Images</Typography>
+                            {existingRoomImages.map(img => (
+                              <Box key={img.imageId} display="flex" alignItems="center" mb={1}>
+                                <input
+                                  type="radio"
+                                  name="primaryExistingRoom"
+                                  checked={primaryRoomFromDb === img.imageId}
+                                  onChange={() => setPrimaryRoomFromDb(img.imageId)}
+                                  style={{ cursor: "pointer", accentColor: "#9C27B0" }}
+                                />
+                                <img
+                                  src={`http://localhost:8080${img.imageUrl}`}
+                                  alt=""
+                                  style={{ width: 60, height: 40, objectFit: "cover", marginLeft: 8, borderRadius: 4 }}
+                                />
+                                <Typography
+                                  ml={1}
+                                  variant="body2"
+                                  sx={{ flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}
+                                >
+                                  {img.imageUrl.split("/").pop()}
+                                </Typography>
+                                <IconButton
+                                  size="small"
+                                  onClick={async () => {
+                                    try {
+                                      await axios.delete(`http://localhost:8080/api/room-images/${img.imageId}`);
+                                      setExistingRoomImages(prev => prev.filter(i => i.imageId !== img.imageId));
+                                      if (primaryRoomFromDb === img.imageId) setPrimaryRoomFromDb(null);
+                                    } catch (err) {
+                                      console.error("Error deleting room image:", err);
+                                      alert("Failed to delete image");
+                                    }
+                                  }}
+                                  sx={{ color: "#f44336", "&:hover": { bgcolor: "rgba(244,67,54,0.04)" } }}
+                                >
+                                  <CloseIcon fontSize="small" />
+                                </IconButton>
+                              </Box>
+                            ))}
+                          </Box>
+                        )}
                         
 
                         <Box mt={1} display="flex" gap={1}>
@@ -885,12 +905,45 @@ const ManagerHotels = () => {
             <Box mt={3}>
               <Typography variant="subtitle1">{t("Select Image")}</Typography>
               <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={e=>{const files=[...e.target.files];setSelectedImageFiles(files);setPrimaryImageIndex(files.length?0:null);}}
-                style={{marginTop:8,border:"1px solid #ccc",padding:8,borderRadius:4,width:"100%",background:"#f8f9fa",cursor:"pointer"}}
-              />
+  type="file"
+  accept="image/*"
+  multiple
+  onChange={e => {
+    const files = [...e.target.files];
+    setSelectedRoomImageFiles(files);
+    setPrimaryRoomImageIndex(files.length ? 0 : null);
+  }}
+  style={{
+    marginTop: 8,
+    border: "2px dashed #9C27B0",
+    padding: "12px 16px",
+    borderRadius: "8px",
+    width: "100%",
+    background: "#f8f9fa",
+    cursor: "pointer",
+    color: "#666",
+    fontSize: "14px",
+    transition: "all 0.3s ease",
+    "&:hover": {
+      borderColor: "#7B1FA2",
+      backgroundColor: "#F3E5F5"
+    },
+    "&::-webkit-file-upload-button": {
+      backgroundColor: "#9C27B0",
+      color: "white",
+      padding: "8px 16px",
+      border: "none",
+      borderRadius: "4px",
+      marginRight: "12px",
+      cursor: "pointer",
+      fontSize: "14px",
+      transition: "background-color 0.3s ease",
+      "&:hover": {
+        backgroundColor: "#7B1FA2"
+      }
+    }
+  }}
+/>
             </Box>
 
             {selectedImageFiles.length>0 && (
