@@ -59,6 +59,8 @@ const ManagerHotels = () => {
   const [editingRoomData, setEditingRoomData] = useState({ ...emptyRoom });
 
   const [allAmenities, setAllAmenities] = useState([]);
+  const [existingRoomImages, setExistingRoomImages] = useState([]);
+  const [primaryRoomFromDb,   setPrimaryRoomFromDb] = useState(null);
 
   /* ─────────── Effects ─────────── */
   useEffect(() => {
@@ -169,42 +171,43 @@ const ManagerHotels = () => {
       alert("Please fill in all room details before saving.");
       return;
     }
-    try {
-      const payload = {
-        hotelId: hotels[0].hotelId,
-        name: editingRoomData.name.trim(),
-        roomType: editingRoomData.roomType.trim(),
-        bedType: editingRoomData.bedType.trim(),
-        description: editingRoomData.description.trim(),
-        roomSize: parseFloat(editingRoomData.roomSize),
-        pricePerNight: parseFloat(editingRoomData.pricePerNight),
-        totalRooms: parseInt(editingRoomData.totalRooms, 10),
-        capacity: parseInt(editingRoomData.capacity, 10)
-      };
-      const res = await axios.put(`http://localhost:8080/api/rooms/${id}`, payload);
+     try {
+    const res = await axios.put(`http://localhost:8080/api/rooms/${id}`, payload);
 
-      // Upload room images
-      for (let i = 0; i < selectedRoomImageFiles.length; i++) {
-        const file = selectedRoomImageFiles[i];
-        const form = new FormData();
-        form.append("roomId", id);
-        form.append("isPrimary", i === primaryRoomImageIndex);
-        form.append("file", file);
-        await axios.post(
-          "http://localhost:8080/api/room-images/upload",
-          form,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
-      }
-
-      setSelectedRoomImageFiles([]);
-      setPrimaryRoomImageIndex(null);
-      setRooms(prev => prev.map(r => (r.id === id ? res.data : r)));
-      setEditingRoomId(null);
-    } catch {
-      alert("Room update failed");
+    // Upload new images
+    for (let i = 0; i < selectedRoomImageFiles.length; i++) {
+      const file = selectedRoomImageFiles[i];
+      const form = new FormData();
+      form.append("roomId", id);
+      form.append("isPrimary", i === primaryRoomImageIndex);
+      form.append("file", file);
+      await axios.post(
+        "http://localhost:8080/api/room-images/upload",
+        form,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
     }
-  };
+
+    // Update primary status if no new images were uploaded
+    if (!selectedRoomImageFiles.length && primaryRoomFromDb) {
+  await axios.patch(
+    `/api/room-images/${primaryRoomFromDb}/primary`,
+    {},
+    { headers: { Authorization: `Bearer ${user.token}` } }
+  );
+}
+
+    setSelectedRoomImageFiles([]);
+    setPrimaryRoomImageIndex(null);
+    setExistingRoomImages([]);
+    setPrimaryRoomImageFromDb(null);
+    setRooms(prev => prev.map(r => (r.id === id ? res.data : r)));
+    setEditingRoomId(null);
+  } catch (err) {
+    console.error("Error updating room:", err);
+    alert("Room update failed");
+  }
+};
 
   const deleteRoomRemote = async id => {
     try {
@@ -215,19 +218,30 @@ const ManagerHotels = () => {
     }
   };
 
-  const startEditRoom = room => {
-    setEditingRoomId(room.id);
-    setEditingRoomData({
-      name         : room.name,
-      roomType     : room.roomType,
-      bedType      : room.bedType,
-      description  : room.description,
-      roomSize     : room.roomSize,
-      pricePerNight: room.pricePerNight,
-      totalRooms   : room.totalRooms,
-      capacity     : room.capacity
-    });
-  };
+  const startEditRoom = async room => {
+  setEditingRoomId(room.id);
+  setEditingRoomData({
+    name         : room.name,
+    roomType     : room.roomType,
+    bedType      : room.bedType,
+    description  : room.description,
+    roomSize     : room.roomSize,
+    pricePerNight: room.pricePerNight,
+    totalRooms   : room.totalRooms,
+    capacity     : room.capacity
+  });
+
+  // Fetch room images
+  try {
+    const res = await axios.get(`/api/room-images/${room.id}`);
+    setExistingRoomImages(res.data);
+    const primaryImg = res.data.find(img => img.primary);
+    setPrimaryRoomFromDb(primaryImg?.imageId ?? null);   // <-- burası
+  } catch {
+    setExistingRoomImages([]);
+    setPrimaryRoomFromDb(null);                          // <-- ve burası
+  }
+};
 
   /* ─────────── Hotel helpers ─────────── */
   const deleteExistingImage = async imageId => {
@@ -442,7 +456,7 @@ const ManagerHotels = () => {
                   <Typography variant="h5" fontWeight={700}>{t("manager_hotels.room_details")}</Typography>
                   {!!rooms.length && (
                     <Button size="small" variant="contained" onClick={() => setShowAddRoomForm(true)}>
-                      {t("common.add")}
+                      {t("Add Room")}
                     </Button>
                   )}
                 </Box>
@@ -460,19 +474,31 @@ const ManagerHotels = () => {
                     <TextField label={t("manager_hotels.capacity")} type="number" value={roomData.capacity} onChange={e => setRoomData(p => ({ ...p, capacity: e.target.value }))} fullWidth size="small" />
 
                     {/* Room image selector */}
-                    <Typography variant="subtitle2">{t("manager_hotels.select_images")}</Typography>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={e => {
-                        const files = [...e.target.files];
-                        setSelectedRoomImageFiles(files);
-                        setPrimaryRoomImageIndex(files.length ? 0 : null);
-                      }}
-                      style={{ marginTop: 8 }}
-                    />
                     
+
+<Box mt={3}>
+  <Typography variant="subtitle2">{t("Select Image")}</Typography>
+  <input
+    type="file"
+    accept="image/*"
+    multiple
+    onChange={e => {
+      const files = [...e.target.files];
+      setSelectedRoomImageFiles(files);
+      setPrimaryRoomImageIndex(files.length ? 0 : null);
+    }}
+    style={{
+      marginTop: 8,
+      border: "1px solid #ccc",
+      padding: 8,
+      borderRadius: 4,
+      width: "100%",
+      background: "#f8f9fa",
+      cursor: "pointer"
+    }}
+  />
+</Box>
+
 {selectedRoomImageFiles.length > 0 && (
   <Box mt={2}>
     {selectedRoomImageFiles.map((file, idx) => (
@@ -480,7 +506,7 @@ const ManagerHotels = () => {
         key={idx} 
         display="flex" 
         alignItems="center" 
-        mb={1} 
+        mb={1}
         sx={{
           p: 1,
           borderRadius: 1,
@@ -490,9 +516,9 @@ const ManagerHotels = () => {
         }}
       >
         <input 
-          type="radio" 
-          name="primaryRoomImage" 
-          checked={primaryRoomImageIndex === idx} 
+          type="radio"
+          name="primaryRoomImage"
+          checked={primaryRoomImageIndex === idx}
           onChange={() => setPrimaryRoomImageIndex(idx)}
           style={{
             width: 18,
@@ -503,7 +529,7 @@ const ManagerHotels = () => {
         />
         <Typography 
           variant="body2" 
-          ml={1} 
+          ml={1}
           sx={{
             flex: 1,
             overflow: "hidden",
@@ -522,6 +548,69 @@ const ManagerHotels = () => {
               setPrimaryRoomImageIndex(newFiles.length ? 0 : null);
             } else if (primaryRoomImageIndex > idx) {
               setPrimaryRoomImageIndex(primaryRoomImageIndex - 1);
+            }
+          }}
+          sx={{
+            color: "#f44336",
+            "&:hover": { bgcolor: "rgba(244,67,54,0.04)" }
+          }}
+        >
+          <CloseIcon fontSize="small"/>
+        </IconButton>
+      </Box>
+    ))}
+  </Box>
+)}
+{existingRoomImages.length > 0 && (
+  <Box mt={3}>
+    <Typography variant="subtitle1">{t("Existing Images")}</Typography>
+    {existingRoomImages.map(img => (
+      <Box key={img.imageId} display="flex" alignItems="center" mb={1}>
+        <input 
+          type="radio" 
+          name="primaryExistingRoom" 
+          checked={primaryRoomImageFromDb === img.imageId} 
+          onChange={() => setPrimaryRoomImageFromDb(img.imageId)}
+          style={{
+            cursor: "pointer",
+            accentColor: "#9C27B0"
+          }}
+        />
+        <img 
+          src={`http://localhost:8080${img.imageUrl}`} 
+          alt="" 
+          style={{
+            width: 60,
+            height: 40,
+            objectFit: "cover",
+            marginLeft: 8,
+            borderRadius: 4
+          }}
+        />
+        <Typography 
+          ml={1} 
+          variant="body2" 
+          sx={{
+            flex: 1,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap"
+          }}
+        >
+          {img.imageUrl.split("/").pop()}
+        </Typography>
+        <IconButton 
+          size="small"
+          onClick={async () => {
+            try {
+              await axios.delete(`http://localhost:8080/api/room-images/${img.imageId}`);
+              setExistingRoomImages(prev => prev.filter(i => i.imageId !== img.imageId));
+              if (primaryRoomImageFromDb === img.imageId) {
+                setPrimaryRoomImageFromDb(null);
+              }
+            } catch (err) {
+              console.error("Error deleting room image:", err);
+              alert("Failed to delete image");
             }
           }}
           sx={{
@@ -563,18 +652,157 @@ const ManagerHotels = () => {
                         <TextField label={t("manager_hotels.capacity")} type="number" value={editingRoomData.capacity} onChange={e => setEditingRoomData(p => ({ ...p, capacity: e.target.value }))} fullWidth size="small" />
 
                         {/* Room image selector for edit */}
-                        <Typography variant="subtitle2">{t("manager_hotels.select_images")}</Typography>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={e => {
-                            const files = [...e.target.files];
-                            setSelectedRoomImageFiles(files);
-                            setPrimaryRoomImageIndex(files.length ? 0 : null);
-                          }}
-                          style={{ marginTop: 8 }}
-                        />
+                        
+
+<Box mt={3}>
+  <Typography variant="subtitle2">{t("Select Image")}</Typography>
+  <input
+    type="file"
+    accept="image/*"
+    multiple
+    onChange={e => {
+      const files = [...e.target.files];
+      setSelectedRoomImageFiles(files);
+      setPrimaryRoomImageIndex(files.length ? 0 : null);
+    }}
+    style={{
+      marginTop: 8,
+      border: "1px solid #ccc",
+      padding: 8,
+      borderRadius: 4,
+      width: "100%",
+      background: "#f8f9fa",
+      cursor: "pointer"
+    }}
+  />
+</Box>
+
+{selectedRoomImageFiles.length > 0 && (
+  <Box mt={2}>
+    {selectedRoomImageFiles.map((file, idx) => (
+      <Box 
+        key={idx} 
+        display="flex" 
+        alignItems="center" 
+        mb={1}
+        sx={{
+          p: 1,
+          borderRadius: 1,
+          bgcolor: "#fff",
+          border: "1px solid #e0e0e0",
+          "&:hover": { bgcolor: "#f5f5f5" }
+        }}
+      >
+        <input 
+          type="radio"
+          name="primaryRoomImage"
+          checked={primaryRoomImageIndex === idx}
+          onChange={() => setPrimaryRoomImageIndex(idx)}
+          style={{
+            width: 18,
+            height: 18,
+            cursor: "pointer",
+            accentColor: "#9C27B0"
+          }}
+        />
+        <Typography 
+          variant="body2" 
+          ml={1}
+          sx={{
+            flex: 1,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap"
+          }}
+        >
+          {file.name}
+        </Typography>
+        <IconButton 
+          size="small"
+          onClick={() => {
+            const newFiles = selectedRoomImageFiles.filter((_, i) => i !== idx);
+            setSelectedRoomImageFiles(newFiles);
+            if (primaryRoomImageIndex === idx) {
+              setPrimaryRoomImageIndex(newFiles.length ? 0 : null);
+            } else if (primaryRoomImageIndex > idx) {
+              setPrimaryRoomImageIndex(primaryRoomImageIndex - 1);
+            }
+          }}
+          sx={{
+            color: "#f44336",
+            "&:hover": { bgcolor: "rgba(244,67,54,0.04)" }
+          }}
+        >
+          <CloseIcon fontSize="small"/>
+        </IconButton>
+      </Box>
+    ))}
+  </Box>
+)}
+{existingRoomImages.length > 0 && (
+  <Box mt={3}>
+    <Typography variant="subtitle1">{t("Existing Images")}</Typography>
+    {existingRoomImages.map(img => (
+      <Box key={img.imageId} display="flex" alignItems="center" mb={1}>
+        <input 
+          type="radio" 
+          name="primaryExistingRoom" 
+          checked={primaryRoomImageFromDb === img.imageId} 
+          onChange={() => setPrimaryRoomImageFromDb(img.imageId)}
+          style={{
+            cursor: "pointer",
+            accentColor: "#9C27B0"
+          }}
+        />
+        <img 
+          src={`http://localhost:8080${img.imageUrl}`} 
+          alt="" 
+          style={{
+            width: 60,
+            height: 40,
+            objectFit: "cover",
+            marginLeft: 8,
+            borderRadius: 4
+          }}
+        />
+        <Typography 
+          ml={1} 
+          variant="body2" 
+          sx={{
+            flex: 1,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap"
+          }}
+        >
+          {img.imageUrl.split("/").pop()}
+        </Typography>
+        <IconButton 
+          size="small"
+          onClick={async () => {
+            try {
+              await axios.delete(`http://localhost:8080/api/room-images/${img.imageId}`);
+              setExistingRoomImages(prev => prev.filter(i => i.imageId !== img.imageId));
+              if (primaryRoomImageFromDb === img.imageId) {
+                setPrimaryRoomImageFromDb(null);
+              }
+            } catch (err) {
+              console.error("Error deleting room image:", err);
+              alert("Failed to delete image");
+            }
+          }}
+          sx={{
+            color: "#f44336",
+            "&:hover": { bgcolor: "rgba(244,67,54,0.04)" }
+          }}
+        >
+          <CloseIcon fontSize="small"/>
+        </IconButton>
+      </Box>
+    ))}
+  </Box>
+)}
+                        
 
                         <Box mt={1} display="flex" gap={1}>
                           <Button variant="contained" size="small" onClick={() => updateRoom(room.id)}>{t("common.save")}</Button>
@@ -618,7 +846,14 @@ const ManagerHotels = () => {
 
           <DialogContent dividers>
             {["name","city","country","address","description"].map(field => (
-              <TextField key={field} label={t(`manager_hotels.${field}`)} value={editHotel?.[field] || ""} onChange={e => handleChange(e, field)} fullWidth margin="normal" />
+              <TextField 
+    key={field} 
+    label={field === "name" ? "Name" : t(`manager_hotels.${field}`)} 
+    value={editHotel?.[field] || ""} 
+    onChange={e => handleChange(e, field)} 
+    fullWidth 
+    margin="normal" 
+  />
             ))}
             <TextField label="Latitude"  type="number" inputProps={{ step: "any" }} value={editHotel?.latitude ?? ""}  onChange={e => handleChange(e, "latitude")}  fullWidth margin="normal" />
             <TextField label="Longitude" type="number" inputProps={{ step: "any" }} value={editHotel?.longitude ?? ""} onChange={e => handleChange(e, "longitude")} fullWidth margin="normal" />
@@ -648,7 +883,7 @@ const ManagerHotels = () => {
             </Box>
 
             <Box mt={3}>
-              <Typography variant="subtitle1">{t("manager_hotels.select_images")}</Typography>
+              <Typography variant="subtitle1">{t("Select Image")}</Typography>
               <input
                 type="file"
                 accept="image/*"
@@ -674,7 +909,7 @@ const ManagerHotels = () => {
 
             {existingImages.length>0 && (
               <Box mt={3}>
-                <Typography variant="subtitle1">{t("manager_hotels.current_images")}</Typography>
+                <Typography variant="subtitle1">{t("Selected Images")}</Typography>
                 {existingImages.map(img=>(
                   <Box key={img.imageId} display="flex" alignItems="center" mb={1}>
                     <input type="radio" name="primaryExisting" checked={primaryFromDb===img.imageId} onChange={()=>setPrimaryFromDb(img.imageId)}
