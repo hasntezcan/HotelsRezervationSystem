@@ -8,6 +8,7 @@ import FilterSidebar from '../components/Filter-Sidebar/FilterSidebar';
 import { Col, Container, Row } from 'reactstrap';
 import '../styles/hotel.css';
 import { useTranslation } from 'react-i18next';
+import LoadingSpinner from '../shared/Loading/Spinner';
 
 // hero
 import londonImg from '../assets/images/homePage/image6.jpg';
@@ -156,7 +157,15 @@ const Hotels = () => {
     setCheckIn(start);
     setCheckOut(end);
   };
-  const back = () => { setSelectedCity(null); setSearchTerm(''); setFilters({}); setHotels([]); setPage(0); };
+
+  const back = () => {
+    setSelectedCity(null);
+    setSearchTerm('');
+    setFilters({});
+    setHotels([]);
+    setPage(0);
++   window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // hotelse tıklanınca resetle (örn. header'da /hotels linkiyle)
   useEffect(() => {
@@ -252,7 +261,7 @@ const Hotels = () => {
 
           <div className="map-holder">
             {loading ? (
-              <h5 className="text-center">{t('hotels_page.loading')}</h5>
+              <LoadingSpinner />
             ) : (
               <MapView
                 center={[hotels[0].latitude, hotels[0].longitude]}
@@ -312,9 +321,7 @@ const Hotels = () => {
           {/* BURADAN BAŞLIYOR */}
           <div className="hotel-grid">
             {loading ? (
-              <h5 className="text-center w-100 mt-5">
-                {t('hotels_page.loading')}
-              </h5>
+              <LoadingSpinner />
             ) : slice.length === 0 ? (
               <h5 className="text-center w-100 mt-5">
                 {t('hotels_page.no_results')}

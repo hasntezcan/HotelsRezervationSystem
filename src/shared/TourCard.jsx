@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardBody } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './tour-card.css';
+import LoadingSpinner from '../shared/Loading/Spinner';
 
 const TourCard = ({ mini=false, tour, checkIn, checkOut }) => {
   const { hotelId, _id } = tour;
@@ -108,9 +109,7 @@ const currentImage = galleryImages[activeImageIndex];
               <button className="img-nav right" onClick={nextImage}>&#10095;</button>
             </div>
           ) : (
-            <div style={{ height: '200px', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              Loading...
-            </div>
+            <LoadingSpinner />
           )}
           {hotel.starRating >= 4 && <span>Featured</span>}
         </div>
