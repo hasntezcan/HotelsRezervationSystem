@@ -150,18 +150,25 @@
    margin-bottom: 10px;
  }
  
- .tour__amenities ul {
-   list-style: none;
-   padding: 0;
- }
- 
- .tour__amenities ul li {
-   font-size: 1rem;
-   color: var(--text-color);
-   display: flex;
-   align-items: center;
-   gap: 8px;
- }
+
+.tour__amenities ul{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+  row-gap:8px;
+  column-gap:16px;
+}
+
+.tour__amenities ul li{
+  font-size:1rem;
+  color:var(--text-color);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
  
  .tour__amenities ul li i {
    color: var(--secondary-color);
@@ -184,6 +191,7 @@
    padding: 1.5rem;
    margin-top: 2rem;
    background-color: #fff;
+
  }
  
  /* =========================
@@ -267,15 +275,6 @@
    font-size: 1.1rem;
  }
 
- /* tour-details.css */
-
-/* ───────────────────────────────────────────────────────
-   1) tour__map kapsayıcısını relative yapalım
-─────────────────────────────────────────────────────── */
-.tour__map {
-  position: relative;
-
-}
 
 /* ───────────────────────────────────────────────────────
    2) Zoom kontrol barını 12px içeriden başlat, !important

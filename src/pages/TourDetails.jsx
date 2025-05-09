@@ -11,6 +11,7 @@ import Room from '../components/Room/Room';
 import HotelGallery from '../shared/HotelGallery';
 import { useTranslation } from 'react-i18next';
 import MapView from '../components/MapView';
+import { getAmenityIcon } from '../assets/data/amenityIconConfig';
 
 const TourDetails = () => {
   const { id } = useParams();
@@ -56,6 +57,19 @@ const TourDetails = () => {
         console.error("Error fetching reviews:", err);
       }
     };
+   // ⭐ TourDetails.jsx içindeki amenities fetch’i:
+   fetch(`http://localhost:8080/api/hotels/${id}/amenities`)
+   .then(res => res.text())          // <-- kritik nokta
+   .then(raw => {
+     console.log('[amenities RAW]', raw);   // bak: "Free Wi-Fi, Breakfast Included, …"
+     const list = raw
+       .split(',')                 // virgülden parçala
+       .map(a => a.trim())         // boşlukları at
+       .filter(Boolean);           // boş elemanları sil
+     setRealAmenities(list);       // dizi olarak state’e yaz
+   })
+   .catch(err => console.error('Amenity fetch error:', err));
+
 
     fetchHotel();
     fetchReviews();
@@ -85,6 +99,12 @@ const TourDetails = () => {
   const dummyAmenities = amenities
     ? amenities.split(',').map(a => a.trim())
     : ['Free Wi-Fi', 'Breakfast Included', 'Air Conditioning'];
+
+   
+  const amenityList = (Array.isArray(realAmenities) && realAmenities.length > 0)
+  ? realAmenities
+  : dummyAmenities;
+
 
   const discountParam = new URLSearchParams(location.search).get('discount');
   let actualPrice = price;
@@ -168,10 +188,13 @@ const TourDetails = () => {
                   <span><i className="ri-map-pin-2-line" /> {city}</span>
                 </div>
 
-                <div className="tour__amenities">
+                <div className="tour__amenities mt-3">
                   <ul>
-                    {dummyAmenities.map((amenity, i) => (
-                      <li key={i}><i className="ri-checkbox-circle-line" /> {amenity}</li>
+                    {amenityList.map((a, i) => (
+                      <li key={i} className="d-flex align-items-center gap-2">
+                        {getAmenityIcon(a)}
+                        {a}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -204,11 +227,7 @@ const TourDetails = () => {
                   </div>
               </div>
 
-
-
-                  {/* ======= OTEL KONUM HARİTASI ======= */}
                   
-
 
               <div className="tour__rooms mt-4">
                 <h4 className="mb-3">{t('tour_details.select_room')}</h4>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'reactstrap';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import RoomGallery from '../../shared/RoomGallery/RoomGallery'
 
 const Room = ({ hotelId, selectedRoom, onRoomSelect }) => {
   const [rooms, setRooms] = useState([]);
@@ -37,7 +38,13 @@ const Room = ({ hotelId, selectedRoom, onRoomSelect }) => {
               className={`room-card ${isSelected ? 'selected' : ''}`}
               onClick={() => onRoomSelect(room)}
             >
-              <img src={imageUrl} alt={room.name} className="room-image" />
+              {room.images && room.images.length
+          ? <RoomGallery images={room.images}/>
+          : <img
+              src="https://via.placeholder.com/400x300?text=No+Image"
+              alt="no-img"
+              className="room-image"
+            />}
               <h5 className="room-title">{room.name}</h5>
               <p className="room-price">
                 ${room.pricePerNight} <span>{t('room.per_night')}</span>
