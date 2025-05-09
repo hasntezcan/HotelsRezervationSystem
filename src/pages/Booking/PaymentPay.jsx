@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import "./../../styles/PaymentPage.css";
 import defaultPhoto from "../../assets/images/hotelImages.jpg";
 import logoSrc from "../../assets/images/logo.png"; // ← Logo’yu buradan import et
+import { useTranslation } from "react-i18next";
+
 
 const PaymentPay = ({ booking, guestInfo, cardInfo, onPaymentClick }) => {
   const navigate = useNavigate();
@@ -167,7 +169,7 @@ const PaymentPay = ({ booking, guestInfo, cardInfo, onPaymentClick }) => {
 
         {/* Fatura meta verileri */}
         <div style={{ marginBottom: 16,marginTop: "100px" }}>
-          <p style={{ margin: "4px 0" }}><strong>Release Date:</strong> {new Date().toLocaleDateString()}</p>
+          <p style={{ margin: "4px 0" }}><strong>Invoice Date:</strong> {new Date().toLocaleDateString()}</p>
           <p style={{ margin: "4px 0" }}><strong>Tax Number:</strong> 12345678901</p>
           <p style={{ margin: "4px 0" }}><strong>To:</strong> {firstName} {lastName}</p>
           <p style={{ margin: "4px 0" }}><strong>Hotel Name:</strong> {hotel.name}</p>
