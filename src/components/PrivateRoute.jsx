@@ -1,29 +1,39 @@
-import React from 'react';
+// src/components/PrivateRoute.jsx
+import React, { useContext } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
-const PrivateRoute = ({ allowedRoles }) => {
+const PrivateRoute = ({ allowedRoles, denyRoles }) => {
   const { user } = useContext(AuthContext);
 
-  // Henüz login olunmamışsa login sayfasına
-  if (!user) {
-    return <Navigate to="/login" replace />;
+  // 1) If you passed in `denyRoles`, block those roles:
+  if (denyRoles && user && denyRoles.includes(user.role)) {
+    // send admin → /admin, manager → /manager
+    const redirectTo = user.role === 'admin'
+      ? '/admin'
+      : user.role === 'manager'
+      ? '/manager'
+      : '/login';
+    return <Navigate to={redirectTo} replace />;
   }
 
-  // Rol, allowedRoles içinde değilse
-  if (!allowedRoles.includes(user.role)) {
-    // Admin kendi sayfasına, manager kendi sayfasına, diğerleri login'e yönlensin
-    const redirectTo =
-      user.role === 'admin'
+  // 2) Then, if you passed `allowedRoles`, enforce them:
+  if (allowedRoles) {
+    // not logged in → login
+    if (!user) {
+      return <Navigate to="/login" replace />;
+    }
+    if (!allowedRoles.includes(user.role)) {
+      const redirectTo = user.role === 'admin'
         ? '/admin'
         : user.role === 'manager'
         ? '/manager'
         : '/login';
-    return <Navigate to={redirectTo} replace />;
+      return <Navigate to={redirectTo} replace />;
+    }
   }
 
-  // Yetkilendirme tamam, alt routeları (Outlet) render et
+  // otherwise OK
   return <Outlet />;
 };
 

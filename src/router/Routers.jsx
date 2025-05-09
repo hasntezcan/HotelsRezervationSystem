@@ -38,7 +38,7 @@ const Routers = () => (
     <Route path="/reset-password" element={<ResetPassword />} />
 
     {/* User-only */}
-    <Route element={<PrivateRoute allowedRoles={['user']} />}>
+    <Route element={<PrivateRoute denyRoles={['admin','manager']} />}>
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
       <Route path="/about" element={<About />} />
@@ -75,7 +75,7 @@ const Routers = () => (
     </Route>
 
     {/* Hiçbir rota eşleşmezse login */}
-    <Route path="*" element={<Navigate to="/login" replace />} />
+    <Route path="*" element={<Navigate to="/home" replace />} />
   </Routes>
 );
 
