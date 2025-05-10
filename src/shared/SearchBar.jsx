@@ -6,7 +6,8 @@ import { startOfMonth } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next"; // ✅ eklendi
+import { useTranslation } from "react-i18next"; 
+import { useToast } from "../shared/Errors/ToastContext";
 
 const SearchBar = ({ onSearch }) => {
   const { t } = useTranslation(); // ✅ hook
@@ -20,6 +21,7 @@ const SearchBar = ({ onSearch }) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -33,9 +35,9 @@ const SearchBar = ({ onSearch }) => {
 
   const handleSearch = () => {
     if (!destination || !dates[0] || !dates[1]) {
-      alert(t("search.alert_fill_fields")); // ✅ çeviri
+      showToast(t("search.alert_fill_fields"), "warning");
       return;
-    }
+   }
 
     const formatDateLocal = (date) => {
       const offset = date.getTimezoneOffset();

@@ -13,11 +13,15 @@ import { useTranslation } from 'react-i18next';
 import MapView from '../components/MapView';
 import { getAmenityIcon } from '../assets/data/amenityIconConfig';
 import LoadingSpinner from '../shared/Loading/Spinner';
+import { useToast } from '../shared/Errors/ToastContext';
+import FormError from '../shared/Errors/FormError';
 
 const TourDetails = () => {
   const { id } = useParams();
   const location = useLocation();
   const { t } = useTranslation();
+  const { showToast } = useToast();
+
 
   const [tour, setTour] = useState(null);
   const [tourRating, setTourRating] = useState(null);
@@ -140,11 +144,12 @@ const TourDetails = () => {
     const reviewText = reviewMsgRef.current.value;
 
     if (!user) {
-      alert('Please sign in');
+      showToast(t('tour_details.errors.login_required'), 'warning');
+
       return;
     }
     if (!tourRating) {
-      alert('Please select a rating');
+      showToast(t('tour_details.errors.select_rating'), 'warning');
       return;
     }
 
@@ -175,12 +180,12 @@ const TourDetails = () => {
       );
       setReviews(prev => [...prev, res.data]);
       
-      alert('Review submitted successfully!');
+      showToast(t('tour_details.success.submitted'), 'success')
       reviewMsgRef.current.value = '';
       setTourRating(null);
     } catch (error) {
       console.error('Failed to submit review:', error);
-      alert('Failed to submit review.');
+      showToast(t('tour_details.errors.submit_failed'), 'error');
     }
   };
 

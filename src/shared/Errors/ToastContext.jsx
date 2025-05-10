@@ -5,10 +5,16 @@ const ToastContext = createContext();
 
 export const ToastProvider = ({ children }) => {
   const [toast, setToast] = useState(null);
+  const iconMap = {
+    success: 'ri-checkbox-circle-line',
+    error: 'ri-error-warning-line',
+    info: 'ri-information-line',
+    warning: 'ri-alert-line',
+  };
 
   const showToast = useCallback((message, type = 'info') => {
     setToast({ message, type });
-    setTimeout(() => setToast(null), 3500);
+    setTimeout(() => setToast(null), 4000);
   }, []);
 
   return (
@@ -16,10 +22,12 @@ export const ToastProvider = ({ children }) => {
       {children}
       {toast && (
         <div className={`custom-toast ${toast.type}`}>
-          <i className={`ri-error-warning-line toast-icon ${toast.type}`}></i>
+          <i className={`toast-icon ${iconMap[toast.type]}`}></i>
           <span>{toast.message}</span>
         </div>
       )}
     </ToastContext.Provider>
   );
 };
+
+export const useToast = () => useContext(ToastContext);

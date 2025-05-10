@@ -5,9 +5,13 @@ import '../styles/login.css';
 import registerImg from '../assets/images/login.png';
 import { AuthContext } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '../shared/Errors/ToastContext';
+import FormError from '../shared/Errors/FormError';
 
 const Register = () => {
   const { t } = useTranslation();
+  const { showToast } = useToast();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -81,7 +85,7 @@ const Register = () => {
       });
 
       if (res.status === 409) {
-        alert(t('register.errors.duplicate_email'));
+        showToast(t('register.errors.duplicate_email'), "error");
         dispatch({ type: 'REGISTER_FAILURE', payload: 'Email already exists' });
         return;
       }
@@ -89,11 +93,11 @@ const Register = () => {
       if (!res.ok) throw new Error('Registration failed.');
 
       dispatch({ type: 'REGISTER_SUCCESS' });
-      alert(t('register.success'));
+      showToast(t('register.success'), "success");
       navigate('/login');
     } catch (err) {
       dispatch({ type: 'REGISTER_FAILURE', payload: err.message });
-      alert(t('register.errors.generic'));
+      showToast(t('register.errors.generic'), "error");
     }
   };
 
@@ -130,7 +134,7 @@ const Register = () => {
                         value={credentials[field]}
                         onChange={handleChange}
                       />
-                      {errors[field] && <p className="error-text">{errors[field]}</p>}
+                      <FormError message={errors[field]} />
                     </FormGroup>
                   ))}
 

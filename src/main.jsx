@@ -9,6 +9,7 @@ import { AuthContextProvider } from './context/AuthContext'
 import 'remixicon/fonts/remixicon.css'
 import 'leaflet/dist/leaflet.css';
 import 'react-datepicker/dist/react-datepicker.css';
+import { ToastProvider } from './shared/Errors/ToastContext.jsx';
 
 import './i18n';
 
@@ -17,7 +18,9 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthContextProvider>
       <BrowserRouter>
-        <App />
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </BrowserRouter>
     </AuthContextProvider>
   </StrictMode>,

@@ -192,6 +192,14 @@
   "phone_placeholder": "Telefon numaranız",
   "message_placeholder": "Mesajınızı yazın...",
   "send": "Gönder",
+   "errors": {
+    "name_required":    "Lütfen adınızı girin.",
+    "email_required":   "Lütfen e-posta adresinizi girin.",
+    "email_invalid":    "Lütfen geçerli bir e-posta girin.",
+    "phone_required":   "Lütfen telefon numaranızı girin.",
+    "message_required": "Lütfen mesajınızı yazın.",
+    "phone_invalid":    "Lütfen 11 haneli telefon numaranızı girin."
+  },
   "success": "Mesajınız başarıyla gönderildi!",
   "error": "Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin."
   },
@@ -298,7 +306,15 @@
   "reviews": "Yorumlar ({{count}})",
   "placeholder_review": "Düşüncelerinizi paylaşın",
   "submit_review": "Gönder",
-  "just_now": "Şimdi"
+  "just_now": "Şimdi",
+  "errors": {
+      "select_rating": "Lütfen bir puan seçin",
+      "submit_failed":   "Yorum gönderilirken hata oluştu.",
+      "login_required": "Lütfen önce giriş yapın."
+    },
+    "success": {
+      "submitted": "Yorumunuz başarıyla gönderildi!"
+    }
   },
 
   "manager_hotels": {

@@ -5,11 +5,15 @@ import '../styles/login.css';
 import loginImg from '../assets/images/login.png';
 import { AuthContext } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '../shared/Errors/ToastContext'; // doğru yol
+import FormError from '../shared/Errors/FormError'; // doğru yol
+
 
 const Login = () => {
   const { t } = useTranslation();
   const { dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -70,7 +74,7 @@ const Login = () => {
         }));
       } else {
         localStorage.setItem("userId", userData.userId);
-        alert(t("login.success.user", { name: userData.username }));
+        showToast(t("login.success.user", { name: userData.username }), "success");
       }
 
       dispatch({ type: 'LOGIN_SUCCESS', payload: userData });
@@ -120,7 +124,7 @@ const Login = () => {
                       value={credentials.email}
                       onChange={handleChange}
                     />
-                    {errors.email && <p className="error-text">{errors.email}</p>}
+                    <FormError message={errors.email} />
                   </FormGroup>
                   
                   <FormGroup>
@@ -131,7 +135,7 @@ const Login = () => {
                       value={credentials.password}
                       onChange={handleChange}
                     />
-                    {errors.password && <p className="error-text">{errors.password}</p>}
+                    <FormError message={errors.password} />
                   </FormGroup>
                   
                   <Button type="submit" className="btn auth-btn w-100">

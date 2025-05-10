@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Button
+} from 'reactstrap';
 import '../styles/contact.css';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '../shared/Errors/ToastContext';
+import FormError from '../shared/Errors/FormError';
 
 const Contact = () => {
   const { t } = useTranslation();
+  const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -13,25 +25,51 @@ const Contact = () => {
     phone: '',
     message: ''
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const handleChange = (e) => {
-    setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+    setErrors(prev => ({ ...prev, [id]: '' }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { name, email, phone, message } = formData;
+    const newErrors = {};
+
+    // Required checks
+    if (!name.trim())    newErrors.name    = t('contact_page.errors.name_required');
+    if (!email.trim())   newErrors.email   = t('contact_page.errors.email_required');
+    if (!phone.trim())   newErrors.phone   = t('contact_page.errors.phone_required');
+    if (!message.trim()) newErrors.message = t('contact_page.errors.message_required');
+
+    // Format checks
+    if (email.trim() && !/^\S+@\S+\.\S+$/.test(email.trim())) {
+      newErrors.email = t('contact_page.errors.email_invalid');
+    }
+    if (phone.trim() && !/^\d{11}$/.test(phone.trim())) {
+      newErrors.phone = t('contact_page.errors.phone_invalid');
+    }
+
+    if (Object.keys(newErrors).length) {
+      setErrors(newErrors);
+      return;
+    }
+
     try {
-      const response = await axios.post("http://localhost:8080/api/contact", formData);
-      console.log('Saved Message:', response.data);
-      alert(t('contact_page.success'));
+      await axios.post('http://localhost:8080/api/contact', formData);
+      showToast(t('contact_page.success'), 'success');
       setFormData({ name: '', email: '', phone: '', message: '' });
-    } catch (error) {
-      console.error('Error sending message:', error);
-      alert(t('contact.error'));
+      setErrors({});
+    } catch (err) {
+      console.error(err);
+      showToast(t('contact_page.error'), 'error');
     }
   };
 
@@ -39,6 +77,8 @@ const Contact = () => {
     <section className="contact__section">
       <Container>
         <Row className="gy-4">
+
+          {/* Map column (restored) */}
           <Col lg="6">
             <div className="map__container">
               <iframe
@@ -54,12 +94,14 @@ const Contact = () => {
             </div>
           </Col>
 
+          {/* Form column */}
           <Col lg="6">
             <div className="contact__form">
               <h2 className="mb-3">{t('contact_page.title')}</h2>
               <p className="contact__text">{t('contact_page.description')}</p>
 
-              <Form onSubmit={handleSubmit}>
+              <Form noValidate onSubmit={handleSubmit}>
+                {/* Name */}
                 <FormGroup>
                   <Label for="name">{t('contact_page.name')}</Label>
                   <Input
@@ -68,37 +110,43 @@ const Contact = () => {
                     placeholder={t('contact_page.name_placeholder')}
                     value={formData.name}
                     onChange={handleChange}
-                    required
                   />
+                  <FormError message={errors.name} />
                 </FormGroup>
+
                 <Row>
+                  {/* Email */}
                   <Col md="6">
                     <FormGroup>
                       <Label for="email">{t('contact_page.email')}</Label>
                       <Input
-                        type="email"
+                        type="text"             // use text to avoid native email tooltip
                         id="email"
                         placeholder={t('contact_page.email_placeholder')}
                         value={formData.email}
                         onChange={handleChange}
-                        required
                       />
+                      <FormError message={errors.email} />
                     </FormGroup>
                   </Col>
+
+                  {/* Phone */}
                   <Col md="6">
                     <FormGroup>
                       <Label for="phone">{t('contact_page.phone')}</Label>
                       <Input
-                        type="tel"
+                        type="text"             // text + manual 11-digit check
                         id="phone"
                         placeholder={t('contact_page.phone_placeholder')}
                         value={formData.phone}
                         onChange={handleChange}
-                        required
                       />
+                      <FormError message={errors.phone} />
                     </FormGroup>
                   </Col>
                 </Row>
+
+                {/* Message */}
                 <FormGroup>
                   <Label for="message">{t('contact_page.message')}</Label>
                   <Input
@@ -108,9 +156,10 @@ const Contact = () => {
                     placeholder={t('contact_page.message_placeholder')}
                     value={formData.message}
                     onChange={handleChange}
-                    required
                   />
+                  <FormError message={errors.message} />
                 </FormGroup>
+
                 <Button type="submit" className="mt-3 btn primary__btn">
                   {t('contact_page.send')}
                 </Button>

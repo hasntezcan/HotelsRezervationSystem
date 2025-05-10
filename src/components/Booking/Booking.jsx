@@ -4,12 +4,16 @@ import { Form, FormGroup, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '../../shared/Errors/ToastContext';
+import FormError from '../../shared/Errors/FormError';
+
 
 const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChildren = 0 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useContext(AuthContext);
+  const { showToast } = useToast();
 
   const queryParams = new URLSearchParams(location.search);
   const defaultStartDate = queryParams.get('startDate') || '';
@@ -75,12 +79,12 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
     e.preventDefault();
 
     if (!user) {
-      alert(t('alert_login_required'));
+      showToast(t('alert_login_required'), 'warning');
       return;
     }
 
     if (!booking.startDate || !booking.endDate || !selectedRoom) {
-      alert(t('alert_fields_required'));
+      showToast(t('alert_fields_required'), 'warning');
       return;
     }
 
@@ -88,23 +92,23 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
     const eDate = new Date(booking.endDate);
 
     if (sDate.toString() === 'Invalid Date' || eDate.toString() === 'Invalid Date') {
-      alert(t('alert_invalid_dates'));
+      showToast(t('alert_invalid_dates'), 'error');
       return;
     }
 
     if (sDate >= eDate) {
-      alert(t('alert_checkout_after_checkin'));
+      showToast(t('alert_checkout_after_checkin'), 'error');
       return;
     }
 
     const numGuests = Number(booking.adultCount) + Number(booking.childCount);
     if (numGuests > selectedRoom.capacity) {
-      alert(t('alert_guest_limit', { capacity: selectedRoom.capacity }));
+    showToast(t('alert_guest_limit', { capacity: selectedRoom.capacity }), 'warning');
       return;
     }
 
     if (numGuests < 1) {
-      alert(t('alert_minimum_guests'));
+      showToast(t('alert_minimum_guests'), 'warning');
       return;
     }
 
@@ -115,12 +119,12 @@ const Booking = ({ tour, avgRating, selectedRoom, initialAdults = 1, initialChil
       const isAvailable = await availabilityRes.json();
 
       if (!isAvailable) {
-        alert(t('alert_room_unavailable'));
+        showToast(t('alert_room_unavailable'), 'warning');
         return;
       }
     } catch (err) {
       console.error('Error checking availability:', err);
-      alert(t('alert_check_error'));
+      showToast(t('alert_check_error'), 'error');
       return;
     }
 
