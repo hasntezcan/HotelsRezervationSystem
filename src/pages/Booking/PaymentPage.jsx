@@ -1,28 +1,28 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PaymentName from "./PaymentName";
 import PaymentRoom from "./PaymentRoom";
 import PaymentCard from "./PaymentCard";
 import PaymentPay from "./PaymentPay";
-import { useLayoutEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { useToast } from "../../shared/Errors/ToastContext";
+import { useTranslation } from "react-i18next";
 import "./../../styles/PaymentPage.css";
 
 const PaymentPage = () => {
-   // sayfa mount olduğunda en üste git
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0);
- }, []);
+  useLayoutEffect(() => window.scrollTo(0, 0), []);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const { showToast } = useToast();
+  const { t } = useTranslation();
 
-  // Step 1: User Information (PaymentName)
+  // Step 1: User Info
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  // Step 3: Card Information (PaymentCard)
+  // Step 3: Card Info
   const [cardName, setCardName] = useState("");
   const [cardSurname, setCardSurname] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -30,7 +30,6 @@ const PaymentPage = () => {
   const [expiryYear, setExpiryYear] = useState("");
   const [cvc, setCvc] = useState("");
 
-  // Load pending booking and inject userId
   const [pendingBooking, setPendingBooking] = useState(null);
 
   useEffect(() => {
@@ -40,17 +39,11 @@ const PaymentPage = () => {
     if (storedBooking) {
       const parsed = JSON.parse(storedBooking);
       parsed.totalAmount = parseFloat(parsed.totalAmount);
-      if (storedUserId) {
-        parsed.userId = parseInt(storedUserId); // Inject userId into booking payload
-      } else {
-        console.warn("User ID is missing from localStorage.");
-        parsed.userId = null;
-      }
+      parsed.userId = storedUserId ? parseInt(storedUserId) : null;
       setPendingBooking(parsed);
     }
   }, []);
 
-  // Auto-fill personal details if available
   useEffect(() => {
     if (user) {
       setFirstName(user.firstName || "");
@@ -60,11 +53,51 @@ const PaymentPage = () => {
     }
   }, [user]);
 
+  const validateForm = () => {
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    const phoneRegex = /^[0-9]{11}$/;
+    const cardRegex = /^[0-9]{13,19}$/;
+    const cvcRegex = /^[0-9]{3,4}$/;
+
+    if (!firstName.trim() || !lastName.trim()) {
+      showToast(t("payment.errors.name_required"), "error");
+      return false;
+    }
+    if (!emailRegex.test(email.trim())) {
+      showToast(t("payment.errors.email_invalid"), "error");
+      return false;
+    }
+    if (!phoneRegex.test(phone.trim())) {
+      showToast(t("payment.errors.phone_invalid"), "error");
+      return false;
+    }
+    if (!cardName.trim() || !cardSurname.trim()) {
+      showToast(t("payment.errors.card_name_required"), "error");
+      return false;
+    }
+    if (!cardRegex.test(cardNumber.replace(/\s/g, ""))) {
+      showToast(t("payment.errors.card_invalid"), "error");
+      return false;
+    }
+    if (!expiryMonth || !expiryYear) {
+      showToast(t("payment.errors.expiry_invalid"), "error");
+      return false;
+    }
+    if (!cvcRegex.test(cvc)) {
+      showToast(t("payment.errors.cvc_invalid"), "error");
+      return false;
+    }
+
+    return true;
+  };
+
   const handlePaymentClick = async () => {
     if (!pendingBooking || !pendingBooking.userId) {
-      alert("Cannot proceed without a valid user ID.");
+      showToast(t("payment.errors.user_missing"), "error");
       return;
     }
+
+    if (!validateForm()) return;
 
     const bookingPayload = {
       userId: pendingBooking.userId,
@@ -80,37 +113,28 @@ const PaymentPage = () => {
     try {
       const response = await fetch("http://localhost:8080/api/bookings", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bookingPayload),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to complete booking.");
-      }
-
+      if (!response.ok) throw new Error(t("payment.errors.booking_failed"));
       localStorage.removeItem("pendingBooking");
       navigate("/thank-you");
     } catch (error) {
-      alert("Booking failed: " + error.message);
+      showToast(error.message || t("payment.errors.generic"), "error");
     }
   };
 
   if (!pendingBooking) {
     return (
       <div className="payment-container">
-        <p>
-          No booking information found. Please go back and select a room, date
-          range, and guest details.
-        </p>
+        <p>{t("payment.errors.no_booking")}</p>
       </div>
     );
   }
 
   return (
     <div className="payment-layout">
-      {/* Left Column */}
       <div className="payment-content">
         <div className="payment-box">
           <PaymentName
@@ -147,14 +171,13 @@ const PaymentPage = () => {
         </div>
       </div>
 
-      {/* Right Column */}
       <div className="payment-sidebar">
-       <PaymentPay
-   booking={pendingBooking}
-   guestInfo={{ firstName, lastName, email, phone }}
-   cardInfo={{ cardName, cardSurname, cardNumber, expiryMonth, expiryYear, cvc }}
-   onPaymentClick={handlePaymentClick}
- />
+        <PaymentPay
+          booking={pendingBooking}
+          guestInfo={{ firstName, lastName, email, phone }}
+          cardInfo={{ cardName, cardSurname, cardNumber, expiryMonth, expiryYear, cvc }}
+          onPaymentClick={handlePaymentClick}
+        />
       </div>
     </div>
   );
