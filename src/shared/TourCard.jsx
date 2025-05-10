@@ -15,6 +15,8 @@ const TourCard = ({ mini = false, tour, checkIn, checkOut }) => {
   const [galleryImages, setGalleryImages] = useState([]);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
+  const [reviewStats, setReviewStats] = useState({ avg: null, count: 0 });
+
   const currentImage = galleryImages[activeImageIndex];
 
   const nextImage = () =>
@@ -28,6 +30,21 @@ const TourCard = ({ mini = false, tour, checkIn, checkOut }) => {
   useEffect(() => {
     setHotel(tour);
   }, [tour]);
+
+    useEffect(() => {
+    if (!id) return;
+      fetch(`http://localhost:8080/api/reviews/hotel/${id}`)
+        .then(r => r.json())
+        .then(list => {
+          if (!Array.isArray(list)) return;
+          const count = list.length;
+          const avg = count
+            ? (list.reduce((s, r) => s + (r.rating || 0), 0) / count).toFixed(1)
+            : null;
+          setReviewStats({ avg, count });
+        })
+        .catch(err => console.error('Review fetch error:', err));
+    }, [id]);
 
   useEffect(() => {
     if (!id) return;
@@ -122,8 +139,10 @@ const TourCard = ({ mini = false, tour, checkIn, checkOut }) => {
             </span>
             <span className="tour__rating d-flex align-items-center gap-1">
               <i className='ri-star-fill'></i>
-              {hotel.starRating
-                ? `${hotel.starRating} / 5`
+              {reviewStats.avg
+              ? `${reviewStats.avg} (${reviewStats.count})`
+              : hotel.starRating          // backend'den gelen sabit puan varsa yedek
+              ? `${hotel.starRating} / 5`
                 : t('tour_card.not_rated')}
             </span>
           </div>
