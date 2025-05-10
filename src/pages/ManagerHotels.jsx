@@ -72,7 +72,7 @@ const ManagerHotels = () => {
     axios
       .get(`http://localhost:8080/api/auth/profile/manager?userId=${user.userId}`)
       .then(res => res.data.managerId && setManagerId(res.data.managerId))
-      .catch(() => console.error("Error fetching manager profile"));
+      //.catch(() => console.error("Error fetching manager profile"));
   }, [user]);
 
   useEffect(() => {
@@ -93,14 +93,14 @@ const ManagerHotels = () => {
           });
         }
       })
-      .catch(() => showToast("Error fetching hotels", "error"));
+      //.catch(() => showToast("Error fetching hotels", "error"));
   }, [user]);
 
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/hotelamenities")
       .then(res => setAllAmenities(res.data))
-      .catch(() => showToast("Error fetching amenities", "error"));
+      //.catch(() => showToast("Error fetching amenities", "error"));
   }, []);
 
   useEffect(() => {
@@ -108,7 +108,7 @@ const ManagerHotels = () => {
     axios
       .get(`http://localhost:8080/api/rooms/hotel/${hotels[0].hotelId}`)
       .then(res => setRooms(Array.isArray(res.data) ? res.data : []))
-      .catch(() => showToast("Error fetching rooms", "error"));
+      //.catch(() => showToast("Error fetching rooms", "error"));
   }, [hotels]);
 
   useEffect(() => setShowAddRoomForm(rooms.length === 0), [rooms]);
@@ -307,15 +307,33 @@ const ManagerHotels = () => {
     setOpenModal(true);
   };
 
-  const deleteHotel = async (hotelId) => {
-    try {
-      await axios.delete(`http://localhost:8080/api/hotels/${hotelId}`);
-      setHotels(prev => prev.filter(h => h.hotelId !== hotelId));
-      showToast("Hotel deleted successfully", "success");
-    } catch {
-      showToast("Error deleting hotel", "error");
+  // ManagerHotels.jsx içinde, Hotel helpers bölümündeki deleteHotel fonksiyonunu şu şekilde değiştirin:
+
+const deleteHotel = async (hotelId) => {
+  try {
+    await axios.delete(`http://localhost:8080/api/hotels/${hotelId}`);
+
+    // 1) Otel listesinden sil
+    const newHotels = hotels.filter(h => h.hotelId !== hotelId);
+    setHotels(newHotels);
+
+    // 2) Eğer geriye başka otel kaldıysa, onun odalarını yükle; yoksa rooms'u boşalt
+    if (newHotels.length > 0) {
+      const res = await axios.get(
+        `http://localhost:8080/api/rooms/hotel/${newHotels[0].hotelId}`
+      );
+      setRooms(Array.isArray(res.data) ? res.data : []);
+    } else {
+      setRooms([]);
     }
-  };
+
+    showToast("Hotel deleted successfully", "success");
+  } catch (err) {
+    console.error("Error deleting hotel:", err);
+    showToast("Error deleting hotel", "error");
+  }
+};
+
 
   const handleChange = (e, field) => {
     const val = field === "featured" ? e.target.checked : e.target.value;
