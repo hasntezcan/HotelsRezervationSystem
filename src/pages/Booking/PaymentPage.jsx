@@ -14,7 +14,7 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const { showToast } = useToast();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -37,7 +37,7 @@ const PaymentPage = () => {
     if (storedBooking) {
       const parsed = JSON.parse(storedBooking);
       parsed.totalAmount = parseFloat(parsed.totalAmount);
-      parsed.userId = storedUserId ? parseInt(storedUserId) : null;
+      parsed.userId = storedUserId ? parseInt(storedUserId, 10) : null;
       setPendingBooking(parsed);
     }
   }, []);
@@ -148,7 +148,8 @@ const PaymentPage = () => {
         </div>
 
         <div className="payment-box">
-          <PaymentRoom />
+          {/* Otelin amenities bilgisini gösterebilmek için hotelId prop’u ekledik */}
+          <PaymentRoom hotelId={pendingBooking.hotelId} />
         </div>
 
         <div className="payment-box">
