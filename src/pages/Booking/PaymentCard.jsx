@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { CiCreditCard1 } from "react-icons/ci";
 import "./../../styles/PaymentPage.css";
 import visaLogo from "./../../assets/images/booking/visa.png";
@@ -19,6 +20,8 @@ const PaymentCard = ({
   cvc,
   setCvc,
 }) => {
+  const { t } = useTranslation();
+
   const handleCardNumberChange = (e) => {
     const input = e.target.value.replace(/\D/g, "");
     const formatted = input.match(/.{1,4}/g)?.join(" ") || "";
@@ -46,10 +49,8 @@ const PaymentCard = ({
 
   return (
     <div className="PaymentCard__container">
-      <h2 className="PaymentCard__title">Step 3: Payment Details</h2>
-      <p className="PaymentCard__note">
-        We never charge your card without authorization.
-      </p>
+      <h2 className="PaymentCard__title">{t("payment_card.title")}</h2>
+      <p className="PaymentCard__note">{t("payment_card.note")}</p>
 
       <div className="PaymentCard__content">
         <div className="PaymentCard__formWrapper">
@@ -57,41 +58,41 @@ const PaymentCard = ({
             {/* First Name */}
             <div className="PaymentCard__form-group">
               <label htmlFor="cardName" className="PaymentCard__label">
-                First Name
+                {t("payment_card.first_name")}
               </label>
               <input
                 id="cardName"
                 type="text"
-                placeholder="Enter first name"
+                placeholder={t("payment_card.placeholder_first_name")}
                 required
                 className="PaymentCard__input"
                 value={cardName}
                 onChange={handleNameChange}
                 pattern="[A-Za-zÇĞİÖŞÜçğıöşü\s]+"
-                title="Only letters and spaces allowed."
+                title={t("payment_card.only_letters")}
               />
             </div>
             {/* Last Name */}
             <div className="PaymentCard__form-group">
               <label htmlFor="cardSurname" className="PaymentCard__label">
-                Last Name
+                {t("payment_card.last_name")}
               </label>
               <input
                 id="cardSurname"
                 type="text"
-                placeholder="Enter last name"
+                placeholder={t("payment_card.placeholder_last_name")}
                 required
                 className="PaymentCard__input"
                 value={cardSurname}
                 onChange={handleSurnameChange}
                 pattern="[A-Za-zÇĞİÖŞÜçğıöşü\s]+"
-                title="Only letters and spaces allowed."
+                title={t("payment_card.only_letters")}
               />
             </div>
             {/* Card Number */}
             <div className="PaymentCard__form-group">
               <label htmlFor="cardNumber" className="PaymentCard__label">
-                Card Number
+                {t("payment_card.card_number")}
               </label>
               <div className="PaymentCard__input-wrapper PaymentCard__input-wrapper--icon">
                 <CiCreditCard1 className="PaymentCard__icon" />
@@ -106,14 +107,16 @@ const PaymentCard = ({
                   onChange={handleCardNumberChange}
                   pattern="[0-9\s]+"
                   inputMode="numeric"
-                  title="Only digits allowed."
+                  title={t("payment_card.only_digits")}
                 />
               </div>
             </div>
             {/* Expiry & CVC */}
             <div className="PaymentCard__form-row">
               <div className="PaymentCard__form-group">
-                <label className="PaymentCard__label">Expiry Date</label>
+                <label className="PaymentCard__label">
+                  {t("payment_card.expiry")}
+                </label>
                 <div className="PaymentCard__expiry-container">
                   <select
                     value={expiryMonth}
@@ -121,7 +124,7 @@ const PaymentCard = ({
                     required
                     className="PaymentCard__select"
                   >
-                    <option value="">Month</option>
+                    <option value="">{t("payment_card.month")}</option>
                     {months.map((m) => (
                       <option key={m} value={m}>
                         {m}
@@ -134,7 +137,7 @@ const PaymentCard = ({
                     required
                     className="PaymentCard__select"
                   >
-                    <option value="">Year</option>
+                    <option value="">{t("payment_card.year")}</option>
                     {years.map((y) => (
                       <option key={y} value={y}>
                         {y}
@@ -144,12 +147,9 @@ const PaymentCard = ({
                 </div>
               </div>
               {/* CVC */}
-              <div
-                className="PaymentCard__form-group"
-                style={{ position: "relative" }}
-              >
+              <div className="PaymentCard__form-group" style={{ position: "relative" }}>
                 <label htmlFor="cvc" className="PaymentCard__label">
-                  CVC
+                  {t("payment_card.cvc")}
                 </label>
                 <input
                   id="cvc"
@@ -163,7 +163,7 @@ const PaymentCard = ({
                   onChange={handleCvcChange}
                   pattern="[0-9]{3,4}"
                   inputMode="numeric"
-                  title="Only digits allowed."
+                  title={t("payment_card.only_digits")}
                 />
               </div>
             </div>
@@ -174,27 +174,16 @@ const PaymentCard = ({
         <div className="PaymentCard__acceptedWrapper">
           <div className="PaymentCard__accepted">
             <h4 className="PaymentCard__accepted-title">
-              We accept the following payment methods
+              {t("payment_card.accepted_title")}
             </h4>
             <div className="PaymentCard__accepted-logos">
               <img src={visaLogo} alt="Visa" className="PaymentCard__logo" />
-              <img
-                src={mastercardLogo}
-                alt="MasterCard"
-                className="PaymentCard__logo"
-              />
-              <img
-                src={amexLogo}
-                alt="American Express"
-                className="PaymentCard__logo"
-              />
+              <img src={mastercardLogo} alt="MasterCard" className="PaymentCard__logo" />
+              <img src={amexLogo} alt="American Express" className="PaymentCard__logo" />
             </div>
           </div>
           <div className="PaymentCard__infoBox">
-            <p>
-              Please note that your card must be activated for online use. If
-              you receive an error message, please contact your bank.
-            </p>
+            <p>{t("payment_card.info_text")}</p>
           </div>
         </div>
       </div>

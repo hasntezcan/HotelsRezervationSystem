@@ -14,15 +14,13 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const { showToast } = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
-  // Step 1: User Info
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  // Step 3: Card Info
   const [cardName, setCardName] = useState("");
   const [cardSurname, setCardSurname] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -60,31 +58,31 @@ const PaymentPage = () => {
     const cvcRegex = /^[0-9]{3,4}$/;
 
     if (!firstName.trim() || !lastName.trim()) {
-      showToast(t("payment.errors.name_required"), "error");
+      showToast(t("payment_page.errors.name_required"), "error");
       return false;
     }
     if (!emailRegex.test(email.trim())) {
-      showToast(t("payment.errors.email_invalid"), "error");
+      showToast(t("payment_page.errors.email_invalid"), "error");
       return false;
     }
     if (!phoneRegex.test(phone.trim())) {
-      showToast(t("payment.errors.phone_invalid"), "error");
+      showToast(t("payment_page.errors.phone_invalid"), "error");
       return false;
     }
     if (!cardName.trim() || !cardSurname.trim()) {
-      showToast(t("payment.errors.card_name_required"), "error");
+      showToast(t("payment_page.errors.card_name_required"), "error");
       return false;
     }
     if (!cardRegex.test(cardNumber.replace(/\s/g, ""))) {
-      showToast(t("payment.errors.card_invalid"), "error");
+      showToast(t("payment_page.errors.card_invalid"), "error");
       return false;
     }
     if (!expiryMonth || !expiryYear) {
-      showToast(t("payment.errors.expiry_invalid"), "error");
+      showToast(t("payment_page.errors.expiry_invalid"), "error");
       return false;
     }
     if (!cvcRegex.test(cvc)) {
-      showToast(t("payment.errors.cvc_invalid"), "error");
+      showToast(t("payment_page.errors.cvc_invalid"), "error");
       return false;
     }
 
@@ -93,7 +91,7 @@ const PaymentPage = () => {
 
   const handlePaymentClick = async () => {
     if (!pendingBooking || !pendingBooking.userId) {
-      showToast(t("payment.errors.user_missing"), "error");
+      showToast(t("payment_page.errors.user_missing"), "error");
       return;
     }
 
@@ -117,18 +115,18 @@ const PaymentPage = () => {
         body: JSON.stringify(bookingPayload),
       });
 
-      if (!response.ok) throw new Error(t("payment.errors.booking_failed"));
+      if (!response.ok) throw new Error(t("payment_page.errors.booking_failed"));
       localStorage.removeItem("pendingBooking");
       navigate("/thank-you");
     } catch (error) {
-      showToast(error.message || t("payment.errors.generic"), "error");
+      showToast(error.message || t("payment_page.errors.generic"), "error");
     }
   };
 
   if (!pendingBooking) {
     return (
       <div className="payment-container">
-        <p>{t("payment.errors.no_booking")}</p>
+        <p>{t("payment_page.errors.no_booking")}</p>
       </div>
     );
   }

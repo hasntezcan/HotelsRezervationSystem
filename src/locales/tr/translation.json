@@ -462,64 +462,114 @@
   "error_generic": "Bir şeyler yanlış gitti"
 },
 
+"payment_info": {
+  "step1": "Adım 1: Bilgileriniz",
+  "required_note": "* Zorunlu alanlar",
+  "first_name": "Ad",
+  "first_name_placeholder": "Adınızı girin",
+  "last_name": "Soyad",
+  "last_name_placeholder": "Soyadınızı girin",
+  "email": "E-posta Adresi",
+  "email_placeholder": "E-posta adresiniz",
+  "phone": "Telefon Numarası",
+  "phone_placeholder": "Telefon numaranız"
+},
 
+"payment_card": {
+  "title": "Adım 3: Ödeme Bilgileri",
+  "note": "Kartınızdan izniniz olmadan asla ücret alınmaz.",
+  "first_name": "Ad",
+  "last_name": "Soyad",
+  "placeholder_first_name": "Adınızı girin",
+  "placeholder_last_name": "Soyadınızı girin",
+  "card_number": "Kart Numarası",
+  "only_letters": "Sadece harf ve boşluklara izin verilir.",
+  "only_digits": "Sadece rakamlar girilebilir.",
+  "expiry": "Son Kullanma Tarihi",
+  "month": "Ay",
+  "year": "Yıl",
+  "cvc": "CVC",
+  "accepted_title": "Kabul edilen ödeme yöntemleri",
+  "info_text": "Kartınızın online kullanım için aktif olması gerektiğini unutmayın. Hata alırsanız bankanızla iletişime geçin."
+},
 
+"payment_page": {
+  "errors": {
+    "name_required": "Ad ve soyad gerekli.",
+    "email_invalid": "Geçersiz e-posta adresi.",
+    "phone_invalid": "Telefon numarası 11 haneli olmalıdır.",
+    "card_name_required": "Kart sahibinin adı ve soyadı gerekli.",
+    "card_invalid": "Kart numarası geçersiz.",
+    "expiry_invalid": "Lütfen kartın son kullanma tarihini seçin.",
+    "cvc_invalid": "CVC 3 veya 4 haneli olmalıdır.",
+    "user_missing": "Kullanıcı bilgisi eksik.",
+    "booking_failed": "Rezervasyon başarısız. Lütfen tekrar deneyin.",
+    "generic": "Beklenmeyen bir hata oluştu.",
+    "no_booking": "Bekleyen bir rezervasyon bulunamadı."
+  }
+},
 
-  "payment": {
-    "step1_title": "Adım 1: Bilgileriniz",
-    "step1_note": "* Zorunlu alanlar",
-    "step3_title": "Adım 3: Ödeme Bilgileri",
-    "step3_note": "Kartınız siz onay vermeden hiçbir şekilde ücretlendirilmez.",
-    "first_name": "Ad",
-    "last_name": "Soyad",
-    "email": "E-posta Adresi",
-    "phone": "Telefon Numarası",
-    "card_number": "Kart Numarası",
-    "expiry": "Son Kullanma Tarihi",
-    "month": "Ay",
-    "pay_button": "Hemen Öde",
-    "year": "Yıl",
-    "cvc": "CVC",
-    "book_now": "Şimdi Rezervasyon Yap",
-    "no_booking_found": "Rezervasyon bilgisi bulunamadı. Lütfen oda, tarih ve kişi bilgilerini seçerek tekrar deneyin.",
-      "promo": {
-        "applied_10": "İndirim kodu uygulandı! %10 indirim",
-        "applied_20": "İndirim kodu uygulandı! %20 indirim",
-        "applied_30": "İndirim kodu uygulandı! %30 indirim",
-        "invalid": "Geçersiz promosyon kodu.",
-        "placeholder": "Promosyon kodu girin",
-        "button": "Uygula"
-      },
-      "summary": {
-        "net": "Net Tutar",
-        "tax": "Vergi (10%)",
-        "total": "Toplam"
-      },
+"payment": {
+    "loading": "Rezervasyon yükleniyor...",
+    "error": "Hata",
+    "not_found": "Veri bulunamadı.",
+    "checkin": "Giriş Tarihi",
+    "checkout": "Çıkış Tarihi",
+    "nights": "Gece",
+    "pay_button": "Şimdi Öde",
+    "promo": {
+      "placeholder": "Promosyon kodu girin",
+      "button": "Uygula",
+      "applied_10": "%10 indirim uygulandı!",
+      "applied_20": "%20 indirim uygulandı!",
+      "applied_30": "%30 indirim uygulandı!",
+      "invalid": "Geçersiz promosyon kodu."
+    },
+    "summary": {
+      "net": "Net Fiyat",
+      "tax": "Vergi",
+      "total": "Toplam"
+    },
+    "errors": {
+      "fields_required": "Tüm alanlar zorunludur.",
+      "invoice_failed": "Fatura gönderilemedi."
+    },
+    "success": {
+      "invoice_sent": "Fatura e-posta adresinize gönderildi."
+    },
+    "invoice": {
+      "title": "FATURA",
+      "date": "Fatura Tarihi",
+      "tax_number": "Vergi Numarası",
+      "to": "Alıcı",
+      "hotel": "Otel Adı",
+      "checkin": "Giriş",
+      "checkout": "Çıkış",
+      "nights": "Gece",
+      "description": "Açıklama",
+      "amount": "Tutar",
+      "room_charge": "Oda ücreti ({{nights}} gece × ${{perNight}})",
+      "tax": "Vergi",
+      "total": "Toplam"
+    }
+  },
 
-      "success": {
-        "invoice_sent": "Faturanız e-posta adresinize gönderildi!"
-      },
-
-      "errors": {
-        "first_name_required": "Lütfen adınızı girin.",
-        "last_name_required": "Lütfen soyadınızı girin.",
-        "email_required": "Lütfen e-posta adresinizi girin.",
-        "email_invalid": "Geçerli bir e-posta adresi girin.",
-        "phone_required": "Lütfen telefon numaranızı girin.",
-        "phone_invalid": "Telefon numarası 11 haneli olmalıdır.",
-        "card_name_required": "Lütfen kart sahibinin adını girin.",
-        "card_surname_required": "Lütfen kart sahibinin soyadını girin.",
-        "card_number_required": "Lütfen kart numarasını girin.",
-        "card_invalid": "Kart numarası 16 haneli olmalıdır.",
-        "expiry_month_required": "Lütfen geçerlilik ayını seçin.",
-        "expiry_year_required": "Lütfen geçerlilik yılını seçin.",
-        "cvc_invalid": "CVC 3 veya 4 haneli olmalıdır.",
-        "fields_required": "Devam etmek için tüm alanları doldurun.",
-        "user_required": "Rezervasyonu tamamlamak için giriş yapmalısınız.",
-        "booking_failed": "Rezervasyon başarısız oldu. Lütfen tekrar deneyin.",
-        "invoice_field_missing": "Fatura için ad veya e-posta eksik.",
-        "invoice_failed": "Fatura gönderilirken bir hata oluştu."
-      }
+  "payment_room": {
+  "step2": "Adım 2: Konaklama Detayları",
+  "highlights": "Öne Çıkanlar",
+  "free_parking": "Ücretsiz Otopark",
+  "free_wifi": "Ücretsiz WiFi",
+  "pet_friendly": "Evcil Hayvan Dostu",
+  "reception": "24 Saat Resepsiyon",
+  "luxury_room": "Lüks Tek Kişilik Oda (Queen Yatak)",
+  "breakfast": "Kahvaltı Mevcut",
+  "bed": "1 Büyük (Queen) Yatak",
+  "smoking": "Sigara İçilebilir Oda",
+  "room_service": "Oda Servisi"
 }
+
+
+
+
 
 }

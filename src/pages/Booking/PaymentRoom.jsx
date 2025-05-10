@@ -1,28 +1,31 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import "./../../styles/PaymentRoom.css";
 
 const PaymentRoom = () => {
+  const { t } = useTranslation();
+
   return (
     <div>
-      <h2 className="PaymentRoom__title">Step 2: Accommodation Details</h2>
+      <h2 className="PaymentRoom__title">{t("payment_room.step2")}</h2>
 
       {/* Highlights */}
-      <h3 className="PaymentRoom__subtitle">Highlights</h3>
+      <h3 className="PaymentRoom__subtitle">{t("payment_room.highlights")}</h3>
       <ul className="PaymentRoom__grid-list">
-        <li className="PaymentRoom__item-box">Free Parking</li>
-        <li className="PaymentRoom__item-box">Free WiFi</li>
-        <li className="PaymentRoom__item-box">Pet Friendly</li>
-        <li className="PaymentRoom__item-box">24-Hour Reception</li>
+        <li className="PaymentRoom__item-box">{t("payment_room.free_parking")}</li>
+        <li className="PaymentRoom__item-box">{t("payment_room.free_wifi")}</li>
+        <li className="PaymentRoom__item-box">{t("payment_room.pet_friendly")}</li>
+        <li className="PaymentRoom__item-box">{t("payment_room.reception")}</li>
       </ul>
 
-      {/* Room Information: Only one container (room-box) for the "Luxury Single Room" */}
+      {/* Room Information */}
       <div className="PaymentRoom__room-box">
-        <h3 className="PaymentRoom__subtitle">Luxury Single Room with Queen Bed</h3>
+        <h3 className="PaymentRoom__subtitle">{t("payment_room.luxury_room")}</h3>
         <ul className="PaymentRoom__grid-list">
-          <li className="PaymentRoom__item-box">Breakfast Available</li>
-          <li className="PaymentRoom__item-box">1 Large (Queen) Bed</li>
-          <li className="PaymentRoom__item-box">Smoking Room</li>
-          <li className="PaymentRoom__item-box">Room Service</li>
+          <li className="PaymentRoom__item-box">{t("payment_room.breakfast")}</li>
+          <li className="PaymentRoom__item-box">{t("payment_room.bed")}</li>
+          <li className="PaymentRoom__item-box">{t("payment_room.smoking")}</li>
+          <li className="PaymentRoom__item-box">{t("payment_room.room_service")}</li>
         </ul>
       </div>
     </div>

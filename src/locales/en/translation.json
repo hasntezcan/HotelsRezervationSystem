@@ -474,64 +474,115 @@
     "invoice_sent": "Invoice has been emailed successfully."
   },
 
-  "payment": {
-  "step1_title": "Step 1: Your Information",
-  "step1_note": "* Required fields",
-  "step3_title": "Step 3: Payment Details",
-  "step3_note": "We never charge your card without authorization.",
+"payment_info": {
+  "step1": "Step 1: Your Information",
+  "required_note": "* Required fields",
+  "first_name": "First Name",
+  "first_name_placeholder": "Enter your first name",
+  "last_name": "Last Name",
+  "last_name_placeholder": "Enter your last name",
+  "email": "Email Address",
+  "email_placeholder": "Your email address",
+  "phone": "Mobile Number",
+  "phone_placeholder": "Your phone number"
+},
+
+"payment_card": {
+  "title": "Step 3: Payment Details",
+  "note": "We never charge your card without authorization.",
   "first_name": "First Name",
   "last_name": "Last Name",
-  "email": "Email Address",
-  "phone": "Mobile Number",
+  "placeholder_first_name": "Enter first name",
+  "placeholder_last_name": "Enter last name",
   "card_number": "Card Number",
+  "only_letters": "Only letters and spaces allowed.",
+  "only_digits": "Only digits allowed.",
   "expiry": "Expiry Date",
   "month": "Month",
   "year": "Year",
   "cvc": "CVC",
-   "pay_button": "Pay Now",
-  "book_now": "Book Now",
-  "no_booking_found": "No booking information found. Please go back and select a room, date range, and guest details.",
+  "accepted_title": "We accept the following payment methods",
+  "info_text": "Please note that your card must be activated for online use. If you receive an error message, please contact your bank."
+},
 
+"payment_page": {
+  "errors": {
+    "name_required": "Name and surname are required.",
+    "email_invalid": "Invalid email address.",
+    "phone_invalid": "Phone number must be 11 digits.",
+    "card_name_required": "Cardholder's name and surname are required.",
+    "card_invalid": "Card number is invalid.",
+    "expiry_invalid": "Please select card expiry date.",
+    "cvc_invalid": "CVC must be 3 or 4 digits.",
+    "user_missing": "User information is missing.",
+    "booking_failed": "Booking failed. Please try again.",
+    "generic": "An unexpected error occurred.",
+    "no_booking": "No pending booking found."
+  }
+},
+
+"payment": {
+    "loading": "Loading reservation...",
+    "error": "Error",
+    "not_found": "Data not found.",
+    "checkin": "Check-in",
+    "checkout": "Check-out",
+    "nights": "Nights",
+    "pay_button": "Pay Now",
     "promo": {
-      "applied_10": "Promo code applied! 10% discount",
-      "applied_20": "Promo code applied! 20% discount",
-      "applied_30": "Promo code applied! 30% discount",
-      "invalid": "Invalid promo code.",
       "placeholder": "Enter promo code",
-      "button": "Apply"
+      "button": "Apply",
+      "applied_10": "10% discount applied!",
+      "applied_20": "20% discount applied!",
+      "applied_30": "30% discount applied!",
+      "invalid": "Invalid promo code."
     },
-
     "summary": {
       "net": "Net Price",
-      "tax": "Tax (10%)",
+      "tax": "Tax",
       "total": "Total"
     },
-
-    "success": {
-      "invoice_sent": "Your invoice has been emailed!"
-    },
-
     "errors": {
-      "first_name_required": "Please enter your first name.",
-      "last_name_required": "Please enter your last name.",
-      "email_required": "Please enter your email.",
-      "email_invalid": "Please enter a valid email.",
-      "phone_required": "Please enter your phone number.",
-      "phone_invalid": "Phone must be 11 digits.",
-      "card_name_required": "Please enter the cardholder’s first name.",
-      "card_surname_required": "Please enter the cardholder’s last name.",
-      "card_number_required": "Please enter your card number.",
-      "card_invalid": "Card number must be 16 digits.",
-      "expiry_month_required": "Please select expiry month.",
-      "expiry_year_required": "Please select expiry year.",
-      "cvc_invalid": "CVC must be 3 or 4 digits.",
-      "fields_required": "Please fill in all fields to proceed.",
-      "user_required": "You must be signed in to complete booking.",
-      "booking_failed": "Failed to complete booking. Please try again.",
-      "invoice_field_missing": "Missing name or email for invoice.",
-      "invoice_failed": "There was an error sending your invoice."
+      "fields_required": "All fields are required.",
+      "invoice_failed": "Failed to send invoice."
+    },
+    "success": {
+      "invoice_sent": "Invoice sent to your email."
+    },
+    "invoice": {
+      "title": "INVOICE",
+      "date": "Invoice Date",
+      "tax_number": "Tax Number",
+      "to": "To",
+      "hotel": "Hotel Name",
+      "checkin": "Check-in",
+      "checkout": "Check-out",
+      "nights": "Nights",
+      "description": "Description",
+      "amount": "Amount",
+      "room_charge": "Room charge ({{nights}} nights × ${{perNight}})",
+      "tax": "Tax",
+      "total": "Total"
     }
+  },
+
+  "payment_room": {
+  "step2": "Step 2: Accommodation Details",
+  "highlights": "Highlights",
+  "free_parking": "Free Parking",
+  "free_wifi": "Free WiFi",
+  "pet_friendly": "Pet Friendly",
+  "reception": "24-Hour Reception",
+  "luxury_room": "Luxury Single Room with Queen Bed",
+  "breakfast": "Breakfast Available",
+  "bed": "1 Large (Queen) Bed",
+  "smoking": "Smoking Room",
+  "room_service": "Room Service"
 }
+
+
+
+
 
 }
 

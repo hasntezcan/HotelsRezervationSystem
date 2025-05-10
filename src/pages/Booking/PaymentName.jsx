@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import "./../../styles/PaymentPage.css";
 
 const PaymentName = ({
@@ -7,20 +8,18 @@ const PaymentName = ({
   email, setEmail,
   phone, setPhone
 }) => {
+  const { t } = useTranslation();
 
-  // Remove any digits from the "First Name" input
   const handleFirstNameChange = (e) => {
     const onlyLetters = e.target.value.replace(/[0-9]/g, "");
     setFirstName(onlyLetters);
   };
 
-  // Remove any digits from the "Last Name" input
   const handleLastNameChange = (e) => {
     const onlyLetters = e.target.value.replace(/[0-9]/g, "");
     setLastName(onlyLetters);
   };
 
-  // Remove any non-digit characters from the "Mobile Number" input
   const handlePhoneChange = (e) => {
     const onlyDigits = e.target.value.replace(/\D/g, "");
     setPhone(onlyDigits);
@@ -28,14 +27,14 @@ const PaymentName = ({
 
   return (
     <div className="PaymentName__container">
-      <h2 className="PaymentName__title">Step 1: Your Information</h2>
-      <p className="PaymentName__note">* Required fields</p>
+      <h2 className="PaymentName__title">{t("payment_info.step1")}</h2>
+      <p className="PaymentName__note">{t("payment_info.required_note")}</p>
       <form className="PaymentName__form">
         <div className="PaymentName__form-group">
-          <label>First Name *</label>
+          <label>{t("payment_info.first_name")} *</label>
           <input
             type="text"
-            placeholder="Enter your first name"
+            placeholder={t("payment_info.first_name_placeholder")}
             required
             className="PaymentName__input"
             value={firstName}
@@ -43,10 +42,10 @@ const PaymentName = ({
           />
         </div>
         <div className="PaymentName__form-group">
-          <label>Last Name *</label>
+          <label>{t("payment_info.last_name")} *</label>
           <input
             type="text"
-            placeholder="Enter your last name"
+            placeholder={t("payment_info.last_name_placeholder")}
             required
             className="PaymentName__input"
             value={lastName}
@@ -54,10 +53,10 @@ const PaymentName = ({
           />
         </div>
         <div className="PaymentName__form-group">
-          <label>Email Address *</label>
+          <label>{t("payment_info.email")} *</label>
           <input
             type="email"
-            placeholder="Your email address"
+            placeholder={t("payment_info.email_placeholder")}
             required
             className="PaymentName__input"
             value={email}
@@ -65,10 +64,10 @@ const PaymentName = ({
           />
         </div>
         <div className="PaymentName__form-group">
-          <label>Mobile Number *</label>
+          <label>{t("payment_info.phone")} *</label>
           <input
             type="tel"
-            placeholder="Your phone number"
+            placeholder={t("payment_info.phone_placeholder")}
             required
             className="PaymentName__input"
             value={phone}
@@ -81,4 +80,3 @@ const PaymentName = ({
 };
 
 export default PaymentName;
-//
