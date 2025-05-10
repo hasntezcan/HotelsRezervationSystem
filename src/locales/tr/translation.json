@@ -404,7 +404,66 @@
     "no_rooms": "Uygun oda yok",
     "per_night": "/gecelik",
     "book_now": "Hemen Rezervasyon Yap"
-  }
+  },
+
+  "overview": {
+    "title": "Genel Bakış",
+    "welcome": "Tekrar hoş geldin",
+    "email": "E-posta",
+    "my_bookings": "Rezervasyonlarım",
+    "last_booking": "Son Rezervasyon",
+    "favorites": "Favoriler",
+    "explore_more": "Yeni turlar keşfet ve bir sonraki maceranı planla!",
+    "featured_title": "Senin İçin Seçili Oteller",
+    "now": "Şimdi",
+    "per_person": "kişi",
+    "login_prompt": "Profil özetini görmek için lütfen giriş yap."
+  },
+
+  "profile": {
+  "dashboard_title": "Kontrol Panelim",
+  "overview": "Genel Bakış",
+  "bookings": "Rezervasyonlar",
+  "settings": "Ayarlar"
+},
+
+"profile_bookings": {
+  "login_prompt": "Lütfen önce giriş yapın.",
+  "my_bookings": "Rezervasyonlarım",
+  "upcoming": "Yaklaşan",
+  "past": "Geçmiş",
+  "no_upcoming": "Yaklaşan rezervasyon yok.",
+  "no_past": "Geçmiş rezervasyon yok.",
+  "total_guests": "Toplam Kişi",
+  "phone": "Telefon",
+  "dates": "Tarihler",
+  "total": "Toplam",
+  "booked_on": "Rezervasyon tarihi",
+  "edit_phone": "Telefonu Düzenle",
+  "save_phone": "Telefonu Kaydet",
+  "cancel": "İptal Et",
+  "canceled": "İptal Edildi",
+  "phone_updated": "Telefon güncellendi!",
+  "booking_cancelled": "Rezervasyon başarıyla iptal edildi.",
+  "cancel_failed": "İptal başarısız oldu."
+},
+
+"profile_settings": {
+  "login_first": "Lütfen önce giriş yapın.",
+  "settings_title": "Ayarlar",
+  "username": "Kullanıcı Adı",
+  "email": "E-posta",
+  "password": "Şifre",
+  "first_name": "Ad",
+  "last_name": "Soyad",
+  "phone": "Telefon",
+  "save_changes": "Değişiklikleri Kaydet",
+  "update_success": "Profil güncellendi!",
+  "error_generic": "Bir şeyler yanlış gitti"
+}
+
+
+
 
 
 }

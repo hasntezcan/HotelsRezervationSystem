@@ -3,11 +3,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import hotelsData from '../../assets/data/hotels';
+import { useTranslation } from 'react-i18next';
 import '../../styles/profile.css';
 
 const Overview = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [myBookings, setMyBookings] = useState([]);
   const [lastBookingDate, setLastBookingDate] = useState(null);
@@ -16,7 +18,6 @@ const Overview = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Fetch user bookings from backend using userId
   useEffect(() => {
     const fetchBookings = async () => {
       if (!user?.userId) return;
@@ -28,7 +29,6 @@ const Overview = () => {
         const data = await res.json();
         setMyBookings(data);
 
-        // Sort and find latest booking date
         if (data.length > 0) {
           const sorted = [...data].sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -43,28 +43,24 @@ const Overview = () => {
     fetchBookings();
   }, [user]);
 
-  // Random featured hotel logic (static)
   const featuredHotels = hotelsData.filter((h) => h.featured);
   const shuffleArray = [...featuredHotels].sort(() => 0.5 - Math.random());
   const randomThree = shuffleArray.slice(0, 3);
 
   return (
     <div>
-      <h2>Overview</h2>
+      <h2>{t('overview.title')}</h2>
 
       {user ? (
         <>
-          <p>
-            Welcome back, <strong>{user.username}</strong>.
-          </p>
-          <p>Email: {user.email}</p>
+          <p>{t('overview.welcome')}, <strong>{user.username}</strong>.</p>
+          <p>{t('overview.email')}: {user.email}</p>
           <hr />
 
-          {/* Stats Box */}
           <div className="stats-box">
             <div className="stat clickable" onClick={() => navigate('/profile/bookings')}>
               <h4>{myBookings.length}</h4>
-              <span>My Bookings</span>
+              <span>{t('overview.my_bookings')}</span>
             </div>
             <div className="stat">
               <h4>
@@ -72,23 +68,22 @@ const Overview = () => {
                   ? new Date(lastBookingDate).toLocaleDateString()
                   : '--'}
               </h4>
-              <span>Last Booking</span>
+              <span>{t('overview.last_booking')}</span>
             </div>
             <div className="stat">
               <h4>--</h4>
-              <span>Favorites</span>
+              <span>{t('overview.favorites')}</span>
             </div>
           </div>
 
           <hr />
-          <p>Explore more tours and plan your next adventure!</p>
+          <p>{t('overview.explore_more')}</p>
 
-          {/* Featured Hotels Section */}
           <div className="featured-hotels">
-            <h5>Special Featured Hotels (10% off)</h5>
+            <h5>{t('overview.featured_title')}</h5>
             <div className="featured-list">
               {randomThree.map((hotel) => {
-                const discountedPrice = (hotel.price * 0.9).toFixed(2);
+                const discountedPrice = (hotel.price).toFixed(2);
 
                 return (
                   <div className="featured-item" key={hotel._id}>
@@ -105,7 +100,7 @@ const Overview = () => {
                       </h6>
                       <p className="city">{hotel.city}</p>
                       <p className="price">
-                        Now <strong>${discountedPrice}</strong> /person
+                        {t('overview.now')} <strong>${discountedPrice}</strong> /{t('overview.per_person')}
                       </p>
                     </div>
                   </div>
@@ -115,9 +110,7 @@ const Overview = () => {
           </div>
         </>
       ) : (
-        <p>
-          Please <strong>login</strong> to view your profile overview.
-        </p>
+        <p>{t('overview.login_prompt')}</p>
       )}
     </div>
   );

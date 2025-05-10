@@ -9,8 +9,11 @@ import {
   RiCalendarCheckLine,
   RiSettings3Line
 } from 'react-icons/ri';
+import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
+  const { t } = useTranslation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -22,28 +25,28 @@ const Profile = () => {
           {/* Sidebar */}
           <Col lg="3" md="4">
             <div className="profile-sidebar">
-              <h5 className="sidebar-title">My Dashboard</h5>
+              <h5 className="sidebar-title">{t("profile.dashboard_title")}</h5>
               <div className="sidebar-menu">
                 <NavLink
                   end
                   to="/profile"
                   className={({ isActive }) => (isActive ? 'link-active' : '')}
                 >
-                  <RiHomeLine className="icon" /> Overview
+                  <RiHomeLine className="icon" /> {t("profile.overview")}
                 </NavLink>
 
                 <NavLink
                   to="bookings"
                   className={({ isActive }) => (isActive ? 'link-active' : '')}
                 >
-                  <RiCalendarCheckLine className="icon" /> Bookings
+                  <RiCalendarCheckLine className="icon" /> {t("profile.bookings")}
                 </NavLink>
 
                 <NavLink
                   to="settings"
                   className={({ isActive }) => (isActive ? 'link-active' : '')}
                 >
-                  <RiSettings3Line className="icon" /> Settings
+                  <RiSettings3Line className="icon" /> {t("profile.settings")}
                 </NavLink>
               </div>
             </div>

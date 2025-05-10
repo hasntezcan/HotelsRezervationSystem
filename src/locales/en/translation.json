@@ -410,7 +410,65 @@
     "no_rooms": "No rooms available",
     "per_night": "/per night",
     "book_now": "Book Now"
-  }
+  },
+
+  "overview": {
+    "title": "Overview",
+    "welcome": "Welcome back",
+    "email": "Email",
+    "my_bookings": "My Bookings",
+    "last_booking": "Last Booking",
+    "favorites": "Favorites",
+    "explore_more": "Explore more tours and plan your next adventure!",
+    "featured_title": "Special Hotels For You",
+    "now": "Now",
+    "per_person": "person",
+    "login_prompt": "Please login to view your profile overview."
+  },
+
+  "profile": {
+  "dashboard_title": "My Dashboard",
+  "overview": "Overview",
+  "bookings": "Bookings",
+  "settings": "Settings"
+},
+
+"profile_bookings": {
+  "login_prompt": "Please login first.",
+  "my_bookings": "My Bookings",
+  "upcoming": "Upcoming",
+  "past": "Past",
+  "no_upcoming": "No upcoming bookings.",
+  "no_past": "No past bookings.",
+  "total_guests": "Total Guests",
+  "phone": "Phone",
+  "dates": "Dates",
+  "total": "Total",
+  "booked_on": "Booked on",
+  "edit_phone": "Edit Phone",
+  "save_phone": "Save Phone",
+  "cancel": "Cancel",
+  "canceled": "Canceled",
+  "phone_updated": "Phone updated!",
+  "booking_cancelled": "Booking canceled successfully.",
+  "cancel_failed": "Cancelation failed."
+},
+
+"profile_settings": {
+  "login_first": "Please login first.",
+  "settings_title": "Settings",
+  "username": "Username",
+  "email": "Email",
+  "password": "Password",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "phone": "Phone",
+  "save_changes": "Save Changes",
+  "update_success": "Profile updated!",
+  "error_generic": "Something went wrong"
+}
+
+
 
 
 

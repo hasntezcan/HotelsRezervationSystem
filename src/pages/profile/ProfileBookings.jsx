@@ -1,10 +1,12 @@
 // src/pages/profile/ProfileBookings.jsx
 import React, { useContext, useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { AuthContext } from '../../context/AuthContext'
 import '../../styles/profile.css'
 import RoomGallery from '../../shared/RoomGallery/RoomGallery'
 
 const Bookings = () => {
+  const { t, i18n } = useTranslation()
   const { user } = useContext(AuthContext)
   const [allBookings, setAllBookings] = useState([])
   const [editingId, setEditingId] = useState(null)
@@ -14,7 +16,8 @@ const Bookings = () => {
     const fetchBookings = async () => {
       try {
         const userId = localStorage.getItem('userId')
-        const response = await fetch(`http://localhost:8080/api/bookings/user/${userId}/details`)
+        const lang = i18n.language
+        const response = await fetch(`http://localhost:8080/api/bookings/user/${userId}/details?lang=${lang}`)
         const data = await response.json()
         setAllBookings(data)
       } catch (err) {
@@ -22,10 +25,10 @@ const Bookings = () => {
       }
     }
     fetchBookings()
-  }, [])
+  }, [i18n.language])
 
   if (!user) {
-    return <p>Please login first.</p>
+    return <p>{t("profile_bookings.login_prompt")}</p>
   }
 
   const now = new Date().setHours(0, 0, 0, 0)
@@ -55,7 +58,7 @@ const Bookings = () => {
     })
     setAllBookings(updated)
     setEditingId(null)
-    alert('Phone updated!')
+    alert(t("profile_bookings.phone_updated"))
   }
 
   const handleCancel = async (bookingId) => {
@@ -66,10 +69,10 @@ const Bookings = () => {
       setAllBookings((prev) =>
         prev.filter((b) => b.booking.bookingId !== bookingId)
       )
-      alert('Booking canceled successfully.')
+      alert(t("profile_bookings.booking_cancelled"))
     } catch (err) {
       console.error('Cancel failed:', err)
-      alert('Cancelation failed.')
+      alert(t("profile_bookings.cancel_failed"))
     }
   }
 
@@ -81,13 +84,13 @@ const Bookings = () => {
 
   return (
     <div className="profile-bookings-container">
-      <h2 className="bookings-title">My Bookings</h2>
+      <h2 className="bookings-title">{t("profile_bookings.my_bookings")}</h2>
 
       {/* UPCOMING */}
       <div className="booking-section">
-        <h4 className="booking-section-title">Upcoming</h4>
+        <h4 className="booking-section-title">{t("profile_bookings.upcoming")}</h4>
         {upcoming.length === 0 ? (
-          <p>No upcoming bookings.</p>
+          <p>{t("profile_bookings.no_upcoming")}</p>
         ) : (
           <div className="booking-list upcoming-list">
             {upcoming.map((bk, index) => (
@@ -110,9 +113,9 @@ const Bookings = () => {
 
       {/* PAST */}
       <div className="booking-section">
-        <h4 className="booking-section-title">Past</h4>
+        <h4 className="booking-section-title">{t("profile_bookings.past")}</h4>
         {past.length === 0 ? (
-          <p>No past bookings.</p>
+          <p>{t("profile_bookings.no_past")}</p>
         ) : (
           <div className="booking-list">
             {past.map((bk, index) => (
@@ -147,6 +150,7 @@ const BookingCard = ({
   canCancel,
   isPast,
 }) => {
+  const { t } = useTranslation()
   const [menuOpen, setMenuOpen] = useState(false)
   const isEditing = editingId === data.booking.bookingId
 
@@ -157,7 +161,6 @@ const BookingCard = ({
     roomName,
     roomType,
     hotelImages,
-    // If your backend also returns "hotelAddress", you can show it:
     hotelAddress,
   } = data
 
@@ -176,14 +179,12 @@ const BookingCard = ({
   return (
     <div className="booking-item card-shadow">
       <div className="booking-body">
-        {/* GALLERY */}
         {hotelImages && hotelImages.length > 0 && (
           <div className="booking-gallery">
             <RoomGallery images={hotelImages} />
           </div>
         )}
 
-        {/* HOTEL INFO */}
         <div className="booking-info">
           <h5 className="booking-hotel-name">{hotelName}</h5>
           <p className="booking-room-type">
@@ -191,27 +192,26 @@ const BookingCard = ({
           </p>
           <p className="booking-city">
             {city}
-            {hotelAddress ? (
+            {hotelAddress && (
               <>
                 <br />
                 <span className="booking-address">{hotelAddress}</span>
               </>
-            ) : null}
+            )}
           </p>
 
           {booking.status === 'canceled' && (
-            <span className="canceled-label">(Canceled)</span>
+            <span className="canceled-label">({t("profile_bookings.canceled")})</span>
           )}
 
-          {/* Booking details */}
           <div className="booking-details-grid">
             <div>
-              <strong>Total Guests:</strong> {booking.numGuests}
+              <strong>{t("profile_bookings.total_guests")}:</strong> {booking.numGuests}
             </div>
 
             {isEditing ? (
               <div className="booking-edit-phone">
-                <label>Phone:</label>
+                <label>{t("profile_bookings.phone")}:</label>
                 <input
                   type="text"
                   value={editPhone}
@@ -220,26 +220,25 @@ const BookingCard = ({
               </div>
             ) : (
               <div>
-                <strong>Phone:</strong> {booking.phone || '-'}
+                <strong>{t("profile_bookings.phone")}:</strong> {booking.phone || '-'}
               </div>
             )}
 
             <div>
-              <strong>Dates:</strong> {formatDate(booking.checkInDate)} –{' '}
+              <strong>{t("profile_bookings.dates")}:</strong> {formatDate(booking.checkInDate)} –{' '}
               {formatDate(booking.checkOutDate)}
             </div>
 
             <div>
-              <strong>Total:</strong> ${booking.totalPrice}
+              <strong>{t("profile_bookings.total")}:</strong> ${booking.totalPrice}
             </div>
           </div>
         </div>
       </div>
 
-      {/* FOOTER */}
       <div className="booking-footer">
         <div className="booked-date">
-          <strong>Booked on:</strong> {formatDateTime(booking.createdAt)}
+          <strong>{t("profile_bookings.booked_on")}:</strong> {formatDateTime(booking.createdAt)}
         </div>
         <div>
           <button className="dots-btn" onClick={() => setMenuOpen(!menuOpen)}>
@@ -249,19 +248,16 @@ const BookingCard = ({
             <div className="actions-menu">
               {isEditing ? (
                 <button className="edit-btn" onClick={() => onSavePhone(data)}>
-                  Save Phone
+                  {t("profile_bookings.save_phone")}
                 </button>
               ) : (
                 <button className="edit-btn" onClick={() => onEditPhone(data)}>
-                  Edit Phone
+                  {t("profile_bookings.edit_phone")}
                 </button>
               )}
               {canCancel && booking.status !== 'canceled' && !isPast && (
-                <button
-                  className="cancel-btn"
-                  onClick={() => onCancel(booking.bookingId)}
-                >
-                  Cancel
+                <button className="cancel-btn" onClick={() => onCancel(booking.bookingId)}>
+                  {t("profile_bookings.cancel")}
                 </button>
               )}
             </div>
