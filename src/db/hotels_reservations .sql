@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 10 May 2025, 00:09:11
+-- Üretim Zamanı: 10 May 2025, 08:44:20
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -240,7 +240,19 @@ INSERT INTO `hotelamenityjunction` (`hotel_id`, `amenity_id`) VALUES
 (14, 8),
 (14, 11),
 (14, 13),
-(15, 1);
+(15, 1),
+(28, 1),
+(28, 2),
+(28, 3),
+(28, 6),
+(28, 10),
+(29, 7),
+(29, 10),
+(29, 11),
+(29, 12),
+(29, 18),
+(29, 19),
+(29, 24);
 
 -- --------------------------------------------------------
 
@@ -333,7 +345,12 @@ INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VA
 (71, 15, '/hotel_images/hotel-img71.jpg', 1),
 (72, 15, '/hotel_images/hotel-img72.jpg', 0),
 (73, 15, '/hotel_images/hotel-img73.jpg', 0),
-(74, 15, '/hotel_images/hotel-img74.jpg', 0);
+(74, 15, '/hotel_images/hotel-img74.jpg', 0),
+(81, 28, '/hotel_images/1746856332675.jpg', 1),
+(82, 29, '/hotel_images/1746856775713.jpg', 1),
+(83, 29, '/hotel_images/1746856775743.jpg', 0),
+(84, 29, '/hotel_images/1746856775768.jpg', 0),
+(85, 29, '/hotel_images/1746856775799.png', 0);
 
 -- --------------------------------------------------------
 
@@ -383,9 +400,8 @@ INSERT INTO `hotels` (`hotel_id`, `manager_id`, `name`, `address`, `city`, `coun
 (13, 13, 'Eiffel Grand Hotel', '123 Champs Elysees, Paris', 'Paris', 'France', 48.8566, 2.3522, 'Stay steps away from the Eiffel Tower...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
 (14, 14, 'Louvre Palace Hotel', '89 Louvre Street, Paris', 'Paris', 'France', 48.8606, 2.3376, 'Discover art and culture...', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-06 13:58:50', NULL, NULL, 0, NULL),
 (15, 15, 'Seine River Hotel', '456 Riverfront, Paris', 'Paris', 'France', 48.857, 2.354, 'Enjoy riverside dining...', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-04-07 13:25:25', NULL, NULL, 0, NULL),
-(21, NULL, 'deneme2', 'deneme2', 'deneme2', 'deneme2', 0, 0, 'deneme2', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-05-05 12:48:53', 0, 0, 0, NULL),
-(22, NULL, 'deneme2', 'a', 'deneme2', 'a', 0, 0, 'a', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-05-05 12:54:53', 0, 0, 0, NULL),
-(23, NULL, 'deneme', 'deneme', 'deneme', 'deneme', 0, 0, 'aaa', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-05-05 13:33:10', 0, 0, 0, NULL);
+(28, 21, 'Grand Cettia', 'Armutalan, 221. Sk. No:5, 48700 Marmaris/Muğla', 'Muğla', 'Türkiye', 36.84922527902371, 28.245937800741128, 'Ege\'nin incisi Marmaris\'in eşsiz mavi ve yeşilinin görsel şölenini Grand Cettia Hotel ayrıcalığıyla yaşamanın keyfine doyamayacaksınız. Her anınızın huzurlu, şehir stresinden uzak, mutlu, eğlenceli ve dopdolu geçmesi için Grand Cettia Hotel ailesi olarak siz değerli misafirlerimizi bekliyoruz.', 4, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-05-10 02:51:59', 0, 0, 0, 'Breakfast Included, Free Wi-Fi, Bar, Swimming Pool, Restaurant'),
+(29, 22, 'Pera Palace Hotel', 'Meşrutiyet Caddesi, Evliya Çelebi, Tepebaşı Cd. No:52, 34430 Beyoğlu/İstanbul', 'İstanbul', 'Türkiye', 41.031221699916586, 28.973532244178347, 'Placed against a backdrop of glimmering art-nouveau beauties, Pera Palace Hotel, Istanbul is a historic luxury hotel in the heart of Turkey’s best-looking city. A stylish retreat with more than a century-old past, we are perfectly positioned for exploring all of the views.', 5, '14:00:00', '12:00:00', 'Free cancellation...', 'approved', '2025-05-10 02:59:35', 0, 0, 0, 'Cocktail Bar, Sunset View, Business Center, Luxury Suites, Restaurant, City View, Skyline View');
 
 -- --------------------------------------------------------
 
@@ -421,7 +437,9 @@ INSERT INTO `managers` (`manager_id`, `user_id`, `hotel_id`, `assigned_at`) VALU
 (14, 29, 14, '2025-04-08 20:35:48'),
 (15, 30, 15, '2025-04-08 20:35:48'),
 (16, 31, 16, '2025-04-08 20:36:11'),
-(20, 43, NULL, '2025-05-08 09:15:32');
+(20, 43, NULL, '2025-05-08 09:15:32'),
+(21, 45, 28, '2025-05-10 02:05:43'),
+(22, 46, 29, '2025-05-10 02:55:53');
 
 -- --------------------------------------------------------
 
@@ -484,7 +502,97 @@ INSERT INTO `reviews` (`review_id`, `user_id`, `hotel_id`, `rating`, `comment`, 
 (6, 3, 2, 4, 'Nice rooms and helpful staff.', '2025-04-10 07:21:49'),
 (7, 1, 3, 2, 'Not what I expected. Room was a bit small.', '2025-04-10 07:21:49'),
 (8, 2, 3, 3, 'Average experience. AC wasn’t working.', '2025-04-10 07:21:49'),
-(9, 3, 3, 4, 'Affordable and clean. Good value overall.', '2025-04-10 07:21:49');
+(9, 3, 3, 4, 'Affordable and clean. Good value overall.', '2025-04-10 07:21:49'),
+(10, 1, 1, 3, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:31:04'),
+(11, 44, 1, 3, 'Felt like royalty the moment I stepped in. Superb service!', '2025-05-10 06:31:04'),
+(12, 3, 1, 4, 'A true hidden gem — everything from the breakfast to the sunset view was just magical.', '2025-05-10 06:31:04'),
+(13, 47, 1, 4, 'Could use some renovation in the bathroom area, but overall a nice stay.', '2025-05-10 06:31:04'),
+(14, 2, 1, 5, 'Room was cozy, clean, and had a breathtaking city view.', '2025-05-10 06:31:04'),
+(15, 46, 1, 5, 'Loved the vintage charm mixed with modern comfort.', '2025-05-10 06:31:04'),
+(16, 47, 2, 5, 'Great ambiance and location, but the Wi-Fi could be faster.', '2025-05-10 06:31:04'),
+(17, 46, 2, 3, 'Top-notch experience — would absolutely come back!', '2025-05-10 06:31:04'),
+(18, 44, 2, 3, 'Room was cozy, clean, and had a breathtaking city view.', '2025-05-10 06:31:04'),
+(19, 2, 2, 3, 'Loved the vintage charm mixed with modern comfort.', '2025-05-10 06:31:04'),
+(20, 3, 2, 3, 'The spa and wellness area exceeded all expectations!', '2025-05-10 06:31:04'),
+(21, 1, 2, 5, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:31:04'),
+(22, 2, 3, 3, 'Great ambiance and location, but the Wi-Fi could be faster.', '2025-05-10 06:31:58'),
+(23, 1, 3, 4, 'Top-notch experience — would absolutely come back!', '2025-05-10 06:31:58'),
+(24, 44, 3, 4, 'The spa and wellness area exceeded all expectations!', '2025-05-10 06:31:58'),
+(25, 3, 3, 3, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:31:58'),
+(26, 47, 3, 4, 'Room was cozy, clean, and had a breathtaking city view.', '2025-05-10 06:31:58'),
+(27, 46, 3, 3, 'Delicious food, professional staff, and elegant interiors.', '2025-05-10 06:31:58'),
+(28, 44, 4, 5, 'Great ambiance and location, but the Wi-Fi could be faster.', '2025-05-10 06:31:58'),
+(29, 1, 4, 3, 'Could use some renovation in the bathroom area, but overall a nice stay.', '2025-05-10 06:31:58'),
+(30, 46, 4, 3, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:31:58'),
+(31, 47, 4, 5, 'A true hidden gem — everything from the breakfast to the sunset view was just magical.', '2025-05-10 06:31:58'),
+(32, 2, 4, 5, 'Top-notch experience — would absolutely come back!', '2025-05-10 06:31:58'),
+(33, 3, 4, 5, 'Delicious food, professional staff, and elegant interiors.', '2025-05-10 06:31:58'),
+(34, 44, 7, 3, 'The spa and wellness area exceeded all expectations!', '2025-05-10 06:36:19'),
+(35, 46, 7, 3, 'Felt like royalty the moment I stepped in. Superb service!', '2025-05-10 06:36:20'),
+(36, 2, 7, 4, 'Room was cozy, clean, and had a breathtaking city view.', '2025-05-10 06:36:20'),
+(37, 47, 7, 4, 'Loved the vintage charm mixed with modern comfort.', '2025-05-10 06:36:20'),
+(38, 3, 7, 4, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:36:20'),
+(39, 1, 7, 4, 'Delicious food, professional staff, and elegant interiors.', '2025-05-10 06:36:20'),
+(40, 46, 8, 4, 'Great ambiance and location, but the Wi-Fi could be faster.', '2025-05-10 06:36:20'),
+(41, 47, 8, 4, 'Top-notch experience — would absolutely come back!', '2025-05-10 06:36:20'),
+(42, 44, 8, 4, 'Felt like royalty the moment I stepped in. Superb service!', '2025-05-10 06:36:20'),
+(43, 2, 8, 4, 'The spa and wellness area exceeded all expectations!', '2025-05-10 06:36:20'),
+(44, 3, 8, 4, 'Could use some renovation in the bathroom area, but overall a nice stay.', '2025-05-10 06:36:20'),
+(45, 1, 8, 5, 'Loved the vintage charm mixed with modern comfort.', '2025-05-10 06:36:20'),
+(46, 47, 9, 3, 'Felt like royalty the moment I stepped in. Superb service!', '2025-05-10 06:38:00'),
+(47, 2, 9, 3, 'Delicious food, professional staff, and elegant interiors.', '2025-05-10 06:38:00'),
+(48, 3, 9, 2, 'Could use some renovation in the bathroom area, but overall a nice stay.', '2025-05-10 06:38:00'),
+(49, 44, 9, 3, 'Great ambiance and location, but the Wi-Fi could be faster.', '2025-05-10 06:38:00'),
+(50, 1, 9, 3, 'Room was cozy, clean, and had a breathtaking city view.', '2025-05-10 06:38:00'),
+(51, 46, 9, 2, 'Top-notch experience — would absolutely come back!', '2025-05-10 06:38:00'),
+(52, 3, 10, 3, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:38:00'),
+(53, 44, 10, 3, 'Delicious food, professional staff, and elegant interiors.', '2025-05-10 06:38:00'),
+(54, 1, 10, 3, 'Felt like royalty the moment I stepped in. Superb service!', '2025-05-10 06:38:00'),
+(55, 2, 10, 3, 'Could use some renovation in the bathroom area, but overall a nice stay.', '2025-05-10 06:38:00'),
+(56, 46, 10, 3, 'Top-notch experience — would absolutely come back!', '2025-05-10 06:38:00'),
+(57, 47, 10, 4, 'The spa and wellness area exceeded all expectations!', '2025-05-10 06:38:00'),
+(58, 3, 11, 4, 'The spa and wellness area exceeded all expectations!', '2025-05-10 06:39:39'),
+(59, 2, 11, 4, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:39:39'),
+(60, 44, 11, 5, 'A true hidden gem — everything from the breakfast to the sunset view was just magical.', '2025-05-10 06:39:39'),
+(61, 46, 11, 5, 'Delicious food, professional staff, and elegant interiors.', '2025-05-10 06:39:39'),
+(62, 1, 11, 4, 'Loved the vintage charm mixed with modern comfort.', '2025-05-10 06:39:39'),
+(63, 47, 11, 4, 'Felt like royalty the moment I stepped in. Superb service!', '2025-05-10 06:39:39'),
+(64, 3, 12, 2, 'Great ambiance and location, but the Wi-Fi could be faster.', '2025-05-10 06:39:39'),
+(65, 46, 12, 3, 'Room was cozy, clean, and had a breathtaking city view.', '2025-05-10 06:39:39'),
+(66, 2, 12, 2, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:39:39'),
+(67, 47, 12, 2, 'Could use some renovation in the bathroom area, but overall a nice stay.', '2025-05-10 06:39:39'),
+(68, 44, 12, 2, 'Loved the vintage charm mixed with modern comfort.', '2025-05-10 06:39:39'),
+(69, 1, 12, 2, 'Felt like royalty the moment I stepped in. Superb service!', '2025-05-10 06:39:39'),
+(70, 1, 13, 2, 'The spa and wellness area exceeded all expectations!', '2025-05-10 06:41:16'),
+(71, 44, 13, 2, 'Could use some renovation in the bathroom area, but overall a nice stay.', '2025-05-10 06:41:16'),
+(72, 3, 13, 3, 'Top-notch experience — would absolutely come back!', '2025-05-10 06:41:16'),
+(73, 47, 13, 2, 'Loved the vintage charm mixed with modern comfort.', '2025-05-10 06:41:16'),
+(74, 2, 13, 2, 'Room was cozy, clean, and had a breathtaking city view.', '2025-05-10 06:41:16'),
+(75, 46, 13, 2, 'Delicious food, professional staff, and elegant interiors.', '2025-05-10 06:41:16'),
+(76, 2, 14, 3, 'The spa and wellness area exceeded all expectations!', '2025-05-10 06:41:16'),
+(77, 3, 14, 3, 'Loved the vintage charm mixed with modern comfort.', '2025-05-10 06:41:16'),
+(78, 1, 14, 4, 'Felt like royalty the moment I stepped in. Superb service!', '2025-05-10 06:41:16'),
+(79, 46, 14, 3, 'Great ambiance and location, but the Wi-Fi could be faster.', '2025-05-10 06:41:16'),
+(80, 47, 14, 4, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:41:16'),
+(81, 44, 14, 3, 'Could use some renovation in the bathroom area, but overall a nice stay.', '2025-05-10 06:41:16'),
+(82, 46, 15, 4, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:41:16'),
+(83, 1, 15, 4, 'The spa and wellness area exceeded all expectations!', '2025-05-10 06:41:16'),
+(84, 47, 15, 5, 'A true hidden gem — everything from the breakfast to the sunset view was just magical.', '2025-05-10 06:41:16'),
+(85, 44, 15, 4, 'Could use some renovation in the bathroom area, but overall a nice stay.', '2025-05-10 06:41:16'),
+(86, 3, 15, 4, 'Room was cozy, clean, and had a breathtaking city view.', '2025-05-10 06:41:16'),
+(87, 2, 15, 5, 'Delicious food, professional staff, and elegant interiors.', '2025-05-10 06:41:16'),
+(88, 3, 28, 4, 'Great ambiance and location, but the Wi-Fi could be faster.', '2025-05-10 06:42:13'),
+(89, 2, 28, 4, 'Delicious food, professional staff, and elegant interiors.', '2025-05-10 06:42:13'),
+(90, 47, 28, 4, 'Felt like royalty the moment I stepped in. Superb service!', '2025-05-10 06:42:13'),
+(91, 44, 28, 4, 'Could use some renovation in the bathroom area, but overall a nice stay.', '2025-05-10 06:42:13'),
+(92, 1, 28, 3, 'Room was cozy, clean, and had a breathtaking city view.', '2025-05-10 06:42:13'),
+(93, 46, 28, 3, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:42:13'),
+(94, 2, 29, 5, 'Great ambiance and location, but the Wi-Fi could be faster.', '2025-05-10 06:42:13'),
+(95, 46, 29, 5, 'The spa and wellness area exceeded all expectations!', '2025-05-10 06:42:13'),
+(96, 3, 29, 5, 'Felt like royalty the moment I stepped in. Superb service!', '2025-05-10 06:42:13'),
+(97, 1, 29, 4, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:42:13'),
+(98, 44, 29, 4, 'Loved the vintage charm mixed with modern comfort.', '2025-05-10 06:42:13'),
+(99, 47, 29, 4, 'Top-notch experience — would absolutely come back!', '2025-05-10 06:42:13');
 
 -- --------------------------------------------------------
 
@@ -585,7 +693,10 @@ INSERT INTO `roomimages` (`image_id`, `room_id`, `image_url`, `is_primary`) VALU
 (29, 22, '/public/room_images/room-img01.jpg', 1),
 (30, 23, '/public/room_images/room-img01.jpg', 1),
 (31, 24, '/public/room_images/room-img01.jpg', 1),
-(32, 25, '/public/room_images/room-img03.jpg', 1);
+(32, 25, '/public/room_images/room-img03.jpg', 1),
+(35, 29, '/room_images/1746856378372.png', 1),
+(36, 30, '/room_images/1746856942547.jpg', 0),
+(37, 30, '/room_images/1746856949622.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -637,7 +748,9 @@ INSERT INTO `rooms` (`room_id`, `hotel_id`, `room_type`, `description`, `price_p
 (22, 6, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
 (23, 7, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
 (24, 8, 'Family Room', 'Comfortable room for your family peace.', 180.00, 4, 10, '45 sqm', 'King Size', '2025-04-09 13:40:20', 'Family Comfort', 45, NULL),
-(25, 13, 'Standard Room', 'Comfortable room with essential facilities.', 125.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL);
+(25, 13, 'Standard Room', 'Comfortable room with essential facilities.', 125.00, 2, 10, '25 sqm', 'Queen Size', '2025-04-09 13:40:20', 'Standard Comfort', 25, NULL),
+(29, 28, 'Standart', 'Standart bir oda', 75.00, 2, 10, NULL, 'King Size', '2025-05-10 05:52:58', 'Standart', 35, NULL),
+(30, 29, 'Suit', 'Feel yourself in the victorian era!', 350.00, 4, 20, NULL, '2x King Size', '2025-05-10 06:02:22', 'Luxury Suit', 80, NULL);
 
 -- --------------------------------------------------------
 
@@ -665,7 +778,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_name`, `last_name`, `phone`, `created_at`, `updated_at`, `is_verified`) VALUES
 (1, 'iamsahinemir', 'user', 'esad.emir34@gmail.com', '123456', 'emir esad', 'şahin', '05438813007', '2025-03-31 17:36:25', '2025-04-10 06:49:55', 1),
-(2, 'sezo', 'user', 'sezo@sezo.com', '$2a$10$LqZldHL7wXph175ArXjAAOcvARqK48eOBiLMh95/Jy2clxFu4cEi2', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-10 06:49:57', 1),
+(2, 'sezo', 'user', 'sezo@sezo.com', '$2a$10$7dtp/gc3N7Am4Z2o3Lu4i.CDe9NDlmd4mRpjQoMQQwz3LeYYSmbF.', 'Sezai', 'Araplarlı', '05313313131', '2025-04-02 10:59:15', '2025-04-10 06:49:57', 1),
 (3, 'dede', 'user', 'dede@dede.com', '123456', 'dede', 'dede', '05313313131', '2025-04-03 17:57:28', '2025-04-10 06:50:00', 0),
 (4, 'admin', 'admin', 'admin@admin.com', '$2a$10$4ivO5hjwwFgbo5MtT8UaXeBt2kUC0IxS6NvNLQHX4eF6D/MdZduwm', 'admin', 'admin', '05467897895', '2025-04-03 18:54:48', '2025-04-10 06:50:02', 0),
 (16, 'manager_royal_palace', 'manager', 'royal.manager@example.com', '$2a$10$7.fHsjEx.kySznBmTehL0e3Fu9DbEXY7hRtrRzw5BaFl16mw5gb7S', 'Royalaaaa', 'Manager', '0000000001', '2025-04-08 14:34:31', '2025-04-08 14:34:31', 0),
@@ -685,7 +798,10 @@ INSERT INTO `users` (`user_id`, `username`, `role`, `email`, `password`, `first_
 (30, 'manager_mountain', 'manager', 'mountain.manager@example.com', '$2a$10$o0TlMz1YxxkCMZfkcKzmpOYXX1hVsHmRF3zrxBZQOknLgdtoDJXF2', 'Mountain', 'Manager', '0000000015', '2025-04-08 12:00:00', '2025-04-08 12:00:00', 0),
 (31, 'manager_ocean', 'manager', 'ocean.manager@example.com', '$2a$10$fZnN1k5b2t9Cny93gv2Ssu.nf3GbVvTNdShvZij/Hh9qQBH17B3lS', 'Ocean', 'Manager', '0000000016', '2025-04-08 12:00:00', '2025-04-08 12:00:00', 0),
 (43, 'aaaaaaaaaaa', 'manager', 'aaaaaaa@a.com', '$2a$10$NDsDJEkgmTaT0b9mLqC0X.SRRKydmJjGfurMexen4S8p8veim2qyG', 'emir emir', 'bacın', '05438813007', '2025-05-08 09:15:31', '2025-05-08 12:19:29', 0),
-(44, 'beril', 'user', 'beril@beril.com', '$2a$10$U6TfdyxhxsOlFteG81ms4OVE6QvCHm9GjMQbMeWtj9P/MRZdzRJeK', 'beril', 'kurt', '05555555555', '2025-05-08 09:21:12', '2025-05-08 09:21:12', 0);
+(44, 'beril', 'user', 'beril@beril.com', '$2a$10$U6TfdyxhxsOlFteG81ms4OVE6QvCHm9GjMQbMeWtj9P/MRZdzRJeK', 'beril', 'kurt', '05555555555', '2025-05-08 09:21:12', '2025-05-08 09:21:12', 0),
+(45, 'ahmet', 'manager', 'ahmetmanager@gmail.com', '$2a$10$syqIQvVkwGehfmwayvqVhet8pdQwVPhpgkE2aB8EgQ3XwZbdUoLy6', 'Ahmet', 'Ahmetoglu', '05513215547', '2025-05-10 02:05:43', '2025-05-10 02:05:43', 0),
+(46, 'sabo', 'manager', 'sabo@sabo.com', '$2a$10$mgPVW/ZKrXno7abpcrE7ROXFWruGBMZoSWO8HjnoJJPQrZUnHYLSi', 'Sabo', 'Palace', '05346789551', '2025-05-10 02:55:53', '2025-05-10 02:55:53', 0),
+(47, 'zehra', 'user', 'zehra.haydin@gmail.com', '$2a$10$4tD4tHwISsnR1e.v6bCHu.78WaOgBLKNV5AmMTvgF9Uqicnf4tfIy', 'zehra', 'haydin', '05311008707', '2025-05-10 03:28:21', '2025-05-10 03:28:21', 0);
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -841,19 +957,19 @@ ALTER TABLE `hotelamenities`
 -- Tablo için AUTO_INCREMENT değeri `hotelimages`
 --
 ALTER TABLE `hotelimages`
-  MODIFY `image_id` bigint(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `image_id` bigint(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `hotels`
 --
 ALTER TABLE `hotels`
-  MODIFY `hotel_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `hotel_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `managers`
 --
 ALTER TABLE `managers`
-  MODIFY `manager_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `manager_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `payments`
@@ -871,7 +987,7 @@ ALTER TABLE `promotions`
 -- Tablo için AUTO_INCREMENT değeri `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `review_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `review_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `roomamenities`
@@ -883,19 +999,19 @@ ALTER TABLE `roomamenities`
 -- Tablo için AUTO_INCREMENT değeri `roomimages`
 --
 ALTER TABLE `roomimages`
-  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `image_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `room_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `room_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- Dökümü yapılmış tablolar için kısıtlamalar
