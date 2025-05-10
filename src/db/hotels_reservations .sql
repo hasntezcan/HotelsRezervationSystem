@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 10 May 2025, 08:44:20
+-- Üretim Zamanı: 10 May 2025, 08:53:54
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -291,8 +291,8 @@ INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VA
 (17, 4, '/hotel_images/hotel-img17.jpg', 1),
 (18, 4, '/hotel_images/hotel-img18.jpg', 0),
 (19, 4, '/hotel_images/hotel-img19.jpg', 0),
-(20, 5, '/hotel_images/hotel-img20.jpg', 0),
-(21, 5, '/hotel_images/hotel-img21.jpg', 1),
+(20, 5, '/hotel_images/hotel-img21.jpg', 0),
+(21, 5, '/hotel_images/hotel-img20.jpg', 1),
 (22, 5, '/hotel_images/hotel-img22.jpg', 0),
 (23, 5, '/hotel_images/hotel-img23.jpg', 0),
 (24, 5, '/hotel_images/hotel-img24.jpg', 0),
@@ -592,7 +592,9 @@ INSERT INTO `reviews` (`review_id`, `user_id`, `hotel_id`, `rating`, `comment`, 
 (96, 3, 29, 5, 'Felt like royalty the moment I stepped in. Superb service!', '2025-05-10 06:42:13'),
 (97, 1, 29, 4, 'Ideal for a peaceful getaway. Slept like a baby.', '2025-05-10 06:42:13'),
 (98, 44, 29, 4, 'Loved the vintage charm mixed with modern comfort.', '2025-05-10 06:42:13'),
-(99, 47, 29, 4, 'Top-notch experience — would absolutely come back!', '2025-05-10 06:42:13');
+(99, 47, 29, 4, 'Top-notch experience — would absolutely come back!', '2025-05-10 06:42:13'),
+(100, 2, 5, 5, 'asd', '2025-05-10 03:47:18'),
+(101, 2, 29, 3, 'selam', '2025-05-10 03:49:14');
 
 -- --------------------------------------------------------
 
@@ -987,7 +989,7 @@ ALTER TABLE `promotions`
 -- Tablo için AUTO_INCREMENT değeri `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `review_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
+  MODIFY `review_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `roomamenities`
