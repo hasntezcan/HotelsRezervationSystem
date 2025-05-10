@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 10 May 2025, 08:53:54
+-- Üretim Zamanı: 10 May 2025, 08:56:40
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.2.12
 
@@ -292,9 +292,9 @@ INSERT INTO `hotelimages` (`image_id`, `hotel_id`, `image_url`, `is_primary`) VA
 (18, 4, '/hotel_images/hotel-img18.jpg', 0),
 (19, 4, '/hotel_images/hotel-img19.jpg', 0),
 (20, 5, '/hotel_images/hotel-img21.jpg', 0),
-(21, 5, '/hotel_images/hotel-img20.jpg', 1),
+(21, 5, '/hotel_images/hotel-img20.jpg', 0),
 (22, 5, '/hotel_images/hotel-img22.jpg', 0),
-(23, 5, '/hotel_images/hotel-img23.jpg', 0),
+(23, 5, '/hotel_images/hotel-img23.jpg', 1),
 (24, 5, '/hotel_images/hotel-img24.jpg', 0),
 (25, 5, '/hotel_images/hotel-img25.jpg', 0),
 (26, 6, '/hotel_images/hotel-img26.jpg', 1),
