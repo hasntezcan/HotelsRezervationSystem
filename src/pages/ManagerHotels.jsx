@@ -919,9 +919,9 @@ const ManagerHotels = () => {
   accept="image/*"
   multiple
   onChange={e => {
-    const files = [...e.target.files];
-    setSelectedRoomImageFiles(files);
-    setPrimaryRoomImageIndex(files.length ? 0 : null);
+     const files = [...e.target.files];
+      setSelectedImageFiles(files);             // burada düzeltildi
+      setPrimaryImageIndex(files.length ? 0 : null);
   }}
   style={{
     marginTop: 8,
@@ -970,20 +970,40 @@ const ManagerHotels = () => {
               </Box>
             )}
 
-            {existingImages.length>0 && (
-              <Box mt={3}>
-                <Typography variant="subtitle1">{t("Selected Images")}</Typography>
-                {existingImages.map(img=>(
-                  <Box key={img.imageId} display="flex" alignItems="center" mb={1}>
-                    <input type="radio" name="primaryExisting" checked={primaryFromDb===img.imageId} onChange={()=>setPrimaryFromDb(img.imageId)}
-                           style={{cursor:"pointer",accentColor:"#9C27B0"}}/>
-                    <img src={`http://localhost:8080${img.imageUrl}`} alt="" style={{width:60,height:40,objectFit:"cover",marginLeft:8,borderRadius:4}}/>
-                    <Typography ml={1} variant="body2" sx={{flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{img.imageUrl.split("/").pop()}</Typography>
-                    <IconButton size="small" onClick={()=>deleteExistingImage(img.imageId)}
-                                sx={{color:"#f44336","&:hover":{bgcolor:"rgba(244,67,54,0.04)"}}}><CloseIcon fontSize="small"/></IconButton>
-                  </Box>
-                ))}
-              </Box>
+            {existingImages.length > 0 && (
+  <Box mt={3}>
+    <Typography variant="subtitle1">{t("Selected Images")}</Typography>
+    {existingImages.map(img => (
+      <Box key={img.imageId} display="flex" alignItems="center" mb={1}>
+        <input
+          type="radio"
+          name="primaryExisting"
+          checked={primaryFromDb === img.imageId}
+          onChange={() => setPrimaryFromDb(img.imageId)}
+          style={{ cursor: "pointer", accentColor: "#9C27B0" }}
+        />
+        <img
+          src={`http://localhost:8080${img.imageUrl}`}
+          alt=""
+          style={{ width: 60, height: 40, objectFit: "cover", marginLeft: 8, borderRadius: 4 }}
+        />
+        <Typography
+          ml={1}
+          variant="body2"
+          sx={{ flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}
+        >
+          {img.imageUrl.split("/").pop()}
+        </Typography>
+        <IconButton
+          size="small"
+          onClick={() => deleteExistingImage(img.imageId)}
+          sx={{ color: "#f44336", "&:hover": { bgcolor: "rgba(244,67,54,0.04)" } }}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </Box>
+    ))}
+  </Box>
             )}
           </DialogContent>
 
