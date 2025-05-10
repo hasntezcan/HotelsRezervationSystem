@@ -264,7 +264,7 @@ const Hotels = () => {
         title={title}
         backgroundImage={
           selectedCity
-            ? (cityImagesDynamic[selectedCity] || cityImages[selectedCity])
+            ? (cityImages[selectedCity]) || (cityImagesDynamic[selectedCity] )
             : null
         }
       />
