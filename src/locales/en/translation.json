@@ -410,9 +410,70 @@
     "no_rooms": "No rooms available",
     "per_night": "/per night",
     "book_now": "Book Now"
-  }
+  },
 
+  "success": {
+    "invoice_sent": "Invoice has been emailed successfully."
+  },
 
+  "payment": {
+  "step1_title": "Step 1: Your Information",
+  "step1_note": "* Required fields",
+  "step3_title": "Step 3: Payment Details",
+  "step3_note": "We never charge your card without authorization.",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "email": "Email Address",
+  "phone": "Mobile Number",
+  "card_number": "Card Number",
+  "expiry": "Expiry Date",
+  "month": "Month",
+  "year": "Year",
+  "cvc": "CVC",
+   "pay_button": "Pay Now",
+  "book_now": "Book Now",
+  "no_booking_found": "No booking information found. Please go back and select a room, date range, and guest details.",
+
+    "promo": {
+      "applied_10": "Promo code applied! 10% discount",
+      "applied_20": "Promo code applied! 20% discount",
+      "applied_30": "Promo code applied! 30% discount",
+      "invalid": "Invalid promo code.",
+      "placeholder": "Enter promo code",
+      "button": "Apply"
+    },
+
+    "summary": {
+      "net": "Net Price",
+      "tax": "Tax (10%)",
+      "total": "Total"
+    },
+
+    "success": {
+      "invoice_sent": "Your invoice has been emailed!"
+    },
+
+    "errors": {
+      "first_name_required": "Please enter your first name.",
+      "last_name_required": "Please enter your last name.",
+      "email_required": "Please enter your email.",
+      "email_invalid": "Please enter a valid email.",
+      "phone_required": "Please enter your phone number.",
+      "phone_invalid": "Phone must be 11 digits.",
+      "card_name_required": "Please enter the cardholder’s first name.",
+      "card_surname_required": "Please enter the cardholder’s last name.",
+      "card_number_required": "Please enter your card number.",
+      "card_invalid": "Card number must be 16 digits.",
+      "expiry_month_required": "Please select expiry month.",
+      "expiry_year_required": "Please select expiry year.",
+      "cvc_invalid": "CVC must be 3 or 4 digits.",
+      "fields_required": "Please fill in all fields to proceed.",
+      "user_required": "You must be signed in to complete booking.",
+      "booking_failed": "Failed to complete booking. Please try again.",
+      "invoice_field_missing": "Missing name or email for invoice.",
+      "invoice_failed": "There was an error sending your invoice."
+    }
+}
 
 }
 

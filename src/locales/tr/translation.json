@@ -404,7 +404,63 @@
     "no_rooms": "Uygun oda yok",
     "per_night": "/gecelik",
     "book_now": "Hemen Rezervasyon Yap"
-  }
+  },
 
+  "payment": {
+    "step1_title": "Adım 1: Bilgileriniz",
+    "step1_note": "* Zorunlu alanlar",
+    "step3_title": "Adım 3: Ödeme Bilgileri",
+    "step3_note": "Kartınız siz onay vermeden hiçbir şekilde ücretlendirilmez.",
+    "first_name": "Ad",
+    "last_name": "Soyad",
+    "email": "E-posta Adresi",
+    "phone": "Telefon Numarası",
+    "card_number": "Kart Numarası",
+    "expiry": "Son Kullanma Tarihi",
+    "month": "Ay",
+    "pay_button": "Hemen Öde",
+    "year": "Yıl",
+    "cvc": "CVC",
+    "book_now": "Şimdi Rezervasyon Yap",
+    "no_booking_found": "Rezervasyon bilgisi bulunamadı. Lütfen oda, tarih ve kişi bilgilerini seçerek tekrar deneyin.",
+      "promo": {
+        "applied_10": "İndirim kodu uygulandı! %10 indirim",
+        "applied_20": "İndirim kodu uygulandı! %20 indirim",
+        "applied_30": "İndirim kodu uygulandı! %30 indirim",
+        "invalid": "Geçersiz promosyon kodu.",
+        "placeholder": "Promosyon kodu girin",
+        "button": "Uygula"
+      },
+      "summary": {
+        "net": "Net Tutar",
+        "tax": "Vergi (10%)",
+        "total": "Toplam"
+      },
+
+      "success": {
+        "invoice_sent": "Faturanız e-posta adresinize gönderildi!"
+      },
+
+      "errors": {
+        "first_name_required": "Lütfen adınızı girin.",
+        "last_name_required": "Lütfen soyadınızı girin.",
+        "email_required": "Lütfen e-posta adresinizi girin.",
+        "email_invalid": "Geçerli bir e-posta adresi girin.",
+        "phone_required": "Lütfen telefon numaranızı girin.",
+        "phone_invalid": "Telefon numarası 11 haneli olmalıdır.",
+        "card_name_required": "Lütfen kart sahibinin adını girin.",
+        "card_surname_required": "Lütfen kart sahibinin soyadını girin.",
+        "card_number_required": "Lütfen kart numarasını girin.",
+        "card_invalid": "Kart numarası 16 haneli olmalıdır.",
+        "expiry_month_required": "Lütfen geçerlilik ayını seçin.",
+        "expiry_year_required": "Lütfen geçerlilik yılını seçin.",
+        "cvc_invalid": "CVC 3 veya 4 haneli olmalıdır.",
+        "fields_required": "Devam etmek için tüm alanları doldurun.",
+        "user_required": "Rezervasyonu tamamlamak için giriş yapmalısınız.",
+        "booking_failed": "Rezervasyon başarısız oldu. Lütfen tekrar deneyin.",
+        "invoice_field_missing": "Fatura için ad veya e-posta eksik.",
+        "invoice_failed": "Fatura gönderilirken bir hata oluştu."
+      }
+}
 
 }
