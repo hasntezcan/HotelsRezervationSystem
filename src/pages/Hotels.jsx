@@ -64,6 +64,33 @@ const Hotels = () => {
   const [cities, setCities] = useState([]);
   const [amenities, setAmenities] = useState([]);
 
+  const [cityImagesDynamic, setCityImagesDynamic] = useState({});
+
+  const fetchCityImages = async (cityList) => {
+  const obj = {};
+
+  await Promise.all(
+    cityList.map(async (city) => {
+      try {
+        const res = await fetch(`${BASE}/city?name=${encodeURIComponent(city)}`);
+        const hotels = await res.json();   // HotelWithImageDTO list
+
+        // ► imageUrl || primaryImageUrl varsa ilk bulduğunu al
+        const withPic = hotels.find(
+          (h) => h.imageUrl || h.primaryImageUrl
+        );
+        if (withPic) {
+          obj[city] = withPic.imageUrl ?? withPic.primaryImageUrl;
+        }
+      } catch (err) {
+        console.error(`► ${city} için foto alınamadı`, err);
+      }
+    })
+  );
+   setCityImagesDynamic((prev) => ({ ...prev, ...obj }));
+};
+
+
   // ui state
   const [selectedCity, setSelectedCity] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -134,9 +161,19 @@ const Hotels = () => {
 
   /* -----------------------   init meta   -------------------------- */
   useEffect(() => {
-    fetch(`${BASE}/cities`).then(r => r.json()).then(setCities).catch(console.error);
-    fetch('http://localhost:8080/api/hotelamenities').then(r => r.json()).then(setAmenities).catch(() => setAmenities([]));
-  }, []);
+  fetch(`${BASE}/cities`)
+    .then(r => r.json())
+    .then(list => {
+      setCities(list);
+      fetchCityImages(list);        
+    })
+    .catch(console.error);
+
+  fetch('http://localhost:8080/api/hotelamenities')
+    .then(r => r.json())
+    .then(setAmenities)
+    .catch(() => setAmenities([]));
+}, []);
 
   /* url params */
   useEffect(() => {
@@ -225,7 +262,11 @@ const Hotels = () => {
     <>
       <CommonSection
         title={title}
-        backgroundImage={selectedCity ? cityImages[selectedCity] : null}
+        backgroundImage={
+          selectedCity
+            ? (cityImagesDynamic[selectedCity] || cityImages[selectedCity])
+            : null
+        }
       />
 
       {/* search bar */}
@@ -293,7 +334,7 @@ const Hotels = () => {
                   }}
                 >
                   <div className="city-img">
-                    <img src={cityImages[c] || londonImg} alt={c} />
+                    <img src={cityImagesDynamic[c] || cityImages[c]} alt={c} />
                   </div>
                   <div className="city-info">
                     <h5>{c}</h5>
