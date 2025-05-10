@@ -334,7 +334,7 @@ const Hotels = () => {
                   }}
                 >
                   <div className="city-img">
-                    <img src={cityImagesDynamic[c] || cityImages[c]} alt={c} />
+                    <img src={cityImages[c] || cityImagesDynamic[c]} alt={c} />
                   </div>
                   <div className="city-info">
                     <h5>{c}</h5>
