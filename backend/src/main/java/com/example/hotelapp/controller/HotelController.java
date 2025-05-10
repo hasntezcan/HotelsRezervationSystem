@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -207,6 +208,21 @@ public class HotelController {
                 .executeUpdate();
 
         return ResponseEntity.ok("Hotel deleted successfully.");
+    }
+
+        @GetMapping("/{hotelId}/amenity-list")
+    public ResponseEntity<List<String>> getHotelAmenityList(@PathVariable Long hotelId) {
+        return hotelRepository.findById(hotelId)
+            .map(hotel -> {
+                String csv = hotel.getAmenities(); // virgülle ayrılmış string
+                List<String> list = csv == null || csv.isBlank()
+                    ? List.of()
+                    : Arrays.stream(csv.split(","))
+                            .map(String::trim)
+                            .toList();
+                return ResponseEntity.ok(list);
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 
 }
