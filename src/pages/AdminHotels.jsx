@@ -38,7 +38,7 @@ const AdminHotel = () => {
   };
   const fetchAmenities = async () => {
     try {
-      const { data } = await axios.get("http://localhost:8080/api/admin/hotelamenities");
+      const { data } = await axios.get("http://localhost:8080/api/hotelamenities");
       setAmenities(data);
     } catch (err) {
       console.error("Error fetching amenities:", err);
