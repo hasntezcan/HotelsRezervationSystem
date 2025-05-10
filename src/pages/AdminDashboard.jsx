@@ -3,24 +3,12 @@ import "../styles/AdminDashboard.css";
 
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
-  BarChart, Bar, PieChart, Pie, Cell, Legend
+  PieChart, Pie, Cell, Legend
 } from "recharts";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-
-const mailData = [
-  { from: "John Doe", email: "john@example.com", subject: "Meeting Request" },
-  { from: "Jane Smith", email: "jane@example.com", subject: "Invoice Issue" },
-  { from: "Hotel Manager", email: "manager@hotel.com", subject: "Reservation Question" },
-];
-
-const profitLossData = [
-  { name: "January", revenue: 50000, tax: -10000, hotelShare: -20000 },
-  { name: "February", revenue: 52000, tax: -11000, hotelShare: -21000 },
-  { name: "March", revenue: 53000, tax: -10500, hotelShare: -22000 },
-];
 
 const AdminDashboard = () => {
   const { t } = useTranslation();
@@ -51,6 +39,7 @@ const AdminDashboard = () => {
       }
     };
     fetchWeather();
+
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -113,11 +102,12 @@ const AdminDashboard = () => {
         if (!cityMap[city]) cityMap[city] = new Set();
         if (hotel.managerId) cityMap[city].add(hotel.managerId);
       });
-      const data = Object.keys(cityMap).map(city => ({
-        name: city,
-        value: cityMap[city].size,
-      }));
-      setManagersPerCity(data);
+      setManagersPerCity(
+        Object.entries(cityMap).map(([city, set]) => ({
+          name: city,
+          value: set.size,
+        }))
+      );
     } catch (error) {
       console.error("Error fetching managers per city:", error);
     }
@@ -159,8 +149,8 @@ const AdminDashboard = () => {
       <h1 className="baslik">{t("admin_dashboard.title")}</h1>
 
       <div className="stats-container">
-        {stats.map((stat, index) => (
-          <div className="stat-card" key={index}>
+        {stats.map((stat, idx) => (
+          <div className="stat-card" key={idx}>
             <h3>{stat.value}</h3>
             <p>{stat.title}</p>
           </div>
@@ -172,30 +162,6 @@ const AdminDashboard = () => {
           <h3>{t("admin_dashboard.calendar")}</h3>
           <Calendar onChange={setDate} value={date} />
           <p>{t("admin_dashboard.selected_date")}: {date.toDateString()}</p>
-        </div>
-
-        <div className="mailbox-widget">
-          <h3>{t("admin_dashboard.mailbox")}</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>{t("admin_dashboard.from")}</th>
-                <th>{t("admin_dashboard.email")}</th>
-                <th>{t("admin_dashboard.subject")}</th>
-                <th>{t("admin_dashboard.read")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mailData.map((mail, index) => (
-                <tr key={index}>
-                  <td>{mail.from}</td>
-                  <td>{mail.email}</td>
-                  <td>{mail.subject}</td>
-                  <td><button className="reply-btn">{t("admin_dashboard.read_button")}</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
 
         <div className="weather-widget">
@@ -223,8 +189,8 @@ const AdminDashboard = () => {
             {displayedData.length > 0 &&
               Object.keys(displayedData[0])
                 .filter(key => key !== "name")
-                .map((city, index) => (
-                  <Line key={index} type="monotone" dataKey={city} stroke="#8884d8" />
+                .map((city, i) => (
+                  <Line key={i} type="monotone" dataKey={city} stroke="#8884d8" />
                 ))}
           </LineChart>
         </ResponsiveContainer>
@@ -234,36 +200,37 @@ const AdminDashboard = () => {
         <div className="pie-chart">
           <h3>{t("admin_dashboard.managers_per_city")}</h3>
           <PieChart width={250} height={250}>
-            <Pie data={managersPerCity} cx="50%" cy="50%" outerRadius={60} fill="#8884d8" label dataKey="value">
-              {managersPerCity.map((_, index) => (
-                <Cell key={index} fill={
-                  index === 0 ? "var(--background-color)" :
-                  index === 1 ? "var(--secondary-color)" :
-                  index === 2 ? "var(--accent-color)" : "var(--hover-color)"
-                } />
+            <Pie
+              data={managersPerCity}
+              cx="50%"
+              cy="50%"
+              outerRadius={60}
+              label
+              dataKey="value"
+            >
+              {managersPerCity.map((_, idx) => (
+                <Cell
+                  key={idx}
+                  fill={
+                    idx === 0
+                      ? "var(--background-color)"
+                      : idx === 1
+                      ? "var(--secondary-color)"
+                      : idx === 2
+                      ? "var(--accent-color)"
+                      : "var(--hover-color)"
+                  }
+                />
               ))}
             </Pie>
           </PieChart>
           <ul>
-            {managersPerCity.map((item, index) => (
-              <li key={index}>{item.name}: {item.value} {t("admin_dashboard.managers_label")}</li>
+            {managersPerCity.map((item, idx) => (
+              <li key={idx}>
+                {item.name}: {item.value} {t("admin_dashboard.managers_label")}
+              </li>
             ))}
           </ul>
-        </div>
-
-        <div className="bar-chart">
-          <h3>{t("admin_dashboard.profit_loss")}</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={profitLossData}>
-              <XAxis dataKey="name" stroke="#fff" tick={{ fill: "#fff" }} />
-              <YAxis stroke="#fff" tick={{ fill: "#fff" }} />
-              <Tooltip contentStyle={{ backgroundColor: "#222" }} />
-              <Legend />
-              <Bar dataKey="revenue" fill="#00C49F" />
-              <Bar dataKey="tax" fill="red" />
-              <Bar dataKey="hotelShare" fill="orange" />
-            </BarChart>
-          </ResponsiveContainer>
         </div>
       </div>
     </div>
