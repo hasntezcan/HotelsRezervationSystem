@@ -316,7 +316,7 @@ const TourDetails = () => {
 
           <Col lg="4" className="mt-4 mt-lg-0">
             <Booking
-              tour={{ ...tour, price: actualPrice }}
+              tour={{ ...tour, price: actualPrice, reviews }}
               avgRating={avgRating}
               selectedRoom={selectedRoom}
               initialAdults={initialAdults}
