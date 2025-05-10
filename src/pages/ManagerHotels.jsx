@@ -21,10 +21,12 @@ import SidebarManager from "../components/Sidebar_manager";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import { useToast } from "../shared/Errors/ToastContext";
 
 const ManagerHotels = () => {
   const { user } = useContext(AuthContext);
   const { t }   = useTranslation();
+  const { showToast } = useToast();
 
   /* ─────────── State ─────────── */
   const [managerId, setManagerId]                         = useState(null);
@@ -91,14 +93,14 @@ const ManagerHotels = () => {
           });
         }
       })
-      .catch(() => alert("Error fetching hotels or amenities"));
+      .catch(() => showToast("Error fetching hotels", "error"));
   }, [user]);
 
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/hotelamenities")
       .then(res => setAllAmenities(res.data))
-      .catch(() => alert("Error fetching hotel amenities"));
+      .catch(() => showToast("Error fetching amenities", "error"));
   }, []);
 
   useEffect(() => {
@@ -106,7 +108,7 @@ const ManagerHotels = () => {
     axios
       .get(`http://localhost:8080/api/rooms/hotel/${hotels[0].hotelId}`)
       .then(res => setRooms(Array.isArray(res.data) ? res.data : []))
-      .catch(() => alert("Error fetching rooms"));
+      .catch(() => showToast("Error fetching rooms", "error"));
   }, [hotels]);
 
   useEffect(() => setShowAddRoomForm(rooms.length === 0), [rooms]);
@@ -125,7 +127,7 @@ const ManagerHotels = () => {
   /* ─────────── Room CRUD ─────────── */
   const handleAddRoom = async () => {
     if (roomRequired(roomData)) {
-      alert("Please fill in all room details before adding.");
+      showToast("Please fill in all room details", "error");
       return;
     }
     try {
@@ -164,13 +166,13 @@ const ManagerHotels = () => {
       setShowAddRoomForm(false);
     } catch (err) {
       console.error(err);
-      alert("Room add failed");
+      showToast("Error adding room", "error");
     }
   };
 
   const updateRoom = async (id) => {
     if (roomRequired(editingRoomData)) {
-      alert("Please fill in all room details before saving.");
+      showToast("Please fill in all room details", "error");
       return;
     }
     try {
@@ -221,7 +223,7 @@ const ManagerHotels = () => {
       setRooms(prev => prev.map(r => (r.id === id ? res.data : r)));
     } catch (err) {
       console.error("Error updating room:", err);
-      alert("Room update failed");
+      showToast("Error updating room", "error");
     }
   };
 
@@ -230,7 +232,7 @@ const ManagerHotels = () => {
       await axios.delete(`http://localhost:8080/api/rooms/${id}`);
       setRooms(prev => prev.filter(r => r.id !== id));
     } catch {
-      alert("Room delete failed");
+      showToast("Error deleting room", "error");
     }
   };
 
@@ -270,7 +272,7 @@ const ManagerHotels = () => {
       setExistingImages(prev => prev.filter(i => i.imageId !== imageId));
       if (primaryFromDb === imageId) setPrimaryFromDb(null);
     } catch {
-      alert("Image delete failed");
+      showToast("Error deleting image", "error");
     }
   };
 
@@ -309,9 +311,9 @@ const ManagerHotels = () => {
     try {
       await axios.delete(`http://localhost:8080/api/hotels/${hotelId}`);
       setHotels(prev => prev.filter(h => h.hotelId !== hotelId));
-      alert("Hotel deleted successfully!");
+      showToast("Hotel deleted successfully", "success");
     } catch {
-      alert("Error deleting hotel");
+      showToast("Error deleting hotel", "error");
     }
   };
 
@@ -329,11 +331,11 @@ const ManagerHotels = () => {
       !editHotel?.description?.trim() || !editHotel?.starRating ||
       !latOk || !lngOk
     ) {
-      alert(t("manager_hotels.fill_all_fields"));
+      showToast(t("manager_hotels.fill_all_fields"), "error");
       return;
     }
     if (!selectedAmenities.length) {
-      alert(t("manager_hotels.select_at_least_one_amenity"));
+      showToast(t("manager_hotels.select_at_least_one_amenity"), "error");
       return;
     }
 
@@ -413,11 +415,19 @@ const ManagerHotels = () => {
           : [...prev, savedHotel]
       );
 
-      alert(`Hotel ${editHotel?.hotelId ? "updated" : "added"} successfully!`);
+  
+      if (editHotel) {
+        showToast(`Hotel ${editHotel.hotelId ? "updated" : "added"} successfully!`, "success");
+      } else {
+        showToast("Hotel added successfully!", "success");
+      }
+      
+
+      
       setOpenModal(false);
     } catch (err) {
       console.error(err);
-      alert(editHotel?.hotelId ? "Error updating hotel" : "Error adding hotel");
+      showToast(editHotel?.hotelId ? "Error updating hotel" : "Error adding hotel", "error");
     }
   };
 
@@ -631,7 +641,7 @@ const ManagerHotels = () => {
                                       if (primaryRoomFromDb === img.imageId) setPrimaryRoomFromDb(null);
                                     } catch (err) {
                                       console.error("Error deleting room image:", err);
-                                      alert("Failed to delete image");
+                                      showToast("Error deleting room image", "error");
                                     }
                                   }}
                                   sx={{ color: "#f44336", "&:hover": { bgcolor: "rgba(244,67,54,0.04)" } }}
@@ -811,7 +821,7 @@ const ManagerHotels = () => {
                                       if (primaryRoomFromDb === img.imageId) setPrimaryRoomFromDb(null);
                                     } catch (err) {
                                       console.error("Error deleting room image:", err);
-                                      alert("Failed to delete image");
+                                      showToast("Error deleting room image", "error");
                                     }
                                   }}
                                   sx={{ color: "#f44336", "&:hover": { bgcolor: "rgba(244,67,54,0.04)" } }}

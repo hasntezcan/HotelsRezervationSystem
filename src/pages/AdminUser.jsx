@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../styles/AdminStaff.css";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+import { useToast } from '../shared/Errors/ToastContext';
 
 const AdminUser = () => {
   const [managers, setManagers] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]); // custom toast hook
+  const { showToast } = useToast();
 
   // Pagination için state’ler
   const [currentManagerPage, setCurrentManagerPage] = useState(1);
@@ -41,15 +44,15 @@ const AdminUser = () => {
     const passwordRegex = /^.{6,}$/;
 
     if (!emailRegex.test(manager.email)) {
-      alert("⚠️ Geçersiz Email: ornek@domain.com formatında olmalı.");
+      showToast("Invalid Email: Must be in the format example@domain.com.", 'error');
       return false;
     }
     if (!phoneRegex.test(manager.phone)) {
-      alert("⚠️ Geçersiz Telefon Numarası: 10-15 basamaklı olmalı.");
+        showToast("Invalid Phone Number: Must be 10-15 digits.", 'error');
       return false;
     }
     if (!passwordRegex.test(manager.password)) {
-      alert("⚠️ Şifre en az 6 karakter olmalı.");
+      showToast("Password must be at least 6 characters.", 'error');
       return false;
     }
     return true;
@@ -66,7 +69,7 @@ const AdminUser = () => {
         ...manager,
         role: "manager",
       });
-      alert("✅ Manager başarıyla eklendi!");
+      showToast("Manager added successfully!", 'success');
       setManager({
         first_name: "",
         last_name: "",
@@ -80,12 +83,12 @@ const AdminUser = () => {
       console.error("Error adding manager:", error);
       if (error.response) {
         if (error.response.status === 409) {
-          alert(`❌ ${error.response.data}`);
+          showToast(error.response.data, 'error');
         } else {
-          alert(`❌ Manager eklenirken bir sorun oluştu: ${error.response.data}`);
+          showToast('There was a problem adding the manager: ${error.response.data}', 'error');
         }
       } else {
-        alert("❌ Manager eklenemedi. Lütfen daha sonra tekrar deneyiniz.");
+        showToast("An error occurred while adding the manager.", 'error');
       }
     }
   };
@@ -102,7 +105,7 @@ const AdminUser = () => {
       setUsers(res.data);
     } catch (error) {
       console.error("Error fetching users:", error);
-      alert("❌ Kullanıcılar çekilemedi.");
+      showToast("User information could not be retrieved.", 'error');
     }
   };
 
@@ -113,7 +116,7 @@ const AdminUser = () => {
       setManagers(res.data);
     } catch (error) {
       console.error("Error fetching managers:", error);
-      alert("❌ Manager bilgileri çekilemedi.");
+      showToast(" Manager information could not be retrieved.");
     }
   };
 
@@ -122,10 +125,10 @@ const AdminUser = () => {
     try {
       await axios.delete(`http://localhost:8080/api/managers/${m.managerId}`);
       setManagers(managers.filter((x) => x.managerId !== m.managerId));
-      alert("✅ Manager silindi!");
+      showToast("Manager deleted successfully!", 'success');
     } catch (error) {
       console.error("Error deleting manager:", error);
-      alert("❌ Manager silinirken hata.");
+      showToast("Error ocurred when deleting Manager.", 'error');
     }
   };
 
@@ -134,10 +137,10 @@ const AdminUser = () => {
     try {
       await axios.delete(`http://localhost:8080/api/users/${u.userId}`);
       setUsers(users.filter((x) => x.userId !== u.userId));
-      alert("✅ Kullanıcı silindi!");
+      showToast("User deleted successfully!", 'success');
     } catch (error) {
       console.error("Error deleting user:", error);
-      alert("❌ Kullanıcı silinirken hata.");
+      showToast("Error occurred when deleting User.", 'error');
     }
   };
 
