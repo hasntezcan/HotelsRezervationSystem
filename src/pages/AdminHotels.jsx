@@ -38,7 +38,7 @@ const AdminHotel = () => {
   };
   const fetchAmenities = async () => {
     try {
-      const { data } = await axios.get("http://localhost:8080/api/hotelamenities");
+      const { data } = await axios.get("http://localhost:8080/api/admin/hotelamenities");
       setAmenities(data);
     } catch (err) {
       console.error("Error fetching amenities:", err);
@@ -64,7 +64,7 @@ const AdminHotel = () => {
     const { name, value, type, checked } = e.target;
     setNewHotel((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : value
     }));
   };
 
@@ -78,11 +78,15 @@ const AdminHotel = () => {
 
   const openAmenitiesModal = () => setShowAmenitiesModal(true);
   const handleAmenitiesDone = () => {
-    setNewHotel((prev) => ({ ...prev, amenities: selectedAmenities.join(", ") }));
+    setNewHotel((prev) => ({
+      ...prev,
+      amenities: selectedAmenities.join(", ")
+    }));
     setShowAmenitiesModal(false);
   };
 
-  const editHotel = (hotel) => {
+  // rename to avoid shadowing
+  const handleEditHotel = (hotel) => {
     setEditingHotel(hotel);
     setNewHotel({
       name: hotel.name || "",
@@ -91,15 +95,31 @@ const AdminHotel = () => {
       address: hotel.address || "",
       amenities: hotel.amenities || ""
     });
-    setSelectedAmenities(hotel.amenities ? hotel.amenities.split(",").map((a) => a.trim()) : []);
-    document.getElementById('admin-hotel-management-title').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setSelectedAmenities(
+      hotel.amenities
+        ? hotel.amenities.split(",").map((a) => a.trim())
+        : []
+    );
+    document
+      .getElementById("admin-hotel-management-title")
+      .scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const updateHotel = async () => {
     try {
-      const { managerName, photo, photoUrl, ...filteredNewHotel } = newHotel;
-      const { hotelId, ...orig } = editingHotel;
-      await axios.put(`http://localhost:8080/api/hotels/${hotelId}`, { ...orig, ...filteredNewHotel });
+      // only send the fields your Hotel model expects
+      const payload = {
+        name: newHotel.name,
+        city: newHotel.city,
+        country: newHotel.country,
+        address: newHotel.address,
+        amenities: newHotel.amenities
+      };
+
+      await axios.put(
+        `http://localhost:8080/api/hotels/${editingHotel.hotelId}`,
+        payload
+      );
       await fetchHotels();
       setEditingHotel(null);
       setNewHotel({ name: "", city: "", country: "", address: "", amenities: "" });
@@ -120,11 +140,13 @@ const AdminHotel = () => {
 
   // Outside-click clears form
   const handlePageClick = (e) => {
-    if (!e.target.closest('#admin-hotel-form') &&
-        !e.target.closest('.admin-hotel-edit-btn') &&
-        !e.target.closest('.admin-hotel-delete-btn') &&
-        !e.target.closest('.select-amenities-btn') &&
-        !e.target.closest('.amenities-modal')) {
+    if (
+      !e.target.closest("#admin-hotel-form") &&
+      !e.target.closest(".admin-hotel-edit-btn") &&
+      !e.target.closest(".admin-hotel-delete-btn") &&
+      !e.target.closest(".select-amenities-btn") &&
+      !e.target.closest(".amenities-modal")
+    ) {
       setNewHotel({ name: "", city: "", country: "", address: "", amenities: "" });
       setSelectedAmenities([]);
       setEditingHotel(null);
@@ -140,27 +162,29 @@ const AdminHotel = () => {
     );
   });
 
-  // Pagination on filtered list
+  // Pagination
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentHotels = filteredHotels.slice(indexOfFirst, indexOfLast);
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+  const handlePageChange = (page) => setCurrentPage(page);
 
   const Pagination = ({ currentPage, totalItems, onPageChange }) => {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     return (
       <div className="pagination">
-        <button className="pagination-button"
-                onClick={() => onPageChange(currentPage - 1)}
-                disabled={currentPage === 1}>
+        <button
+          className="pagination-button"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
           {t("Previous")}
         </button>
-        <button className="pagination-button"
-                onClick={() => onPageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}>
+        <button
+          className="pagination-button"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
           {t("Next")}
         </button>
       </div>
@@ -168,20 +192,21 @@ const AdminHotel = () => {
   };
 
   return (
-    <div id="admin-hotel-container"
-    onClick={handlePageClick}>
-      
+    <div id="admin-hotel-container" onClick={handlePageClick}>
       <div id="admin-hotel-management-title">{t("admin_hotels.title")}</div>
-    {/* 🗲 Search bar */}
-    <div className="search-container">
+
+      {/* Search bar */}
+      <div className="search-container">
         <input
           className="search-input"
           type="text"
-          placeholder={t("Search hotels by name, city, country...") }
+          placeholder={t("Search hotels by name, city, country...")}
           value={searchTerm}
           onChange={handleSearchChange}
         />
       </div>
+
+      {/* Form */}
       <div id="admin-hotel-form">
         <input
           type="text"
@@ -218,9 +243,12 @@ const AdminHotel = () => {
         >
           {t("admin_hotels.select_amenities")}
         </button>
-
         {editingHotel && (
-          <button id="admin-hotel-button" onClick={updateHotel}>
+          <button
+            type="button"
+            id="admin-hotel-button"
+            onClick={updateHotel}
+          >
             {t("admin_hotels.update")}
           </button>
         )}
@@ -228,35 +256,49 @@ const AdminHotel = () => {
 
       {newHotel.amenities && (
         <div style={{ margin: "10px", color: "#fff" }}>
-          <strong>{t("admin_hotels.selected_amenities")}:</strong> {newHotel.amenities}
+          <strong>{t("admin_hotels.selected_amenities")}:</strong>{" "}
+          {newHotel.amenities}
         </div>
       )}
 
-<div id="admin-hotel-list">
-  {currentHotels.map((hotel) => (
-    <div className="admin-hotel-item" key={hotel.hotelId} id={hotel.hotelId}>
-      <div className="admin-hotel-title">{hotel.name}</div>
-      {hotel.photoUrl && (
-        <img src={hotel.photoUrl} alt={hotel.name} className="hotel-photo" />
-      )}
-      <p>
-        <strong>{t("admin_hotels.city")}:</strong> {hotel.city} <br />
-        <strong>{t("admin_hotels.country")}:</strong> {hotel.country} <br />
-        <strong>{t("admin_hotels.address")}:</strong> {hotel.address}
-      </p>
+      {/* Hotel list */}
+      <div id="admin-hotel-list">
+        {currentHotels.map((hotel) => (
+          <div
+            className="admin-hotel-item"
+            key={hotel.hotelId}
+            id={hotel.hotelId}
+          >
+            <div className="admin-hotel-title">{hotel.name}</div>
+            {hotel.photoUrl && (
+              <img
+                src={hotel.photoUrl}
+                alt={hotel.name}
+                className="hotel-photo"
+              />
+            )}
+            <p>
+              <strong>{t("admin_hotels.city")}:</strong> {hotel.city}
+              <br />
+              <strong>{t("admin_hotels.country")}:</strong> {hotel.country}
+              <br />
+              <strong>{t("admin_hotels.address")}:</strong> {hotel.address}
+            </p>
             {hotel.amenities && (
               <p>
-                <strong>{t("admin_hotels.amenities")}:</strong> {hotel.amenities}
+                <strong>{t("admin_hotels.amenities")}:</strong>{" "}
+                {hotel.amenities}
               </p>
             )}
             {hotel.managerName && (
               <p>
-                <strong>{t("admin_hotels.manager")}:</strong> {hotel.managerName}
+                <strong>{t("admin_hotels.manager")}:</strong>{" "}
+                {hotel.managerName}
               </p>
             )}
             <button
               className="admin-hotel-edit-btn"
-              onClick={() => editHotel(hotel)}
+              onClick={() => handleEditHotel(hotel)}
             >
               {t("admin_hotels.edit")}
             </button>
@@ -269,17 +311,21 @@ const AdminHotel = () => {
           </div>
         ))}
         <div className="pagination-container">
-    <Pagination
-      currentPage={currentPage}
-      totalItems={filteredHotels.length}
-      onPageChange={handlePageChange}
-    />
-  </div>
-    </div>
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filteredHotels.length}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      </div>
 
+      {/* Amenities Modal */}
       {showAmenitiesModal && (
         <>
-          <div className="amenities-overlay" onClick={() => setShowAmenitiesModal(false)} />
+          <div
+            className="amenities-overlay"
+            onClick={() => setShowAmenitiesModal(false)}
+          />
           <div className="amenities-modal">
             <h2>{t("admin_hotels.select_amenities")}</h2>
             <div className="amenities-list">
@@ -295,7 +341,10 @@ const AdminHotel = () => {
               ))}
             </div>
             <div className="amenities-button-container">
-              <button className="amenities-done-btn" onClick={handleAmenitiesDone}>
+              <button
+                className="amenities-done-btn"
+                onClick={handleAmenitiesDone}
+              >
                 {t("admin_hotels.done")}
               </button>
               <button
